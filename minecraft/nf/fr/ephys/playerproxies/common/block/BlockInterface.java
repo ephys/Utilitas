@@ -6,6 +6,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import dan200.turtle.api.TurtleAPI;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.block.StepSound;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -24,7 +25,7 @@ public class BlockInterface extends BlockContainer {
 	
 	public BlockInterface() {
 		super(BlockInterface.blockID, Material.glass);
-		
+		this.setStepSound(new StepSound("Glass", 1F, 1F));
 		setLightValue(1.0F);
 		setHardness(1.0F);
 		setCreativeTab(CreativeTabs.tabDecorations);

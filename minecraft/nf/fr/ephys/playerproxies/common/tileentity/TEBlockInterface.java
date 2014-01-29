@@ -60,7 +60,6 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 
 	@Override
 	public Packet getDescriptionPacket() {
-		System.out.println("Updating player");
 		NBTTagCompound nbtTag = new NBTTagCompound();
 		this.writeToNBT(nbtTag);
 		return new Packet132TileEntityData(this.xCoord, this.yCoord,
