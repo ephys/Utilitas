@@ -1,5 +1,7 @@
 package nf.fr.ephys.playerproxies.client.core;
 
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.model.ModelBlaze;
 import net.minecraftforge.common.MinecraftForge;
 import nf.fr.ephys.playerproxies.client.renderer.GhostRenderer;
 import nf.fr.ephys.playerproxies.client.renderer.TileEntityBlockInterfaceRenderer;
@@ -19,6 +21,7 @@ public class ClientProxy extends CommonProxy {
 	
 	public void registerRenderers() {
 		ClientRegistry.bindTileEntitySpecialRenderer(TEBlockInterface.class, new TileEntityBlockInterfaceRenderer());
+//		RenderingRegistry.registerEntityRenderingHandler(Ghost.class, new GhostRenderer());
 		
 		MinecraftForge.EVENT_BUS.register(new GhostRenderer());
 	}

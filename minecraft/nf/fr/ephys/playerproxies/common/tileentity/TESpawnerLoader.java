@@ -39,6 +39,8 @@ public class TESpawnerLoader extends TileEntity {
 		this.worldObj.spawnEntityInWorld(ghost);
 
 		ghost.setPosition(this.xCoord + 0.5, this.yCoord + 1, this.zCoord + 0.5);
+		
+		System.out.println(ghost);
 	}
 
 	@Override

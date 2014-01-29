@@ -37,7 +37,6 @@ public class BlockSpawnerLoader extends BlockContainer {
 		return new TESpawnerLoader();
 	}
 	
-	
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack par6ItemStack) {
     	if(entity instanceof EntityPlayer) {
     		TESpawnerLoader spawnerLoader = (TESpawnerLoader) world.getBlockTileEntity(x, y, z);
