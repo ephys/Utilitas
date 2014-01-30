@@ -20,21 +20,21 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.FakePlayer;
 import nf.fr.ephys.playerproxies.common.core.NetServerHandlerFake;
-
+import nf.fr.ephys.playerproxies.common.tileentity.TESpawnerLoader;
 import net.minecraft.client.entity.AbstractClientPlayer;
 
 public class Ghost extends FakePlayer {
 	private EntityPlayer linkedPlayer = null;
 	private int offset = (int) (Math.random()*50);
 	
+	private TESpawnerLoader linkedStabilizer = null;
+	
 	public Ghost(World world, String username) {
 		super(world, username);
 
 		this.playerNetServerHandler = new NetServerHandlerFake(FMLCommonHandler
 				.instance().getMinecraftServerInstance(), this);
-		
-		
-		
+
 		setInvisible(true);
 	}
 	

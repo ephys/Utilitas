@@ -3,6 +3,7 @@ package nf.fr.ephys.playerproxies.common;
 import java.util.logging.Logger;
 
 import net.minecraftforge.common.Configuration;
+import nf.fr.ephys.playerproxies.common.block.BlockHardenedStone;
 import nf.fr.ephys.playerproxies.common.block.BlockInterface;
 import nf.fr.ephys.playerproxies.common.block.BlockSpawnerLoader;
 import nf.fr.ephys.playerproxies.common.core.CommonProxy;
@@ -40,6 +41,7 @@ public class PlayerProxies {
 	// blocks
 	public static BlockInterface blockInterface;
 	public static BlockSpawnerLoader blockSpawnerLoader;
+	public static BlockHardenedStone blockHardenedStone;
 
 	// items
 	public static ItemLinker itemLinker;
@@ -55,7 +57,10 @@ public class PlayerProxies {
         
         ItemLinker.itemID = config.getItem("ItemLinker", ItemLinker.itemID).getInt();
         ItemLinkFocus.itemID = config.getItem("ItemLinkFocus", ItemLinkFocus.itemID).getInt();
+        
         BlockInterface.blockID = config.getBlock("BlockInterface", BlockInterface.blockID).getInt();
+        BlockSpawnerLoader.blockID = config.getBlock("BlockSpawnerLoader", BlockSpawnerLoader.blockID).getInt();
+        BlockHardenedStone.blockID = config.getBlock("BlockHardenedStone", BlockHardenedStone.blockID).getInt();
         
         config.save();
     }

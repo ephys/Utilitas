@@ -32,7 +32,7 @@ public class TESpawnerLoader extends TileEntity {
 	}
 
 	private void spawnGhost() {
-		ghost = new Ghost(this.worldObj, owner);
+		ghost = new Ghost(this.worldObj, owner, this);
 
 		ghost.setPosition(this.xCoord + 0.5, this.yCoord + 1, this.zCoord + 0.5);
 

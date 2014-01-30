@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
+import nf.fr.ephys.playerproxies.common.block.BlockHardenedStone;
 import nf.fr.ephys.playerproxies.common.block.BlockInterface;
 import nf.fr.ephys.playerproxies.common.block.BlockSpawnerLoader;
 import nf.fr.ephys.playerproxies.common.item.ItemLinkFocus;
@@ -25,14 +26,20 @@ public class CommonProxy {
 		PlayerProxies.blockSpawnerLoader = new BlockSpawnerLoader();
 		PlayerProxies.blockSpawnerLoader.setUnlocalizedName("PP_SpawnerLoader");
 		
+		PlayerProxies.blockHardenedStone = new BlockHardenedStone();
+		PlayerProxies.blockHardenedStone.setUnlocalizedName("PP_HardenedStone");
+		
 		GameRegistry.registerBlock(PlayerProxies.blockInterface, "PP_UniversalInterface");
         GameRegistry.registerTileEntity(TEBlockInterface.class, "PP_UniversalInterface"); 
         
 		GameRegistry.registerBlock(PlayerProxies.blockSpawnerLoader, "PP_SpawnerLoader");
         GameRegistry.registerTileEntity(TESpawnerLoader.class, "PP_SpawnerLoader"); 
         
+        GameRegistry.registerBlock(PlayerProxies.blockHardenedStone, "PP_HardenedStone");
+        
         LanguageRegistry.instance().addName(PlayerProxies.blockInterface, "Universal Interface");
-        LanguageRegistry.instance().addName(PlayerProxies.blockSpawnerLoader, "Spawner Loader");
+        LanguageRegistry.instance().addName(PlayerProxies.blockSpawnerLoader, "Ghost Stabilizer");
+        LanguageRegistry.instance().addName(PlayerProxies.blockHardenedStone, "Hardened Stone");
 	
         // Item registry
         PlayerProxies.itemLinker = new ItemLinker();
@@ -65,6 +72,18 @@ public class CommonProxy {
         		'l', new ItemStack(PlayerProxies.itemLinkFocus),
         		'g', new ItemStack(Block.glass),
         		'e', new ItemStack(Block.enderChest)
+        );
+        
+        GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockHardenedStone), "ioi", "oso", "ioi",
+        		'i', new ItemStack(Item.ingotIron),
+        		's', new ItemStack(Block.stone),
+        		'o', new ItemStack(Block.obsidian)
+        );
+        
+        GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockSpawnerLoader), "hlh", "hdh", "hhh",
+        		'h', new ItemStack(PlayerProxies.blockHardenedStone),
+        		'l', new ItemStack(PlayerProxies.itemLinkFocus),
+        		'd', new ItemStack(Item.diamond)
         );
 	}
 }

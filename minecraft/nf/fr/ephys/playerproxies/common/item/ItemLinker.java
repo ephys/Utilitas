@@ -22,7 +22,7 @@ public class ItemLinker extends Item {
 	public ItemLinker() {
 		super(itemID);
 		setMaxStackSize(1);
-		setCreativeTab(CreativeTabs.tabDecorations);
+		setCreativeTab(CreativeTabs.tabTools);
 		setTextureName("ephys.pp:link_device");
 	}
 	

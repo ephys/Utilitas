@@ -22,7 +22,5 @@ public class ClientProxy extends CommonProxy {
 	public void registerRenderers() {
 		ClientRegistry.bindTileEntitySpecialRenderer(TEBlockInterface.class, new TileEntityBlockInterfaceRenderer());
 		RenderingRegistry.registerEntityRenderingHandler(Ghost.class, new GhostRenderer());
-		
-//		MinecraftForge.EVENT_BUS.register(new GhostRenderer());
 	}
 }

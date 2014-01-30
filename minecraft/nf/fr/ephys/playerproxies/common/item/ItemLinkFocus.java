@@ -9,7 +9,7 @@ public class ItemLinkFocus extends Item {
 	public ItemLinkFocus() {
 		super(itemID);
 		setMaxStackSize(64);
-		setCreativeTab(CreativeTabs.tabDecorations);
+		setCreativeTab(CreativeTabs.tabMaterials);
 		setTextureName("ephys.pp:link_focus");
 	}
 }

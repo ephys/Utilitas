@@ -22,39 +22,46 @@ import nf.fr.ephys.playerproxies.common.tileentity.TESpawnerLoader;
 
 public class BlockSpawnerLoader extends BlockContainer {
 	public static int blockID = 801;
-	
-	public BlockSpawnerLoader() {
-		super(BlockSpawnerLoader.blockID, Material.glass);
+	private Icon topIcon;
+	private Icon sideIcon;
 
-		setHardness(1.5F);
+	public BlockSpawnerLoader() {
+		super(BlockSpawnerLoader.blockID, Material.iron);
+
+		setHardness(2.5F);
+		setResistance(1000.0F);
 		setCreativeTab(CreativeTabs.tabDecorations);
-		setTextureName("ephys.pp:universal_interface");
 	}
 
 	@Override
 	public TileEntity createNewTileEntity(World world) {
 		return new TESpawnerLoader();
 	}
-	
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack par6ItemStack) {
-    	if(entity instanceof EntityPlayer) {
-    		TESpawnerLoader spawnerLoader = (TESpawnerLoader) world.getBlockTileEntity(x, y, z);
-    		
-    		spawnerLoader.setOwner(((EntityPlayer) entity).username);
-    	}
-    }
-    
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitVectX, float hitVectY, float hitVectZ) {
-		return false;
-    }
-    
+
+	public void onBlockPlacedBy(World world, int x, int y, int z,
+			EntityLivingBase entity, ItemStack par6ItemStack) {
+		if (entity instanceof EntityPlayer) {
+			TESpawnerLoader spawnerLoader = (TESpawnerLoader) world
+					.getBlockTileEntity(x, y, z);
+
+			spawnerLoader.setOwner(((EntityPlayer) entity).username);
+		}
+	}
+
 	@Override
-	public boolean isOpaqueCube() {
-		return false;
+	public Icon getBlockTexture(IBlockAccess par1iBlockAccess, int x, int y, int z, int side) {
+		return side == 1 ? this.topIcon : this.sideIcon;
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerIcons(IconRegister register) {
+		topIcon = register.registerIcon("ephys.pp:ghost_stabilizer_top");
+		sideIcon = register.registerIcon("ephys.pp:ghost_stabilizer_side");
 	}
 	
 	@Override
-    public int getRenderBlockPass() {
-        return 1;
-    }
+	public Icon getIcon(int side, int metadata) {
+		return side == 1 ? this.topIcon : this.sideIcon;
+	}
 }
