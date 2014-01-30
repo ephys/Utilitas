@@ -25,17 +25,21 @@ import net.minecraft.client.entity.AbstractClientPlayer;
 
 public class Ghost extends FakePlayer {
 	private EntityPlayer linkedPlayer = null;
+	private int offset = (int) (Math.random()*50);
 	
 	public Ghost(World world, String username) {
 		super(world, username);
 
 		this.playerNetServerHandler = new NetServerHandlerFake(FMLCommonHandler
 				.instance().getMinecraftServerInstance(), this);
+		
+		
+		
 		setInvisible(true);
 	}
 	
 	public float getNextHoveringFloat() {
-		float result = (this.linkedPlayer.getAge()%50)*0.01F;
+		float result = ((this.linkedPlayer.getAge()+offset)%50)*0.01F;
 		if(result > 0.25F)
 			return 0.5F-result;
 
