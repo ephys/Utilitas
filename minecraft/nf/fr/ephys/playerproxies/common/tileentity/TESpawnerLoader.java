@@ -37,10 +37,8 @@ public class TESpawnerLoader extends TileEntity {
 		ghost.setPosition(this.xCoord + 0.5, this.yCoord + 1, this.zCoord + 0.5);
 
 		this.worldObj.spawnEntityInWorld(ghost);
-
-		ghost.setPosition(this.xCoord + 0.5, this.yCoord + 1, this.zCoord + 0.5);
 		
-		System.out.println(ghost);
+		ghost.setLinkedPlayed(this.worldObj.getClosestPlayerToEntity(ghost, 1F));
 	}
 
 	@Override

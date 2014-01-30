@@ -25,7 +25,7 @@ public class BlockInterface extends BlockContainer {
 	
 	public BlockInterface() {
 		super(BlockInterface.blockID, Material.glass);
-		this.setStepSound(new StepSound("Glass", 1F, 1F));
+		this.setStepSound(this.soundGlassFootstep);
 		setLightValue(1.0F);
 		setHardness(1.0F);
 		setCreativeTab(CreativeTabs.tabDecorations);

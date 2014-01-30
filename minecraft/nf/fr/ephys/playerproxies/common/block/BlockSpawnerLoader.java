@@ -25,9 +25,8 @@ public class BlockSpawnerLoader extends BlockContainer {
 	
 	public BlockSpawnerLoader() {
 		super(BlockSpawnerLoader.blockID, Material.glass);
-		
-		setLightValue(1.0F);
-		setHardness(1.0F);
+
+		setHardness(1.5F);
 		setCreativeTab(CreativeTabs.tabDecorations);
 		setTextureName("ephys.pp:universal_interface");
 	}

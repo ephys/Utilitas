@@ -6,8 +6,10 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -41,14 +43,9 @@ public class TileEntityBlockInterfaceRenderer extends TileEntitySpecialRenderer 
 			EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 			
 			RenderManager.instance.getEntityRenderObject(player).doRender(player, 0.0D, 0.5D, 0.0D, 1.0F, par7);
-		}/* else {
-			GL11.glScalef(1.4F, 1.4F, 1.4F);
-			EntityItem entityitem = new EntityItem(bi.worldObj, 0.0D, 0.0D, 0.0D, new ItemStack(Item.enderPearl));
-			
-			RenderManager.instance.renderEntityWithPosYaw(entityitem, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
-		}*/ // TODO solve entity's shaking
+		}
 	}
-
+	
 	public void renderTileEntityAt(TileEntity te, double par2, double par4,
 			double par6, float par8) {
 		GL11.glPushMatrix();

@@ -15,40 +15,70 @@ import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.FakePlayer;
 import nf.fr.ephys.playerproxies.common.core.NetServerHandlerFake;
- // TODO la seule solution apparente est de créer un ghostrenderer extends RendererLivingEntity et copier les méthodes du player + editer le nécéssaire
- // passer par les events NE MARCHE PAS
-// note: ce qui gère la transparence est dans rendererlivingentity, donc au moment de render le modèle, ne pas passer par là :c
-// duplication de code, sale, berk berk
+
+import net.minecraft.client.entity.AbstractClientPlayer;
+
 public class Ghost extends FakePlayer {
+	private EntityPlayer linkedPlayer = null;
+	
 	public Ghost(World world, String username) {
 		super(world, username);
+
+		this.playerNetServerHandler = new NetServerHandlerFake(FMLCommonHandler
+				.instance().getMinecraftServerInstance(), this);
+		setInvisible(true);
+	}
+	
+	public void setLinkedPlayed(EntityPlayer player) {
+		this.linkedPlayer = player;
+	}
+
+	public EntityPlayer getLinkedPlayer() {
+		return linkedPlayer;
+	}
+	
+	public ResourceLocation getLocationSkin() {
+		if(linkedPlayer instanceof AbstractClientPlayer)
+			return ((AbstractClientPlayer) linkedPlayer).getLocationSkin();
 		
-		this.playerNetServerHandler = new NetServerHandlerFake(FMLCommonHandler.instance().getMinecraftServerInstance(), this);
+		return null;
 	}
 	
 	@Override
-	public boolean shouldRenderInPass(int pass) {
-		// TODO Auto-generated method stub
+	public boolean isInvisible() {
 		return false;
 	}
-	
-    public void sendChatToPlayer(String s){}
-    public boolean canCommandSenderUseCommand(int i, String s){ return false; }
-    public ChunkCoordinates getPlayerCoordinates()
-    {
-        return new ChunkCoordinates(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.posY + 0.5D), MathHelper.floor_double(this.posZ));
-    }
-    
-    @Override 
-    public boolean isEntityInvulnerable() { return true; }
-    
-    @Override
-    public void onDeath(DamageSource source) { return; }
-    
-    @Override
-    public void onUpdate() { return; }
+
+	public void sendChatToPlayer(String s) {
+	}
+
+	public boolean canCommandSenderUseCommand(int i, String s) {
+		return false;
+	}
+
+	public ChunkCoordinates getPlayerCoordinates() {
+		return new ChunkCoordinates(MathHelper.floor_double(this.posX),
+				MathHelper.floor_double(this.posY + 0.5D),
+				MathHelper.floor_double(this.posZ));
+	}
+
+	@Override
+	public boolean isEntityInvulnerable() {
+		return true;
+	}
+
+	@Override
+	public void onDeath(DamageSource source) {
+		return;
+	}
+
+	@Override
+	public void onUpdate() {
+		return;
+	}
 }

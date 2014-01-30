@@ -258,7 +258,7 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 
 		return (linkedInventory instanceof ISidedInventory) ? ((ISidedInventory) linkedInventory)
 				.getAccessibleSlotsFromSide(var1)
-				: linkedInventory != null ? getUnSidedInventorySlots((IInventory) linkedInventory)
+				: linkedInventory instanceof IInventory ? getUnSidedInventorySlots((IInventory) linkedInventory)
 						: new int[0];
 	}
 
@@ -347,9 +347,10 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 	// ================================================================================
 
 	private boolean isValidTE(TileEntity te) {
-		return te instanceof ISidedInventory || te instanceof IEnergyHandler
-				|| te instanceof IFluidHandler || te instanceof IPowerReceptor
-				|| te instanceof IEnergySink || te instanceof IAspectContainer
+		return te instanceof IInventory || te instanceof ISidedInventory
+				|| te instanceof IEnergyHandler || te instanceof IFluidHandler
+				|| te instanceof IPowerReceptor || te instanceof IEnergySink
+				|| te instanceof IAspectContainer
 				|| te instanceof IEssentiaTransport;
 	}
 
@@ -544,117 +545,134 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 	@Override
 	public boolean canInputFrom(ForgeDirection arg0) {
 		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IEssentiaTransport ? ((IEssentiaTransport)linkedTE).canInputFrom(arg0) : false;
+		return linkedTE instanceof IEssentiaTransport ? ((IEssentiaTransport) linkedTE)
+				.canInputFrom(arg0) : false;
 	}
 
 	@Override
 	public boolean canOutputTo(ForgeDirection arg0) {
 		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IEssentiaTransport ? ((IEssentiaTransport)linkedTE).canOutputTo(arg0) : false;
+		return linkedTE instanceof IEssentiaTransport ? ((IEssentiaTransport) linkedTE)
+				.canOutputTo(arg0) : false;
 	}
 
 	@Override
 	public AspectList getEssentia(ForgeDirection arg0) {
 		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IEssentiaTransport ? ((IEssentiaTransport)linkedTE).getEssentia(arg0) : null;
+		return linkedTE instanceof IEssentiaTransport ? ((IEssentiaTransport) linkedTE)
+				.getEssentia(arg0) : null;
 	}
 
 	@Override
 	public int getMinimumSuction() {
 		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IEssentiaTransport ? ((IEssentiaTransport)linkedTE).getMinimumSuction() : 0;
+		return linkedTE instanceof IEssentiaTransport ? ((IEssentiaTransport) linkedTE)
+				.getMinimumSuction() : 0;
 	}
 
 	@Override
 	public AspectList getSuction(ForgeDirection arg0) {
 		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IEssentiaTransport ? ((IEssentiaTransport)linkedTE).getSuction(arg0) : null;
+		return linkedTE instanceof IEssentiaTransport ? ((IEssentiaTransport) linkedTE)
+				.getSuction(arg0) : null;
 	}
 
 	@Override
 	public boolean isConnectable(ForgeDirection arg0) {
 		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IEssentiaTransport ? ((IEssentiaTransport)linkedTE).isConnectable(arg0) : false;
+		return linkedTE instanceof IEssentiaTransport ? ((IEssentiaTransport) linkedTE)
+				.isConnectable(arg0) : false;
 	}
 
 	@Override
 	public boolean renderExtendedTube() {
 		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IEssentiaTransport ? ((IEssentiaTransport)linkedTE).renderExtendedTube() : false;
+		return linkedTE instanceof IEssentiaTransport ? ((IEssentiaTransport) linkedTE)
+				.renderExtendedTube() : false;
 	}
 
 	@Override
 	public void setSuction(AspectList arg0) {
 		TileEntity linkedTE = this.getLinkedTileEntity();
-		if(linkedTE instanceof IEssentiaTransport)
-			((IEssentiaTransport)linkedTE).setSuction(arg0);
+		if (linkedTE instanceof IEssentiaTransport)
+			((IEssentiaTransport) linkedTE).setSuction(arg0);
 	}
 
 	@Override
 	public void setSuction(Aspect arg0, int arg1) {
 		TileEntity linkedTE = this.getLinkedTileEntity();
-		if(linkedTE instanceof IEssentiaTransport)
-			((IEssentiaTransport)linkedTE).setSuction(arg0, arg1);;
+		if (linkedTE instanceof IEssentiaTransport)
+			((IEssentiaTransport) linkedTE).setSuction(arg0, arg1);
+		;
 	}
 
-	@Override 
+	@Override
 	public int takeVis(Aspect arg0, int arg1) {
 		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IEssentiaTransport ? ((IEssentiaTransport)linkedTE).takeVis(arg0, arg1) : 0;
+		return linkedTE instanceof IEssentiaTransport ? ((IEssentiaTransport) linkedTE)
+				.takeVis(arg0, arg1) : 0;
 	}
 
 	@Override
 	public int addToContainer(Aspect arg0, int arg1) {
 		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IAspectContainer ? ((IAspectContainer)linkedTE).addToContainer(arg0, arg1) : 0;
+		return linkedTE instanceof IAspectContainer ? ((IAspectContainer) linkedTE)
+				.addToContainer(arg0, arg1) : 0;
 	}
 
 	@Override
 	public int containerContains(Aspect arg0) {
 		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IAspectContainer ? ((IAspectContainer)linkedTE).containerContains(arg0) : 0;
+		return linkedTE instanceof IAspectContainer ? ((IAspectContainer) linkedTE)
+				.containerContains(arg0) : 0;
 	}
 
 	@Override
 	public boolean doesContainerAccept(Aspect arg0) {
 		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IAspectContainer ? ((IAspectContainer)linkedTE).doesContainerAccept(arg0) : false;
+		return linkedTE instanceof IAspectContainer ? ((IAspectContainer) linkedTE)
+				.doesContainerAccept(arg0) : false;
 	}
 
 	@Override
 	public boolean doesContainerContain(AspectList arg0) {
 		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IAspectContainer ? ((IAspectContainer)linkedTE).doesContainerContain(arg0) : false;
+		return linkedTE instanceof IAspectContainer ? ((IAspectContainer) linkedTE)
+				.doesContainerContain(arg0) : false;
 	}
 
 	@Override
 	public boolean doesContainerContainAmount(Aspect arg0, int arg1) {
 		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IAspectContainer ? ((IAspectContainer)linkedTE).doesContainerContainAmount(arg0, arg1) : false;
+		return linkedTE instanceof IAspectContainer ? ((IAspectContainer) linkedTE)
+				.doesContainerContainAmount(arg0, arg1) : false;
 	}
 
 	@Override
 	public AspectList getAspects() {
 		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IAspectContainer ? ((IAspectContainer)linkedTE).getAspects() : null;
+		return linkedTE instanceof IAspectContainer ? ((IAspectContainer) linkedTE)
+				.getAspects() : null;
 	}
 
 	@Override
 	public void setAspects(AspectList arg0) {
 		TileEntity linkedTE = this.getLinkedTileEntity();
-		if(linkedTE instanceof IAspectContainer)
-			((IAspectContainer)linkedTE).setAspects(arg0);
+		if (linkedTE instanceof IAspectContainer)
+			((IAspectContainer) linkedTE).setAspects(arg0);
 	}
 
 	@Override
 	public boolean takeFromContainer(AspectList arg0) {
 		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IAspectContainer ? ((IAspectContainer)linkedTE).takeFromContainer(arg0) : false;
+		return linkedTE instanceof IAspectContainer ? ((IAspectContainer) linkedTE)
+				.takeFromContainer(arg0) : false;
 	}
 
 	@Override
 	public boolean takeFromContainer(Aspect arg0, int arg1) {
 		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IAspectContainer ? ((IAspectContainer)linkedTE).takeFromContainer(arg0, arg1) : false;
+		return linkedTE instanceof IAspectContainer ? ((IAspectContainer) linkedTE)
+				.takeFromContainer(arg0, arg1) : false;
 	}
 }
