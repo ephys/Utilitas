@@ -26,7 +26,8 @@ import nf.fr.ephys.playerproxies.common.entity.Ghost;
 
 public class GhostRenderer extends RenderPlayer {
 	private ModelBiped modelBipedMain;
-	private static final ResourceLocation steveTextures = new ResourceLocation("textures/entity/steve.png");
+	private static final ResourceLocation steveTextures = new ResourceLocation(
+			"textures/entity/steve.png");
 
 	public GhostRenderer() {
 		super();
@@ -70,7 +71,8 @@ public class GhostRenderer extends RenderPlayer {
 		GL11.glPushMatrix();
 		GL11.glDisable(GL11.GL_CULL_FACE);
 
-		this.mainModel.onGround = this.renderSwingProgress(par1EntityLivingBase, par9);
+		this.mainModel.onGround = this.renderSwingProgress(
+				par1EntityLivingBase, par9);
 		if (this.renderPassModel != null) {
 			this.renderPassModel.onGround = this.mainModel.onGround;
 		}
@@ -94,12 +96,12 @@ public class GhostRenderer extends RenderPlayer {
 			float f5 = par1EntityLivingBase.prevRotationPitch
 					+ (par1EntityLivingBase.rotationPitch - par1EntityLivingBase.prevRotationPitch)
 					* par9;
-			
+
 			this.renderLivingAt(par1EntityLivingBase, par2, par4, par6);
-			
+
 			float f4 = this.handleRotationFloat(par1EntityLivingBase, par9);
 			this.rotateCorpse(par1EntityLivingBase, f4, f2, par9);
-			
+
 			float f6 = 0.0625F;
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 			GL11.glScalef(-1.0F, -1.0F, 1.0F);
@@ -117,9 +119,10 @@ public class GhostRenderer extends RenderPlayer {
 			}
 
 			GL11.glEnable(GL11.GL_ALPHA_TEST);
-			this.mainModel.setLivingAnimations(par1EntityLivingBase, f8, f7, par9);
+			this.mainModel.setLivingAnimations(par1EntityLivingBase, f8, f7,
+					par9);
 			this.renderModel(par1EntityLivingBase, f8, f7, f4, f3 - f2, f5, f6);
-			
+
 			GL11.glDepthMask(true);
 			this.renderEquippedItems(par1EntityLivingBase, par9);
 			float f14 = par1EntityLivingBase.getBrightness(par9);
@@ -189,49 +192,60 @@ public class GhostRenderer extends RenderPlayer {
 		GL11.glPopMatrix();
 		this.passSpecialRender(par1EntityLivingBase, par2, par4, par6);
 	}
-	
-    protected void renderModel(EntityLivingBase par1EntityLivingBase, float par2, float par3, float par4, float par5, float par6, float par7) {
-        this.bindEntityTexture(par1EntityLivingBase);
 
-        GL11.glPushMatrix();
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.35F);
-        GL11.glDepthMask(false);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glAlphaFunc(GL11.GL_GREATER, 0.003921569F);
-        this.mainModel.render(par1EntityLivingBase, par2, par3, par4, par5, par6, par7);
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
-        GL11.glPopMatrix();
-        GL11.glDepthMask(true);
-    }
+	protected void renderModel(EntityLivingBase par1EntityLivingBase, float par2, float par3, float par4, float par5, float par6, float par7) {
+		this.bindEntityTexture(par1EntityLivingBase);
 
-    protected int shouldRenderPass(EntityLivingBase par1EntityLivingBase, int j, float par3) {
-    	return j;
-    }
+		GL11.glPushMatrix();
+		GL11.glColor4f(0.8F, 0.8F, 0.8F, 0.35F);
+		GL11.glDepthMask(false);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GL11.glAlphaFunc(GL11.GL_GREATER, 0.003921569F);
+		this.mainModel.render(par1EntityLivingBase, par2, par3, par4, par5,
+				par6, par7);
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
+		GL11.glPopMatrix();
+		GL11.glDepthMask(true);
+	}
 
-	public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
+	protected int shouldRenderPass(EntityLivingBase par1EntityLivingBase,
+			int j, float par3) {
+		return j;
+	}
+
+	public void doRender(Entity par1Entity, double par2, double par4,
+			double par6, float par8, float par9) {
 		this.renderGhost((Ghost) par1Entity, par2, par4, par6, par8, par9);
 	}
-	
-    protected ResourceLocation getEntityTexture(Entity entity) {
-    	ResourceLocation skin = ((Ghost) entity).getLocationSkin();
-        return skin == null ? steveTextures : skin;
-    }
 
-	protected void preRenderCallback(EntityLivingBase par1EntityLivingBase, float par2) {
+	protected ResourceLocation getEntityTexture(Entity entity) {
+		ResourceLocation skin = ((Ghost) entity).getLocationSkin();
+		return skin == null ? steveTextures : skin;
+	}
+
+	protected void preRenderCallback(EntityLivingBase par1EntityLivingBase,
+			float par2) {
 		float scale = 0.9375F;
 		GL11.glScalef(scale, scale, scale);
 	}
-	
-	protected void renderLivingAt(EntityLivingBase par1EntityLivingBase, double x, double y, double z) {
-		GL11.glTranslatef((float)x, (float)y, (float)z);
-	}
-	
-    protected void renderEquippedItems(EntityLivingBase par1EntityLivingBase, float par2) {}
-    protected void rotateCorpse(EntityLivingBase par1EntityLivingBase, float par2, float par3, float par4) {
-    	GL11.glRotatef(180.0F - par3, 0.0F, 1.0F, 0.0F);
-    }
 
-	protected void func_96449_a(EntityLivingBase par1EntityLivingBase, double par2, double par4, double par6, String par8Str, float par9, double par10) {}
+	protected void renderLivingAt(EntityLivingBase entity, double x, double y, double z) {
+		GL11.glTranslatef((float) x, (float) y+((Ghost) entity).getNextHoveringFloat(), (float) z);
+	}
+
+	protected void renderEquippedItems(EntityLivingBase par1EntityLivingBase,
+			float par2) {
+	}
+
+	protected void rotateCorpse(EntityLivingBase par1EntityLivingBase,
+			float par2, float par3, float par4) {
+		GL11.glRotatef(180.0F - par3, 0.0F, 1.0F, 0.0F);
+	}
+
+	protected void func_96449_a(EntityLivingBase par1EntityLivingBase,
+			double par2, double par4, double par6, String par8Str, float par9,
+			double par10) {
+	}
 }

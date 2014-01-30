@@ -34,6 +34,14 @@ public class Ghost extends FakePlayer {
 		setInvisible(true);
 	}
 	
+	public float getNextHoveringFloat() {
+		float result = (this.linkedPlayer.getAge()%50)*0.01F;
+		if(result > 0.25F)
+			return 0.5F-result;
+
+		return result;
+	}
+	
 	public void setLinkedPlayed(EntityPlayer player) {
 		this.linkedPlayer = player;
 	}
