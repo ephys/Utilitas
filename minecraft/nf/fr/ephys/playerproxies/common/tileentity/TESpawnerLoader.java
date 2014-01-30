@@ -107,4 +107,9 @@ public class TESpawnerLoader extends TileEntity {
 
 		this.owner = null;
 	}
+
+	public boolean isWorking() {
+		// TODO require RFs
+		return false;
+	}
 }

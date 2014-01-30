@@ -24,14 +24,14 @@ import nf.fr.ephys.playerproxies.common.core.NetServerHandlerFake;
 import nf.fr.ephys.playerproxies.common.tileentity.TESpawnerLoader;
 import net.minecraft.client.entity.AbstractClientPlayer;
 
-public class Ghost extends FakePlayer {
+public class Ghost extends EntityPlayerMP {
 	private EntityPlayer linkedPlayer = null;
 	private int offset = (int) (Math.random()*50);
 	
 	private TESpawnerLoader linkedStabilizer = null;
 	
 	public Ghost(World world, String username, double xCoord, double yCoord, double zCoord) {
-		super(world, username);
+		super(FMLCommonHandler.instance().getMinecraftServerInstance(), world, username, new ItemInWorldManager(world));
 		
 		this.setPosition(xCoord, yCoord, zCoord);
 		
@@ -39,8 +39,8 @@ public class Ghost extends FakePlayer {
 	}
 	
 	public Ghost(World world, String username, TESpawnerLoader linkedStabilizer) {
-		super(world, username);
-		
+		super(FMLCommonHandler.instance().getMinecraftServerInstance(), world, username, new ItemInWorldManager(world));
+	
 		this.setLinkedStabilizer(linkedStabilizer);
 
 		spawn();
@@ -96,13 +96,6 @@ public class Ghost extends FakePlayer {
 		return false;
 	}
 
-	public void sendChatToPlayer(String s) {
-	}
-
-	public boolean canCommandSenderUseCommand(int i, String s) {
-		return false;
-	}
-
 	public ChunkCoordinates getPlayerCoordinates() {
 		return new ChunkCoordinates(MathHelper.floor_double(this.posX),
 				MathHelper.floor_double(this.posY + 0.5D),
@@ -111,7 +104,7 @@ public class Ghost extends FakePlayer {
 
 	@Override
 	public boolean isEntityInvulnerable() {
-		return this.linkedStabilizer != null;
+		return false;
 	}
 
 	@Override
@@ -121,13 +114,40 @@ public class Ghost extends FakePlayer {
 		
 		if(this.linkedPlayer != null)
 			this.linkedPlayer.setDead();
-		
+
 		this.setDead();
 	}
 	
-	@Override
-	public boolean attackEntityFrom(DamageSource source, float amount) {
-		System.out.println(source);
-		return super.attackEntityFrom(source, amount);
-	}
+    public void sendChatToPlayer(String s){}
+    public boolean canCommandSenderUseCommand(int i, String s){ return false; }
+    @Override
+    public void sendChatToPlayer(ChatMessageComponent chatmessagecomponent){}
+    @Override
+    public void addStat(StatBase par1StatBase, int par2){}
+    @Override
+    public void openGui(Object mod, int modGuiId, World world, int x, int y, int z){}
+    @Override
+    public boolean canAttackPlayer(EntityPlayer player){ return false; }
+    @Override
+    public void updateClientInfo(Packet204ClientInfo pkt){ return; }
+    
+    @Override
+    public void onUpdate() {
+    	super.onUpdate();
+    	
+        if (this.hurtResistantTime > 0)
+        {
+            --this.hurtResistantTime;
+        }
+
+        if(linkedPlayer.isDead)
+        	this.onDeath(null);
+        
+        if(Math.random() > 0.95) {
+	        if(this.linkedStabilizer == null || !this.linkedStabilizer.isWorking())
+	        	linkedPlayer.attackEntityFrom(DamageSource.magic, 1);
+	        else
+	        	linkedPlayer.heal(1);
+        }
+    }
 }
