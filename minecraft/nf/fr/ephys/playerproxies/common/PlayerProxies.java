@@ -18,7 +18,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 
-@Mod(modid = "ephys.playerproxies", name = "Inventory Proxy",
+@Mod(modid = "ephys.playerproxies", name = "Player Proxies",
 	 version = PlayerProxies.version
 )
 

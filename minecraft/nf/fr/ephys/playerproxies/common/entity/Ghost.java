@@ -7,6 +7,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemInWorldManager;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetServerHandler;
 import net.minecraft.network.packet.Packet204ClientInfo;
 import net.minecraft.server.MinecraftServer;
@@ -29,13 +30,42 @@ public class Ghost extends FakePlayer {
 	
 	private TESpawnerLoader linkedStabilizer = null;
 	
-	public Ghost(World world, String username) {
+	public Ghost(World world, String username, double xCoord, double yCoord, double zCoord) {
 		super(world, username);
+		
+		this.setPosition(xCoord, yCoord, zCoord);
+		
+		spawn();
+	}
+	
+	public Ghost(World world, String username, TESpawnerLoader linkedStabilizer) {
+		super(world, username);
+		
+		this.setLinkedStabilizer(linkedStabilizer);
 
-		this.playerNetServerHandler = new NetServerHandlerFake(FMLCommonHandler
-				.instance().getMinecraftServerInstance(), this);
-
+		spawn();
+	}
+	
+	private void spawn() {
+		this.playerNetServerHandler = new NetServerHandlerFake(FMLCommonHandler.instance().getMinecraftServerInstance(), this);
+		
 		setInvisible(true);
+		
+		this.worldObj.spawnEntityInWorld(this);
+		
+		this.linkedPlayer = this.worldObj.getClosestPlayerToEntity(this, 1f);
+	}
+	
+	public void setLinkedStabilizer(TESpawnerLoader stabilizer) {
+		this.linkedStabilizer = stabilizer;
+		
+		if(stabilizer != null) {
+			this.setPosition(linkedStabilizer.xCoord + 0.5, linkedStabilizer.yCoord + 1, linkedStabilizer.zCoord + 0.5);
+		}
+	}
+	
+	public TESpawnerLoader getLinkedStabilizer() {
+		return linkedStabilizer;
 	}
 	
 	public float getNextHoveringFloat() {
@@ -81,16 +111,23 @@ public class Ghost extends FakePlayer {
 
 	@Override
 	public boolean isEntityInvulnerable() {
-		return true;
+		return this.linkedStabilizer != null;
 	}
 
 	@Override
 	public void onDeath(DamageSource source) {
-		return;
+		if(this.linkedStabilizer != null)
+			this.linkedStabilizer.detach();
+		
+		if(this.linkedPlayer != null)
+			this.linkedPlayer.setDead();
+		
+		this.setDead();
 	}
-
+	
 	@Override
-	public void onUpdate() {
-		return;
+	public boolean attackEntityFrom(DamageSource source, float amount) {
+		System.out.println(source);
+		return super.attackEntityFrom(source, amount);
 	}
 }
