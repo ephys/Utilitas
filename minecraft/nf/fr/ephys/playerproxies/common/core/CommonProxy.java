@@ -7,10 +7,12 @@ import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.block.BlockHardenedStone;
 import nf.fr.ephys.playerproxies.common.block.BlockInterface;
 import nf.fr.ephys.playerproxies.common.block.BlockSpawnerLoader;
+import nf.fr.ephys.playerproxies.common.entity.Ghost;
 import nf.fr.ephys.playerproxies.common.item.ItemLinkFocus;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
 import nf.fr.ephys.playerproxies.common.tileentity.TEBlockInterface;
 import nf.fr.ephys.playerproxies.common.tileentity.TESpawnerLoader;
+import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import dan200.computer.api.ComputerCraftAPI;
@@ -85,5 +87,8 @@ public class CommonProxy {
         		'l', new ItemStack(PlayerProxies.itemLinkFocus),
         		'd', new ItemStack(Item.diamond)
         );
+        
+        // entity registry
+        EntityRegistry.registerGlobalEntityID(Ghost.class, "PP_Ghost", EntityRegistry.findGlobalUniqueEntityId());
 	}
 }

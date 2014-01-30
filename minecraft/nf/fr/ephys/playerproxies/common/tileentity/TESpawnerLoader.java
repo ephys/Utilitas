@@ -44,12 +44,9 @@ public class TESpawnerLoader extends TileEntity {
 	public void setOwner(String username) {
 		if (this.owner != null)
 			return;
+		
+		this.owner = username;
 
-		spawnGhost();
-	}
-
-	private void spawnGhost() {
-		ghost = new Ghost(this.worldObj, owner, this);
 	}
 
 	@Override
@@ -74,7 +71,7 @@ public class TESpawnerLoader extends TileEntity {
 
 		if (this.ghost == null || this.ghost.isDead) {
 			if(this.owner != null) {
-				spawnGhost();
+				//spawnGhost(); TODO: catch closest ghost with that username
 			} else if(Math.random() > 0.85F) { // search for a ghost in a 10 blocks radius
 				if(worldObj.getBlockId(xCoord, yCoord+1, zCoord) == 0 && worldObj.getBlockId(xCoord, yCoord+2, zCoord) == 0) {	
 					List<Ghost> ghostList = this.worldObj.getEntitiesWithinAABB(Ghost.class, AxisAlignedBB.getBoundingBox(
@@ -107,9 +104,17 @@ public class TESpawnerLoader extends TileEntity {
 
 		this.owner = null;
 	}
+	
+	public void recreate() {
+		ghost = new Ghost(this.worldObj, owner, this);
+	}
 
 	public boolean isWorking() {
 		// TODO require RFs
-		return false;
+		return true;
+	}
+
+	public String getOwner() {
+		return this.owner;
 	}
 }
