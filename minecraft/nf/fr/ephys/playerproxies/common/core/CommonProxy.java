@@ -93,8 +93,12 @@ public class CommonProxy {
 						Item.diamond));
 
 		// entity registry
-		EntityRegistry.registerModEntity(Ghost.class, "PP_Ghost",
+		/*EntityRegistry.registerModEntity(Ghost.class, "PP_Ghost",
 				EntityRegistry.findGlobalUniqueEntityId(),
-				PlayerProxies.instance, 20, 100, false);
+				PlayerProxies.instance, 64, 10, true);*/
+		
+		EntityRegistry.registerModEntity(Ghost.class, "PP_Ghost",
+			EntityRegistry.findGlobalUniqueEntityId(),
+			PlayerProxies.instance, 20, 100, false);
 	}
 }

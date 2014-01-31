@@ -71,8 +71,7 @@ public class TESpawnerLoader extends TileEntity {
 
 		if (this.ghost == null || this.ghost.isDead) {
 			if(this.owner != null && worldObj.isRemote) {
-				System.out.println("recreating");
-				recreate();
+				
 			} else if(!worldObj.isRemote && Math.random() > 0.85F) { // search for a ghost in a 10 blocks radius
 				if(worldObj.getBlockId(xCoord, yCoord+1, zCoord) == 0 && worldObj.getBlockId(xCoord, yCoord+2, zCoord) == 0) {	
 					List<Ghost> ghostList = this.worldObj.getEntitiesWithinAABB(Ghost.class, AxisAlignedBB.getBoundingBox(
@@ -107,7 +106,8 @@ public class TESpawnerLoader extends TileEntity {
 	}
 	
 	public void recreate() {
-		ghost = new Ghost(this.worldObj, owner, this);
+		ghost = new Ghost(worldObj, owner, this);
+		worldObj.spawnEntityInWorld(ghost);
 	}
 
 	public boolean isWorking() {
