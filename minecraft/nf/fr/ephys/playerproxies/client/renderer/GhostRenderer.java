@@ -31,6 +31,7 @@ public class GhostRenderer extends RenderPlayer {
 
 	public GhostRenderer() {
 		super();
+		this.mainModel = 
 		this.modelBipedMain = (ModelBiped) this.mainModel;
 		setRenderPassModel(this.modelBipedMain);
 	}
@@ -204,6 +205,7 @@ public class GhostRenderer extends RenderPlayer {
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glAlphaFunc(GL11.GL_GREATER, 0.003921569F);
+
 		this.mainModel.render(par1EntityLivingBase, par2, par3, par4, par5, par6, par7);
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
