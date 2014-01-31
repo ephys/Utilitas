@@ -1,8 +1,12 @@
 package nf.fr.ephys.playerproxies.common.entity;
 
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteArrayDataOutput;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
@@ -32,7 +36,7 @@ import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
 
-public class Ghost extends EntityPlayerMP {
+public class Ghost extends EntityPlayerMP implements IEntityAdditionalSpawnData {
 	private int offset = (int) (Math.random() * 50);
 
 	private TESpawnerLoader linkedStabilizer = null;
@@ -65,8 +69,6 @@ public class Ghost extends EntityPlayerMP {
 
 		this.playerNetServerHandler = new NetServerHandlerFake(FMLCommonHandler
 				.instance().getMinecraftServerInstance(), this);
-		
-		downloadSkins();
 	}
 
 	private void downloadSkins() {
@@ -231,5 +233,17 @@ public class Ghost extends EntityPlayerMP {
 			else if (this.getHealth() < this.getMaxHealth())
 				this.heal(1);
 		}
+	}
+
+	@Override
+	public void writeSpawnData(ByteArrayDataOutput data) {
+		data.writeUTF(this.username);
+	}
+
+	@Override
+	public void readSpawnData(ByteArrayDataInput data) {
+		this.username = data.readUTF();
+		
+		downloadSkins();
 	}
 }
