@@ -40,14 +40,6 @@ public class TESpawnerLoader extends TileEntity {
 	public void onDataPacket(INetworkManager net, Packet132TileEntityData packet) {
 		readFromNBT(packet.data);
 	}
-	
-	public void setOwner(String username) {
-		if (this.owner != null)
-			return;
-		
-		this.owner = username;
-
-	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
@@ -70,9 +62,7 @@ public class TESpawnerLoader extends TileEntity {
 		super.updateEntity();
 
 		if (this.ghost == null || this.ghost.isDead) {
-			if(this.owner != null && worldObj.isRemote) {
-				
-			} else if(!worldObj.isRemote && Math.random() > 0.85F) { // search for a ghost in a 10 blocks radius
+			if(!worldObj.isRemote && Math.random() > 0.85F) { // search for a ghost in a 10 blocks radius
 				if(worldObj.getBlockId(xCoord, yCoord+1, zCoord) == 0 && worldObj.getBlockId(xCoord, yCoord+2, zCoord) == 0) {	
 					List<Ghost> ghostList = this.worldObj.getEntitiesWithinAABB(Ghost.class, AxisAlignedBB.getBoundingBox(
 						this.xCoord-10, this.yCoord-10, this.zCoord-10,
@@ -84,9 +74,7 @@ public class TESpawnerLoader extends TileEntity {
 						for(int i = 0; i < ghostSize; i++) {
 							Ghost ghost = ghostList.get(i);
 							if(ghost.getLinkedStabilizer() == null) {
-								this.ghost = ghost;
-								this.ghost.setLinkedStabilizer(this);
-								this.owner = this.ghost.username;
+								attach(ghost);
 								break;
 							}
 						}
@@ -94,6 +82,16 @@ public class TESpawnerLoader extends TileEntity {
 				}
 			}
 		}
+	}
+	
+	public void attach(Ghost ghost) {
+		if(this.ghost != null)
+			return;
+
+		this.ghost = ghost;
+		this.owner = ghost.username;
+		
+		this.ghost.setLinkedStabilizer(this);
 	}
 
 	public void detach() {
@@ -104,18 +102,9 @@ public class TESpawnerLoader extends TileEntity {
 
 		this.owner = null;
 	}
-	
-	public void recreate() {
-		ghost = new Ghost(worldObj, owner, this);
-		worldObj.spawnEntityInWorld(ghost);
-	}
 
 	public boolean isWorking() {
 		// TODO require RFs
 		return true;
-	}
-
-	public String getOwner() {
-		return this.owner;
 	}
 }
