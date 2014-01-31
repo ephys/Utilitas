@@ -42,6 +42,14 @@ import net.minecraft.client.entity.AbstractClientPlayer;
  *    Then make the ghost update it's state depending on the real entity's.
  *    
  * B) Understand why we get an EntityOtherPlayerMP and correct it if at all possible. I have no idea how
+ *    Though it's probably because we're an extension of EntityPlayerMP which means the packet sync will make the client side spawn an EntityOtherPlayerMP
+ *    And I don't believe there is any way to change that. So the best bet would be solution A
+ *    Also, we need to get the skin and we cannot get the skin without using AbstractClientPlayer, which we cannot cast from Ghost but can from EOPMP
+ *    So solution B no, solution A yes
+ *
+ * Make Universal Interface ItemBlock transparent
+ * make the Ghost more and more translucent depending on it's current health
+ * 
  */
 
 public class Ghost extends EntityPlayerMP {
@@ -106,11 +114,12 @@ public class Ghost extends EntityPlayerMP {
 		return linkedStabilizer;
 	}
 
+	@SideOnly(Side.CLIENT)
 	public float getNextHoveringFloat() {
 		float result = ((this.getAge() + offset) % 50) * 0.01F;
 		if (result > 0.25F)
 			return 0.5F - result;
-
+// TODO
 		return result;
 	}
 
@@ -135,8 +144,7 @@ public class Ghost extends EntityPlayerMP {
 
 	@Override
 	public boolean isEntityInvulnerable() {
-		return this.linkedStabilizer != null
-				&& this.linkedStabilizer.isWorking();
+		return this.linkedStabilizer != null && this.linkedStabilizer.isWorking();
 	}
 
 	@Override
@@ -223,10 +231,5 @@ public class Ghost extends EntityPlayerMP {
 			else if (this.getHealth() < this.getMaxHealth())
 				this.heal(1);
 		}
-	}
-	
-	@Override
-	public boolean shouldRenderInPass(int pass) {
-		return true;
 	}
 }
