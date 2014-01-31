@@ -30,7 +30,7 @@ public class PlayerProxies {
 	public static final String version = "1.6.4-0.0.1";
 
 	@Instance("ephys.playerproxies")
-    public static PlayerProxies PlayerProxies;
+    public static PlayerProxies instance;
 	
 	@SidedProxy(clientSide = "nf.fr.ephys.playerproxies.client.core.ClientProxy", 
 				serverSide = "nf.fr.ephys.playerproxies.common.core.CommonProxy")
