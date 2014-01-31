@@ -28,6 +28,7 @@ import net.minecraftforge.common.FakePlayer;
 import nf.fr.ephys.playerproxies.common.core.NetServerHandlerFake;
 import nf.fr.ephys.playerproxies.common.tileentity.TESpawnerLoader;
 import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.entity.EntityOtherPlayerMP;
 
 /*
  * TODO
@@ -40,7 +41,7 @@ import net.minecraft.client.entity.AbstractClientPlayer;
  * The solutions:
  * A) Spawn a local "ghost" Ghost instance, make it linked to the EntityOtherPlayerMP, make the EntityOtherPlayerMP invisible
  *    Then make the ghost update it's state depending on the real entity's.
- *    
+ * 
  * B) Understand why we get an EntityOtherPlayerMP and correct it if at all possible. I have no idea how
  *    Though it's probably because we're an extension of EntityPlayerMP which means the packet sync will make the client side spawn an EntityOtherPlayerMP
  *    And I don't believe there is any way to change that. So the best bet would be solution A
@@ -59,6 +60,9 @@ public class Ghost extends EntityPlayerMP {
 
 	private int[] linkedStabilizerPos;
 	
+	@SideOnly(Side.CLIENT)
+	private EntityOtherPlayerMP fakePlayer = null; // Because the client side spawns an EntityOtherPlayerMP instead of what we want
+	
 	// used to recreate an entity onload, NOT for anything else
 	public Ghost(World world) {
 		super(FMLCommonHandler.instance().getMinecraftServerInstance(),
@@ -66,11 +70,14 @@ public class Ghost extends EntityPlayerMP {
 				"dummy", // can't know his name yet -_-
 				new ItemInWorldManager(world)
 		);
-		
-		this.setInvisible(true);
-		
+
+		//this.setInvisible(true);
+
 		this.playerNetServerHandler = new NetServerHandlerFake(FMLCommonHandler
 				.instance().getMinecraftServerInstance(), this);
+		
+		if(this.worldObj.isRemote)
+			this.fakePlayer = (EntityOtherPlayerMP)this.worldObj.getClosestPlayerToEntity(this, 0.1);
 	}
 
 	public Ghost(World world, String username, double xCoord, double yCoord,
@@ -82,11 +89,13 @@ public class Ghost extends EntityPlayerMP {
 		
 		this.playerNetServerHandler = new NetServerHandlerFake(FMLCommonHandler.instance().getMinecraftServerInstance(), this);
 		
-		this.setInvisible(true);
+		//this.setInvisible(true);
 		
 		this.worldObj.spawnEntityInWorld(this);
+		
+		if(this.worldObj.isRemote)
+			this.fakePlayer = (EntityOtherPlayerMP)this.worldObj.getClosestPlayerToEntity(this, 0.1);
 	}
-	
 
 	public Ghost(World world, String username, TESpawnerLoader linkedStabilizer) {
 		super(FMLCommonHandler.instance().getMinecraftServerInstance(), world,
@@ -96,17 +105,24 @@ public class Ghost extends EntityPlayerMP {
 		
 		this.playerNetServerHandler = new NetServerHandlerFake(FMLCommonHandler.instance().getMinecraftServerInstance(), this);
 
-		this.setInvisible(true);
+		//this.setInvisible(true);
 		
 		this.worldObj.spawnEntityInWorld(this);
+		
+		if(this.worldObj.isRemote)
+			this.fakePlayer = (EntityOtherPlayerMP)this.worldObj.getClosestPlayerToEntity(this, 0.1);
 	}
 
 	public void setLinkedStabilizer(TESpawnerLoader stabilizer) {
 		this.linkedStabilizer = stabilizer;
 
 		if (stabilizer != null) {
-			this.setPosition(linkedStabilizer.xCoord + 0.5,
+			if(this.playerNetServerHandler != null)
+				this.setPositionAndUpdate(linkedStabilizer.xCoord + 0.5,
 					linkedStabilizer.yCoord + 1, linkedStabilizer.zCoord + 0.5);
+			else
+				this.setPosition(linkedStabilizer.xCoord + 0.5,
+						linkedStabilizer.yCoord + 1, linkedStabilizer.zCoord + 0.5);
 		}
 	}
 
@@ -116,18 +132,20 @@ public class Ghost extends EntityPlayerMP {
 
 	@SideOnly(Side.CLIENT)
 	public float getNextHoveringFloat() {
-		float result = ((this.getAge() + offset) % 50) * 0.01F;
+		if(fakePlayer == null) return 0;
+		
+		float result = ((this.fakePlayer.getAge() + offset) % 50) * 0.01F;
 		if (result > 0.25F)
 			return 0.5F - result;
-// TODO
+
 		return result;
 	}
 
 	@SideOnly(Side.CLIENT)
 	public ResourceLocation getLocationSkin() {
-		/*if (linkedPlayer instanceof AbstractClientPlayer)
-			return ((AbstractClientPlayer) linkedPlayer).getLocationSkin();*/
-// TODO
+		if (fakePlayer instanceof AbstractClientPlayer)
+			return ((AbstractClientPlayer) fakePlayer).getLocationSkin();
+
 		return null;
 	}
 
@@ -205,14 +223,32 @@ public class Ghost extends EntityPlayerMP {
 	@Override
 	public void onUpdate() {
 		super.onUpdate();
+		
+		if(this.worldObj.isRemote) { // image syncing with fake player
+			if(this.fakePlayer == null || this.fakePlayer.isDead) {
+				this.setDead();
+				return;
+			}
+			
+			if(this.posX != this.fakePlayer.posX)
+				this.posX = this.fakePlayer.posX;
 
+			if(this.posY != this.fakePlayer.posY)
+				this.posY = this.fakePlayer.posY;			
+
+			if(this.posZ != this.fakePlayer.posZ)
+				this.posZ = this.fakePlayer.posZ;
+			
+			return;
+		}
+		
 		if (this.hurtResistantTime > 0) {
 			--this.hurtResistantTime;
 		}
 		
 		if(linkedStabilizerPos != null) {
 			TileEntity te = this.worldObj.getBlockTileEntity(linkedStabilizerPos[0], linkedStabilizerPos[1], linkedStabilizerPos[2]);
-			
+
 			if(te instanceof TESpawnerLoader) {
 				this.linkedStabilizer = (TESpawnerLoader) te;
 				
@@ -225,7 +261,7 @@ public class Ghost extends EntityPlayerMP {
 			linkedStabilizerPos = null;
 		}
 
-		if (Math.random() > 0.95) {
+		if (this.getAge()%20 == 0) {
 			if (!isEntityInvulnerable())
 				this.attackEntityFrom(DamageSource.magic, 1);
 			else if (this.getHealth() < this.getMaxHealth())

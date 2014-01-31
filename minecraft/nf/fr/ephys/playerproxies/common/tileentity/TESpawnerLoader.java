@@ -70,15 +70,16 @@ public class TESpawnerLoader extends TileEntity {
 		super.updateEntity();
 
 		if (this.ghost == null || this.ghost.isDead) {
-			if(this.owner != null) {
-				//spawnGhost(); TODO: catch closest ghost with that username
-			} else if(Math.random() > 0.85F) { // search for a ghost in a 10 blocks radius
+			if(this.owner != null && worldObj.isRemote) {
+				System.out.println("recreating");
+				recreate();
+			} else if(!worldObj.isRemote && Math.random() > 0.85F) { // search for a ghost in a 10 blocks radius
 				if(worldObj.getBlockId(xCoord, yCoord+1, zCoord) == 0 && worldObj.getBlockId(xCoord, yCoord+2, zCoord) == 0) {	
 					List<Ghost> ghostList = this.worldObj.getEntitiesWithinAABB(Ghost.class, AxisAlignedBB.getBoundingBox(
 						this.xCoord-10, this.yCoord-10, this.zCoord-10,
 						this.xCoord+10, this.yCoord+10, this.zCoord+10
 					));
-					
+
 					int ghostSize = ghostList.size();
 					if(ghostSize != 0) {
 						for(int i = 0; i < ghostSize; i++) {
