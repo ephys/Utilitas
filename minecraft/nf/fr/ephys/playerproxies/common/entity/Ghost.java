@@ -50,44 +50,50 @@ public class Ghost extends EntityPlayerMP implements IEntityAdditionalSpawnData 
 	private TESpawnerLoader linkedStabilizer = null;
 
 	private int[] linkedStabilizerPos;
-	
+
 	public String username;
-	
+
 	@SideOnly(Side.CLIENT)
-    private ThreadDownloadImageData downloadImageSkin;
+	private ThreadDownloadImageData downloadImageSkin;
 	@SideOnly(Side.CLIENT)
-    private ThreadDownloadImageData downloadImageCape;
+	private ThreadDownloadImageData downloadImageCape;
 	@SideOnly(Side.CLIENT)
-    private ResourceLocation locationSkin;
+	private ResourceLocation locationSkin;
 	@SideOnly(Side.CLIENT)
-    private ResourceLocation locationCape;
+	private ResourceLocation locationCape;
 
 	public Ghost(World world) {
 		this(world, "Ghost");
 	}
-	
+
 	public Ghost(World world, String username) {
-		super(FMLCommonHandler.instance().getMinecraftServerInstance(),
-				world,
-				username,
-				new ItemInWorldManager(world)
-		);
-		
+		super(FMLCommonHandler.instance().getMinecraftServerInstance(), world,
+				username, new ItemInWorldManager(world));
+
 		this.username = username;
 
 		this.playerNetServerHandler = new NetServerHandlerFake(FMLCommonHandler
 				.instance().getMinecraftServerInstance(), this);
 	}
 
-	@SideOnly(Side.CLIENT)
-	private void downloadSkins() {
-        this.locationSkin = AbstractClientPlayer.getLocationSkin(this.username);
-        this.locationCape = AbstractClientPlayer.getLocationCape(this.username);
-        this.downloadImageSkin = AbstractClientPlayer.getDownloadImageSkin(this.locationSkin, this.username);
-        this.downloadImageCape = AbstractClientPlayer.getDownloadImageCape(this.locationCape, this.username);
+	@Override
+	protected void entityInit() {
+		tryAttach();
+		super.entityInit();
 	}
 
-	public Ghost(World world, String username, double xCoord, double yCoord, double zCoord) {
+	@SideOnly(Side.CLIENT)
+	private void downloadSkins() {
+		this.locationSkin = AbstractClientPlayer.getLocationSkin(this.username);
+		this.locationCape = AbstractClientPlayer.getLocationCape(this.username);
+		this.downloadImageSkin = AbstractClientPlayer.getDownloadImageSkin(
+				this.locationSkin, this.username);
+		this.downloadImageCape = AbstractClientPlayer.getDownloadImageCape(
+				this.locationCape, this.username);
+	}
+
+	public Ghost(World world, String username, double xCoord, double yCoord,
+			double zCoord) {
 		this(world, username);
 		this.setPosition(xCoord, yCoord, zCoord);
 	}
@@ -100,18 +106,16 @@ public class Ghost extends EntityPlayerMP implements IEntityAdditionalSpawnData 
 	public void setLinkedStabilizer(TESpawnerLoader stabilizer) {
 		this.linkedStabilizer = stabilizer;
 
-		if(stabilizer != null) {
-			this.setPosition(
-				linkedStabilizer.xCoord + 0.5,
-				linkedStabilizer.yCoord + 1, 
-				linkedStabilizer.zCoord + 0.5
+		if (stabilizer != null) {
+			this.setPosition(linkedStabilizer.xCoord + 0.5,
+					linkedStabilizer.yCoord + 1, linkedStabilizer.zCoord + 0.5);
+			
+			PacketDispatcher.sendPacketToAllAround((int)this.posX,
+				(int)this.posY, (int)this.posZ, 64,
+				this.worldObj.provider.dimensionId, new Packet34EntityTeleport(
+					this.entityId, (int)this.posX, (int)this.posY, (int)this.posZ, (byte)this.rotationYaw, (byte)this.rotationPitch
+				)
 			);
-
-           /* this.noClip = true;
-            
-            this.moveEntity(linkedStabilizer.xCoord, linkedStabilizer.yCoord, linkedStabilizer.zCoord);
-		
-            this.noClip = false; */
 		}
 	}
 
@@ -146,7 +150,8 @@ public class Ghost extends EntityPlayerMP implements IEntityAdditionalSpawnData 
 
 	@Override
 	public boolean isEntityInvulnerable() {
-		return this.linkedStabilizer != null && this.linkedStabilizer.isWorking();
+		return this.linkedStabilizer != null
+				&& this.linkedStabilizer.isWorking();
 	}
 
 	@Override
@@ -157,71 +162,83 @@ public class Ghost extends EntityPlayerMP implements IEntityAdditionalSpawnData 
 		this.setDead();
 	}
 
-	public void sendChatToPlayer(String s) {}
-	public boolean canCommandSenderUseCommand(int i, String s) { return false; }
-	public void sendChatToPlayer(ChatMessageComponent chatmessagecomponent) {}
-	public void addStat(StatBase par1StatBase, int par2) {}
-	public void openGui(Object mod, int modGuiId, World world, int x, int y, int z) {}
-	public boolean canAttackPlayer(EntityPlayer player) { return false; }
+	public void sendChatToPlayer(String s) {
+	}
+
+	public boolean canCommandSenderUseCommand(int i, String s) {
+		return false;
+	}
+
+	public void sendChatToPlayer(ChatMessageComponent chatmessagecomponent) {
+	}
+
+	public void addStat(StatBase par1StatBase, int par2) {
+	}
+
+	public void openGui(Object mod, int modGuiId, World world, int x, int y,
+			int z) {
+	}
+
+	public boolean canAttackPlayer(EntityPlayer player) {
+		return false;
+	}
 
 	@Override
 	public void writeEntityToNBT(NBTTagCompound nbt) {
-		if(this.linkedStabilizer != null) {
-			nbt.setIntArray("ghost_stabilizer", new int[]{
-				this.linkedStabilizer.xCoord, 
-				this.linkedStabilizer.yCoord, 
-				this.linkedStabilizer.zCoord
-			});
+		if (this.linkedStabilizer != null) {
+			nbt.setIntArray("ghost_stabilizer", new int[] {
+					this.linkedStabilizer.xCoord, this.linkedStabilizer.yCoord,
+					this.linkedStabilizer.zCoord });
 		}
-		
-		if(this.username != null) {
+
+		if (this.username != null) {
 			nbt.setString("username", this.username);
 		}
-		
+
 		super.writeEntityToNBT(nbt);
 	}
-	
+
 	@Override
 	public String getEntityName() {
 		return username;
 	}
-	
+
 	@Override
 	public void readEntityFromNBT(NBTTagCompound nbt) {
 		super.readEntityFromNBT(nbt);
-		if(nbt.hasKey("ghost_stabilizer")) {
+		if (nbt.hasKey("ghost_stabilizer")) {
 			int[] stabLoc = nbt.getIntArray("ghost_stabilizer");
 			this.linkedStabilizerPos = stabLoc;
 		}
-		
-		if(nbt.hasKey("username")) {
-			this.username = nbt.getString("username");
 
-			downloadSkins();
+		if (nbt.hasKey("username")) {
+			this.username = nbt.getString("username");
 		}
 	}
 
 	@Override
 	public void onUpdate() {
 		super.onUpdate();
-		
+
 		this.entityAge++;
-		
+
 		if (this.hurtResistantTime > 0) {
 			--this.hurtResistantTime;
 		}
-		
-		if(linkedStabilizerPos != null) {
-			TileEntity te = this.worldObj.getBlockTileEntity(linkedStabilizerPos[0], linkedStabilizerPos[1], linkedStabilizerPos[2]);
 
-			if(te instanceof TESpawnerLoader) {
+		if (linkedStabilizerPos != null) {
+			TileEntity te = this.worldObj.getBlockTileEntity(
+					linkedStabilizerPos[0], linkedStabilizerPos[1],
+					linkedStabilizerPos[2]);
+
+			if (te instanceof TESpawnerLoader) {
 				this.linkedStabilizer = (TESpawnerLoader) te;
 			}
-			
+
 			linkedStabilizerPos = null;
 		}
 
-		if (this.getAge()%1000 == 0) {
+		if (this.getAge() % 1000 == 0) {
 			if (!isEntityInvulnerable())
 				this.attackEntityFrom(DamageSource.magic, 1);
 			else if (this.getHealth() < this.getMaxHealth())
@@ -237,15 +254,15 @@ public class Ghost extends EntityPlayerMP implements IEntityAdditionalSpawnData 
 	@Override
 	public void readSpawnData(ByteArrayDataInput data) {
 		this.username = data.readUTF();
-		
+
 		downloadSkins();
-		tryAttach();
 	}
 
 	private void tryAttach() {
-		TileEntity te = this.worldObj.getBlockTileEntity((int)posX, (int)posY, (int)posZ);
-		
-		if(te instanceof TESpawnerLoader) {
+		TileEntity te = this.worldObj.getBlockTileEntity((int) posX,
+				(int) posY, (int) posZ);
+
+		if (te instanceof TESpawnerLoader) {
 			((TESpawnerLoader) te).attach(this);
 		}
 	}
