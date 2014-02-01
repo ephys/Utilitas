@@ -221,6 +221,9 @@ public class Ghost extends EntityPlayerMP implements IEntityAdditionalSpawnData 
 		super.onUpdate();
 
 		this.entityAge++;
+		
+		if(this.hurtTime > 0)
+			this.hurtTime--;
 
 		if (this.hurtResistantTime > 0) {
 			--this.hurtResistantTime;

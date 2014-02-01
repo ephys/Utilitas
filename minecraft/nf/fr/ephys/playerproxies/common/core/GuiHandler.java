@@ -1,4 +1,4 @@
-package nf.fr.ephys.playerproxies.common;
+package nf.fr.ephys.playerproxies.common.core;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;

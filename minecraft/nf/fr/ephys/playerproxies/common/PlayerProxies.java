@@ -7,6 +7,7 @@ import nf.fr.ephys.playerproxies.common.block.BlockHardenedStone;
 import nf.fr.ephys.playerproxies.common.block.BlockInterface;
 import nf.fr.ephys.playerproxies.common.block.BlockSpawnerLoader;
 import nf.fr.ephys.playerproxies.common.core.CommonProxy;
+import nf.fr.ephys.playerproxies.common.core.PacketHandler;
 import nf.fr.ephys.playerproxies.common.item.ItemLinkFocus;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
 import cpw.mods.fml.common.FMLLog;
@@ -23,7 +24,11 @@ import cpw.mods.fml.common.network.NetworkMod;
 )
 
 @NetworkMod(clientSideRequired = true,
-			serverSideRequired = false
+			serverSideRequired = false,
+			channels = {
+				"PP_enderToggle"
+			},
+			packetHandler = PacketHandler.class
 )
 
 public class PlayerProxies {

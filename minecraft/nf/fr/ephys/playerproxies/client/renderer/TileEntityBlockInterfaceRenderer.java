@@ -34,12 +34,13 @@ public class TileEntityBlockInterfaceRenderer extends TileEntitySpecialRenderer 
 		
 		int invtype = bi.getCurrentInventoryType();
 		
-		if (invtype == TEBlockInterface.INVTYPE_TE || invtype == TEBlockInterface.INVTYPE_TURTLE) {
+		if (invtype == TEBlockInterface.INVTYPE_TE || invtype == TEBlockInterface.INVTYPE_TURTLE || (invtype == TEBlockInterface.INVTYPE_PLAYER && bi.enderMode)) {
 			GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
 
-			TileEntityBlockInterfaceRenderer.renderBlocksInstance.renderBlockAsItem(Block.chest, 0, 1.0F);
+			Block chest = (bi.enderMode)?Block.enderChest:Block.chest;
+			
+			TileEntityBlockInterfaceRenderer.renderBlocksInstance.renderBlockAsItem(chest, 0, 1.0F);
 		} else if(invtype == TEBlockInterface.INVTYPE_PLAYER) {
-			//EntityPlayer player = (bi.getLinkedPlayer() == null)?Minecraft.getMinecraft().thePlayer:bi.getLinkedPlayer(); // TODO: fix this too
 			EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 			
 			RenderManager.instance.getEntityRenderObject(player).doRender(player, 0.0D, 0.5D, 0.0D, 1.0F, par7);

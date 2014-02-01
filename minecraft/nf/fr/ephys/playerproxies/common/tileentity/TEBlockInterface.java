@@ -44,7 +44,7 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 
 	private String userName = null;
 	private EntityPlayer userEntity = null;
-	private boolean enderMode = false;
+	public boolean enderMode = false;
 
 	private TileEntity blockEntity = null;
 	private ITurtleAccess turtleAccess = null;
@@ -77,6 +77,8 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 	public void writeToNBT(NBTTagCompound par1NBTTagCompound) {
 		super.writeToNBT(par1NBTTagCompound);
 
+		par1NBTTagCompound.setBoolean("enderMode", this.enderMode);
+		
 		if (this.userName != null)
 			par1NBTTagCompound.setString("userName", userName);
 		else if (this.blockEntity != null) {
@@ -89,6 +91,8 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
 
+		this.enderMode = nbt.getBoolean("enderMode");
+		
 		if (nbt.hasKey("userName")) {
 			this.userName = nbt.getString("userName");
 		} else {
@@ -419,7 +423,7 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 		}
 	}
 
-	private String getLinkedInventoryName() {
+	public String getLinkedInventoryName() {
 		int invType = this.getCurrentInventoryType();
 
 		if (invType == this.INVTYPE_PLAYER)
@@ -430,10 +434,6 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 					this.blockEntity.blockMetadata).getDisplayName();
 
 		return "None";
-	}
-
-	public void sendLinkedListTo(EntityPlayer player) {
-		player.addChatMessage("Linked inventory: " + getLinkedInventoryName());
 	}
 
 	public IInventory getLinkedInventory() {
