@@ -30,7 +30,7 @@ public class ContainerUniversalInterface extends Container {
 
 	@SideOnly(Side.CLIENT)
 	public void toggleEnderMode() {
-		this.te.enderMode = !this.te.enderMode;
+		this.te.toggleEnderMode();
 
 		ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
 		DataOutputStream outputStream = new DataOutputStream(bos);

@@ -39,23 +39,6 @@ public class BlockInterface extends BlockContainer {
 		return new TEBlockInterface();
 	}
 	
-	@Override
-	public boolean hasComparatorInputOverride() {
-		return true;
-	}
-	
-    public int getComparatorInputOverride(World world, int x, int y, int z, int side) {
-    	TileEntity te = world.getBlockTileEntity(x, y, z);
-
-    	if(te instanceof TEBlockInterface) {
-    		IInventory inventory = ((TEBlockInterface) te).getLinkedInventory();
-    		System.out.println(inventory);
-    		return Container.calcRedstoneFromInventory(inventory);
-    	}
-    		
-    	return 0;
-    }
-	
     public void onBlockPlacedBy(World par1World, int par2, int par3, int par4, EntityLivingBase par5EntityLivingBase, ItemStack par6ItemStack) {}
     
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitVectX, float hitVectY, float hitVectZ) {

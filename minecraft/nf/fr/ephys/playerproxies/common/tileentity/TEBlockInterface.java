@@ -156,7 +156,7 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 					else
 						this.blockEntity = this.findTurtleTE();
 
-					worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+					this.onInventoryChanged();
 				}
 			}
 		}
@@ -182,15 +182,23 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 	@Override
 	public ItemStack getStackInSlot(int i) {
 		IInventory linkedInventory = this.getLinkedInventory();
-		return (linkedInventory != null) ? linkedInventory.getStackInSlot(i)
-				: null;
+
+		if(linkedInventory == null) return null;
+		
+		ItemStack stack = linkedInventory.getStackInSlot(i);
+		
+		return stack;
 	}
 
 	@Override
 	public ItemStack decrStackSize(int i, int j) {
 		IInventory linkedInventory = this.getLinkedInventory();
-		return (linkedInventory != null) ? linkedInventory.decrStackSize(i, j)
-				: null;
+		
+		if (linkedInventory == null) return null;
+		
+		ItemStack stack = linkedInventory.decrStackSize(i, j);
+		
+		return stack;
 	}
 
 	@Override
@@ -405,6 +413,8 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 						te.blockMetadata).getDisplayName())
 						+ " linked to the universal interface");
 			}
+		
+		this.onInventoryChanged();
 	}
 
 	public void toggleLinked(EntityPlayer player) {
@@ -421,6 +431,8 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 
 			player.addChatMessage("Your inventory is now linked to this universal interface");
 		}
+		
+		this.onInventoryChanged();
 	}
 
 	public String getLinkedInventoryName() {
@@ -683,5 +695,13 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 		TileEntity linkedTE = this.getLinkedTileEntity();
 		return linkedTE instanceof IAspectContainer ? ((IAspectContainer) linkedTE)
 				.takeFromContainer(arg0, arg1) : false;
+	}
+	
+	public void toggleEnderMode() {
+		if(this.getCurrentInventoryType() != this.INVTYPE_PLAYER)
+			return;
+		
+		this.enderMode = !this.enderMode;
+		this.onInventoryChanged();
 	}
 }

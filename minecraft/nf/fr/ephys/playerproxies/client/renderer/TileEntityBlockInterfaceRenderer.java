@@ -33,17 +33,21 @@ public class TileEntityBlockInterfaceRenderer extends TileEntitySpecialRenderer 
 		GL11.glScalef(scale, scale, scale);
 		
 		int invtype = bi.getCurrentInventoryType();
-		
-		if (invtype == TEBlockInterface.INVTYPE_TE || invtype == TEBlockInterface.INVTYPE_TURTLE || (invtype == TEBlockInterface.INVTYPE_PLAYER && bi.enderMode)) {
-			GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
 
-			Block chest = (bi.enderMode)?Block.enderChest:Block.chest;
+		if (invtype == TEBlockInterface.INVTYPE_TE || invtype == TEBlockInterface.INVTYPE_TURTLE) {
+			GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
 			
-			TileEntityBlockInterfaceRenderer.renderBlocksInstance.renderBlockAsItem(chest, 0, 1.0F);
+			TileEntityBlockInterfaceRenderer.renderBlocksInstance.renderBlockAsItem(Block.chest, 0, 1.0F);
 		} else if(invtype == TEBlockInterface.INVTYPE_PLAYER) {
-			EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-			
-			RenderManager.instance.getEntityRenderObject(player).doRender(player, 0.0D, 0.5D, 0.0D, 1.0F, par7);
+			if(bi.enderMode) {
+				GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
+
+				TileEntityBlockInterfaceRenderer.renderBlocksInstance.renderBlockAsItem(Block.enderChest, 0, 1.0F);
+			} else {
+				EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+				
+				RenderManager.instance.getEntityRenderObject(player).doRender(player, 0.0D, 0.5D, 0.0D, 1.0F, par7);
+			}
 		}
 	}
 	

@@ -19,7 +19,7 @@ public class PacketHandler implements IPacketHandler {
 		if (packet.channel.equals("PP_enderToggle")) {
 			DataInputStream inputStream = new DataInputStream(
 					new ByteArrayInputStream(packet.data));
-			
+
 			try {
 				int xCoord = inputStream.readInt();
 				int yCoord = inputStream.readInt();
@@ -27,7 +27,7 @@ public class PacketHandler implements IPacketHandler {
 				
 				TileEntity te = ((EntityPlayer) player).worldObj.getBlockTileEntity(xCoord, yCoord, zCoord);
 				if(te instanceof TEBlockInterface)
-					((TEBlockInterface) te).enderMode = !((TEBlockInterface) te).enderMode;
+					((TEBlockInterface) te).toggleEnderMode();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
