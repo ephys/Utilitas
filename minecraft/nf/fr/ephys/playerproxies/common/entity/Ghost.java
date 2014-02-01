@@ -102,7 +102,7 @@ public class Ghost extends EntityPlayerMP implements IEntityAdditionalSpawnData 
 		this(world, username);
 		this.setLinkedStabilizer(linkedStabilizer);
 	}
-
+//TODO handleEntityTeleport <- netclienthandler
 	public void setLinkedStabilizer(TESpawnerLoader stabilizer) {
 		this.linkedStabilizer = stabilizer;
 
@@ -113,7 +113,7 @@ public class Ghost extends EntityPlayerMP implements IEntityAdditionalSpawnData 
 			PacketDispatcher.sendPacketToAllAround((int)this.posX,
 				(int)this.posY, (int)this.posZ, 64,
 				this.worldObj.provider.dimensionId, new Packet34EntityTeleport(
-					this.entityId, (int)this.posX, (int)this.posY, (int)this.posZ, (byte)this.rotationYaw, (byte)this.rotationPitch
+					this.entityId*32, (int)this.posX*32, (int)this.posY*32, (int)this.posZ, (byte)this.rotationYaw, (byte)this.rotationPitch
 				)
 			);
 		}

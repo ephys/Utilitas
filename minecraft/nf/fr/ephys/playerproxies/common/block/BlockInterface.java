@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
@@ -37,6 +38,19 @@ public class BlockInterface extends BlockContainer {
 		return new TEBlockInterface();
 	}
 	
+	@Override
+	public boolean hasComparatorInputOverride() {
+		return true;
+	}
+	
+    public int getComparatorInputOverride(World world, int x, int y, int z, int side) {
+    	TileEntity te = world.getBlockTileEntity(x, y, z);
+
+    	if(te instanceof TEBlockInterface)
+    		return Container.calcRedstoneFromInventory(((TEBlockInterface) te).getLinkedInventory());
+
+    	return 0;
+    }
 	
     public void onBlockPlacedBy(World par1World, int par2, int par3, int par4, EntityLivingBase par5EntityLivingBase, ItemStack par6ItemStack) {}
     
@@ -44,9 +58,9 @@ public class BlockInterface extends BlockContainer {
     	if(player.getHeldItem() == null) {
         	if(!world.isRemote)
         		((TEBlockInterface)world.getBlockTileEntity(x, y, z)).toggleLinked(player);
-    		
+
     		world.markBlockForUpdate(x, y, z);
-    		 
+
     		return true;
     	}
     	

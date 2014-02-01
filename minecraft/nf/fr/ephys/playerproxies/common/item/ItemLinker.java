@@ -12,6 +12,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
+import nf.fr.ephys.playerproxies.client.gui.GuiUniversalInterface;
+import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.tileentity.TEBlockInterface;
 
 public class ItemLinker extends Item {
@@ -27,10 +29,11 @@ public class ItemLinker extends Item {
 	}
 	
 	@Override
-	public void addInformation(ItemStack par1ItemStack,
-			EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-		par3List.add("Shift and click to link");
-		super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
+	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
+		list.add("Shift and click to link.");
+		list.add("Use on an interface to configure.");
+
+		super.addInformation(par1ItemStack, par2EntityPlayer, list, par4);
 	}
 	
 	public boolean onItemUse(ItemStack itemstack, EntityPlayer player, World world, int x, int y, int z, int side, float par8, float par9, float par10) {
@@ -42,7 +45,8 @@ public class ItemLinker extends Item {
 	
 			 if(te instanceof TEBlockInterface) {
 				 if(!player.isSneaking()) {
-					 ((TEBlockInterface)te).sendLinkedListTo(player);
+					 player.openGui(PlayerProxies.instance, GuiUniversalInterface.ID, world, x, y, z);
+					 //((TEBlockInterface)te).sendLinkedListTo(player);
 				 } else {
 					 this.linkedInterface = (TEBlockInterface)te;
 					 player.addChatMessage("The link device will now connect to this Universal Interface");

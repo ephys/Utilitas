@@ -41,8 +41,10 @@ import net.minecraftforge.fluids.IFluidHandler;
 public class TEBlockInterface extends TileEntity implements ISidedInventory,
 		IFluidHandler, IEnergyHandler, IPowerReceptor, IEnergySink,
 		IAspectContainer, IEssentiaTransport {
+
 	private String userName = null;
 	private EntityPlayer userEntity = null;
+	private boolean enderMode = false;
 
 	private TileEntity blockEntity = null;
 	private ITurtleAccess turtleAccess = null;
@@ -434,11 +436,18 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 		player.addChatMessage("Linked inventory: " + getLinkedInventoryName());
 	}
 
-	private IInventory getLinkedInventory() {
-		if (this.userEntity != null)
+	public IInventory getLinkedInventory() {
+		if (this.userEntity != null) {
+			if(this.enderMode)
+				return this.userEntity.getInventoryEnderChest();
+			
 			return this.userEntity.inventory;
+		}
 
-		return (IInventory) this.blockEntity;
+		if (this.blockEntity instanceof IInventory)
+			return (IInventory) this.blockEntity;
+
+		return null;
 	}
 
 	public TileEntity getLinkedTileEntity() {

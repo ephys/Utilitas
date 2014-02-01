@@ -3,6 +3,7 @@ package nf.fr.ephys.playerproxies.common.core;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import nf.fr.ephys.playerproxies.common.GuiHandler;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.block.BlockHardenedStone;
 import nf.fr.ephys.playerproxies.common.block.BlockInterface;
@@ -12,6 +13,7 @@ import nf.fr.ephys.playerproxies.common.item.ItemLinkFocus;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
 import nf.fr.ephys.playerproxies.common.tileentity.TEBlockInterface;
 import nf.fr.ephys.playerproxies.common.tileentity.TESpawnerLoader;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -21,7 +23,14 @@ import dan200.turtle.api.TurtleAPI;
 
 public class CommonProxy {
 	public void initMod() {
-		// Block & TE registry
+		registerBlocks();
+		registerItems();
+		registerCrafts();
+		registerEntities();
+		registerGuis();
+	}
+	
+	private void registerBlocks() {
 		PlayerProxies.blockInterface = new BlockInterface();
 		PlayerProxies.blockInterface
 				.setUnlocalizedName("PP_UniversalInterface");
@@ -51,8 +60,9 @@ public class CommonProxy {
 				"Ghost Stabilizer");
 		LanguageRegistry.instance().addName(PlayerProxies.blockHardenedStone,
 				"Hardened Stone");
-
-		// Item registry
+	}
+	
+	private void registerItems() {
 		PlayerProxies.itemLinker = new ItemLinker();
 		PlayerProxies.itemLinker.setUnlocalizedName("PP_LinkWand");
 
@@ -66,7 +76,9 @@ public class CommonProxy {
 				"Link device");
 		LanguageRegistry.instance().addName(PlayerProxies.itemLinkFocus,
 				"Link Focus");
-
+	}
+	
+	private void registerCrafts() {
 		GameRegistry.addRecipe(new ItemStack(PlayerProxies.itemLinkFocus),
 				"ipi", "qeq", "ipi", 'e', new ItemStack(Item.emerald), 'p',
 				new ItemStack(Item.enderPearl), 'q', new ItemStack(
@@ -91,14 +103,15 @@ public class CommonProxy {
 						PlayerProxies.blockHardenedStone), 'l', new ItemStack(
 						PlayerProxies.itemLinkFocus), 'd', new ItemStack(
 						Item.diamond));
-
-		// entity registry
-		/*EntityRegistry.registerModEntity(Ghost.class, "PP_Ghost",
-				EntityRegistry.findGlobalUniqueEntityId(),
-				PlayerProxies.instance, 64, 10, true);*/
-		
+	}
+	
+	private void registerEntities() {
 		EntityRegistry.registerModEntity(Ghost.class, "PP_Ghost",
-			EntityRegistry.findGlobalUniqueEntityId(),
-			PlayerProxies.instance, 20, 20, true);
+				EntityRegistry.findGlobalUniqueEntityId(),
+				PlayerProxies.instance, 20, 20, true);
+	}
+	
+	private void registerGuis() {
+		NetworkRegistry.instance().registerGuiHandler(this, new GuiHandler());
 	}
 }
