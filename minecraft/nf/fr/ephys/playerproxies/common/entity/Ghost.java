@@ -75,7 +75,7 @@ public class Ghost extends EntityPlayerMP implements IEntityAdditionalSpawnData 
 		this.playerNetServerHandler = new NetServerHandlerFake(FMLCommonHandler
 				.instance().getMinecraftServerInstance(), this);
 	}
-
+	
 	@Override
 	protected void entityInit() {
 		tryAttach();
@@ -92,30 +92,33 @@ public class Ghost extends EntityPlayerMP implements IEntityAdditionalSpawnData 
 				this.locationCape, this.username);
 	}
 
-	public Ghost(World world, String username, double xCoord, double yCoord,
-			double zCoord) {
+	public Ghost(World world, String username, double xCoord, double yCoord, double zCoord) {
 		this(world, username);
-		this.setPosition(xCoord, yCoord, zCoord);
+		this.setPositionAndRotation2(xCoord, yCoord, zCoord, 0, 0, 0);
 	}
 
 	public Ghost(World world, String username, TESpawnerLoader linkedStabilizer) {
 		this(world, username);
 		this.setLinkedStabilizer(linkedStabilizer);
 	}
-//TODO handleEntityTeleport <- netclienthandler
+	
+	@Override
+	protected void fall(float par1) {}
+
 	public void setLinkedStabilizer(TESpawnerLoader stabilizer) {
 		this.linkedStabilizer = stabilizer;
 
 		if (stabilizer != null) {
-			this.setPosition(linkedStabilizer.xCoord + 0.5,
-					linkedStabilizer.yCoord + 1, linkedStabilizer.zCoord + 0.5);
+			double posx = linkedStabilizer.xCoord + 0.5;
+			double posy = linkedStabilizer.yCoord + 1.1;
+			double posz = linkedStabilizer.zCoord + 0.5;
 			
-			PacketDispatcher.sendPacketToAllAround((int)this.posX,
-				(int)this.posY, (int)this.posZ, 64,
-				this.worldObj.provider.dimensionId, new Packet34EntityTeleport(
-					this.entityId*32, (int)this.posX*32, (int)this.posY*32, (int)this.posZ, (byte)this.rotationYaw, (byte)this.rotationPitch
-				)
-			);
+			this.setPositionAndRotation2(posx, posy, posz, 0, 0, 0);
+
+			PacketDispatcher.sendPacketToAllAround(posx,
+					posy, posz, 64,
+					this.worldObj.provider.dimensionId, new Packet34EntityTeleport(this)
+				);
 		}
 	}
 
@@ -215,19 +218,42 @@ public class Ghost extends EntityPlayerMP implements IEntityAdditionalSpawnData 
 			this.username = nbt.getString("username");
 		}
 	}
+	
+	@Override
+	public boolean canBePushed() {
+		return false;
+	}
+	
+	@Override
+	protected void collideWithEntity(Entity par1Entity) {}
+	
+	@Override
+	protected void collideWithNearbyEntities() {}
+	
+	@Override
+	public void setPositionAndRotation2(double x, double y, double z, float par7, float par8, int par9) {
+        this.newPosX = x;
+        this.newPosY = y;
+        this.newPosZ = z;
+        float halfWidth = this.width / 2.0F;
+        
+        this.boundingBox.setBounds(x - (double)halfWidth, y - (double)this.yOffset + (double)this.ySize, z - (double)halfWidth, x + (double)halfWidth, y - (double)this.yOffset + (double)this.ySize + (double)this.height, z + (double)halfWidth);
+	}
+	
 
 	@Override
 	public void onUpdate() {
-		super.onUpdate();
+		//super.onLivingUpdate();
+		super.onUpdateEntity();
 
 		this.entityAge++;
 		
-		if(this.hurtTime > 0)
+		/*if(this.hurtTime > 0)
 			this.hurtTime--;
 
 		if (this.hurtResistantTime > 0) {
 			--this.hurtResistantTime;
-		}
+		}*/
 
 		if (linkedStabilizerPos != null) {
 			TileEntity te = this.worldObj.getBlockTileEntity(
@@ -235,13 +261,13 @@ public class Ghost extends EntityPlayerMP implements IEntityAdditionalSpawnData 
 					linkedStabilizerPos[2]);
 
 			if (te instanceof TESpawnerLoader) {
-				this.linkedStabilizer = (TESpawnerLoader) te;
+				((TESpawnerLoader) te).attach(this);
 			}
 
 			linkedStabilizerPos = null;
 		}
 
-		if (this.getAge() % 1000 == 0) {
+		if (this.getAge() % 10 == 0) {
 			if (!isEntityInvulnerable())
 				this.attackEntityFrom(DamageSource.magic, 1);
 			else if (this.getHealth() < this.getMaxHealth())
@@ -262,6 +288,9 @@ public class Ghost extends EntityPlayerMP implements IEntityAdditionalSpawnData 
 	}
 
 	private void tryAttach() {
+		if(this.linkedStabilizer != null)
+			return;
+		
 		TileEntity te = this.worldObj.getBlockTileEntity((int) posX,
 				(int) posY, (int) posZ);
 
