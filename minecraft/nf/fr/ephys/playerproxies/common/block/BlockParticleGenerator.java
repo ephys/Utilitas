@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -23,8 +24,11 @@ public class BlockParticleGenerator extends Block {
 
 	public BlockParticleGenerator() {
 		super(blockID, Material.iron);
+		
+		ResourceLocation res = new ResourceLocation("ephys.pp", "/textures/block/ghost_stabilizer_top.png");
+		res.getResourcePath();
 	}
-	
+
 	@Override
 	public Icon getBlockTexture(IBlockAccess par1iBlockAccess, int par2, int par3, int par4, int par5) {
 		int[] offset = new int[3];
@@ -59,9 +63,14 @@ public class BlockParticleGenerator extends Block {
 		}
 		
 		if (block == null || block == this || !block.isOpaqueCube())
-			return super.getBlockTexture(par1iBlockAccess, par2, par3, par4, par5);
-		
-		return par5 == 1 ? iconTop : iconSide;
+			return par5 == 1 ? iconTop : iconSide;
+
+		return block.getBlockTexture(par1iBlockAccess, par2+offset[0], par3+offset[1], par4+offset[2], par5);
+	}
+	
+	@Override
+	public Icon getIcon(int par1, int par2) {
+		return par1 == 1 ? iconTop : iconSide;
 	}
 	
 	@Override
