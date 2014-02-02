@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import net.minecraftforge.common.Configuration;
 import nf.fr.ephys.playerproxies.common.block.BlockHardenedStone;
 import nf.fr.ephys.playerproxies.common.block.BlockInterface;
+import nf.fr.ephys.playerproxies.common.block.BlockParticleGenerator;
 import nf.fr.ephys.playerproxies.common.block.BlockSpawnerLoader;
 import nf.fr.ephys.playerproxies.common.core.CommonProxy;
 import nf.fr.ephys.playerproxies.common.core.PacketHandler;
@@ -47,6 +48,7 @@ public class PlayerProxies {
 	public static BlockInterface blockInterface;
 	public static BlockSpawnerLoader blockSpawnerLoader;
 	public static BlockHardenedStone blockHardenedStone;
+	public static BlockParticleGenerator blockParticleGenerator;
 
 	// items
 	public static ItemLinker itemLinker;

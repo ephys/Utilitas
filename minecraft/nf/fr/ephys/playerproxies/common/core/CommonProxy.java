@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.block.BlockHardenedStone;
 import nf.fr.ephys.playerproxies.common.block.BlockInterface;
+import nf.fr.ephys.playerproxies.common.block.BlockParticleGenerator;
 import nf.fr.ephys.playerproxies.common.block.BlockSpawnerLoader;
 import nf.fr.ephys.playerproxies.common.entity.Ghost;
 import nf.fr.ephys.playerproxies.common.item.ItemLinkFocus;
@@ -40,6 +41,9 @@ public class CommonProxy {
 		PlayerProxies.blockHardenedStone = new BlockHardenedStone();
 		PlayerProxies.blockHardenedStone.setUnlocalizedName("PP_HardenedStone");
 
+		PlayerProxies.blockParticleGenerator = new BlockParticleGenerator();
+		PlayerProxies.blockParticleGenerator.setUnlocalizedName("PP_ParticleGenerator");
+
 		GameRegistry.registerBlock(PlayerProxies.blockInterface,
 				"PP_UniversalInterface");
 		GameRegistry.registerTileEntity(TEBlockInterface.class,
@@ -53,12 +57,17 @@ public class CommonProxy {
 		GameRegistry.registerBlock(PlayerProxies.blockHardenedStone,
 				"PP_HardenedStone");
 
+		GameRegistry.registerBlock(PlayerProxies.blockParticleGenerator,
+				"PP_ParticleGenerator");
+		
 		LanguageRegistry.instance().addName(PlayerProxies.blockInterface,
 				"Universal Interface");
 		LanguageRegistry.instance().addName(PlayerProxies.blockSpawnerLoader,
 				"Ghost Stabilizer");
 		LanguageRegistry.instance().addName(PlayerProxies.blockHardenedStone,
 				"Hardened Stone");
+		LanguageRegistry.instance().addName(PlayerProxies.blockParticleGenerator,
+				"Particle Generator");
 	}
 	
 	private void registerItems() {
@@ -105,9 +114,9 @@ public class CommonProxy {
 	}
 	
 	private void registerEntities() {
-		EntityRegistry.registerModEntity(Ghost.class, "PP_Ghost",
+		/*EntityRegistry.registerModEntity(Ghost.class, "PP_Ghost",
 				EntityRegistry.findGlobalUniqueEntityId(),
-				PlayerProxies.instance, 20, 20, true);
+				PlayerProxies.instance, 20, 20, true);*/
 	}
 	
 	private void registerGuis() {

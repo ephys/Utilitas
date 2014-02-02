@@ -153,8 +153,7 @@ public class Ghost extends EntityPlayerMP implements IEntityAdditionalSpawnData 
 
 	@Override
 	public boolean isEntityInvulnerable() {
-		return this.linkedStabilizer != null
-				&& this.linkedStabilizer.isWorking();
+		return this.linkedStabilizer != null && this.linkedStabilizer.isWorking();
 	}
 
 	@Override
@@ -243,17 +242,18 @@ public class Ghost extends EntityPlayerMP implements IEntityAdditionalSpawnData 
 
 	@Override
 	public void onUpdate() {
-		//super.onLivingUpdate();
+//		super.onLivingUpdate();
 		super.onUpdateEntity();
+		super.onUpdate();
 
 		this.entityAge++;
 		
-		/*if(this.hurtTime > 0)
+		if(this.hurtTime > 0)
 			this.hurtTime--;
 
 		if (this.hurtResistantTime > 0) {
 			--this.hurtResistantTime;
-		}*/
+		}
 
 		if (linkedStabilizerPos != null) {
 			TileEntity te = this.worldObj.getBlockTileEntity(

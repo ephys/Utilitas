@@ -106,8 +106,6 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 		}
 	}
 
-	private float particlePos = 0;
-
 	public void updateEntity() {
 		super.updateEntity();
 
@@ -168,6 +166,132 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 				(int) pos.xCoord, (int) pos.yCoord, (int) pos.zCoord);
 	}
 
+
+	private boolean isValidTE(TileEntity te) {
+		return te instanceof IInventory || te instanceof ISidedInventory
+				|| te instanceof IEnergyHandler || te instanceof IFluidHandler
+				|| te instanceof IPowerReceptor || te instanceof IEnergySink
+				|| te instanceof IAspectContainer
+				|| te instanceof IEssentiaTransport;
+	}
+
+	public int getCurrentInventoryType() {
+		if (this.userName != null)
+			return INVTYPE_PLAYER;
+
+		if (this.turtleAccess != null)
+			return INVTYPE_TURTLE;
+
+		if (this.blockEntity != null)
+			return INVTYPE_TE;
+
+		return INVTYPE_NULL;
+	}
+
+	public void toggleLinked(TileEntity te, EntityPlayer player) {
+		if (te instanceof ITurtleAccess) {
+			if (this.turtleAccess == (ITurtleAccess) te) {
+				this.turtleAccess = null;
+				this.blockEntity = null;
+
+				player.addChatMessage("Turtle unlinked to this universal interface");
+			} else {
+				this.turtleAccess = (ITurtleAccess) te;
+				this.blockEntity = this.findTurtleTE();
+
+				this.userName = null;
+				this.userEntity = null;
+
+				player.addChatMessage("Turtle linked to this universal interface");
+			}
+		} else if (isValidTE(te))
+			if (this.blockEntity == te) {
+				this.blockEntity = null;
+				player.addChatMessage((new ItemStack(te.getBlockType(),
+						te.blockMetadata).getDisplayName())
+						+ " unlinked to the universal interface");
+			} else {
+				this.blockEntity = te;
+				this.userName = null;
+				this.userEntity = null;
+				this.turtleAccess = null;
+
+				player.addChatMessage((new ItemStack(te.getBlockType(),
+						te.blockMetadata).getDisplayName())
+						+ " linked to the universal interface");
+			}
+		
+		this.onInventoryChanged();
+	}
+
+	public void toggleLinked(EntityPlayer player) {
+		if (this.userName != null && this.userName.equals(player.username)) {
+			this.userName = null;
+			this.userEntity = null;
+
+			player.addChatMessage("Your inventory is now unlinked to this universal interface");
+		} else {
+			this.userEntity = player;
+			this.userName = player.username;
+			this.turtleAccess = null;
+			this.blockEntity = null;
+
+			player.addChatMessage("Your inventory is now linked to this universal interface");
+		}
+		
+		this.onInventoryChanged();
+	}
+
+	public String getLinkedInventoryName() {
+		int invType = this.getCurrentInventoryType();
+
+		if (invType == this.INVTYPE_PLAYER)
+			return this.userName;
+
+		if (invType == this.INVTYPE_TE || invType == this.INVTYPE_TURTLE)
+			return new ItemStack(this.blockEntity.getBlockType(),
+					this.blockEntity.blockMetadata).getDisplayName();
+
+		return "None";
+	}
+
+	public IInventory getLinkedInventory() {
+		if (this.userEntity != null) {
+			if(this.enderMode)
+				return this.userEntity.getInventoryEnderChest();
+			
+			return this.userEntity.inventory;
+		}
+
+		if (this.blockEntity instanceof IInventory)
+			return (IInventory) this.blockEntity;
+
+		return null;
+	}
+
+	public TileEntity getLinkedTileEntity() {
+		return this.blockEntity;
+	}
+
+	@SideOnly(Side.CLIENT)
+	public EntityPlayer getLinkedPlayer() {
+		if ((this.userEntity == null || this.userEntity.isDead)
+				&& this.userName != null) {
+			this.userEntity = MinecraftServer.getServer()
+					.getConfigurationManager().getPlayerForUsername(userName);
+		}
+
+		return userEntity;
+	}
+	
+	public void toggleEnderMode() {
+		if(this.getCurrentInventoryType() != this.INVTYPE_PLAYER)
+			return;
+		
+		this.enderMode = !this.enderMode;
+		this.onInventoryChanged();
+	}
+	
 	// ================================================================================
 	// IInventory interface
 	// ================================================================================
@@ -357,125 +481,8 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 	}
 
 	// ================================================================================
-	// End of interfaces
+	// IEnergyHandler interface
 	// ================================================================================
-
-	private boolean isValidTE(TileEntity te) {
-		return te instanceof IInventory || te instanceof ISidedInventory
-				|| te instanceof IEnergyHandler || te instanceof IFluidHandler
-				|| te instanceof IPowerReceptor || te instanceof IEnergySink
-				|| te instanceof IAspectContainer
-				|| te instanceof IEssentiaTransport;
-	}
-
-	public int getCurrentInventoryType() {
-		if (this.userName != null)
-			return INVTYPE_PLAYER;
-
-		if (this.turtleAccess != null)
-			return INVTYPE_TURTLE;
-
-		if (this.blockEntity != null)
-			return INVTYPE_TE;
-
-		return INVTYPE_NULL;
-	}
-
-	public void toggleLinked(TileEntity te, EntityPlayer player) {
-		if (te instanceof ITurtleAccess) {
-			if (this.turtleAccess == (ITurtleAccess) te) {
-				this.turtleAccess = null;
-				this.blockEntity = null;
-
-				player.addChatMessage("Turtle unlinked to this universal interface");
-			} else {
-				this.turtleAccess = (ITurtleAccess) te;
-				this.blockEntity = this.findTurtleTE();
-
-				this.userName = null;
-				this.userEntity = null;
-
-				player.addChatMessage("Turtle linked to this universal interface");
-			}
-		} else if (isValidTE(te))
-			if (this.blockEntity == te) {
-				this.blockEntity = null;
-				player.addChatMessage((new ItemStack(te.getBlockType(),
-						te.blockMetadata).getDisplayName())
-						+ " unlinked to the universal interface");
-			} else {
-				this.blockEntity = te;
-				this.userName = null;
-				this.userEntity = null;
-				this.turtleAccess = null;
-
-				player.addChatMessage((new ItemStack(te.getBlockType(),
-						te.blockMetadata).getDisplayName())
-						+ " linked to the universal interface");
-			}
-		
-		this.onInventoryChanged();
-	}
-
-	public void toggleLinked(EntityPlayer player) {
-		if (this.userName != null && this.userName.equals(player.username)) {
-			this.userName = null;
-			this.userEntity = null;
-
-			player.addChatMessage("Your inventory is now unlinked to this universal interface");
-		} else {
-			this.userEntity = player;
-			this.userName = player.username;
-			this.turtleAccess = null;
-			this.blockEntity = null;
-
-			player.addChatMessage("Your inventory is now linked to this universal interface");
-		}
-		
-		this.onInventoryChanged();
-	}
-
-	public String getLinkedInventoryName() {
-		int invType = this.getCurrentInventoryType();
-
-		if (invType == this.INVTYPE_PLAYER)
-			return this.userName;
-
-		if (invType == this.INVTYPE_TE || invType == this.INVTYPE_TURTLE)
-			return new ItemStack(this.blockEntity.getBlockType(),
-					this.blockEntity.blockMetadata).getDisplayName();
-
-		return "None";
-	}
-
-	public IInventory getLinkedInventory() {
-		if (this.userEntity != null) {
-			if(this.enderMode)
-				return this.userEntity.getInventoryEnderChest();
-			
-			return this.userEntity.inventory;
-		}
-
-		if (this.blockEntity instanceof IInventory)
-			return (IInventory) this.blockEntity;
-
-		return null;
-	}
-
-	public TileEntity getLinkedTileEntity() {
-		return this.blockEntity;
-	}
-
-	@SideOnly(Side.CLIENT)
-	public EntityPlayer getLinkedPlayer() {
-		if ((this.userEntity == null || this.userEntity.isDead)
-				&& this.userName != null) {
-			this.userEntity = MinecraftServer.getServer()
-					.getConfigurationManager().getPlayerForUsername(userName);
-		}
-
-		return userEntity;
-	}
 
 	@Override
 	public boolean canInterface(ForgeDirection arg0) {
@@ -697,11 +704,4 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 				.takeFromContainer(arg0, arg1) : false;
 	}
 	
-	public void toggleEnderMode() {
-		if(this.getCurrentInventoryType() != this.INVTYPE_PLAYER)
-			return;
-		
-		this.enderMode = !this.enderMode;
-		this.onInventoryChanged();
-	}
 }
