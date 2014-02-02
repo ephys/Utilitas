@@ -21,6 +21,6 @@ public class ClientProxy extends CommonProxy {
 	
 	public void registerRenderers() {
 		ClientRegistry.bindTileEntitySpecialRenderer(TEBlockInterface.class, new TileEntityBlockInterfaceRenderer());
-		//RenderingRegistry.registerEntityRenderingHandler(Ghost.class, new GhostRenderer());
+		RenderingRegistry.registerEntityRenderingHandler(Ghost.class, new GhostRenderer());
 	}
 }

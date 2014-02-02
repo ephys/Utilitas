@@ -267,7 +267,7 @@ public class Ghost extends EntityPlayerMP implements IEntityAdditionalSpawnData 
 			linkedStabilizerPos = null;
 		}
 
-		if (this.getAge() % 10 == 0) {
+		if (this.getAge() % 1000 == 0) {
 			if (!isEntityInvulnerable())
 				this.attackEntityFrom(DamageSource.magic, 1);
 			else if (this.getHealth() < this.getMaxHealth())

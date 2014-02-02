@@ -114,9 +114,9 @@ public class CommonProxy {
 	}
 	
 	private void registerEntities() {
-		/*EntityRegistry.registerModEntity(Ghost.class, "PP_Ghost",
+		EntityRegistry.registerModEntity(Ghost.class, "PP_Ghost",
 				EntityRegistry.findGlobalUniqueEntityId(),
-				PlayerProxies.instance, 20, 20, true);*/
+				PlayerProxies.instance, 100, 20, true);
 	}
 	
 	private void registerGuis() {
