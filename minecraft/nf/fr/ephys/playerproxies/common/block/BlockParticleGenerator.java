@@ -4,6 +4,7 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
@@ -12,12 +13,13 @@ import net.minecraft.world.World;
 
 public class BlockParticleGenerator extends Block {
 	public static int blockID = 803;
+	
+	private Icon iconSide;
+	private Icon iconTop;
 
 	private String[] particleList = new String[] { "depthsuspend", "smoke",
 			"mobSpell", "spell", "instantSpell", "note", "portal",
 			"enchantmenttable", "flame", "lava", "splash", "reddust", "heart" };
-	
-//private Block block;
 
 	public BlockParticleGenerator() {
 		super(blockID, Material.iron);
@@ -59,7 +61,15 @@ public class BlockParticleGenerator extends Block {
 		if (block == null || block == this || !block.isOpaqueCube())
 			return super.getBlockTexture(par1iBlockAccess, par2, par3, par4, par5);
 		
-		return block.getBlockTexture(par1iBlockAccess, par2+offset[0], par3+offset[1], par4+offset[2], par5);
+		return par5 == 1 ? iconTop : iconSide;
+	}
+	
+	@Override
+	public void registerIcons(IconRegister par1IconRegister) {
+		this.iconTop = par1IconRegister.registerIcon("ephys.pp:particle_generator_top");
+		this.iconSide = par1IconRegister.registerIcon("ephys.pp:ghost_stabilizer_side");
+
+		super.registerIcons(par1IconRegister);
 	}
 
 	@Override
