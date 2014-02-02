@@ -6,27 +6,29 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import nf.fr.ephys.playerproxies.common.container.ContainerUniversalInterface;
 import nf.fr.ephys.playerproxies.common.tileentity.TEBlockInterface;
 
 public class GuiUniversalInterface extends GuiContainer {
 	public static int ID = 0;
 	private ContainerUniversalInterface container;
+	private static ResourceLocation background = new ResourceLocation("ephys.pp", "/textures/gui/universal_interface.png");
 
 	public GuiUniversalInterface(ContainerUniversalInterface container) {
 		super(container);
 
 		this.container = container;
 
-		xSize = 400;
-		ySize = 200;
+		xSize = 176;
+		ySize = 70;
 	}
 	
 	@Override
 	public void initGui() {
 		super.initGui();
 
-		buttonList.add(new GuiButton(0, this.xSize-210, this.ySize-30, 200, 20, "Ender Chest"));
+		buttonList.add(new GuiButton(0, this.xSize, this.ySize, 150, 20, "Ender Chest"));
 		
 		((GuiButton)buttonList.get(0)).displayString = this.container.getTileEntity().enderMode ? "Ender Chest" : "Inventory";
 	}
@@ -45,30 +47,28 @@ public class GuiUniversalInterface extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int par1, int par2) {
-		fontRenderer.drawString("Universal Interface", 8, 6, 0xFFFFFF);
+		fontRenderer.drawString("Universal Interface", 8, 6, 4210752);
 
 		TEBlockInterface te = this.container.getTileEntity();
-
-		String linkedInventory = null;
-
-		fontRenderer.drawString("Linked inventory: ", 8, 30, 0xFFFFFF);
+		int inventoryType = te.getCurrentInventoryType();
 		
-		int color = (te.getCurrentInventoryType() != TEBlockInterface.INVTYPE_NULL) ? 0x00AA00 : 0xAA0000;
+		((GuiButton)buttonList.get(0)).enabled = (inventoryType == TEBlockInterface.INVTYPE_PLAYER);
+		((GuiButton)buttonList.get(0)).xPosition = (width - xSize) / 2 + 15;
+		((GuiButton)buttonList.get(0)).yPosition = (height - ySize) / 2 + 40;
+		
+		fontRenderer.drawString("Linked inventory: ", 8, 20, 4210752);
+		int color = (inventoryType != TEBlockInterface.INVTYPE_NULL) ? 0x00AA00 : 0xAA0000;
 		fontRenderer.drawString(te.getLinkedInventoryName(),
 			8 + this.fontRenderer.getStringWidth("Linked inventory: "),
-			30, color);
-	}
-
-	@Override
-	public void drawDefaultBackground() {
-		int x = (width - xSize) >> 1;
-		int y = (height - ySize) >> 1;
-
-		drawRect(x, y, xSize, 42, Integer.MIN_VALUE);
-		drawRect(x, y + 23, xSize, ySize, Integer.MIN_VALUE);
+			20, color);
 	}
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int i, int j) {
+    	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+    	this.mc.renderEngine.bindTexture(this.background);
+    	int x = (width - xSize) / 2;
+    	int y = (height - ySize) / 2;
+    	this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
 	};
 }
