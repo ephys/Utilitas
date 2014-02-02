@@ -111,6 +111,8 @@ public class CommonProxy {
 						PlayerProxies.blockHardenedStone), 'l', new ItemStack(
 						PlayerProxies.itemLinkFocus), 'd', new ItemStack(
 						Item.diamond));
+
+		GameRegistry.addShapelessRecipe(new ItemStack(PlayerProxies.blockParticleGenerator), Block.fenceIron, PlayerProxies.blockHardenedStone);
 	}
 	
 	private void registerEntities() {

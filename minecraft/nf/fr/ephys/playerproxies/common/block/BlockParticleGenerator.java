@@ -5,6 +5,7 @@ import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
@@ -25,8 +26,10 @@ public class BlockParticleGenerator extends Block {
 	public BlockParticleGenerator() {
 		super(blockID, Material.iron);
 		
-		ResourceLocation res = new ResourceLocation("ephys.pp", "/textures/block/ghost_stabilizer_top.png");
-		res.getResourcePath();
+		setHardness(2F);
+		setResistance(500.0F);
+		
+		setCreativeTab(CreativeTabs.tabDecorations);
 	}
 
 	@Override
@@ -101,6 +104,9 @@ public class BlockParticleGenerator extends Block {
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z,
 			EntityPlayer player, int par6, float par7, float par8, float par9) {
+		
+		if(player.getHeldItem() != null)
+			return false;
 
 		int metadata = world.getBlockMetadata(x, y, z);
 
@@ -114,6 +120,6 @@ public class BlockParticleGenerator extends Block {
 
 		world.setBlockMetadataWithNotify(x, y, z, metadata, 2);
 
-		return super.onBlockActivated(world, x, y, z, player, par6, par7, par8, par9);
+		return true;
 	}
 }
