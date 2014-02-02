@@ -63,4 +63,10 @@ public class BlockInterface extends BlockContainer {
     public int getRenderBlockPass() {
         return 1;
     }
+	
+	@Override
+	public boolean shouldSideBeRendered(IBlockAccess par1iBlockAccess,
+			int par2, int par3, int par4, int par5) {
+		return true;
+	}
 }
