@@ -45,7 +45,7 @@ public class ItemLinker extends Item {
 	
 			 if(te instanceof TEBlockInterface) {
 				 if(!player.isSneaking()) {
-					 player.openGui(PlayerProxies.instance, GuiUniversalInterface.ID, world, x, y, z);
+					 player.openGui(PlayerProxies.instance, PlayerProxies.GUI_UNIVERSAL_INTERFACE, world, x, y, z);
 				 } else {
 					 this.linkedInterface = (TEBlockInterface)te;
 					 player.addChatMessage("The link device will now connect to this Universal Interface");

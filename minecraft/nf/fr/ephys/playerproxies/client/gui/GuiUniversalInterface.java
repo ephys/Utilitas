@@ -11,7 +11,6 @@ import nf.fr.ephys.playerproxies.common.container.ContainerUniversalInterface;
 import nf.fr.ephys.playerproxies.common.tileentity.TEBlockInterface;
 
 public class GuiUniversalInterface extends GuiContainer {
-	public static int ID = 0;
 	private ContainerUniversalInterface container;
 	private static ResourceLocation background = new ResourceLocation("ephys.pp", "/textures/gui/universal_interface.png");
 

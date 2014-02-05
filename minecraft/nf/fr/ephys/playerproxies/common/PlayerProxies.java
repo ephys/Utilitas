@@ -3,6 +3,7 @@ package nf.fr.ephys.playerproxies.common;
 import java.util.logging.Logger;
 
 import net.minecraftforge.common.Configuration;
+import nf.fr.ephys.playerproxies.common.block.BlockEtherealGlass;
 import nf.fr.ephys.playerproxies.common.block.BlockHardenedStone;
 import nf.fr.ephys.playerproxies.common.block.BlockInterface;
 import nf.fr.ephys.playerproxies.common.block.BlockParticleGenerator;
@@ -17,6 +18,7 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 
@@ -33,11 +35,13 @@ import cpw.mods.fml.common.network.NetworkMod;
 )
 
 public class PlayerProxies {
-	public static final String version = "1.6.4-0.0.1";
+	public static final String version = "1.6.4-0.0.2";
+
+	public static final int GUI_UNIVERSAL_INTERFACE = 0;
 
 	@Instance("ephys.playerproxies")
     public static PlayerProxies instance;
-	
+
 	@SidedProxy(clientSide = "nf.fr.ephys.playerproxies.client.core.ClientProxy", 
 				serverSide = "nf.fr.ephys.playerproxies.common.core.CommonProxy")
     public static CommonProxy proxy;
@@ -49,6 +53,7 @@ public class PlayerProxies {
 	public static BlockSpawnerLoader blockSpawnerLoader;
 	public static BlockHardenedStone blockHardenedStone;
 	public static BlockParticleGenerator blockParticleGenerator;
+	public static BlockEtherealGlass blockEtherealGlass;
 
 	// items
 	public static ItemLinker itemLinker;
@@ -68,12 +73,19 @@ public class PlayerProxies {
         BlockInterface.blockID = config.getBlock("BlockInterface", BlockInterface.blockID).getInt();
         BlockSpawnerLoader.blockID = config.getBlock("BlockSpawnerLoader", BlockSpawnerLoader.blockID).getInt();
         BlockHardenedStone.blockID = config.getBlock("BlockHardenedStone", BlockHardenedStone.blockID).getInt();
-        
+        BlockParticleGenerator.blockID = config.getBlock("BlockParticleGenerator", BlockParticleGenerator.blockID).getInt();
+        BlockEtherealGlass.blockID = config.getBlock("BlockEtherealGlass", BlockEtherealGlass.blockID).getInt();
+
         config.save();
     }
     
     @EventHandler
     public void load(FMLInitializationEvent event) {
         proxy.initMod();
+    }
+    
+    @EventHandler
+    public void postLoad(FMLPostInitializationEvent event) {
+    	proxy.registerCrafts();
     }
 }
