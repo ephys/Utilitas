@@ -2,64 +2,141 @@ package nf.fr.ephys.playerproxies.common.item;
 
 import java.util.List;
 
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemTool;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
+import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import nf.fr.ephys.playerproxies.client.gui.GuiUniversalInterface;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.tileentity.TEBlockInterface;
+import nf.fr.ephys.playerproxies.common.tileentity.TileEntityProximitySensor;
+import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
 public class ItemLinker extends Item {
 	public static int itemID = 901;
-	
-	private TEBlockInterface linkedInterface = null;
-	
+
 	public ItemLinker() {
 		super(itemID);
 		setMaxStackSize(1);
 		setCreativeTab(CreativeTabs.tabTools);
 		setTextureName("ephys.pp:link_device");
 	}
-	
-	@Override
-	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
-		list.add("Shift and click to link.");
-		list.add("Use on an interface to configure.");
 
-		super.addInformation(par1ItemStack, par2EntityPlayer, list, par4);
+	@Override
+	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
+		String name = NBTHelper.getString(stack, "playerName", "none");
+		
+		if(name == null)
+			name = NBTHelper.getString(stack, "entityName", "none");
+
+		list.add("Can configure an interface.");
+		list.add("Can filter a proximity sensor: §5"+name);
+
+		super.addInformation(stack, par2EntityPlayer, list, par4);
 	}
 	
-	public boolean onItemUse(ItemStack itemstack, EntityPlayer player, World world, int x, int y, int z, int side, float par8, float par9, float par10) {
-		 if(!world.isRemote) {
-			 TileEntity te = world.getBlockTileEntity(x, y, z);
-			 
-			 if(te == null)
-				 return false;
-	
-			 if(te instanceof TEBlockInterface) {
-				 if(!player.isSneaking()) {
-					 player.openGui(PlayerProxies.instance, PlayerProxies.GUI_UNIVERSAL_INTERFACE, world, x, y, z);
-				 } else {
-					 this.linkedInterface = (TEBlockInterface)te;
-					 player.addChatMessage("The link device will now connect to this Universal Interface");
-				 }
-			 } else if(linkedInterface == null || this.linkedInterface.isInvalid()) {
-				 player.addChatMessage("You must link this device to an Universal Interface first");
-			 } else {
-				 this.linkedInterface.toggleLinked(te, player);
-			 }
-		 }
-		 
-		 if(linkedInterface != null && !linkedInterface.isInvalid())
-			 world.markBlockForUpdate(linkedInterface.xCoord, linkedInterface.yCoord, linkedInterface.zCoord);
-		 
-		 return true;
-	 }
+	@Override
+	public ItemStack onItemRightClick(ItemStack stack, World par2World, EntityPlayer player) {
+		if(!par2World.isRemote && player.isSneaking()) {
+			NBTTagCompound nbt = NBTHelper.getNBT(stack);
+			if(nbt.hasKey("entityName") || nbt.hasKey("playerName")) {
+				nbt.removeTag("entityClass");
+				nbt.removeTag("entityName");
+				nbt.removeTag("linkedInterface");
+				nbt.removeTag("playerName");
+				
+				player.addChatMessage("Link wand data cleared");
+			} else {
+				nbt.setString("playerName", player.username);
+				
+				player.addChatMessage("Link wand bound to "+player.username);
+			}
+		}
+
+		return super.onItemRightClick(stack, par2World, player);
+	}
+
+	@Override
+	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float par8, float par9, float par10) {
+		if (!world.isRemote) {
+			TileEntity te = world.getBlockTileEntity(x, y, z);
+
+			if (te == null)
+				return false;
+
+			if (te instanceof TEBlockInterface) {
+				if (!player.isSneaking()) {
+					player.openGui(PlayerProxies.instance, PlayerProxies.GUI_UNIVERSAL_INTERFACE, world, x, y, z);
+				} else {
+					NBTHelper.setIntArray(stack, "linkedInterface", new int[]{te.xCoord, te.yCoord, te.zCoord});
+
+					player.addChatMessage("The link device will now connect to this Universal Interface");
+				}
+			} else if (TEBlockInterface.isValidTE(te)) {
+				TEBlockInterface linkedInterface = null;
+				
+				int[] teCoords = NBTHelper.getIntArray(stack, "linkedInterface");
+				if(teCoords != null) {
+					TileEntity bi = world.getBlockTileEntity(teCoords[0], teCoords[1], teCoords[2]);
+					
+					if(bi instanceof TEBlockInterface)
+						linkedInterface = (TEBlockInterface) bi;
+				}
+				
+				if (linkedInterface == null || linkedInterface.isInvalid())
+					player.addChatMessage("You must link this device to an Universal Interface first");
+				else {
+					linkedInterface.toggleLinked(te, player);
+					world.markBlockForUpdate(linkedInterface.xCoord, linkedInterface.yCoord, linkedInterface.zCoord);
+				}
+			} else if(te instanceof TileEntityProximitySensor) {
+				String playerName = NBTHelper.getString(stack, "playerName", null);
+				
+				if(playerName == null) {
+					String entityName = NBTHelper.getString(stack, "entityName", "none");
+					
+					Class<? extends Entity> proxSensorEntity = (Class<? extends Entity>)NBTHelper.getClass(stack, "entityClass", Entity.class);
+					
+					((TileEntityProximitySensor)te).setEntityFilter(proxSensorEntity, player, entityName);
+				} else {
+					((TileEntityProximitySensor)te).setEntityFilter(playerName, player);
+				}
+			}
+		}
+
+		return true;
+	}
+
+	@ForgeSubscribe
+	public void onEntityInteraction(EntityInteractEvent event) {
+		if(event.entityPlayer.worldObj.isRemote)
+			return;
+		
+		ItemStack item = event.entityPlayer.getHeldItem();
+		if(item == null || !(item.getItem() instanceof ItemLinker))
+			return;
+
+		Class<? extends Entity> proxSensorEntity = event.target.getClass();
+		String entityName = event.target.getEntityName();
+
+		NBTTagCompound nbt = NBTHelper.getNBT(item);
+
+		nbt.setString("entityName", entityName);
+		nbt.setString("entityClass", proxSensorEntity.getName());
+
+		if(event.entityPlayer != null)
+			event.entityPlayer.addChatMessage("Entity filter set to "+entityName);
+	}
 }

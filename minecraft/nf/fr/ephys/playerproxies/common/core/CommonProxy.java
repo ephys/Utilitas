@@ -1,20 +1,22 @@
 package nf.fr.ephys.playerproxies.common.core;
 
-import ic2.core.Ic2Items;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.block.BlockEtherealGlass;
 import nf.fr.ephys.playerproxies.common.block.BlockHardenedStone;
 import nf.fr.ephys.playerproxies.common.block.BlockInterface;
 import nf.fr.ephys.playerproxies.common.block.BlockParticleGenerator;
+import nf.fr.ephys.playerproxies.common.block.BlockProximitySensor;
 import nf.fr.ephys.playerproxies.common.block.BlockSpawnerLoader;
 import nf.fr.ephys.playerproxies.common.entity.Ghost;
 import nf.fr.ephys.playerproxies.common.item.ItemLinkFocus;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
 import nf.fr.ephys.playerproxies.common.tileentity.TEBlockInterface;
 import nf.fr.ephys.playerproxies.common.tileentity.TESpawnerLoader;
+import nf.fr.ephys.playerproxies.common.tileentity.TileEntityProximitySensor;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
@@ -30,6 +32,8 @@ public class CommonProxy {
 		registerItems();
 		registerEntities();
 		registerGuis();
+		
+		MinecraftForge.EVENT_BUS.register(new ItemLinker());
 	}
 
 	private void registerBlocks() {
@@ -59,6 +63,13 @@ public class CommonProxy {
 		PlayerProxies.blockEtherealGlass.setUnlocalizedName("PP_EtherealGlass");
 		GameRegistry.registerBlock(PlayerProxies.blockEtherealGlass, "PP_EtherealGlass");
 		LanguageRegistry.instance().addName(PlayerProxies.blockEtherealGlass, "Ethereal Glass");
+		
+		PlayerProxies.blockProximitySensor = new BlockProximitySensor();
+		PlayerProxies.blockProximitySensor.setUnlocalizedName("PP_ProximitySensor");
+		GameRegistry.registerBlock(PlayerProxies.blockProximitySensor, "PP_ProximitySensor");
+		GameRegistry.registerTileEntity(TileEntityProximitySensor.class, "PP_ProximitySensor");
+		LanguageRegistry.instance().addName(PlayerProxies.blockProximitySensor, "Proximity Sensor");
+	
 	}
 
 	private void registerItems() {
@@ -110,10 +121,10 @@ public class CommonProxy {
 				'o', new ItemStack(Block.obsidian));
 		} else {
 			GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockHardenedStone, 4),
-					"ioi", "oso", "ioi", 
-					'i', Ic2Items.advancedAlloy, 
-					's', Ic2Items.reinforcedStone, 
-					'o', new ItemStack(Block.obsidian));
+				"ioi", "oso", "ioi", 
+				'i', ic2.api.item.Items.getItem("advancedAlloy"), 
+				's', ic2.api.item.Items.getItem("reinforcedStone"), 
+				'o', new ItemStack(Block.obsidian));
 		}
 
 		/*

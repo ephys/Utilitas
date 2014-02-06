@@ -7,6 +7,7 @@ import nf.fr.ephys.playerproxies.common.block.BlockEtherealGlass;
 import nf.fr.ephys.playerproxies.common.block.BlockHardenedStone;
 import nf.fr.ephys.playerproxies.common.block.BlockInterface;
 import nf.fr.ephys.playerproxies.common.block.BlockParticleGenerator;
+import nf.fr.ephys.playerproxies.common.block.BlockProximitySensor;
 import nf.fr.ephys.playerproxies.common.block.BlockSpawnerLoader;
 import nf.fr.ephys.playerproxies.common.core.CommonProxy;
 import nf.fr.ephys.playerproxies.common.core.PacketHandler;
@@ -54,6 +55,7 @@ public class PlayerProxies {
 	public static BlockHardenedStone blockHardenedStone;
 	public static BlockParticleGenerator blockParticleGenerator;
 	public static BlockEtherealGlass blockEtherealGlass;
+	public static BlockProximitySensor blockProximitySensor;
 
 	// items
 	public static ItemLinker itemLinker;

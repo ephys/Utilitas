@@ -1,17 +1,22 @@
 package nf.fr.ephys.playerproxies.common.tileentity;
 
+import ic2.api.energy.tile.IEnergyConductor;
+import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergySink;
+import ic2.api.energy.tile.IEnergySource;
 
 import java.util.ArrayList;
 
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IAspectContainer;
+import thaumcraft.api.aspects.IAspectSource;
 import thaumcraft.api.aspects.IEssentiaTransport;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 import cofh.api.energy.IEnergyHandler;
+import cofh.api.energy.IEnergyStorage;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -39,8 +44,9 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
 public class TEBlockInterface extends TileEntity implements ISidedInventory,
-		IFluidHandler, IEnergyHandler, IPowerReceptor, IEnergySink,
-		IAspectContainer, IEssentiaTransport {
+		IFluidHandler, IEnergyHandler, IEnergyStorage, IPowerReceptor,
+		IEnergySink, IEnergyConductor, IEnergySource, IAspectContainer,
+		IEssentiaTransport, IAspectSource {
 
 	private String userName = null;
 	private EntityPlayer userEntity = null;
@@ -78,7 +84,7 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 		super.writeToNBT(par1NBTTagCompound);
 
 		par1NBTTagCompound.setBoolean("enderMode", this.enderMode);
-		
+
 		if (this.userName != null)
 			par1NBTTagCompound.setString("userName", userName);
 		else if (this.blockEntity != null) {
@@ -92,7 +98,7 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 		super.readFromNBT(nbt);
 
 		this.enderMode = nbt.getBoolean("enderMode");
-		
+
 		if (nbt.hasKey("userName")) {
 			this.userName = nbt.getString("userName");
 		} else {
@@ -166,13 +172,15 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 				(int) pos.xCoord, (int) pos.yCoord, (int) pos.zCoord);
 	}
 
-
-	private boolean isValidTE(TileEntity te) {
+	public static boolean isValidTE(TileEntity te) {
 		return te instanceof IInventory || te instanceof ISidedInventory
 				|| te instanceof IEnergyHandler || te instanceof IFluidHandler
 				|| te instanceof IPowerReceptor || te instanceof IEnergySink
 				|| te instanceof IAspectContainer
-				|| te instanceof IEssentiaTransport;
+				|| te instanceof IEnergyStorage
+				|| te instanceof IEssentiaTransport
+				|| te instanceof IEnergyConductor
+				|| te instanceof IEnergySource || te instanceof IAspectSource;
 	}
 
 	public int getCurrentInventoryType() {
@@ -202,6 +210,8 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 				this.userName = null;
 				this.userEntity = null;
 
+				this.enderMode = false;
+
 				player.addChatMessage("Turtle linked to this universal interface");
 			}
 		} else if (isValidTE(te))
@@ -216,11 +226,13 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 				this.userEntity = null;
 				this.turtleAccess = null;
 
+				this.enderMode = false;
+
 				player.addChatMessage((new ItemStack(te.getBlockType(),
 						te.blockMetadata).getDisplayName())
 						+ " linked to the universal interface");
 			}
-		
+
 		this.onInventoryChanged();
 	}
 
@@ -238,7 +250,7 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 
 			player.addChatMessage("Your inventory is now linked to this universal interface");
 		}
-		
+
 		this.onInventoryChanged();
 	}
 
@@ -257,9 +269,9 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 
 	public IInventory getLinkedInventory() {
 		if (this.userEntity != null) {
-			if(this.enderMode)
+			if (this.enderMode)
 				return this.userEntity.getInventoryEnderChest();
-			
+
 			return this.userEntity.inventory;
 		}
 
@@ -274,24 +286,18 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 	}
 
 	@SideOnly(Side.CLIENT)
-	public EntityPlayer getLinkedPlayer() {
-		if ((this.userEntity == null || this.userEntity.isDead)
-				&& this.userName != null) {
-			this.userEntity = MinecraftServer.getServer()
-					.getConfigurationManager().getPlayerForUsername(userName);
-		}
-
-		return userEntity;
+	public String getLinkedPlayer() {
+		return this.userName;
 	}
-	
+
 	public void toggleEnderMode() {
-		if(this.getCurrentInventoryType() != this.INVTYPE_PLAYER)
+		if (this.getCurrentInventoryType() != this.INVTYPE_PLAYER)
 			return;
-		
+
 		this.enderMode = !this.enderMode;
 		this.onInventoryChanged();
 	}
-	
+
 	// ================================================================================
 	// IInventory interface
 	// ================================================================================
@@ -307,21 +313,23 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 	public ItemStack getStackInSlot(int i) {
 		IInventory linkedInventory = this.getLinkedInventory();
 
-		if(linkedInventory == null) return null;
-		
+		if (linkedInventory == null)
+			return null;
+
 		ItemStack stack = linkedInventory.getStackInSlot(i);
-		
+
 		return stack;
 	}
 
 	@Override
 	public ItemStack decrStackSize(int i, int j) {
 		IInventory linkedInventory = this.getLinkedInventory();
-		
-		if (linkedInventory == null) return null;
-		
+
+		if (linkedInventory == null)
+			return null;
+
 		ItemStack stack = linkedInventory.decrStackSize(i, j);
-		
+
 		return stack;
 	}
 
@@ -703,5 +711,98 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 		return linkedTE instanceof IAspectContainer ? ((IAspectContainer) linkedTE)
 				.takeFromContainer(arg0, arg1) : false;
 	}
+
+	@Override
+	public boolean emitsEnergyTo(TileEntity receiver, ForgeDirection direction) {
+		TileEntity linkedTE = this.getLinkedTileEntity();
+		
+		return linkedTE instanceof IEnergyEmitter ? ((IEnergyEmitter) linkedTE).emitsEnergyTo(receiver, direction) : false;
+	}
+
+	@Override
+	public double getOfferedEnergy() {
+		TileEntity linkedTE = this.getLinkedTileEntity();
+		
+		return linkedTE instanceof IEnergySource ? ((IEnergySource) linkedTE).getOfferedEnergy() : 0;
+	}
+
+	@Override
+	public void drawEnergy(double amount) {
+		TileEntity linkedTE = this.getLinkedTileEntity();
+		
+		if(linkedTE instanceof IEnergySource)
+			((IEnergySource) linkedTE).drawEnergy(amount);
+	}
+
+	@Override
+	public double getConductionLoss() {
+		TileEntity linkedTE = this.getLinkedTileEntity();
+		return linkedTE instanceof IEnergyConductor ? ((IEnergyConductor) linkedTE).getConductionLoss()*1.15D : 0;
+	}
+
+	@Override
+	public int getInsulationEnergyAbsorption() {
+		TileEntity linkedTE = this.getLinkedTileEntity();
+		
+		return linkedTE instanceof IEnergyConductor ? (int)(((IEnergyConductor) linkedTE).getInsulationEnergyAbsorption()*1.15D) : 0;
+	}
+
+	@Override
+	public int getInsulationBreakdownEnergy() {
+		TileEntity linkedTE = this.getLinkedTileEntity();
+		
+		return linkedTE instanceof IEnergyConductor ? (int)(((IEnergyConductor) linkedTE).getInsulationBreakdownEnergy()) : 0;
+
+	}
+
+	@Override
+	public int getConductorBreakdownEnergy() {
+		TileEntity linkedTE = this.getLinkedTileEntity();
+		
+		return linkedTE instanceof IEnergyConductor ? (int)(((IEnergyConductor) linkedTE).getConductorBreakdownEnergy()) : 0;
+	}
+
+	@Override
+	public void removeInsulation() {
+		TileEntity linkedTE = this.getLinkedTileEntity();
+		
+		if(linkedTE instanceof IEnergyConductor)
+			((IEnergyConductor) linkedTE).removeInsulation();
+	}
+
+	@Override
+	public void removeConductor() {
+		TileEntity linkedTE = this.getLinkedTileEntity();
+		
+		if(linkedTE instanceof IEnergyConductor)
+			((IEnergyConductor) linkedTE).removeConductor();
+	}
+
+	@Override
+	public int receiveEnergy(int maxReceive, boolean simulate) {
+		TileEntity linkedTE = this.getLinkedTileEntity();
 	
+		return linkedTE instanceof IEnergyStorage ? ((IEnergyStorage) linkedTE).receiveEnergy(maxReceive, simulate) : 0;
+	}
+
+	@Override
+	public int extractEnergy(int maxExtract, boolean simulate) {
+		TileEntity linkedTE = this.getLinkedTileEntity();
+		
+		return linkedTE instanceof IEnergyStorage ? ((IEnergyStorage) linkedTE).extractEnergy(maxExtract, simulate) : 0;
+	}
+
+	@Override
+	public int getEnergyStored() {
+		TileEntity linkedTE = this.getLinkedTileEntity();
+		
+		return linkedTE instanceof IEnergyStorage ? ((IEnergyStorage) linkedTE).getEnergyStored() : 0;
+	}
+
+	@Override
+	public int getMaxEnergyStored() {
+		TileEntity linkedTE = this.getLinkedTileEntity();
+		
+		return linkedTE instanceof IEnergyStorage ? ((IEnergyStorage) linkedTE).getMaxEnergyStored() : 0;
+	}
 }

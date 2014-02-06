@@ -119,6 +119,7 @@ public class BlockParticleGenerator extends Block {
 		}
 
 		world.setBlockMetadataWithNotify(x, y, z, metadata, 2);
+		world.playSoundEffect((double) x + 0.5D, (double) y + 0.5D, (double) z + 0.5D, "random.orb", 1.0F, world.rand.nextFloat() * 0.1F + 0.9F);
 
 		return true;
 	}
