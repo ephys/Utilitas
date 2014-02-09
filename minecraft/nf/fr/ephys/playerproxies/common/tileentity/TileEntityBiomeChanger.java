@@ -9,6 +9,15 @@ import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
 public class TileEntityBiomeChanger extends TileEntity {
 	private static final int MAX_SIZE = 100;
+	
+	/*
+	 * Make it require power
+	 * speed depends on injected power (max speed: 1 every 10 ticks)
+	 * 
+	 * Biome choices list
+	 * Biome blacklist, config
+	 * Some biome might require extra material to forge them, config
+	 */
 
 	private double seed = Math.random()+1;
 	private int[][] bounds = null;
@@ -27,7 +36,7 @@ public class TileEntityBiomeChanger extends TileEntity {
 		bounds = new int[2][];
 		bounds[0] = NBTHelper.getIntArray(nbt, "boundsPositive", new int[MAX_SIZE]);
 		bounds[1] = NBTHelper.getIntArray(nbt, "boundsNegative", new int[MAX_SIZE]);
-		
+
 		super.readFromNBT(nbt);
 	}
 	

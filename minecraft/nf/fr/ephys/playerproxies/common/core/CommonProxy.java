@@ -48,7 +48,7 @@ public class CommonProxy {
 		GameRegistry.registerBlock(PlayerProxies.blockSpawnerLoader, "PP_SpawnerLoader");
 		GameRegistry.registerTileEntity(TESpawnerLoader.class, "PP_SpawnerLoader");*/
 		//LanguageRegistry.instance().addName(PlayerProxies.blockSpawnerLoader, "Ghost Stabilizer");
-		
+
 		PlayerProxies.blockHardenedStone = new BlockHardenedStone();
 		PlayerProxies.blockHardenedStone.setUnlocalizedName("PP_HardenedStone");
 		GameRegistry.registerBlock(PlayerProxies.blockHardenedStone, "PP_HardenedStone");
@@ -70,11 +70,11 @@ public class CommonProxy {
 		GameRegistry.registerTileEntity(TileEntityProximitySensor.class, "PP_ProximitySensor");
 		LanguageRegistry.instance().addName(PlayerProxies.blockProximitySensor, "Proximity Sensor");
 		
-		PlayerProxies.blockBiomeChanger = new BlockBiomeChanger();
+		/*PlayerProxies.blockBiomeChanger = new BlockBiomeChanger();
 		PlayerProxies.blockBiomeChanger.setUnlocalizedName("PP_BiomeChanger");
 		GameRegistry.registerBlock(PlayerProxies.blockBiomeChanger, "PP_BiomeChanger");
 		GameRegistry.registerTileEntity(TileEntityBiomeChanger.class, "PP_BiomeChanger");
-		LanguageRegistry.instance().addName(PlayerProxies.blockBiomeChanger, "Biome transmuter");
+		LanguageRegistry.instance().addName(PlayerProxies.blockBiomeChanger, "Biome transmuter");*/
 	}
 
 	private void registerItems() {
@@ -89,7 +89,7 @@ public class CommonProxy {
 		GameRegistry.registerItem(PlayerProxies.itemLinkFocus, "PP_LinkFocus");
 
 		LanguageRegistry.instance().addName(PlayerProxies.itemLinker,
-				"Link device");
+				"Linking wand");
 		LanguageRegistry.instance().addName(PlayerProxies.itemLinkFocus,
 				"Link Focus");
 	}
