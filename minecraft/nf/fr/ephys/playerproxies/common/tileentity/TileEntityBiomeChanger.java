@@ -13,11 +13,16 @@ public class TileEntityBiomeChanger extends TileEntity {
 	private double seed = Math.random()+1;
 	private int[][] bounds = null;
 	private byte biome = (byte) (BiomeGenBase.taiga.biomeID & 255);
-	private int cursor = 0;
+	
+	private int cursorX;
+	private int cursorZ;
+	
+	private int tick = 0;
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
-		cursor = NBTHelper.getInt(nbt, "cursor", 0);
+		cursorX = NBTHelper.getInt(nbt, "cursorX", 0);
+		cursorZ = NBTHelper.getInt(nbt, "cursorZ", 0);
 
 		bounds = new int[2][];
 		bounds[0] = NBTHelper.getIntArray(nbt, "boundsPositive", new int[MAX_SIZE]);
@@ -28,7 +33,8 @@ public class TileEntityBiomeChanger extends TileEntity {
 	
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
-		nbt.setInteger("cursor", cursor);
+		nbt.setInteger("cursorX", cursorX);
+		nbt.setInteger("cursorZ", cursorZ);
 
 		NBTHelper.setIntArray(nbt, "boundsPositive", bounds[0]);
 		NBTHelper.setIntArray(nbt, "boundsNegative", bounds[1]);
@@ -38,34 +44,81 @@ public class TileEntityBiomeChanger extends TileEntity {
 	
 	@Override
 	public void updateEntity() {
+		tick++;
+
 		if(bounds == null) {
 			bounds = generateTerrainBounds(MAX_SIZE);
 		}
 
-		int start = this.xCoord - (bounds[0].length/2);
-		
-		for(int i = 0; i < bounds[0].length; i++) {
-			int x = start + i;
-			
-			for(int j = 0; j < bounds[0][i]; j++) {
-				int z = this.zCoord + j;
+		int halfBounds = bounds[0].length >> 1;
+		if(cursorX >= halfBounds)
+			return;
 
-				Chunk chunk = worldObj.getChunkFromBlockCoords(x, z);
-				byte[] biomes = chunk.getBiomeArray();
-				biomes[(z & 15) << 4 | (x & 15)] = biome;
-			}
+		int xRight = this.xCoord - cursorX;
+		int xLeft = this.xCoord + cursorX;
+		
+		int zTop = this.zCoord + cursorZ;
+		int zBottom = this.zCoord - cursorZ;
+
+		for(int i = -5; i < 5; i++) {
+			worldObj.spawnParticle("portal", xRight+Math.random(), this.yCoord+i+Math.random(), zBottom+Math.random(), 0, 0, 0);
+			worldObj.spawnParticle("portal", xRight+Math.random(), this.yCoord+i+Math.random(), zTop+Math.random(), 0, 0, 0);
+			worldObj.spawnParticle("portal", xLeft+Math.random(), this.yCoord+i+Math.random(), zBottom+Math.random(), 0, 0, 0);
+			worldObj.spawnParticle("portal", xLeft+Math.random(), this.yCoord+i+Math.random(), zTop+Math.random(), 0, 0, 0);
 		}
 		
-		for(int i = 0; i < bounds[1].length; i++) {
-			int x = start + i;
-			
-			for(int j = 0; j < bounds[1][i]; j++) {
-				int z = this.zCoord - j;
+		if(tick % 10 != 0)
+			return;
 
-				Chunk chunk = worldObj.getChunkFromBlockCoords(x, z);
-				byte[] biomes = chunk.getBiomeArray();
-				biomes[(z & 15) << 4 | (x & 15)] = biome;
-			}
+		boolean hasNextStep = false;
+		if(cursorZ < bounds[0][halfBounds+cursorX]) {
+			Chunk chunk = worldObj.getChunkFromBlockCoords(xLeft, zTop);
+			byte[] biomes = chunk.getBiomeArray();
+			biomes[(zTop & 15) << 4 | (xLeft & 15)] = biome;
+			
+			chunk.setBiomeArray(biomes);
+			chunk.setChunkModified();
+			
+			hasNextStep = true;
+		}
+
+		if(cursorZ < bounds[1][halfBounds+cursorX]) {
+			Chunk chunk = worldObj.getChunkFromBlockCoords(xLeft, zBottom);
+			byte[] biomes = chunk.getBiomeArray();
+			biomes[(zBottom & 15) << 4 | (xLeft & 15)] = biome;
+			
+			chunk.setBiomeArray(biomes);
+			chunk.setChunkModified();
+			
+			hasNextStep = true;
+		}
+
+		if(cursorZ < bounds[0][halfBounds-cursorX]) {
+			Chunk chunk = worldObj.getChunkFromBlockCoords(xRight, zTop);
+			byte[] biomes = chunk.getBiomeArray();
+			biomes[(zTop & 15) << 4 | (xRight & 15)] = biome;
+			
+			chunk.setBiomeArray(biomes);
+			chunk.setChunkModified();
+			
+			hasNextStep = true;
+		}
+
+		if(cursorZ < bounds[1][halfBounds-cursorX]) {
+			Chunk chunk = worldObj.getChunkFromBlockCoords(xRight, zBottom);
+			byte[] biomes = chunk.getBiomeArray();
+			biomes[(zBottom & 15) << 4 | (xRight & 15)] = biome;
+			
+			chunk.setBiomeArray(biomes);
+			chunk.setChunkModified();
+			
+			hasNextStep = true;
+		}
+		
+		cursorZ++;
+		if(!hasNextStep) {
+			cursorX++;
+			cursorZ = 0;
 		}
 
 		super.updateEntity();
