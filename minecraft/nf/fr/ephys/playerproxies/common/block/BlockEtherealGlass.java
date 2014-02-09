@@ -32,7 +32,7 @@ public class BlockEtherealGlass extends Block {
 		setLightValue(1.0F);
 		setHardness(1.0F);
 		setCreativeTab(CreativeTabs.tabBlock);
-		setTextureName("ephys.pp:universal_interface");
+		setTextureName("ephys.pp:pureGlass");
 	}
 	
 	@Override

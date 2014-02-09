@@ -60,8 +60,8 @@ public class BlockSpawnerLoader extends BlockContainer {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister register) {
-		topIcon = register.registerIcon("ephys.pp:ghost_stabilizer_top");
-		sideIcon = register.registerIcon("ephys.pp:ghost_stabilizer_side");
+		topIcon = register.registerIcon("ephys.pp:ghostStabilizer");
+		sideIcon = register.registerIcon("ephys.pp:hardenedStone");
 	}
 
 	@Override

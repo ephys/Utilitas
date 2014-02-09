@@ -5,6 +5,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
+import nf.fr.ephys.playerproxies.common.block.BlockBiomeChanger;
 import nf.fr.ephys.playerproxies.common.block.BlockEtherealGlass;
 import nf.fr.ephys.playerproxies.common.block.BlockHardenedStone;
 import nf.fr.ephys.playerproxies.common.block.BlockInterface;
@@ -16,6 +17,7 @@ import nf.fr.ephys.playerproxies.common.item.ItemLinkFocus;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
 import nf.fr.ephys.playerproxies.common.tileentity.TEBlockInterface;
 import nf.fr.ephys.playerproxies.common.tileentity.TESpawnerLoader;
+import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBiomeChanger;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityProximitySensor;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -32,8 +34,6 @@ public class CommonProxy {
 		registerItems();
 		registerEntities();
 		registerGuis();
-		
-		MinecraftForge.EVENT_BUS.register(new ItemLinker());
 	}
 
 	private void registerBlocks() {
@@ -69,12 +69,18 @@ public class CommonProxy {
 		GameRegistry.registerBlock(PlayerProxies.blockProximitySensor, "PP_ProximitySensor");
 		GameRegistry.registerTileEntity(TileEntityProximitySensor.class, "PP_ProximitySensor");
 		LanguageRegistry.instance().addName(PlayerProxies.blockProximitySensor, "Proximity Sensor");
-	
+		
+		PlayerProxies.blockBiomeChanger = new BlockBiomeChanger();
+		PlayerProxies.blockBiomeChanger.setUnlocalizedName("PP_BiomeChanger");
+		GameRegistry.registerBlock(PlayerProxies.blockBiomeChanger, "PP_BiomeChanger");
+		GameRegistry.registerTileEntity(TileEntityBiomeChanger.class, "PP_BiomeChanger");
+		LanguageRegistry.instance().addName(PlayerProxies.blockBiomeChanger, "Biome transmuter");
 	}
 
 	private void registerItems() {
 		PlayerProxies.itemLinker = new ItemLinker();
 		PlayerProxies.itemLinker.setUnlocalizedName("PP_LinkWand");
+		MinecraftForge.EVENT_BUS.register(PlayerProxies.itemLinker);
 
 		PlayerProxies.itemLinkFocus = new ItemLinkFocus();
 		PlayerProxies.itemLinkFocus.setUnlocalizedName("PP_LinkFocus");

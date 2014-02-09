@@ -13,6 +13,6 @@ public class BlockHardenedStone extends Block {
 		setHardness(2.5F);
 		setResistance(5000.0F);
 		setCreativeTab(CreativeTabs.tabBlock);
-		setTextureName("ephys.pp:ghost_stabilizer_side");
+		setTextureName("ephys.pp:hardenedStone");
 	}
 }

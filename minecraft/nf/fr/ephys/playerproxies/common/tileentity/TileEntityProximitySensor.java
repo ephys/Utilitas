@@ -10,6 +10,7 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
 public class TileEntityProximitySensor extends TileEntity {
 	private int RADIUS_X = 3;
@@ -139,7 +140,7 @@ public class TileEntityProximitySensor extends TileEntity {
 			List entityList = this.worldObj.getEntitiesWithinAABB(entityFilter, radius);
 			
 			isActivated = (entityList.size() != 0);
-		} else {
+		} else if(this.playerFilter != null) {
 			List<EntityPlayer> entityList = this.worldObj.getEntitiesWithinAABB(EntityPlayer.class, radius);
 			
 			isActivated = false;
@@ -157,26 +158,29 @@ public class TileEntityProximitySensor extends TileEntity {
 	}
 	
 	@Override
-	public void readFromNBT(NBTTagCompound par1nbtTagCompound) {
-		if(par1nbtTagCompound.hasKey("isActivated"))
-			this.isActivated = par1nbtTagCompound.getBoolean("isActivated");
-		
-		if(par1nbtTagCompound.hasKey("size")) {
-			int[] size = par1nbtTagCompound.getIntArray("size");
+	public void readFromNBT(NBTTagCompound nbt) {
+		this.isActivated = NBTHelper.getBoolean(nbt, "isActivated", this.isActivated);
+		this.entityFilter = (Class<? extends Entity>) NBTHelper.getClass(nbt, "entityFilter", null);
+		this.playerFilter = NBTHelper.getString(nbt, "playerFilter", null);
+
+		if(nbt.hasKey("size")) {
+			int[] size = nbt.getIntArray("size");
 			this.RADIUS_X = size[0];
 			this.RADIUS_Y = size[1];
 			this.RADIUS_Z = size[2];
 		}
 
-		super.readFromNBT(par1nbtTagCompound);
+		super.readFromNBT(nbt);
 	}
 	
 	@Override
-	public void writeToNBT(NBTTagCompound par1nbtTagCompound) {
-		par1nbtTagCompound.setBoolean("isActivated", isActivated);
-		par1nbtTagCompound.setIntArray("size", new int[]{RADIUS_X, RADIUS_Y, RADIUS_Z});
-		
-		super.writeToNBT(par1nbtTagCompound);
+	public void writeToNBT(NBTTagCompound nbt) {
+		nbt.setBoolean("isActivated", isActivated);
+		nbt.setIntArray("size", new int[]{RADIUS_X, RADIUS_Y, RADIUS_Z});
+		NBTHelper.setString(nbt, "playerFilter", playerFilter);
+		NBTHelper.setClass(nbt, "entityFilter", entityFilter);
+
+		super.writeToNBT(nbt);
 	}
 	
 	@Override

@@ -31,7 +31,7 @@ public class ItemLinker extends Item {
 		super(itemID);
 		setMaxStackSize(1);
 		setCreativeTab(CreativeTabs.tabTools);
-		setTextureName("ephys.pp:link_device");
+		setTextureName("ephys.pp:linkDevice");
 	}
 
 	@Override
@@ -128,13 +128,9 @@ public class ItemLinker extends Item {
 		if(item == null || !(item.getItem() instanceof ItemLinker))
 			return;
 
-		Class<? extends Entity> proxSensorEntity = event.target.getClass();
 		String entityName = event.target.getEntityName();
-
-		NBTTagCompound nbt = NBTHelper.getNBT(item);
-
-		nbt.setString("entityName", entityName);
-		nbt.setString("entityClass", proxSensorEntity.getName());
+		NBTHelper.setString(item, "entityName", entityName);
+		NBTHelper.setClass(item, "entityClass", event.target.getClass());
 
 		if(event.entityPlayer != null)
 			event.entityPlayer.addChatMessage("Entity filter set to "+entityName);

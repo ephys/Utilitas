@@ -78,10 +78,8 @@ public class BlockParticleGenerator extends Block {
 	
 	@Override
 	public void registerIcons(IconRegister par1IconRegister) {
-		this.iconTop = par1IconRegister.registerIcon("ephys.pp:particle_generator_top");
-		this.iconSide = par1IconRegister.registerIcon("ephys.pp:ghost_stabilizer_side");
-
-		super.registerIcons(par1IconRegister);
+		this.iconTop = par1IconRegister.registerIcon("ephys.pp:particleGenerator");
+		this.iconSide = par1IconRegister.registerIcon("ephys.pp:hardenedStone");
 	}
 
 	@Override

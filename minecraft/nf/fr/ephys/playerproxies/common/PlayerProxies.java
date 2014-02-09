@@ -3,6 +3,7 @@ package nf.fr.ephys.playerproxies.common;
 import java.util.logging.Logger;
 
 import net.minecraftforge.common.Configuration;
+import nf.fr.ephys.playerproxies.common.block.BlockBiomeChanger;
 import nf.fr.ephys.playerproxies.common.block.BlockEtherealGlass;
 import nf.fr.ephys.playerproxies.common.block.BlockHardenedStone;
 import nf.fr.ephys.playerproxies.common.block.BlockInterface;
@@ -56,6 +57,7 @@ public class PlayerProxies {
 	public static BlockParticleGenerator blockParticleGenerator;
 	public static BlockEtherealGlass blockEtherealGlass;
 	public static BlockProximitySensor blockProximitySensor;
+	public static BlockBiomeChanger blockBiomeChanger;
 
 	// items
 	public static ItemLinker itemLinker;
@@ -77,10 +79,11 @@ public class PlayerProxies {
         BlockHardenedStone.blockID = config.getBlock("BlockHardenedStone", BlockHardenedStone.blockID).getInt();
         BlockParticleGenerator.blockID = config.getBlock("BlockParticleGenerator", BlockParticleGenerator.blockID).getInt();
         BlockEtherealGlass.blockID = config.getBlock("BlockEtherealGlass", BlockEtherealGlass.blockID).getInt();
+        BlockProximitySensor.blockID = config.getBlock("BlockProximitySensor", BlockProximitySensor.blockID).getInt();
 
         config.save();
     }
-    
+
     @EventHandler
     public void load(FMLInitializationEvent event) {
         proxy.initMod();

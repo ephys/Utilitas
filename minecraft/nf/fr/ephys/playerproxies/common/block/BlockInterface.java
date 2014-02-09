@@ -31,7 +31,7 @@ public class BlockInterface extends BlockContainer {
 		setLightValue(1.0F);
 		setHardness(1.0F);
 		setCreativeTab(CreativeTabs.tabDecorations);
-		setTextureName("ephys.pp:universal_interface");
+		setTextureName("ephys.pp:pureGlass");
 	}
 
 	@Override

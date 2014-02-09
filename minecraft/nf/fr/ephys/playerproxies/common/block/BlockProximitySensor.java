@@ -3,14 +3,19 @@ package nf.fr.ephys.playerproxies.common.block;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityProximitySensor;
 
 public class BlockProximitySensor extends BlockContainer {
 	public static int blockID = 805;
+	
+	private Icon iconTop;
+	private Icon iconSide;
 	
 	public BlockProximitySensor() {
 		super(blockID, Material.iron);
@@ -55,5 +60,21 @@ public class BlockProximitySensor extends BlockContainer {
 	@Override
 	public TileEntity createNewTileEntity(World world) {
 		return new TileEntityProximitySensor();
+	}
+	
+	@Override
+	public Icon getBlockTexture(IBlockAccess par1iBlockAccess, int par2, int par3, int par4, int par5) {
+		return par5 == 1 ? iconTop : iconSide;
+	}
+	
+	@Override
+	public Icon getIcon(int par1, int par2) {
+		return par1 == 1 ? iconTop : iconSide;
+	}
+	
+	@Override
+	public void registerIcons(IconRegister register) {
+		iconSide = register.registerIcon("ephys.pp:proximitySensor");
+		iconTop = register.registerIcon("ephys.pp:hardenedStone");
 	}
 }
