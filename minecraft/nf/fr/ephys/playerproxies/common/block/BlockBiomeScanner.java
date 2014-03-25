@@ -105,7 +105,7 @@ public class BlockBiomeScanner extends BlockContainer {
 		IInventory te = (IInventory) world.getBlockTileEntity(x, y, z);
 
 		if (te != null)
-			BlockHelper.dropContents(te, world, x, y, z, oldID);
+			BlockHelper.dropContents(te, world, x, y, z);
 
 		super.breakBlock(world, x, y, z, oldID, oldMetadata);
 	}

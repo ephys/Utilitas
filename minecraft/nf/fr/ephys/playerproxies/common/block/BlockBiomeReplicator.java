@@ -12,6 +12,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBiomeReplicator;
+import nf.fr.ephys.playerproxies.helpers.BlockHelper;
 
 public class BlockBiomeReplicator extends BlockContainer {
 	public static int BLOCK_ID = 806;
@@ -63,7 +64,11 @@ public class BlockBiomeReplicator extends BlockContainer {
 	
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9) {
-		// if item inside, eject
+		TileEntityBiomeReplicator te = (TileEntityBiomeReplicator) world.getBlockTileEntity(x, y, z);
+
+		if (te.hasBiome()) {
+			BlockHelper.dropContents(te, world, x, y, z);
+		}
 		
 		if (player.getHeldItem() != null && player.getHeldItem().itemID == PlayerProxies.itemBiomeStorage.itemID) {
 			// insert item

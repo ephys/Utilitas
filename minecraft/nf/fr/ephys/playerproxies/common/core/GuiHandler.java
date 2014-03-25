@@ -28,6 +28,7 @@ public class GuiHandler implements IGuiHandler {
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		TileEntity te = world.getBlockTileEntity(x, y, z);
+
 		if(ID == PlayerProxies.GUI_UNIVERSAL_INTERFACE && te instanceof TEBlockInterface)
 			return new GuiUniversalInterface(new ContainerUniversalInterface(player, (TEBlockInterface) te));
 		else if (ID == PlayerProxies.GUI_BIOME_SCANNER && te instanceof TileEntityBiomeScanner)

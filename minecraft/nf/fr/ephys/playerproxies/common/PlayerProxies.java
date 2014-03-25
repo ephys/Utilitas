@@ -11,6 +11,7 @@ import nf.fr.ephys.playerproxies.common.block.BlockInterface;
 import nf.fr.ephys.playerproxies.common.block.BlockParticleGenerator;
 import nf.fr.ephys.playerproxies.common.block.BlockProximitySensor;
 import nf.fr.ephys.playerproxies.common.block.BlockSpawnerLoader;
+import nf.fr.ephys.playerproxies.common.block.BlockToughwoodPlank;
 import nf.fr.ephys.playerproxies.common.core.CommonProxy;
 import nf.fr.ephys.playerproxies.common.core.PacketHandler;
 import nf.fr.ephys.playerproxies.common.item.ItemBiomeStorage;
@@ -62,6 +63,7 @@ public class PlayerProxies {
 	public static BlockProximitySensor blockProximitySensor;
 	public static BlockBiomeReplicator blockBiomeChanger;
 	public static BlockBiomeScanner blockBiomeScanner;
+	public static BlockToughwoodPlank blockToughwoodPlank;
 
 	// items
 	public static ItemLinker itemLinker;
@@ -88,6 +90,7 @@ public class PlayerProxies {
         BlockProximitySensor.BLOCK_ID = config.getBlock("BlockProximitySensor", BlockProximitySensor.BLOCK_ID).getInt();
         BlockBiomeReplicator.BLOCK_ID = config.getBlock("BlockBiomeReplicator", BlockBiomeReplicator.BLOCK_ID).getInt();
         BlockBiomeScanner.BLOCK_ID = config.getBlock("BlockBiomeScanner", BlockBiomeScanner.BLOCK_ID).getInt();
+        BlockToughwoodPlank.BLOCK_ID = config.getBlock("BlockToughwoodPlank", BlockToughwoodPlank.BLOCK_ID).getInt();
 
         config.save();
     }

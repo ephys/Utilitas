@@ -120,7 +120,7 @@ public class TileEntityBiomeScanner extends TileEntity implements IInventory {
 
 	@Override
 	public ItemStack getStackInSlot(int i) {
-		return card;
+		return i == 0 ? card : null;
 	}
 
 	@Override
@@ -184,7 +184,6 @@ public class TileEntityBiomeScanner extends TileEntity implements IInventory {
 
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-		System.out.println(itemstack.itemID + " " + PlayerProxies.itemBiomeStorage.itemID);
 		return itemstack.itemID == PlayerProxies.itemBiomeStorage.itemID;
 	}
 

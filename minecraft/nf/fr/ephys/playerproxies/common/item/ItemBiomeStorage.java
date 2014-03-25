@@ -30,13 +30,11 @@ public class ItemBiomeStorage extends Item {
 	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
 		int biomeId = NBTHelper.getInt(stack, "biome", -1);
 
-		list.add("Must be activated in a biome to duplicate it's signature.");
-		
 		if (biomeId != -1) {
 			BiomeGenBase biome = BiomeGenBase.biomeList[biomeId];
 			list.add("Signature: §5"+biome.biomeName);
 		} else {
-			list.add("Signature: §5Empty");
+			list.add("Place this in a biome scanner to duplicate it's signature.");
 		}
 
 		super.addInformation(stack, par2EntityPlayer, list, par4);

@@ -17,7 +17,7 @@ public class BlockHelper {
 	    return l == 0 ? 2 : (l == 1 ? 5 : (l == 2 ? 3 : (l == 3 ? 4 : 0)));
 	}
 	
-	public static void dropContents(IInventory te, World world, int x, int y, int z, int oldID) {
+	public static void dropContents(IInventory te, World world, int x, int y, int z) {
 		for (int i = 0; i < te.getSizeInventory(); ++i) {
 			ItemStack itemstack = te.getStackInSlot(i);
 
@@ -58,6 +58,6 @@ public class BlockHelper {
 			}
 		}
 
-		world.func_96440_m(x, y, z, oldID);
+		world.func_96440_m(x, y, z, 0);
 	}
 }

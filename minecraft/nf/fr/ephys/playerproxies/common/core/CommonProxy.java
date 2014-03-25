@@ -13,6 +13,7 @@ import nf.fr.ephys.playerproxies.common.block.BlockInterface;
 import nf.fr.ephys.playerproxies.common.block.BlockParticleGenerator;
 import nf.fr.ephys.playerproxies.common.block.BlockProximitySensor;
 import nf.fr.ephys.playerproxies.common.block.BlockSpawnerLoader;
+import nf.fr.ephys.playerproxies.common.block.BlockToughwoodPlank;
 import nf.fr.ephys.playerproxies.common.entity.Ghost;
 import nf.fr.ephys.playerproxies.common.item.ItemBiomeStorage;
 import nf.fr.ephys.playerproxies.common.item.ItemLinkFocus;
@@ -84,6 +85,11 @@ public class CommonProxy {
 		GameRegistry.registerBlock(PlayerProxies.blockBiomeScanner, "PP_BiomeScanner");
 		GameRegistry.registerTileEntity(TileEntityBiomeScanner.class, "PP_BiomeScanner");
 		LanguageRegistry.instance().addName(PlayerProxies.blockBiomeScanner, "Biome scanner");
+		
+		PlayerProxies.blockToughwoodPlank = new BlockToughwoodPlank();
+		PlayerProxies.blockToughwoodPlank.setUnlocalizedName("PP_ToughwoodPlank");
+		GameRegistry.registerBlock(PlayerProxies.blockToughwoodPlank, "PP_ToughwoodPlank");
+		LanguageRegistry.instance().addName(PlayerProxies.blockToughwoodPlank, "Toughwood");
 	}
 
 	private void registerItems() {
