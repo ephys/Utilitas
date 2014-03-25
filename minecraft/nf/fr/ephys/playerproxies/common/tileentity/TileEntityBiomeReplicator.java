@@ -1,41 +1,34 @@
 package nf.fr.ephys.playerproxies.common.tileentity;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.INetworkManager;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.BiomeDictionary;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
-public class TileEntityBiomeChanger extends TileEntity {
+public class TileEntityBiomeReplicator extends TileEntity {
 	private static final int MAX_SIZE = 100;
-	
-	/*
-	 * Make it require power
-	 * speed depends on injected power (max speed: 1 every 10 ticks)
-	 * 
-	 * Biome choices list
-	 * Biome blacklist, config
-	 * Some biome might require extra material to forge them, config
-	 */
 
-	private double seed = Math.random()+1;
 	private int[][] bounds = null;
 	private byte biome = (byte) (BiomeGenBase.taiga.biomeID & 255);
-	
+
 	private int cursorX;
 	private int cursorZ;
-	
+
 	private int tick = 0;
+	
+	public TileEntityBiomeReplicator() {
+		bounds = generateTerrainBounds(MAX_SIZE);
+	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		cursorX = NBTHelper.getInt(nbt, "cursorX", 0);
 		cursorZ = NBTHelper.getInt(nbt, "cursorZ", 0);
-
-		bounds = new int[2][];
-		bounds[0] = NBTHelper.getIntArray(nbt, "boundsPositive", new int[MAX_SIZE]);
-		bounds[1] = NBTHelper.getIntArray(nbt, "boundsNegative", new int[MAX_SIZE]);
 
 		super.readFromNBT(nbt);
 	}
@@ -45,19 +38,24 @@ public class TileEntityBiomeChanger extends TileEntity {
 		nbt.setInteger("cursorX", cursorX);
 		nbt.setInteger("cursorZ", cursorZ);
 
-		NBTHelper.setIntArray(nbt, "boundsPositive", bounds[0]);
-		NBTHelper.setIntArray(nbt, "boundsNegative", bounds[1]);
-
 		super.writeToNBT(nbt);
+	}
+	
+	@Override
+	public Packet getDescriptionPacket() {
+		NBTTagCompound nbtTag = new NBTTagCompound();
+		this.writeToNBT(nbtTag);
+		return new Packet132TileEntityData(this.xCoord, this.yCoord, this.zCoord, 1, nbtTag);
+	}
+
+	@Override
+	public void onDataPacket(INetworkManager net, Packet132TileEntityData packet) {
+		readFromNBT(packet.data);
 	}
 	
 	@Override
 	public void updateEntity() {
 		tick++;
-
-		if(bounds == null) {
-			bounds = generateTerrainBounds(MAX_SIZE);
-		}
 
 		int halfBounds = bounds[0].length >> 1;
 		if(cursorX >= halfBounds)

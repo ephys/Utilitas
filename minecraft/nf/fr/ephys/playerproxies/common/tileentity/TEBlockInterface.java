@@ -1,22 +1,7 @@
 package nf.fr.ephys.playerproxies.common.tileentity;
 
-import ic2.api.energy.tile.IEnergyConductor;
-import ic2.api.energy.tile.IEnergyEmitter;
-import ic2.api.energy.tile.IEnergySink;
-import ic2.api.energy.tile.IEnergySource;
-
 import java.util.ArrayList;
 
-import thaumcraft.api.aspects.Aspect;
-import thaumcraft.api.aspects.AspectList;
-import thaumcraft.api.aspects.IAspectContainer;
-import thaumcraft.api.aspects.IAspectSource;
-import thaumcraft.api.aspects.IEssentiaTransport;
-import buildcraft.api.power.IPowerReceptor;
-import buildcraft.api.power.PowerHandler;
-import buildcraft.api.power.PowerHandler.PowerReceiver;
-import cofh.api.energy.IEnergyHandler;
-import cofh.api.energy.IEnergyStorage;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -43,11 +28,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TEBlockInterface extends TileEntity implements ISidedInventory,
-		IFluidHandler, IEnergyHandler, IEnergyStorage, IPowerReceptor,
-		IEnergySink, IEnergyConductor, IEnergySource, IAspectContainer,
-		IEssentiaTransport, IAspectSource {
-
+public class TEBlockInterface extends TileEntity implements ISidedInventory, IFluidHandler {
 	private String userName = null;
 	private EntityPlayer userEntity = null;
 	public boolean enderMode = false;
@@ -118,7 +99,6 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 		int invType = this.getCurrentInventoryType();
 		if (invType != INVTYPE_PLAYER) {
 			if (entityLocation != null && entityLocation.length == 3) {
-				System.out.println("changing entity");
 				this.blockEntity = this.getWorldObj()
 						.getBlockTileEntity(entityLocation[0],
 								entityLocation[1], entityLocation[2]);
@@ -173,14 +153,7 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 	}
 
 	public static boolean isValidTE(TileEntity te) {
-		return te instanceof IInventory || te instanceof ISidedInventory
-				|| te instanceof IEnergyHandler || te instanceof IFluidHandler
-				|| te instanceof IPowerReceptor || te instanceof IEnergySink
-				|| te instanceof IAspectContainer
-				|| te instanceof IEnergyStorage
-				|| te instanceof IEssentiaTransport
-				|| te instanceof IEnergyConductor
-				|| te instanceof IEnergySource || te instanceof IAspectSource;
+		return te instanceof IInventory || te instanceof IFluidHandler;
 	}
 
 	public int getCurrentInventoryType() {
@@ -304,7 +277,6 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 	@Override
 	public int getSizeInventory() {
 		IInventory linkedInventory = this.getLinkedInventory();
-		System.out.println(linkedInventory);
 		return (linkedInventory != null) ? linkedInventory.getSizeInventory()
 				: 0;
 	}
@@ -387,8 +359,6 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
 		IInventory linkedInventory = this.getLinkedInventory();
-
-		System.out.println(worldObj.isRemote + " - " + linkedInventory);
 
 		return (linkedInventory != null) ? linkedInventory.isItemValidForSlot(
 				i, itemstack) : false;
@@ -486,323 +456,5 @@ public class TEBlockInterface extends TileEntity implements ISidedInventory,
 
 		return (linkedTE instanceof IFluidHandler) ? ((IFluidHandler) linkedTE)
 				.getTankInfo(from) : null;
-	}
-
-	// ================================================================================
-	// IEnergyHandler interface
-	// ================================================================================
-
-	@Override
-	public boolean canInterface(ForgeDirection arg0) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IEnergyHandler ? ((IEnergyHandler) linkedTE)
-				.canInterface(arg0) : false;
-	}
-
-	@Override
-	public int extractEnergy(ForgeDirection arg0, int arg1, boolean arg2) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IEnergyHandler ? ((IEnergyHandler) linkedTE)
-				.extractEnergy(arg0, arg1, arg2) : 0;
-	}
-
-	@Override
-	public int getEnergyStored(ForgeDirection arg0) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IEnergyHandler ? ((IEnergyHandler) linkedTE)
-				.getEnergyStored(arg0) : 0;
-	}
-
-	@Override
-	public int getMaxEnergyStored(ForgeDirection arg0) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IEnergyHandler ? ((IEnergyHandler) linkedTE)
-				.getMaxEnergyStored(arg0) : 0;
-	}
-
-	@Override
-	public int receiveEnergy(ForgeDirection arg0, int arg1, boolean arg2) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IEnergyHandler ? ((IEnergyHandler) linkedTE)
-				.receiveEnergy(arg0, arg1, arg2) : 0;
-	}
-
-	@Override
-	public void doWork(PowerHandler arg0) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		if (linkedTE instanceof IPowerReceptor)
-			((IPowerReceptor) linkedTE).doWork(arg0);
-	}
-
-	@Override
-	public PowerReceiver getPowerReceiver(ForgeDirection arg0) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IPowerReceptor ? ((IPowerReceptor) linkedTE)
-				.getPowerReceiver(arg0) : null;
-	}
-
-	@Override
-	public World getWorld() {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		if (linkedTE != null)
-			return linkedTE.worldObj;
-
-		return null;
-	}
-
-	@Override
-	public boolean acceptsEnergyFrom(TileEntity arg0, ForgeDirection arg1) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IEnergySink ? ((IEnergySink) linkedTE)
-				.acceptsEnergyFrom(arg0, arg1) : false;
-	}
-
-	@Override
-	public double demandedEnergyUnits() {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IEnergySink ? ((IEnergySink) linkedTE)
-				.demandedEnergyUnits() : 0;
-	}
-
-	@Override
-	public int getMaxSafeInput() {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IEnergySink ? ((IEnergySink) linkedTE)
-				.getMaxSafeInput() : 0;
-	}
-
-	@Override
-	public double injectEnergyUnits(ForgeDirection arg0, double arg1) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IEnergySink ? ((IEnergySink) linkedTE)
-				.injectEnergyUnits(arg0, arg1) : 0;
-	}
-
-	@Override
-	public boolean canInputFrom(ForgeDirection arg0) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IEssentiaTransport ? ((IEssentiaTransport) linkedTE)
-				.canInputFrom(arg0) : false;
-	}
-
-	@Override
-	public boolean canOutputTo(ForgeDirection arg0) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IEssentiaTransport ? ((IEssentiaTransport) linkedTE)
-				.canOutputTo(arg0) : false;
-	}
-
-	@Override
-	public AspectList getEssentia(ForgeDirection arg0) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IEssentiaTransport ? ((IEssentiaTransport) linkedTE)
-				.getEssentia(arg0) : null;
-	}
-
-	@Override
-	public int getMinimumSuction() {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IEssentiaTransport ? ((IEssentiaTransport) linkedTE)
-				.getMinimumSuction() : 0;
-	}
-
-	@Override
-	public AspectList getSuction(ForgeDirection arg0) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IEssentiaTransport ? ((IEssentiaTransport) linkedTE)
-				.getSuction(arg0) : null;
-	}
-
-	@Override
-	public boolean isConnectable(ForgeDirection arg0) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IEssentiaTransport ? ((IEssentiaTransport) linkedTE)
-				.isConnectable(arg0) : false;
-	}
-
-	@Override
-	public boolean renderExtendedTube() {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IEssentiaTransport ? ((IEssentiaTransport) linkedTE)
-				.renderExtendedTube() : false;
-	}
-
-	@Override
-	public void setSuction(AspectList arg0) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		if (linkedTE instanceof IEssentiaTransport)
-			((IEssentiaTransport) linkedTE).setSuction(arg0);
-	}
-
-	@Override
-	public void setSuction(Aspect arg0, int arg1) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		if (linkedTE instanceof IEssentiaTransport)
-			((IEssentiaTransport) linkedTE).setSuction(arg0, arg1);
-		;
-	}
-
-	@Override
-	public int takeVis(Aspect arg0, int arg1) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IEssentiaTransport ? ((IEssentiaTransport) linkedTE)
-				.takeVis(arg0, arg1) : 0;
-	}
-
-	@Override
-	public int addToContainer(Aspect arg0, int arg1) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IAspectContainer ? ((IAspectContainer) linkedTE)
-				.addToContainer(arg0, arg1) : 0;
-	}
-
-	@Override
-	public int containerContains(Aspect arg0) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IAspectContainer ? ((IAspectContainer) linkedTE)
-				.containerContains(arg0) : 0;
-	}
-
-	@Override
-	public boolean doesContainerAccept(Aspect arg0) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IAspectContainer ? ((IAspectContainer) linkedTE)
-				.doesContainerAccept(arg0) : false;
-	}
-
-	@Override
-	public boolean doesContainerContain(AspectList arg0) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IAspectContainer ? ((IAspectContainer) linkedTE)
-				.doesContainerContain(arg0) : false;
-	}
-
-	@Override
-	public boolean doesContainerContainAmount(Aspect arg0, int arg1) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IAspectContainer ? ((IAspectContainer) linkedTE)
-				.doesContainerContainAmount(arg0, arg1) : false;
-	}
-
-	@Override
-	public AspectList getAspects() {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IAspectContainer ? ((IAspectContainer) linkedTE)
-				.getAspects() : null;
-	}
-
-	@Override
-	public void setAspects(AspectList arg0) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		if (linkedTE instanceof IAspectContainer)
-			((IAspectContainer) linkedTE).setAspects(arg0);
-	}
-
-	@Override
-	public boolean takeFromContainer(AspectList arg0) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IAspectContainer ? ((IAspectContainer) linkedTE)
-				.takeFromContainer(arg0) : false;
-	}
-
-	@Override
-	public boolean takeFromContainer(Aspect arg0, int arg1) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IAspectContainer ? ((IAspectContainer) linkedTE)
-				.takeFromContainer(arg0, arg1) : false;
-	}
-
-	@Override
-	public boolean emitsEnergyTo(TileEntity receiver, ForgeDirection direction) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		
-		return linkedTE instanceof IEnergyEmitter ? ((IEnergyEmitter) linkedTE).emitsEnergyTo(receiver, direction) : false;
-	}
-
-	@Override
-	public double getOfferedEnergy() {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		
-		return linkedTE instanceof IEnergySource ? ((IEnergySource) linkedTE).getOfferedEnergy() : 0;
-	}
-
-	@Override
-	public void drawEnergy(double amount) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		
-		if(linkedTE instanceof IEnergySource)
-			((IEnergySource) linkedTE).drawEnergy(amount);
-	}
-
-	@Override
-	public double getConductionLoss() {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		return linkedTE instanceof IEnergyConductor ? ((IEnergyConductor) linkedTE).getConductionLoss()*1.15D : 0;
-	}
-
-	@Override
-	public int getInsulationEnergyAbsorption() {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		
-		return linkedTE instanceof IEnergyConductor ? (int)(((IEnergyConductor) linkedTE).getInsulationEnergyAbsorption()*1.15D) : 0;
-	}
-
-	@Override
-	public int getInsulationBreakdownEnergy() {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		
-		return linkedTE instanceof IEnergyConductor ? (int)(((IEnergyConductor) linkedTE).getInsulationBreakdownEnergy()) : 0;
-
-	}
-
-	@Override
-	public int getConductorBreakdownEnergy() {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		
-		return linkedTE instanceof IEnergyConductor ? (int)(((IEnergyConductor) linkedTE).getConductorBreakdownEnergy()) : 0;
-	}
-
-	@Override
-	public void removeInsulation() {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		
-		if(linkedTE instanceof IEnergyConductor)
-			((IEnergyConductor) linkedTE).removeInsulation();
-	}
-
-	@Override
-	public void removeConductor() {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		
-		if(linkedTE instanceof IEnergyConductor)
-			((IEnergyConductor) linkedTE).removeConductor();
-	}
-
-	@Override
-	public int receiveEnergy(int maxReceive, boolean simulate) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-	
-		return linkedTE instanceof IEnergyStorage ? ((IEnergyStorage) linkedTE).receiveEnergy(maxReceive, simulate) : 0;
-	}
-
-	@Override
-	public int extractEnergy(int maxExtract, boolean simulate) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		
-		return linkedTE instanceof IEnergyStorage ? ((IEnergyStorage) linkedTE).extractEnergy(maxExtract, simulate) : 0;
-	}
-
-	@Override
-	public int getEnergyStored() {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		
-		return linkedTE instanceof IEnergyStorage ? ((IEnergyStorage) linkedTE).getEnergyStored() : 0;
-	}
-
-	@Override
-	public int getMaxEnergyStored() {
-		TileEntity linkedTE = this.getLinkedTileEntity();
-		
-		return linkedTE instanceof IEnergyStorage ? ((IEnergyStorage) linkedTE).getMaxEnergyStored() : 0;
 	}
 }

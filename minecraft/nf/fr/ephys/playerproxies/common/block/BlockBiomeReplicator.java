@@ -4,20 +4,22 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBiomeChanger;
+import nf.fr.ephys.playerproxies.common.PlayerProxies;
+import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBiomeReplicator;
 
-public class BlockBiomeChanger extends BlockContainer {
+public class BlockBiomeReplicator extends BlockContainer {
 	public static int blockID = 806;
 	
 	private Icon iconTop;
 	private Icon iconSide;
 	private Icon iconBottom;
 	
-	public BlockBiomeChanger() {
+	public BlockBiomeReplicator() {
 		super(blockID, Material.wood);
 	}
 
@@ -50,6 +52,17 @@ public class BlockBiomeChanger extends BlockContainer {
 
 	@Override
 	public TileEntity createNewTileEntity(World world) {
-		return new TileEntityBiomeChanger();
+		return new TileEntityBiomeReplicator();
+	}
+	
+	@Override
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9) {
+		// if item inside, eject
+		
+		if (player.getHeldItem() != null && player.getHeldItem().itemID == PlayerProxies.itemBiomeStorage.itemID) {
+			// insert item
+		}
+		
+		return true;
 	}
 }

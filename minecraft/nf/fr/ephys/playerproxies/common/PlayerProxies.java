@@ -3,7 +3,8 @@ package nf.fr.ephys.playerproxies.common;
 import java.util.logging.Logger;
 
 import net.minecraftforge.common.Configuration;
-import nf.fr.ephys.playerproxies.common.block.BlockBiomeChanger;
+import nf.fr.ephys.playerproxies.common.block.BlockBiomeReplicator;
+import nf.fr.ephys.playerproxies.common.block.BlockBiomeScanner;
 import nf.fr.ephys.playerproxies.common.block.BlockEtherealGlass;
 import nf.fr.ephys.playerproxies.common.block.BlockHardenedStone;
 import nf.fr.ephys.playerproxies.common.block.BlockInterface;
@@ -12,6 +13,7 @@ import nf.fr.ephys.playerproxies.common.block.BlockProximitySensor;
 import nf.fr.ephys.playerproxies.common.block.BlockSpawnerLoader;
 import nf.fr.ephys.playerproxies.common.core.CommonProxy;
 import nf.fr.ephys.playerproxies.common.core.PacketHandler;
+import nf.fr.ephys.playerproxies.common.item.ItemBiomeStorage;
 import nf.fr.ephys.playerproxies.common.item.ItemLinkFocus;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
 import cpw.mods.fml.common.FMLLog;
@@ -40,6 +42,7 @@ public class PlayerProxies {
 	public static final String version = "1.6.4-0.0.2";
 
 	public static final int GUI_UNIVERSAL_INTERFACE = 0;
+	public static final int GUI_BIOME_SCANNER = 1;
 
 	@Instance("ephys.playerproxies")
     public static PlayerProxies instance;
@@ -57,11 +60,13 @@ public class PlayerProxies {
 	public static BlockParticleGenerator blockParticleGenerator;
 	public static BlockEtherealGlass blockEtherealGlass;
 	public static BlockProximitySensor blockProximitySensor;
-	public static BlockBiomeChanger blockBiomeChanger;
+	public static BlockBiomeReplicator blockBiomeChanger;
+	public static BlockBiomeScanner blockBiomeScanner;
 
 	// items
 	public static ItemLinker itemLinker;
 	public static ItemLinkFocus itemLinkFocus;
+	public static ItemBiomeStorage itemBiomeStorage;
 
     @EventHandler
     public void preLoad(FMLPreInitializationEvent event) {

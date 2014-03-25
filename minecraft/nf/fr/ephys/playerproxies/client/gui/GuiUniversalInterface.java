@@ -12,7 +12,7 @@ import nf.fr.ephys.playerproxies.common.tileentity.TEBlockInterface;
 
 public class GuiUniversalInterface extends GuiContainer {
 	private ContainerUniversalInterface container;
-	private static ResourceLocation background = new ResourceLocation("ephys.pp", "/textures/gui/universal_interface.png");
+	private static ResourceLocation background = new ResourceLocation("ephys.pp", "/textures/gui/universalInterface.png");
 
 	public GuiUniversalInterface(ContainerUniversalInterface container) {
 		super(container);
@@ -27,9 +27,7 @@ public class GuiUniversalInterface extends GuiContainer {
 	public void initGui() {
 		super.initGui();
 
-		buttonList.add(new GuiButton(0, this.xSize, this.ySize, 150, 20, "Ender Chest"));
-		
-		((GuiButton)buttonList.get(0)).displayString = this.container.getTileEntity().enderMode ? "Ender Chest" : "Inventory";
+		buttonList.add(new GuiButton(0, this.xSize, this.ySize, 150, 20, this.container.getTileEntity().enderMode ? "Ender Chest" : "Inventory"));
 	}
 	
 	@Override

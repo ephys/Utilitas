@@ -154,6 +154,10 @@ public class NBTHelper {
 	// --------------------------------------------------------------------------
 	// Integer
 	// --------------------------------------------------------------------------
+	public static int getInt(ItemStack stack, String name, int def) {
+		return getInt(getNBT(stack), name, def);
+	}
+	
 	public static int getInt(NBTTagCompound nbt, String name, int def) {
 		if(!nbt.hasKey(name))
 			return def;

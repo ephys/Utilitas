@@ -120,7 +120,7 @@ public class TileEntityProximitySensor extends TileEntity {
 	public void updateEntity() {
 		super.updateEntity();
 		
-		if (updateTick != 25) {
+		if (updateTick != 15) {
 			updateTick++;
 			return;
 		}
@@ -132,7 +132,7 @@ public class TileEntityProximitySensor extends TileEntity {
 			yCoord-RADIUS_Y, 
 			zCoord-RADIUS_Z,
 			xCoord+RADIUS_X,
-			xCoord+RADIUS_Y,
+			yCoord+RADIUS_Y,
 			zCoord+RADIUS_Z
 		);
 

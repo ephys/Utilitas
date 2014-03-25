@@ -12,6 +12,7 @@ import net.minecraft.util.Icon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import nf.fr.ephys.playerproxies.common.PlayerProxies;
 
 public class BlockParticleGenerator extends Block {
 	public static int blockID = 803;
@@ -48,7 +49,7 @@ public class BlockParticleGenerator extends Block {
 			offsetType++;
 
 			block = Block.blocksList[par1iBlockAccess.getBlockId(par2+offset[0], par3+offset[1], par4+offset[2])];
-		} while ((block == null || block == this || !block.isOpaqueCube()) && offsetType != 3);
+		} while ((block == null || block == this || !block.isOpaqueCube() || block.blockID == PlayerProxies.blockHardenedStone.blockID) && offsetType != 3);
 	
 		offsetType = 0;
 		
@@ -62,7 +63,7 @@ public class BlockParticleGenerator extends Block {
 				offsetType++;
 				
 				block = Block.blocksList[par1iBlockAccess.getBlockId(par2+offset[0], par3+offset[1], par4+offset[2])];
-			} while ((block == null || block == this || !block.isOpaqueCube()) && offsetType != 3);
+			} while ((block == null || block == this || !block.isOpaqueCube() || block.blockID == PlayerProxies.blockHardenedStone.blockID) && offsetType != 3);
 		}
 		
 		if (block == null || block == this || !block.isOpaqueCube())
