@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
@@ -13,14 +14,19 @@ import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBiomeReplicator;
 
 public class BlockBiomeReplicator extends BlockContainer {
-	public static int blockID = 806;
+	public static int BLOCK_ID = 806;
 	
 	private Icon iconTop;
 	private Icon iconSide;
 	private Icon iconBottom;
 	
 	public BlockBiomeReplicator() {
-		super(blockID, Material.wood);
+		super(BLOCK_ID, Material.wood);
+
+		setHardness(1.0F);
+		setCreativeTab(CreativeTabs.tabDecorations);
+		
+		setStepSound(soundWoodFootstep);
 	}
 
 	@Override

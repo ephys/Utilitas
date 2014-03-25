@@ -23,10 +23,10 @@ import nf.fr.ephys.playerproxies.common.item.ItemLinker;
 import nf.fr.ephys.playerproxies.common.tileentity.TEBlockInterface;
 
 public class BlockInterface extends BlockContainer {
-	public static int blockID = 800;
+	public static int BLOCK_ID = 800;
 	
 	public BlockInterface() {
-		super(BlockInterface.blockID, Material.glass);
+		super(BlockInterface.BLOCK_ID, Material.glass);
 		this.setStepSound(this.soundGlassFootstep);
 		setLightValue(1.0F);
 		setHardness(1.0F);

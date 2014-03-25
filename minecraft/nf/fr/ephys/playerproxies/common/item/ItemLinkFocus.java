@@ -10,10 +10,10 @@ import net.minecraft.world.World;
 import nf.fr.ephys.playerproxies.common.entity.Ghost;
 
 public class ItemLinkFocus extends Item {
-	public static int itemID = 900;
+	public static int ITEM_ID = 900;
 	
 	public ItemLinkFocus() {
-		super(itemID);
+		super(ITEM_ID);
 		setMaxStackSize(64);
 		setCreativeTab(CreativeTabs.tabMaterials);
 		setTextureName("ephys.pp:linkFocus");

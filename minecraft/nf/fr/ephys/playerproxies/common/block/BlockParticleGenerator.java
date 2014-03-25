@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 
 public class BlockParticleGenerator extends Block {
-	public static int blockID = 803;
+	public static int BLOCK_ID = 803;
 	
 	private Icon iconSide;
 	private Icon iconTop;
@@ -25,7 +25,7 @@ public class BlockParticleGenerator extends Block {
 			"enchantmenttable", "flame", "lava", "splash", "reddust", "heart" };
 
 	public BlockParticleGenerator() {
-		super(blockID, Material.iron);
+		super(BLOCK_ID, Material.iron);
 		
 		setHardness(2F);
 		setResistance(500.0F);

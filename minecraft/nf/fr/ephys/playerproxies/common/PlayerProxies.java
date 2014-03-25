@@ -76,15 +76,18 @@ public class PlayerProxies {
         Configuration config = new Configuration(event.getSuggestedConfigurationFile());
         config.load();
         
-        ItemLinker.itemID = config.getItem("ItemLinker", ItemLinker.itemID).getInt();
-        ItemLinkFocus.itemID = config.getItem("ItemLinkFocus", ItemLinkFocus.itemID).getInt();
+        ItemLinker.ITEM_ID = config.getItem("ItemLinker", ItemLinker.ITEM_ID).getInt();
+        ItemLinkFocus.ITEM_ID = config.getItem("ItemLinkFocus", ItemLinkFocus.ITEM_ID).getInt();
+        ItemBiomeStorage.ITEM_ID = config.getItem("ItemBiomeStorage", ItemBiomeStorage.ITEM_ID).getInt();
         
-        BlockInterface.blockID = config.getBlock("BlockInterface", BlockInterface.blockID).getInt();
-        BlockSpawnerLoader.blockID = config.getBlock("BlockSpawnerLoader", BlockSpawnerLoader.blockID).getInt();
-        BlockHardenedStone.blockID = config.getBlock("BlockHardenedStone", BlockHardenedStone.blockID).getInt();
-        BlockParticleGenerator.blockID = config.getBlock("BlockParticleGenerator", BlockParticleGenerator.blockID).getInt();
-        BlockEtherealGlass.blockID = config.getBlock("BlockEtherealGlass", BlockEtherealGlass.blockID).getInt();
-        BlockProximitySensor.blockID = config.getBlock("BlockProximitySensor", BlockProximitySensor.blockID).getInt();
+        BlockInterface.BLOCK_ID = config.getBlock("BlockInterface", BlockInterface.BLOCK_ID).getInt();
+        BlockSpawnerLoader.BLOCK_ID = config.getBlock("BlockSpawnerLoader", BlockSpawnerLoader.BLOCK_ID).getInt();
+        BlockHardenedStone.BLOCK_ID = config.getBlock("BlockHardenedStone", BlockHardenedStone.BLOCK_ID).getInt();
+        BlockParticleGenerator.BLOCK_ID = config.getBlock("BlockParticleGenerator", BlockParticleGenerator.BLOCK_ID).getInt();
+        BlockEtherealGlass.BLOCK_ID = config.getBlock("BlockEtherealGlass", BlockEtherealGlass.BLOCK_ID).getInt();
+        BlockProximitySensor.BLOCK_ID = config.getBlock("BlockProximitySensor", BlockProximitySensor.BLOCK_ID).getInt();
+        BlockBiomeReplicator.BLOCK_ID = config.getBlock("BlockBiomeReplicator", BlockBiomeReplicator.BLOCK_ID).getInt();
+        BlockBiomeScanner.BLOCK_ID = config.getBlock("BlockBiomeScanner", BlockBiomeScanner.BLOCK_ID).getInt();
 
         config.save();
     }

@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
@@ -12,13 +13,18 @@ import net.minecraft.world.World;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityProximitySensor;
 
 public class BlockProximitySensor extends BlockContainer {
-	public static int blockID = 805;
+	public static int BLOCK_ID = 805;
 	
 	private Icon iconTop;
 	private Icon iconSide;
 	
 	public BlockProximitySensor() {
-		super(blockID, Material.iron);
+		super(BLOCK_ID, Material.iron);
+		
+		setHardness(2F);
+		setResistance(500.0F);
+		
+		setCreativeTab(CreativeTabs.tabDecorations);
 	}
 	
 	@Override

@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.WorldSavedData;
 
 public class NBTHelper {
 	public static NBTTagCompound getNBT(ItemStack stack) {
@@ -17,6 +18,8 @@ public class NBTHelper {
 	// Setters
 	// ==========================================================================
 	public static void setIntArray(ItemStack stack, String name, int[] arr) {
+		if (stack == null) return;
+
 		setIntArray(getNBT(stack), name, arr);
 	}
 	
@@ -25,18 +28,28 @@ public class NBTHelper {
 
 		nbt.setIntArray(name, arr);
 	}
+	
+	public static void setInt(ItemStack stack, String name, int value) {
+		if (stack == null) return;
+		
+		getNBT(stack).setInteger(name, value);
+	}
 
 	public static void setString(ItemStack stack, String name, String str) {
+		if (stack == null) return;
+		
 		setString(getNBT(stack), name, str);
 	}
 	
 	public static void setString(NBTTagCompound nbt, String name, String str) {
 		if(str == null) return;
-		
+
 		nbt.setString(name, str);
 	}
 
 	public static void setClass(ItemStack stack, String name, Class<?> clazz) {
+		if (stack == null) return;
+
 		setString(getNBT(stack), name, clazz.getName());
 	}
 	
@@ -46,6 +59,53 @@ public class NBTHelper {
 		setString(nbt, name, clazz.getName());
 	}
 
+	// --------------------------------------------------------------------------
+	// implements writeToNBT
+	// --------------------------------------------------------------------------
+	public static void setWritable(NBTTagCompound nbt, String name, TileEntity input) {
+		if (input == null) return;
+		
+		NBTTagCompound writableNBT = new NBTTagCompound();
+		input.writeToNBT(writableNBT);
+		setWritable(nbt, name, writableNBT);
+	}
+	
+	public static void setWritable(NBTTagCompound nbt, String name, Entity input) {
+		if (input == null) return;
+		
+		NBTTagCompound writableNBT = new NBTTagCompound();
+		input.writeToNBT(writableNBT);
+		setWritable(nbt, name, writableNBT);
+	}
+	
+	public static void setWritable(NBTTagCompound nbt, String name, ItemStack input) {
+		if (input == null) return;
+		
+		NBTTagCompound writableNBT = new NBTTagCompound();
+		input.writeToNBT(writableNBT);
+		setWritable(nbt, name, writableNBT);
+	}
+	
+	public static void setWritable(NBTTagCompound nbt, String name, WorldSavedData input) {
+		if (input == null) return;
+		
+		NBTTagCompound writableNBT = new NBTTagCompound();
+		input.writeToNBT(writableNBT);
+		setWritable(nbt, name, writableNBT);
+	}
+	
+	/**
+	 * Writes input in nbt.name
+	 * @param nbt	The NBT compound to write to
+	 * @param name	The key for the input
+	 * @param input	The NBT to write
+	 */
+	public static void setWritable(NBTTagCompound nbt, String name, NBTTagCompound input) {
+		if (input == null) return;
+
+		nbt.setCompoundTag(name, input);
+	}
+	
 	// ==========================================================================
 	// Getters
 	// ==========================================================================
@@ -65,10 +125,14 @@ public class NBTHelper {
 	}
 	
 	public static String getString(ItemStack stack, String name) {
+		if (stack == null) return null;
+
 		return getString(getNBT(stack), name, null);
 	}
 	
 	public static String getString(ItemStack stack, String name, String def) {
+		if (stack == null) return def;
+		
 		return getString(getNBT(stack), name, def);
 	}
 
@@ -76,10 +140,14 @@ public class NBTHelper {
 	// int Array
 	// --------------------------------------------------------------------------
 	public static int[] getIntArray(ItemStack stack, String name) {
+		if (stack == null) return null;
+		
 		return getIntArray(getNBT(stack), name, null);
 	}
 
 	public static int[] getIntArray(ItemStack stack, String name, int[] def) {
+		if (stack == null) return def;
+		
 		return getIntArray(getNBT(stack), name, def);
 	}
 	
@@ -120,10 +188,14 @@ public class NBTHelper {
 	
 	
 	public static Class<?> getClass(ItemStack stack, String name) {
+		if (stack == null) return null;
+		
 		return getClass(getNBT(stack), name, null);
 	}
 	
 	public static Class<?> getClass(ItemStack stack, String name, Class<?> def) {
+		if (stack == null) return def;
+		
 		return getClass(getNBT(stack), name, def);
 	}
 	
@@ -136,8 +208,10 @@ public class NBTHelper {
 
 		return nbt.getBoolean(name);
 	}
-	
+
 	public static boolean getBoolean(ItemStack stack, String name, boolean def) {
+		if (stack == null) return def;
+		
 		return getBoolean(getNBT(stack), name, def);
 	}
 
@@ -155,13 +229,34 @@ public class NBTHelper {
 	// Integer
 	// --------------------------------------------------------------------------
 	public static int getInt(ItemStack stack, String name, int def) {
+		if (stack == null) return def;
+		
 		return getInt(getNBT(stack), name, def);
 	}
-	
+
 	public static int getInt(NBTTagCompound nbt, String name, int def) {
 		if(!nbt.hasKey(name))
 			return def;
 
 		return nbt.getInteger(name);
+	}
+	
+	// --------------------------------------------------------------------------
+	// implements readFromNBT
+	// --------------------------------------------------------------------------
+	public static NBTTagCompound getWritable(NBTTagCompound nbt, String name) {
+		return getWritable(nbt, name, null);
+	}
+	
+	public static NBTTagCompound getWritable(NBTTagCompound nbt, String name, NBTTagCompound def) {
+		if (!nbt.hasKey(name)) return def;
+		
+		return nbt.getCompoundTag(name);
+	}
+	
+	public static ItemStack getItemStack(NBTTagCompound nbt, String name, ItemStack def) {
+		if (!nbt.hasKey(name)) return def;
+		
+		return ItemStack.loadItemStackFromNBT(nbt.getCompoundTag(name));
 	}
 }

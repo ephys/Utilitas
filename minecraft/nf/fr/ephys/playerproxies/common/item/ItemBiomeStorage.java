@@ -15,18 +15,20 @@ import net.minecraftforge.common.BiomeManager;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
 public class ItemBiomeStorage extends Item {
-	public static int itemID = 902;
+	public static int ITEM_ID = 902;
 
 	public ItemBiomeStorage() {
-		super(itemID);
+		super(ITEM_ID);
+
 		setMaxStackSize(1);
-		setCreativeTab(CreativeTabs.tabTools);
-		setTextureName("ephys.pp:itemBiomeStorage");
+		setCreativeTab(CreativeTabs.tabMaterials);
+
+		setTextureName("ephys.pp:biomeStorage");
 	}
 	
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
-		int biomeId = NBTHelper.getInt(stack, "", -1);
+		int biomeId = NBTHelper.getInt(stack, "biome", -1);
 
 		list.add("Must be activated in a biome to duplicate it's signature.");
 		

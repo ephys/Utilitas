@@ -25,10 +25,10 @@ import nf.fr.ephys.playerproxies.common.tileentity.TileEntityProximitySensor;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
 public class ItemLinker extends Item {
-	public static int itemID = 901;
+	public static int ITEM_ID = 901;
 
 	public ItemLinker() {
-		super(itemID);
+		super(ITEM_ID);
 		setMaxStackSize(1);
 		setCreativeTab(CreativeTabs.tabTools);
 		setTextureName("ephys.pp:linkDevice");

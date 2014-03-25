@@ -29,8 +29,6 @@ public class GuiBiomeScanner extends GuiContainer {
 	@Override
 	public void initGui() {
 		super.initGui();
-
-		buttonList.add(new GuiButton(0, this.xSize, this.ySize, 150, 20, "Replicate biome signature"));
 	}
 
 	private TileEntityBiomeScanner getTileEntity() {
@@ -51,20 +49,18 @@ public class GuiBiomeScanner extends GuiContainer {
 	@Override
 	protected void drawGuiContainerForegroundLayer(int par1, int par2) {
 		fontRenderer.drawString("turtulscan 0.1a", 8, 8, 0x212121);
-		//fontRenderer.drawString("progress "+getTileEntity().getProgress()+"%", 8, 20, 0xeeeeee);
-		
+
 		BiomeGenBase biome = getTileEntity().getBiome();
-		
+
 		final int xOffset = 4;		
 		fontRenderer.drawString("Biome: " + biome.biomeName, 8, 23+xOffset, 0xeeeeee);
 		fontRenderer.drawString("Weather type: "+(biome.getEnableSnow() ? "Snow":"Rain"), 12, 35+xOffset, 0xeeeeee);
 		fontRenderer.drawString("Average temperature: "+(biome.getFloatTemperature()*10)+"°c", 12, 47+xOffset, 0xeeeeee);
 		fontRenderer.drawString("Average rainfall: "+biome.getFloatRainfall()+"mb", 12, 59+xOffset, 0xeeeeee);
 		fontRenderer.drawString("Spawn capacity: "+(biome.getSpawningChance()*100)+"%", 12, 71+xOffset, 0xeeeeee);
-
-		((GuiButton)buttonList.get(0)).enabled = (getTileEntity().getProgress() == -1);
-		((GuiButton)buttonList.get(0)).xPosition = ((width - xSize) >> 1) + 8;
-		((GuiButton)buttonList.get(0)).yPosition = ((height - ySize) >> 1) + ySize - 20 - 8;
+	
+		if (getTileEntity().getProgress() != -1)
+			fontRenderer.drawString("Decrypting biome signature : "+getTileEntity().getProgress()+"%", 8, 94, 0xeeeeee);
 	}
 
 	@Override

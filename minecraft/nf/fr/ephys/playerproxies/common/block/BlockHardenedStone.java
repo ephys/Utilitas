@@ -5,10 +5,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 
 public class BlockHardenedStone extends Block {
-	public static int blockID = 802;
+	public static int BLOCK_ID = 802;
 	
 	public BlockHardenedStone() {
-		super(BlockHardenedStone.blockID, Material.iron);
+		super(BlockHardenedStone.BLOCK_ID, Material.iron);
 
 		setHardness(2.5F);
 		setResistance(5000.0F);

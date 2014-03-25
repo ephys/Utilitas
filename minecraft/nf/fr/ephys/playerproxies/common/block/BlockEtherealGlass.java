@@ -28,10 +28,10 @@ import nf.fr.ephys.playerproxies.common.item.ItemLinker;
 import nf.fr.ephys.playerproxies.common.tileentity.TEBlockInterface;
 
 public class BlockEtherealGlass extends Block {
-	public static int blockID = 804;
+	public static int BLOCK_ID = 804;
 	
 	public BlockEtherealGlass() {
-		super(BlockEtherealGlass.blockID, Material.glass);
+		super(BlockEtherealGlass.BLOCK_ID, Material.glass);
 		this.setStepSound(Block.soundGlassFootstep);
 		setLightValue(1.0F);
 		setHardness(1.0F);

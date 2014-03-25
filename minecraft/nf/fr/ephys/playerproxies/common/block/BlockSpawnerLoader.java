@@ -25,12 +25,12 @@ import nf.fr.ephys.playerproxies.common.tileentity.TEBlockInterface;
 import nf.fr.ephys.playerproxies.common.tileentity.TESpawnerLoader;
 
 public class BlockSpawnerLoader extends BlockContainer {
-	public static int blockID = 801;
+	public static int BLOCK_ID = 801;
 	private Icon topIcon;
 	private Icon sideIcon;
 
 	public BlockSpawnerLoader() {
-		super(BlockSpawnerLoader.blockID, Material.iron);
+		super(BlockSpawnerLoader.BLOCK_ID, Material.iron);
 
 		setHardness(2.5F);
 		setResistance(1000.0F);
