@@ -12,13 +12,13 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
-import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBlockInterface;
+import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
 
 public class ContainerUniversalInterface extends Container {
-	TileEntityBlockInterface te;
+	TileEntityInterface te;
 	EntityPlayer player;
 
-	public ContainerUniversalInterface(EntityPlayer player, TileEntityBlockInterface te) {
+	public ContainerUniversalInterface(EntityPlayer player, TileEntityInterface te) {
 		this.te = te;
 		this.player = player;
 	}
@@ -51,7 +51,7 @@ public class ContainerUniversalInterface extends Container {
 		PacketDispatcher.sendPacketToServer(packet);
 	}
 
-	public TileEntityBlockInterface getTileEntity() {
+	public TileEntityInterface getTileEntity() {
 		return this.te;
 	}
 }

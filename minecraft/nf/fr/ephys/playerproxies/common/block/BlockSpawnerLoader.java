@@ -21,7 +21,7 @@ import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
-import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBlockInterface;
+import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntitySpawnerLoader;
 
 public class BlockSpawnerLoader extends BlockContainer {

@@ -49,7 +49,7 @@ public class ItemBiomeStorageRenderer implements IItemRenderer {
 
 		Color colorObj = new Color(color);
 		
-		GL11.glColor3b((byte) colorObj.getRed(), (byte) colorObj.getGreen(), (byte) colorObj.getBlue());
+		GL11.glColor3ub((byte) colorObj.getRed(), (byte) colorObj.getGreen(), (byte) colorObj.getBlue());
 
 		RenderBlocks renderBlock;
 		switch(type) {

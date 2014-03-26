@@ -16,16 +16,16 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBlockInterface;
+import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
 
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class TileEntityBlockInterfaceRenderer extends TileEntitySpecialRenderer {
+public class TileEntityInterfaceRenderer extends TileEntitySpecialRenderer {
 	private static final RenderBlocks renderBlocksInstance = new RenderBlocks();
 	private static int tick = 0;
 
-	public static void renderBlockInterface(TileEntityBlockInterface bi, double par1, double par3, double par5, float par7) {
+	public static void renderBlockInterface(TileEntityInterface bi, double par1, double par3, double par5, float par7) {
 		final float scale = 0.4375F;
 	
 		GL11.glDisable(GL11.GL_LIGHTING);
@@ -34,14 +34,14 @@ public class TileEntityBlockInterfaceRenderer extends TileEntitySpecialRenderer 
 	
 		int invtype = bi.getCurrentInventoryType();
 	
-		if (invtype == TileEntityBlockInterface.INVTYPE_TE || invtype == TileEntityBlockInterface.INVTYPE_TURTLE || (invtype == TileEntityBlockInterface.INVTYPE_PLAYER && bi.enderMode)) {
+		if (invtype == TileEntityInterface.INVTYPE_TE || invtype == TileEntityInterface.INVTYPE_TURTLE || (invtype == TileEntityInterface.INVTYPE_PLAYER && bi.enderMode)) {
 			GL11.glRotatef(tick++, 0.0F, 1.0F, 0.0F);
 			GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
 	
 			Block chest = (bi.enderMode) ? Block.enderChest : Block.chest;
 
-			TileEntityBlockInterfaceRenderer.renderBlocksInstance.renderBlockAsItem(chest, 0, 1.0F);
-		} else if(invtype == TileEntityBlockInterface.INVTYPE_PLAYER) {
+			TileEntityInterfaceRenderer.renderBlocksInstance.renderBlockAsItem(chest, 0, 1.0F);
+		} else if(invtype == TileEntityInterface.INVTYPE_PLAYER) {
 			World world = Minecraft.getMinecraft().theWorld;
 			EntityPlayer player = world.getPlayerEntityByName(bi.getLinkedPlayer());
 	
@@ -61,7 +61,7 @@ public class TileEntityBlockInterfaceRenderer extends TileEntitySpecialRenderer 
 	public void renderTileEntityAt(TileEntity te, double par2, double par4, double par6, float par8) {
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float) par2 + 0.5F, (float) par4, (float) par6 + 0.5F);
-		renderBlockInterface((TileEntityBlockInterface) te, par2, par4, par6, par8);
+		renderBlockInterface((TileEntityInterface) te, par2, par4, par6, par8);
 		GL11.glPopMatrix();
 	}
 }

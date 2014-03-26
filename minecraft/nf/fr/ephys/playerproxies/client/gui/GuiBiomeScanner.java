@@ -10,7 +10,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.BiomeGenBase;
 import nf.fr.ephys.playerproxies.common.container.ContainerBiomeScanner;
 import nf.fr.ephys.playerproxies.common.container.ContainerUniversalInterface;
-import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBlockInterface;
+import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBiomeScanner;
 
 public class GuiBiomeScanner extends GuiContainer {

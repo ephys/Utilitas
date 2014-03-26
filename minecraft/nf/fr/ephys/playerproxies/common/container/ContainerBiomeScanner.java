@@ -15,7 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
-import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBlockInterface;
+import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBiomeScanner;
 import nf.fr.ephys.playerproxies.util.FilteredSlot;
 

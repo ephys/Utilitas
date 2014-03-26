@@ -136,6 +136,12 @@ public class TileEntityItemTicker extends TileEntity implements IInventory {
 	}
 	
 	@Override
+	public void onInventoryChanged() {
+		// TODO Auto-generated method stub
+		super.onInventoryChanged();
+	}
+	
+	@Override
 	public void updateEntity() {
 		if (this.item != null) {
 			if (this.player == null) this.init();

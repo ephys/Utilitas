@@ -20,11 +20,11 @@ import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
-import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBlockInterface;
+import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
 
 public class BlockInterface extends BlockContainer {
 	public static int BLOCK_ID = 800;
-	
+
 	public BlockInterface() {
 		super(BlockInterface.BLOCK_ID, Material.glass);
 		this.setStepSound(this.soundGlassFootstep);
@@ -36,34 +36,39 @@ public class BlockInterface extends BlockContainer {
 
 	@Override
 	public TileEntity createNewTileEntity(World world) {
-		return new TileEntityBlockInterface();
+		return new TileEntityInterface();
 	}
-	
-    public void onBlockPlacedBy(World par1World, int par2, int par3, int par4, EntityLivingBase par5EntityLivingBase, ItemStack par6ItemStack) {}
-    
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitVectX, float hitVectY, float hitVectZ) {
-    	if(player.getHeldItem() == null) {
-        	if(!world.isRemote)
-        		((TileEntityBlockInterface)world.getBlockTileEntity(x, y, z)).toggleLinked(player);
 
-    		world.markBlockForUpdate(x, y, z);
+	public void onBlockPlacedBy(World par1World, int par2, int par3, int par4,
+			EntityLivingBase par5EntityLivingBase, ItemStack par6ItemStack) {
+	}
 
-    		return true;
-    	}
-    	
-    	return false;
-    }
-	
+	public boolean onBlockActivated(World world, int x, int y, int z,
+			EntityPlayer player, int side, float hitVectX, float hitVectY,
+			float hitVectZ) {
+		if (player.getHeldItem() == null) {
+			if (!world.isRemote)
+				((TileEntityInterface) world.getBlockTileEntity(x, y, z))
+						.toggleLinked(player);
+
+			world.markBlockForUpdate(x, y, z);
+
+			return true;
+		}
+
+		return false;
+	}
+
 	@Override
 	public boolean isOpaqueCube() {
 		return false;
 	}
-	
+
 	@Override
-    public int getRenderBlockPass() {
-        return 1;
-    }
-	
+	public int getRenderBlockPass() {
+		return 1;
+	}
+
 	@Override
 	public boolean shouldSideBeRendered(IBlockAccess par1iBlockAccess,
 			int par2, int par3, int par4, int par5) {

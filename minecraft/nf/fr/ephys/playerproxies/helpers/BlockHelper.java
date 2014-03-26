@@ -54,8 +54,7 @@ public class BlockHelper {
 								(NBTTagCompound) itemstack.getTagCompound()
 										.copy());
 					}
-					
-					System.out.println("SPAWNING "+entityitem);
+
 					world.spawnEntityInWorld(entityitem);
 				}
 			}

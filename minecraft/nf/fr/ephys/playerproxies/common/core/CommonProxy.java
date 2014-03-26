@@ -20,7 +20,7 @@ import nf.fr.ephys.playerproxies.common.item.ItemBiomeStorage;
 import nf.fr.ephys.playerproxies.common.item.ItemDebug;
 import nf.fr.ephys.playerproxies.common.item.ItemLinkFocus;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
-import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBlockInterface;
+import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntitySpawnerLoader;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBiomeReplicator;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBiomeScanner;
@@ -47,7 +47,7 @@ public class CommonProxy {
 		PlayerProxies.blockInterface = new BlockInterface();
 		PlayerProxies.blockInterface.setUnlocalizedName("PP_UniversalInterface");
 		GameRegistry.registerBlock(PlayerProxies.blockInterface, "PP_UniversalInterface");
-		GameRegistry.registerTileEntity(TileEntityBlockInterface.class, "PP_UniversalInterface");
+		GameRegistry.registerTileEntity(TileEntityInterface.class, "PP_UniversalInterface");
 		LanguageRegistry.instance().addName(PlayerProxies.blockInterface, "Universal Interface");
 		
 		PlayerProxies.blockSpawnerLoader = new BlockSpawnerLoader();

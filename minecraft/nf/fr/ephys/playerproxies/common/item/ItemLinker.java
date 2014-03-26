@@ -20,7 +20,7 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import nf.fr.ephys.playerproxies.client.gui.GuiUniversalInterface;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
-import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBlockInterface;
+import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityProximitySensor;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
@@ -37,7 +37,7 @@ public class ItemLinker extends Item {
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
 		String name = NBTHelper.getString(stack, "playerName", "none");
-		
+
 		if(name == null)
 			name = NBTHelper.getString(stack, "entityName", "none");
 
@@ -46,21 +46,18 @@ public class ItemLinker extends Item {
 
 		super.addInformation(stack, par2EntityPlayer, list, par4);
 	}
-	
+
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World par2World, EntityPlayer player) {
 		if(!par2World.isRemote && player.isSneaking()) {
 			NBTTagCompound nbt = NBTHelper.getNBT(stack);
 			if(nbt.hasKey("entityName") || nbt.hasKey("playerName")) {
-				nbt.removeTag("entityClass");
-				nbt.removeTag("entityName");
-				nbt.removeTag("linkedInterface");
-				nbt.removeTag("playerName");
-				
+				stack.setTagCompound(new NBTTagCompound());
+
 				player.addChatMessage("Link wand data cleared");
 			} else {
 				nbt.setString("playerName", player.username);
-				
+
 				player.addChatMessage("Link wand bound to "+player.username);
 			}
 		}
@@ -76,7 +73,7 @@ public class ItemLinker extends Item {
 			if (te == null)
 				return false;
 
-			if (te instanceof TileEntityBlockInterface) {
+			if (te instanceof TileEntityInterface) {
 				if (!player.isSneaking()) {
 					player.openGui(PlayerProxies.instance, PlayerProxies.GUI_UNIVERSAL_INTERFACE, world, x, y, z);
 				} else {
@@ -84,15 +81,15 @@ public class ItemLinker extends Item {
 
 					player.addChatMessage("The link device will now connect to this Universal Interface");
 				}
-			} else if (TileEntityBlockInterface.isValidTE(te)) {
-				TileEntityBlockInterface linkedInterface = null;
+			} else if (TileEntityInterface.isValidTE(te)) {
+				TileEntityInterface linkedInterface = null;
 				
 				int[] teCoords = NBTHelper.getIntArray(stack, "linkedInterface");
 				if(teCoords != null) {
 					TileEntity bi = world.getBlockTileEntity(teCoords[0], teCoords[1], teCoords[2]);
 					
-					if(bi instanceof TileEntityBlockInterface)
-						linkedInterface = (TileEntityBlockInterface) bi;
+					if(bi instanceof TileEntityInterface)
+						linkedInterface = (TileEntityInterface) bi;
 				}
 				
 				if (linkedInterface == null || linkedInterface.isInvalid())
