@@ -10,6 +10,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -25,12 +26,16 @@ public class ItemBiomeStorageRenderer implements IItemRenderer {
 
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-		return ItemBiomeStorage.hasBiome(item);
+		return ItemBiomeStorage.hasBiome(item) && type.equals(type.INVENTORY);
 	}
 
 	@Override
 	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper) {
-		return false;
+		return type.equals(type.ENTITY) && (
+					helper.equals(helper.ENTITY_ROTATION) || 
+					helper.equals(helper.ENTITY_BOBBING) ||
+					helper.equals(helper.BLOCK_3D)
+				);
 	}
 
 	@Override
@@ -46,13 +51,23 @@ public class ItemBiomeStorageRenderer implements IItemRenderer {
 		
 		GL11.glColor3b((byte) colorObj.getRed(), (byte) colorObj.getGreen(), (byte) colorObj.getBlue());
 
-		if (type.equals(ItemRenderType.INVENTORY)) {
-			renderItem.renderIcon(0, 0, icon, 16, 16);
-		} else {
-			RenderBlocks renderBlock = (RenderBlocks) data[0];
-			EntityClientPlayerMP player = (EntityClientPlayerMP) data[1];
+		RenderBlocks renderBlock;
+		switch(type) {
+			case INVENTORY:
+				renderItem.renderIcon(0, 0, icon, 16, 16);
+				break;
+			case ENTITY:
+				renderBlock = (RenderBlocks) data[0];
+				EntityItem item = (EntityItem) data[1];
+				
+				//renderItem.;
+				
+				break;
 			
-			//renderItem.doRenderItem(itemStack., itemStack., par4, par6, par8, par9);
+			case EQUIPPED:
+			case EQUIPPED_FIRST_PERSON:
+				renderBlock = (RenderBlocks) data[0];
+				EntityClientPlayerMP player = (EntityClientPlayerMP) data[1];
 		}
 
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
