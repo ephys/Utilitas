@@ -28,7 +28,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TEBlockInterface extends TileEntity implements ISidedInventory, IFluidHandler {
+public class TileEntityBlockInterface extends TileEntity implements ISidedInventory, IFluidHandler {
 	private String userName = null;
 	private EntityPlayer userEntity = null;
 	public boolean enderMode = false;

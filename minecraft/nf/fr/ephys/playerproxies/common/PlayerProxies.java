@@ -8,6 +8,7 @@ import nf.fr.ephys.playerproxies.common.block.BlockBiomeScanner;
 import nf.fr.ephys.playerproxies.common.block.BlockEtherealGlass;
 import nf.fr.ephys.playerproxies.common.block.BlockHardenedStone;
 import nf.fr.ephys.playerproxies.common.block.BlockInterface;
+import nf.fr.ephys.playerproxies.common.block.BlockItemTicker;
 import nf.fr.ephys.playerproxies.common.block.BlockParticleGenerator;
 import nf.fr.ephys.playerproxies.common.block.BlockProximitySensor;
 import nf.fr.ephys.playerproxies.common.block.BlockSpawnerLoader;
@@ -44,6 +45,8 @@ public class PlayerProxies {
 
 	public static final int GUI_UNIVERSAL_INTERFACE = 0;
 	public static final int GUI_BIOME_SCANNER = 1;
+	
+	public static final boolean DEV_MODE = true;
 
 	@Instance("ephys.playerproxies")
     public static PlayerProxies instance;
@@ -64,6 +67,7 @@ public class PlayerProxies {
 	public static BlockBiomeReplicator blockBiomeChanger;
 	public static BlockBiomeScanner blockBiomeScanner;
 	public static BlockToughwoodPlank blockToughwoodPlank;
+	public static BlockItemTicker blockItemTicker;
 
 	// items
 	public static ItemLinker itemLinker;
@@ -91,6 +95,7 @@ public class PlayerProxies {
         BlockBiomeReplicator.BLOCK_ID = config.getBlock("BlockBiomeReplicator", BlockBiomeReplicator.BLOCK_ID).getInt();
         BlockBiomeScanner.BLOCK_ID = config.getBlock("BlockBiomeScanner", BlockBiomeScanner.BLOCK_ID).getInt();
         BlockToughwoodPlank.BLOCK_ID = config.getBlock("BlockToughwoodPlank", BlockToughwoodPlank.BLOCK_ID).getInt();
+        BlockItemTicker.BLOCK_ID = config.getBlock("BlockItemTicker", BlockItemTicker.BLOCK_ID).getInt();
 
         config.save();
     }

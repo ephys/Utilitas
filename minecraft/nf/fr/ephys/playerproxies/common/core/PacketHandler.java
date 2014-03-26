@@ -11,7 +11,7 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import nf.fr.ephys.playerproxies.common.entity.Ghost;
-import nf.fr.ephys.playerproxies.common.tileentity.TEBlockInterface;
+import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBlockInterface;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
 
@@ -33,8 +33,8 @@ public class PacketHandler implements IPacketHandler {
 			
 			TileEntity te = world.getBlockTileEntity(xCoord, yCoord, zCoord);
 			
-			if(te instanceof TEBlockInterface)
-				((TEBlockInterface) te).toggleEnderMode();
+			if(te instanceof TileEntityBlockInterface)
+				((TileEntityBlockInterface) te).toggleEnderMode();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

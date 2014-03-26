@@ -8,7 +8,7 @@ import nf.fr.ephys.playerproxies.client.gui.GuiUniversalInterface;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.container.ContainerBiomeScanner;
 import nf.fr.ephys.playerproxies.common.container.ContainerUniversalInterface;
-import nf.fr.ephys.playerproxies.common.tileentity.TEBlockInterface;
+import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBlockInterface;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBiomeScanner;
 import cpw.mods.fml.common.network.IGuiHandler;
 
@@ -17,8 +17,8 @@ public class GuiHandler implements IGuiHandler {
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		TileEntity te = world.getBlockTileEntity(x, y, z);
 
-		if (ID == PlayerProxies.GUI_UNIVERSAL_INTERFACE && te instanceof TEBlockInterface)
-			return new ContainerUniversalInterface(player, (TEBlockInterface) te);
+		if (ID == PlayerProxies.GUI_UNIVERSAL_INTERFACE && te instanceof TileEntityBlockInterface)
+			return new ContainerUniversalInterface(player, (TileEntityBlockInterface) te);
 		else if (ID == PlayerProxies.GUI_BIOME_SCANNER && te instanceof TileEntityBiomeScanner)
 			return new ContainerBiomeScanner(player, (TileEntityBiomeScanner) te);
 
@@ -29,8 +29,8 @@ public class GuiHandler implements IGuiHandler {
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		TileEntity te = world.getBlockTileEntity(x, y, z);
 
-		if(ID == PlayerProxies.GUI_UNIVERSAL_INTERFACE && te instanceof TEBlockInterface)
-			return new GuiUniversalInterface(new ContainerUniversalInterface(player, (TEBlockInterface) te));
+		if(ID == PlayerProxies.GUI_UNIVERSAL_INTERFACE && te instanceof TileEntityBlockInterface)
+			return new GuiUniversalInterface(new ContainerUniversalInterface(player, (TileEntityBlockInterface) te));
 		else if (ID == PlayerProxies.GUI_BIOME_SCANNER && te instanceof TileEntityBiomeScanner)
 			return new GuiBiomeScanner(new ContainerBiomeScanner(player, (TileEntityBiomeScanner) te));
 

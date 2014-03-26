@@ -254,6 +254,10 @@ public class NBTHelper {
 		return nbt.getCompoundTag(name);
 	}
 	
+	public static ItemStack getItemStack(NBTTagCompound nbt, String name) {
+		return getItemStack(nbt, name, null);
+	}
+	
 	public static ItemStack getItemStack(NBTTagCompound nbt, String name, ItemStack def) {
 		if (!nbt.hasKey(name)) return def;
 		

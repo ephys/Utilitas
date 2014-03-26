@@ -20,7 +20,7 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import nf.fr.ephys.playerproxies.client.gui.GuiUniversalInterface;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
-import nf.fr.ephys.playerproxies.common.tileentity.TEBlockInterface;
+import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBlockInterface;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityProximitySensor;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
@@ -76,7 +76,7 @@ public class ItemLinker extends Item {
 			if (te == null)
 				return false;
 
-			if (te instanceof TEBlockInterface) {
+			if (te instanceof TileEntityBlockInterface) {
 				if (!player.isSneaking()) {
 					player.openGui(PlayerProxies.instance, PlayerProxies.GUI_UNIVERSAL_INTERFACE, world, x, y, z);
 				} else {
@@ -84,15 +84,15 @@ public class ItemLinker extends Item {
 
 					player.addChatMessage("The link device will now connect to this Universal Interface");
 				}
-			} else if (TEBlockInterface.isValidTE(te)) {
-				TEBlockInterface linkedInterface = null;
+			} else if (TileEntityBlockInterface.isValidTE(te)) {
+				TileEntityBlockInterface linkedInterface = null;
 				
 				int[] teCoords = NBTHelper.getIntArray(stack, "linkedInterface");
 				if(teCoords != null) {
 					TileEntity bi = world.getBlockTileEntity(teCoords[0], teCoords[1], teCoords[2]);
 					
-					if(bi instanceof TEBlockInterface)
-						linkedInterface = (TEBlockInterface) bi;
+					if(bi instanceof TileEntityBlockInterface)
+						linkedInterface = (TileEntityBlockInterface) bi;
 				}
 				
 				if (linkedInterface == null || linkedInterface.isInvalid())

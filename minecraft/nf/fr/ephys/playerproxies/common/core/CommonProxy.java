@@ -10,18 +10,21 @@ import nf.fr.ephys.playerproxies.common.block.BlockBiomeScanner;
 import nf.fr.ephys.playerproxies.common.block.BlockEtherealGlass;
 import nf.fr.ephys.playerproxies.common.block.BlockHardenedStone;
 import nf.fr.ephys.playerproxies.common.block.BlockInterface;
+import nf.fr.ephys.playerproxies.common.block.BlockItemTicker;
 import nf.fr.ephys.playerproxies.common.block.BlockParticleGenerator;
 import nf.fr.ephys.playerproxies.common.block.BlockProximitySensor;
 import nf.fr.ephys.playerproxies.common.block.BlockSpawnerLoader;
 import nf.fr.ephys.playerproxies.common.block.BlockToughwoodPlank;
 import nf.fr.ephys.playerproxies.common.entity.Ghost;
 import nf.fr.ephys.playerproxies.common.item.ItemBiomeStorage;
+import nf.fr.ephys.playerproxies.common.item.ItemDebug;
 import nf.fr.ephys.playerproxies.common.item.ItemLinkFocus;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
-import nf.fr.ephys.playerproxies.common.tileentity.TEBlockInterface;
-import nf.fr.ephys.playerproxies.common.tileentity.TESpawnerLoader;
+import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBlockInterface;
+import nf.fr.ephys.playerproxies.common.tileentity.TileEntitySpawnerLoader;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBiomeReplicator;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBiomeScanner;
+import nf.fr.ephys.playerproxies.common.tileentity.TileEntityItemTicker;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityProximitySensor;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -44,13 +47,13 @@ public class CommonProxy {
 		PlayerProxies.blockInterface = new BlockInterface();
 		PlayerProxies.blockInterface.setUnlocalizedName("PP_UniversalInterface");
 		GameRegistry.registerBlock(PlayerProxies.blockInterface, "PP_UniversalInterface");
-		GameRegistry.registerTileEntity(TEBlockInterface.class, "PP_UniversalInterface");
+		GameRegistry.registerTileEntity(TileEntityBlockInterface.class, "PP_UniversalInterface");
 		LanguageRegistry.instance().addName(PlayerProxies.blockInterface, "Universal Interface");
 		
 		PlayerProxies.blockSpawnerLoader = new BlockSpawnerLoader();
 		PlayerProxies.blockSpawnerLoader.setUnlocalizedName("PP_SpawnerLoader");
 		GameRegistry.registerBlock(PlayerProxies.blockSpawnerLoader, "PP_SpawnerLoader");
-		GameRegistry.registerTileEntity(TESpawnerLoader.class, "PP_SpawnerLoader");
+		GameRegistry.registerTileEntity(TileEntitySpawnerLoader.class, "PP_SpawnerLoader");
 		LanguageRegistry.instance().addName(PlayerProxies.blockSpawnerLoader, "Ghost Stabilizer");
 
 		PlayerProxies.blockHardenedStone = new BlockHardenedStone();
@@ -90,29 +93,41 @@ public class CommonProxy {
 		PlayerProxies.blockToughwoodPlank.setUnlocalizedName("PP_ToughwoodPlank");
 		GameRegistry.registerBlock(PlayerProxies.blockToughwoodPlank, "PP_ToughwoodPlank");
 		LanguageRegistry.instance().addName(PlayerProxies.blockToughwoodPlank, "Toughwood");
+		
+		PlayerProxies.blockItemTicker = new BlockItemTicker();
+		PlayerProxies.blockItemTicker.setUnlocalizedName("PP_ItemActivator");
+		GameRegistry.registerBlock(PlayerProxies.blockItemTicker, "PP_ItemActivator");
+		GameRegistry.registerTileEntity(TileEntityItemTicker.class, "PP_ItemActivator");
+		LanguageRegistry.instance().addName(PlayerProxies.blockItemTicker, "Sylladex");
 	}
 
 	private void registerItems() {
 		PlayerProxies.itemLinker = new ItemLinker();
 		PlayerProxies.itemLinker.setUnlocalizedName("PP_LinkWand");
 		MinecraftForge.EVENT_BUS.register(PlayerProxies.itemLinker);
+		GameRegistry.registerItem(PlayerProxies.itemLinker, "PP_LinkWand");
+		LanguageRegistry.instance().addName(PlayerProxies.itemLinker,
+				"Linking wand");
 
 		PlayerProxies.itemLinkFocus = new ItemLinkFocus();
 		PlayerProxies.itemLinkFocus.setUnlocalizedName("PP_LinkFocus");
+		GameRegistry.registerItem(PlayerProxies.itemLinkFocus, "PP_LinkFocus");
+		LanguageRegistry.instance().addName(PlayerProxies.itemLinkFocus,
+				"Link focus");
 
 		PlayerProxies.itemBiomeStorage = new ItemBiomeStorage();
 		PlayerProxies.itemBiomeStorage.setUnlocalizedName("PP_BiomeStorage");
-
-		GameRegistry.registerItem(PlayerProxies.itemLinker, "PP_LinkWand");
-		GameRegistry.registerItem(PlayerProxies.itemLinkFocus, "PP_LinkFocus");
 		GameRegistry.registerItem(PlayerProxies.itemBiomeStorage, "PP_BiomeStorage");
-
-		LanguageRegistry.instance().addName(PlayerProxies.itemLinker,
-				"Linking wand");
-		LanguageRegistry.instance().addName(PlayerProxies.itemLinkFocus,
-				"Link focus");
 		LanguageRegistry.instance().addName(PlayerProxies.itemBiomeStorage,
 				"Biome signature handler");
+
+		if (PlayerProxies.DEV_MODE) {
+			ItemDebug itemDebug = new ItemDebug();
+			itemDebug.setUnlocalizedName("PP_Debug");
+			GameRegistry.registerItem(itemDebug, "PP_Debug");
+			LanguageRegistry.instance().addName(itemDebug,
+					"Debug tool -- REPORT THIS A BUG");
+		}
 	}
 
 	public void registerCrafts() {

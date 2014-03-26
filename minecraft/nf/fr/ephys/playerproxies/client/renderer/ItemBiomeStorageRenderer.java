@@ -26,7 +26,7 @@ public class ItemBiomeStorageRenderer implements IItemRenderer {
 
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-		return ItemBiomeStorage.hasBiome(item) && type.equals(type.INVENTORY);
+		return ItemBiomeStorage.hasBiome(item) && type.equals(type.INVENTORY); // TODO: why isn't there a pre/post render event for items ? >_>
 	}
 
 	@Override

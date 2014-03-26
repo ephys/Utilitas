@@ -21,8 +21,8 @@ import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
-import nf.fr.ephys.playerproxies.common.tileentity.TEBlockInterface;
-import nf.fr.ephys.playerproxies.common.tileentity.TESpawnerLoader;
+import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBlockInterface;
+import nf.fr.ephys.playerproxies.common.tileentity.TileEntitySpawnerLoader;
 
 public class BlockSpawnerLoader extends BlockContainer {
 	public static int BLOCK_ID = 801;
@@ -40,13 +40,13 @@ public class BlockSpawnerLoader extends BlockContainer {
 
 	@Override
 	public TileEntity createNewTileEntity(World world) {
-		return new TESpawnerLoader();
+		return new TileEntitySpawnerLoader();
 	}
 
 	public void onBlockPlacedBy(World world, int x, int y, int z,
 			EntityLivingBase entity, ItemStack par6ItemStack) {
 		if (entity instanceof EntityPlayer) {
-			TESpawnerLoader spawnerLoader = (TESpawnerLoader) world
+			TileEntitySpawnerLoader spawnerLoader = (TileEntitySpawnerLoader) world
 					.getBlockTileEntity(x, y, z);
 		}
 	}

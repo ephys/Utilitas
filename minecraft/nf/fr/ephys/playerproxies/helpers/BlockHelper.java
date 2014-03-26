@@ -22,11 +22,11 @@ public class BlockHelper {
 			ItemStack itemstack = te.getStackInSlot(i);
 
 			if (itemstack != null) {
-				float f = random.nextFloat() * 0.8F + 0.1F;
-				float f1 = random.nextFloat() * 0.8F + 0.1F;
-				EntityItem entityitem;
+				float randX = random.nextFloat() * 0.8F + 0.1F;
+				float randY = random.nextFloat() * 0.8F + 0.1F;
+				float randZ = random.nextFloat() * 0.8F + 0.1F;
 
-				for (float f2 = random.nextFloat() * 0.8F + 0.1F; itemstack.stackSize > 0; world.spawnEntityInWorld(entityitem)) {
+				while (itemstack.stackSize > 0) {
 					int k1 = random.nextInt(21) + 10;
 
 					if (k1 > itemstack.stackSize) {
@@ -34,10 +34,10 @@ public class BlockHelper {
 					}
 
 					itemstack.stackSize -= k1;
-					entityitem = new EntityItem(world,
-							(double) ((float) x + f),
-							(double) ((float) y + f1),
-							(double) ((float) z + f2), 
+					EntityItem entityitem = new EntityItem(world,
+							(double) ((float) x + randX),
+							(double) ((float) y + randY),
+							(double) ((float) z + randZ), 
 							new ItemStack(itemstack.itemID, k1, itemstack.getItemDamage())
 					);
 					
@@ -54,6 +54,9 @@ public class BlockHelper {
 								(NBTTagCompound) itemstack.getTagCompound()
 										.copy());
 					}
+					
+					System.out.println("SPAWNING "+entityitem);
+					world.spawnEntityInWorld(entityitem);
 				}
 			}
 		}

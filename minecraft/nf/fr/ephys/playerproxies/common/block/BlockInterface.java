@@ -20,7 +20,7 @@ import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
-import nf.fr.ephys.playerproxies.common.tileentity.TEBlockInterface;
+import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBlockInterface;
 
 public class BlockInterface extends BlockContainer {
 	public static int BLOCK_ID = 800;
@@ -36,7 +36,7 @@ public class BlockInterface extends BlockContainer {
 
 	@Override
 	public TileEntity createNewTileEntity(World world) {
-		return new TEBlockInterface();
+		return new TileEntityBlockInterface();
 	}
 	
     public void onBlockPlacedBy(World par1World, int par2, int par3, int par4, EntityLivingBase par5EntityLivingBase, ItemStack par6ItemStack) {}
@@ -44,7 +44,7 @@ public class BlockInterface extends BlockContainer {
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitVectX, float hitVectY, float hitVectZ) {
     	if(player.getHeldItem() == null) {
         	if(!world.isRemote)
-        		((TEBlockInterface)world.getBlockTileEntity(x, y, z)).toggleLinked(player);
+        		((TileEntityBlockInterface)world.getBlockTileEntity(x, y, z)).toggleLinked(player);
 
     		world.markBlockForUpdate(x, y, z);
 

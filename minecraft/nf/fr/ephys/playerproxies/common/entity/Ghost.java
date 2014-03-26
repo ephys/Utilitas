@@ -33,7 +33,7 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.FakePlayer;
 import net.minecraftforge.common.IExtendedEntityProperties;
 import nf.fr.ephys.playerproxies.common.core.NetServerHandlerFake;
-import nf.fr.ephys.playerproxies.common.tileentity.TESpawnerLoader;
+import nf.fr.ephys.playerproxies.common.tileentity.TileEntitySpawnerLoader;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
@@ -47,7 +47,7 @@ import net.minecraft.client.renderer.ThreadDownloadImageData;
 public class Ghost extends EntityPlayerMP implements IEntityAdditionalSpawnData {
 	private int offset = (int) (Math.random() * 50);
 
-	private TESpawnerLoader linkedStabilizer = null;
+	private TileEntitySpawnerLoader linkedStabilizer = null;
 
 	private int[] linkedStabilizerPos;
 
@@ -97,7 +97,7 @@ public class Ghost extends EntityPlayerMP implements IEntityAdditionalSpawnData 
 		this.setPositionAndRotation2(xCoord, yCoord, zCoord, 0, 0, 0);
 	}
 
-	public Ghost(World world, String username, TESpawnerLoader linkedStabilizer) {
+	public Ghost(World world, String username, TileEntitySpawnerLoader linkedStabilizer) {
 		this(world, username);
 		this.setLinkedStabilizer(linkedStabilizer);
 	}
@@ -105,7 +105,7 @@ public class Ghost extends EntityPlayerMP implements IEntityAdditionalSpawnData 
 	@Override
 	protected void fall(float par1) {}
 
-	public void setLinkedStabilizer(TESpawnerLoader stabilizer) {
+	public void setLinkedStabilizer(TileEntitySpawnerLoader stabilizer) {
 		this.linkedStabilizer = stabilizer;
 
 		if (stabilizer != null) {
@@ -122,7 +122,7 @@ public class Ghost extends EntityPlayerMP implements IEntityAdditionalSpawnData 
 		}
 	}
 
-	public TESpawnerLoader getLinkedStabilizer() {
+	public TileEntitySpawnerLoader getLinkedStabilizer() {
 		return linkedStabilizer;
 	}
 
@@ -260,8 +260,8 @@ public class Ghost extends EntityPlayerMP implements IEntityAdditionalSpawnData 
 					linkedStabilizerPos[0], linkedStabilizerPos[1],
 					linkedStabilizerPos[2]);
 
-			if (te instanceof TESpawnerLoader) {
-				((TESpawnerLoader) te).attach(this);
+			if (te instanceof TileEntitySpawnerLoader) {
+				((TileEntitySpawnerLoader) te).attach(this);
 			}
 
 			linkedStabilizerPos = null;
@@ -294,8 +294,8 @@ public class Ghost extends EntityPlayerMP implements IEntityAdditionalSpawnData 
 		TileEntity te = this.worldObj.getBlockTileEntity((int) posX,
 				(int) posY, (int) posZ);
 
-		if (te instanceof TESpawnerLoader) {
-			((TESpawnerLoader) te).attach(this);
+		if (te instanceof TileEntitySpawnerLoader) {
+			((TileEntitySpawnerLoader) te).attach(this);
 		}
 	}
 }

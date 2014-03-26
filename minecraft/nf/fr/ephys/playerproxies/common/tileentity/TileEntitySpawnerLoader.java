@@ -17,7 +17,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.EnumGameType;
 import nf.fr.ephys.playerproxies.common.entity.Ghost;
 
-public class TESpawnerLoader extends TileEntity {
+public class TileEntitySpawnerLoader extends TileEntity {
 	private Ghost ghost = null;
 	private String owner = null;
 
