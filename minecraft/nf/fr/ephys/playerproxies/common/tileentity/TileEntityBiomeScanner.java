@@ -24,13 +24,7 @@ public class TileEntityBiomeScanner extends TileEntity implements IInventory {
 	private int tick = 0;
 	private int progress = -1;
 
-	private Random random;
-
 	public ItemStack card;
-
-	public TileEntityBiomeScanner() {
-		random = new Random();
-	}
 
 	public BiomeGenBase getBiome() {
 		if (storedBiome != -1)
@@ -76,7 +70,7 @@ public class TileEntityBiomeScanner extends TileEntity implements IInventory {
 
 	@Override
 	public void updateEntity() {
-		if (random.nextDouble() > 0.9D) {
+		if (this.tick++ % 20 == 0) {
 			if (progress != -1) {
 				if (progress++ == 100) {
 					this.onReckoningEnd();

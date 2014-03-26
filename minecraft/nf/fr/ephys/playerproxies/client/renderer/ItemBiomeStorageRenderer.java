@@ -22,7 +22,7 @@ public class ItemBiomeStorageRenderer implements IItemRenderer {
 
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-		return type == ItemRenderType.INVENTORY;
+		return true; // all render types
 	}
 
 	@Override

@@ -211,8 +211,14 @@ public class TileEntityBiomeReplicator extends TileEntity implements IInventory 
 	public void setInventorySlotContents(int i, ItemStack stack) {
 		this.biomeHandler = stack;
 
-		if (stack != null && stack.stackSize > getInventoryStackLimit()) {
-			stack.stackSize = getInventoryStackLimit();
+		if (stack != null) {
+			if (stack.stackSize > getInventoryStackLimit())
+				stack.stackSize = getInventoryStackLimit();
+			
+			byte biome = (byte) NBTHelper.getInt(biomeHandler, "biome", -1);
+			this.setBiome(biome);
+		} else {
+			this.resetCursor();
 		}
 	}
 
@@ -246,19 +252,6 @@ public class TileEntityBiomeReplicator extends TileEntity implements IInventory 
 
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-		return itemstack.itemID == PlayerProxies.itemBiomeStorage.itemID && NBTHelper.getInt(itemstack, "biome", -1) != -1;
-	}
-	
-	@Override
-	public void onInventoryChanged() {
-		byte biome = (byte) NBTHelper.getInt(biomeHandler, "biome", -1);
-
-		if (biomeHandler == null || biome == -1) {
-			this.resetCursor();
-		} else {
-			this.setBiome(biome);
-		}
-
-		super.onInventoryChanged();
+		return i == 0 && itemstack.itemID == PlayerProxies.itemBiomeStorage.itemID && NBTHelper.getInt(itemstack, "biome", -1) != -1;
 	}
 }
