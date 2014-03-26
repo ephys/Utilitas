@@ -25,10 +25,18 @@ public class ItemBiomeStorage extends Item {
 
 		setTextureName("ephys.pp:biomeStorage");
 	}
+
+	public static boolean hasBiome(ItemStack stack) {
+		return getBiome(stack) != -1;
+	}
+	
+	public static byte getBiome(ItemStack stack) {
+		return (byte) NBTHelper.getInt(stack, "biome", -1);
+	}
 	
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
-		int biomeId = NBTHelper.getInt(stack, "biome", -1);
+		byte biomeId = getBiome(stack);
 
 		if (biomeId != -1) {
 			BiomeGenBase biome = BiomeGenBase.biomeList[biomeId];
