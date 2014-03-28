@@ -16,6 +16,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.ForgeDirection;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
+import nf.fr.ephys.playerproxies.common.item.ItemBiomeStorage;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
 public class TileEntityBiomeReplicator extends TileEntity implements IInventory, IEnergyHandler {
@@ -34,7 +35,7 @@ public class TileEntityBiomeReplicator extends TileEntity implements IInventory,
 
 	public TileEntityBiomeReplicator() {
 		bounds = generateTerrainBounds(MAX_SIZE);
-		energyStorage.setMaxTransfer(100);
+		energyStorage.setMaxReceive(200);
 	}
 
 	public byte getBiome() {
@@ -53,7 +54,7 @@ public class TileEntityBiomeReplicator extends TileEntity implements IInventory,
 	public boolean hasBiome() {
 		return biome > -1;
 	}
-	
+
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		cursorX = NBTHelper.getInt(nbt, "cursorX", 0);
@@ -91,6 +92,8 @@ public class TileEntityBiomeReplicator extends TileEntity implements IInventory,
 		this.writeToNBT(nbtTag);
 		return new Packet132TileEntityData(this.xCoord, this.yCoord, this.zCoord, 1, nbtTag);
 	}
+	
+	
 
 	@Override
 	public void onDataPacket(INetworkManager net, Packet132TileEntityData packet) {
@@ -99,7 +102,11 @@ public class TileEntityBiomeReplicator extends TileEntity implements IInventory,
 	
 	@Override
 	public void updateEntity() {
+		if (worldObj.isRemote) return;
+		
 		if(!hasBiome()) return;
+		
+		System.out.println("HAS BIOME");
 
 		int halfBounds = bounds[0].length >> 1;
 		if(cursorX >= halfBounds)
@@ -118,12 +125,15 @@ public class TileEntityBiomeReplicator extends TileEntity implements IInventory,
 			worldObj.spawnParticle("portal", xLeft+Math.random() / 2 + 0.25, this.yCoord+i+Math.random(), zTop+Math.random() / 2 + 0.25, 0, 0, 0);
 		}
 
-		if (PlayerProxies.requiresPower())
+		if (!PlayerProxies.requiresPower()) {
 			energyStorage.setEnergyStored(energyStorage.getEnergyStored() + energyStorage.getMaxReceive());
-
+		}
+		
 		if (energyStorage.getEnergyStored() < REQUIRED_RF) return;
 
 		this.energyStorage.extractEnergy(REQUIRED_RF, false);
+		
+		System.out.println("WORKING");
 
 		boolean hasNextStep = false;
 		if(cursorZ < bounds[0][halfBounds+cursorX]) {
@@ -241,6 +251,14 @@ public class TileEntityBiomeReplicator extends TileEntity implements IInventory,
 			this.resetCursor();
 		}
 	}
+	
+	@Override
+	public void onInventoryChanged() {
+		if (this.biomeHandler != null)
+			this.biome = ItemBiomeStorage.getBiome(this.biomeHandler);
+			
+		super.onInventoryChanged();
+	}
 
 	@Override
 	public String getInvName() {
@@ -277,15 +295,11 @@ public class TileEntityBiomeReplicator extends TileEntity implements IInventory,
 
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
-		this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-
 		return this.energyStorage.receiveEnergy(maxReceive, simulate);
 	}
 
 	@Override
 	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
-		this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-
 		return this.energyStorage.extractEnergy(maxExtract, simulate);
 	}
 

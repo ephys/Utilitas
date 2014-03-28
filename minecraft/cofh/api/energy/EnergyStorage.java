@@ -112,7 +112,6 @@ public class EnergyStorage implements IEnergyStorage {
 	/* IEnergyStorage */
 	@Override
 	public int receiveEnergy(int maxReceive, boolean simulate) {
-
 		int energyReceived = Math.min(capacity - energy, Math.min(this.maxReceive, maxReceive));
 
 		if (!simulate) {
@@ -134,14 +133,11 @@ public class EnergyStorage implements IEnergyStorage {
 
 	@Override
 	public int getEnergyStored() {
-
 		return energy;
 	}
 
 	@Override
 	public int getMaxEnergyStored() {
-
 		return capacity;
 	}
-
 }
