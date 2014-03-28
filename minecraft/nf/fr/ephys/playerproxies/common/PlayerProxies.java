@@ -19,6 +19,7 @@ import nf.fr.ephys.playerproxies.common.item.ItemBiomeStorage;
 import nf.fr.ephys.playerproxies.common.item.ItemLinkFocus;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
 import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -47,7 +48,11 @@ public class PlayerProxies {
 	public static final int GUI_BIOME_SCANNER = 1;
 	
 	public static final boolean DEV_MODE = true;
-	public static boolean REQUIRES_POWER = false;
+	private static boolean REQUIRES_POWER = false;
+	
+	public static boolean requiresPower() {
+		return REQUIRES_POWER;
+	}
 
 	@Instance("ephys.playerproxies")
     public static PlayerProxies instance;
@@ -109,5 +114,7 @@ public class PlayerProxies {
     @EventHandler
     public void postLoad(FMLPostInitializationEvent event) {
     	proxy.registerCrafts();
+    	
+    	REQUIRES_POWER = Loader.isModLoaded("ThermalExpansion");
     }
 }

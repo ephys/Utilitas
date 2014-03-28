@@ -1,5 +1,8 @@
 package nf.fr.ephys.playerproxies.common.tileentity;
 
+import cofh.api.energy.EnergyStorage;
+import cofh.api.energy.IEnergyHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -11,24 +14,27 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.common.ForgeDirection;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
-public class TileEntityBiomeReplicator extends TileEntity implements IInventory {
+public class TileEntityBiomeReplicator extends TileEntity implements IInventory, IEnergyHandler {
 	private static final int MAX_SIZE = 100;
 
 	private int[][] bounds = null;
 
 	private byte biome = -1;
 	private ItemStack biomeHandler;
-
+	
 	private int cursorX;
 	private int cursorZ;
 
-	private int tick = 0;
-	
+	public static final int REQUIRED_RF = 10000;
+	private EnergyStorage energyStorage = new EnergyStorage(REQUIRED_RF << 1);
+
 	public TileEntityBiomeReplicator() {
 		bounds = generateTerrainBounds(MAX_SIZE);
+		energyStorage.setMaxTransfer(100);
 	}
 
 	public byte getBiome() {
@@ -55,6 +61,9 @@ public class TileEntityBiomeReplicator extends TileEntity implements IInventory 
 		biomeHandler = NBTHelper.getItemStack(nbt, "biomeHandler", null);
 
 		biome = (biomeHandler == null ? -1 : (byte) NBTHelper.getInt(biomeHandler, "biome", -1));
+		
+		if (nbt.hasKey("energyStorage"))
+			this.energyStorage.readFromNBT(nbt.getCompoundTag("energyStorage"));
 
 		super.readFromNBT(nbt);
 	}
@@ -63,8 +72,15 @@ public class TileEntityBiomeReplicator extends TileEntity implements IInventory 
 	public void writeToNBT(NBTTagCompound nbt) {
 		nbt.setInteger("cursorX", cursorX);
 		nbt.setInteger("cursorZ", cursorZ);
-		
+		nbt.setInteger("energyLevel", 0);
+
 		NBTHelper.setWritable(nbt, "biomeHandler", biomeHandler);
+		
+		NBTTagCompound energyStorageNBT = new NBTTagCompound();
+		
+		energyStorage.readFromNBT(energyStorageNBT);
+
+		nbt.setCompoundTag("energyStorage", energyStorageNBT);
 
 		super.writeToNBT(nbt);
 	}
@@ -83,7 +99,7 @@ public class TileEntityBiomeReplicator extends TileEntity implements IInventory 
 	
 	@Override
 	public void updateEntity() {
-		tick++;
+		if(!hasBiome()) return;
 
 		int halfBounds = bounds[0].length >> 1;
 		if(cursorX >= halfBounds)
@@ -91,19 +107,23 @@ public class TileEntityBiomeReplicator extends TileEntity implements IInventory 
 
 		int xRight = this.xCoord - cursorX;
 		int xLeft = this.xCoord + cursorX;
-		
+
 		int zTop = this.zCoord + cursorZ;
 		int zBottom = this.zCoord - cursorZ;
 
-		for(int i = -5; i < 5; i++) {
-			worldObj.spawnParticle("portal", xRight+Math.random(), this.yCoord+i+Math.random(), zBottom+Math.random(), 0, 0, 0);
-			worldObj.spawnParticle("portal", xRight+Math.random(), this.yCoord+i+Math.random(), zTop+Math.random(), 0, 0, 0);
-			worldObj.spawnParticle("portal", xLeft+Math.random(), this.yCoord+i+Math.random(), zBottom+Math.random(), 0, 0, 0);
-			worldObj.spawnParticle("portal", xLeft+Math.random(), this.yCoord+i+Math.random(), zTop+Math.random(), 0, 0, 0);
+		for(int i = 0; i < 4; i++) {
+			worldObj.spawnParticle("portal", xRight+Math.random() / 2 + 0.25, this.yCoord+i+Math.random(), zBottom+Math.random() / 2 + 0.25, 0, 0, 0);
+			worldObj.spawnParticle("portal", xRight+Math.random() / 2 + 0.25, this.yCoord+i+Math.random(), zTop+Math.random() / 2 + 0.25, 0, 0, 0);
+			worldObj.spawnParticle("portal", xLeft+Math.random() / 2 + 0.25, this.yCoord+i+Math.random(), zBottom+Math.random() / 2 + 0.25, 0, 0, 0);
+			worldObj.spawnParticle("portal", xLeft+Math.random() / 2 + 0.25, this.yCoord+i+Math.random(), zTop+Math.random() / 2 + 0.25, 0, 0, 0);
 		}
-		
-		if(!hasBiome() || tick % 60 != 0)
-			return;
+
+		if (PlayerProxies.requiresPower())
+			energyStorage.setEnergyStored(energyStorage.getEnergyStored() + energyStorage.getMaxReceive());
+
+		if (energyStorage.getEnergyStored() < REQUIRED_RF) return;
+
+		this.energyStorage.extractEnergy(REQUIRED_RF, false);
 
 		boolean hasNextStep = false;
 		if(cursorZ < bounds[0][halfBounds+cursorX]) {
@@ -254,4 +274,33 @@ public class TileEntityBiomeReplicator extends TileEntity implements IInventory 
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
 		return i == 0 && itemstack.itemID == PlayerProxies.itemBiomeStorage.itemID && NBTHelper.getInt(itemstack, "biome", -1) != -1;
 	}
+
+	@Override
+	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
+		this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+
+		return this.energyStorage.receiveEnergy(maxReceive, simulate);
+	}
+
+	@Override
+	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
+		this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+
+		return this.energyStorage.extractEnergy(maxExtract, simulate);
+	}
+
+	@Override
+	public boolean canInterface(ForgeDirection from) {
+		return true;
+	}
+
+	@Override
+	public int getEnergyStored(ForgeDirection from) {
+		return this.energyStorage.getEnergyStored();
+	}
+
+	@Override
+	public int getMaxEnergyStored(ForgeDirection from) {
+		return this.energyStorage.getMaxEnergyStored();
+	}	
 }
