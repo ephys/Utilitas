@@ -19,18 +19,24 @@ public class RenderHelper {
 	public static void renderItem3D(ItemStack item) {
 		for (int i = 0; i < item.getItem().getRenderPasses(item.getItemDamage()); i++) {
 			Icon icon = item.getItem().getIcon(item, i);
-        	if(icon != null) {
-        		 Color color = new Color(item.getItem().getColorFromItemStack(item, i));
-        		 GL11.glColor3ub((byte) color.getRed(), (byte) color.getGreen(), (byte) color.getBlue());
-        		 float f = icon.getMinU();
-                 float f1 = icon.getMaxU();
-                 float f2 = icon.getMinV();
-                 float f3 = icon.getMaxV();
-                 ItemRenderer.renderItemIn2D(Tessellator.instance, f1, f2, f, f3, icon.getIconWidth(), icon.getIconHeight(), 1F / 16F);
-                 GL11.glColor3f(1F, 1F, 1F);
-        	}
+
+			if (icon == null)
+				continue;
+
+			Color color = new Color(item.getItem().getColorFromItemStack(item, i));
+			GL11.glColor3ub((byte) color.getRed(), (byte) color.getGreen(), (byte) color.getBlue());
+
+			ItemRenderer.renderItemIn2D(Tessellator.instance,
+					icon.getMaxU(),
+					icon.getMinV(),
+					icon.getMinU(),
+					icon.getMaxV(), 
+					icon.getIconWidth(), 
+					icon.getIconHeight(), 
+					1F / 16F
+			);
 		}
 
-		int renderPass = 0;
+		GL11.glColor3f(1F, 1F, 1F);
 	}
 }

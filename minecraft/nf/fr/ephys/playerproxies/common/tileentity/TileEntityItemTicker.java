@@ -1,5 +1,6 @@
 package nf.fr.ephys.playerproxies.common.tileentity;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -12,6 +13,7 @@ import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.FakePlayer;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
+import nf.fr.ephys.playerproxies.common.core.NetServerHandlerFake;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
 public class TileEntityItemTicker extends TileEntity implements IInventory {
@@ -19,9 +21,10 @@ public class TileEntityItemTicker extends TileEntity implements IInventory {
 	private FakePlayer player;
 
 	public TileEntityItemTicker init() {
-		player = new FakePlayer(worldObj, "iffis");
+		player = new FakePlayer(worldObj, "[TileEntityItemTicker]");
 		player.setPosition(xCoord, yCoord, zCoord);
-		
+		player.playerNetServerHandler =	new NetServerHandlerFake(FMLCommonHandler.instance().getMinecraftServerInstance(), player);
+
 		return this;
 	}
 	

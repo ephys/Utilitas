@@ -95,10 +95,13 @@ public class ItemBiomeStorageRenderer implements IItemRenderer {
 				
 				break;
 			
-			case EQUIPPED: 
+			case EQUIPPED:
 			case EQUIPPED_FIRST_PERSON:
 				renderBlock = (RenderBlocks) data[0];
 				EntityClientPlayerMP player = (EntityClientPlayerMP) data[1];
+				break;
+				
+			case FIRST_PERSON_MAP:
 		}
 
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
