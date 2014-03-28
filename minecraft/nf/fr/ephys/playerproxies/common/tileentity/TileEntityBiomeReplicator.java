@@ -2,6 +2,7 @@ package nf.fr.ephys.playerproxies.common.tileentity;
 
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
+import cofh.api.energy.TileEnergyHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -19,7 +20,7 @@ import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.item.ItemBiomeStorage;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
-public class TileEntityBiomeReplicator extends TileEntity implements IInventory, IEnergyHandler {
+public class TileEntityBiomeReplicator extends TileEnergyHandler implements IInventory {
 	private static final int MAX_SIZE = 100;
 
 	private int[][] bounds = null;
@@ -31,11 +32,12 @@ public class TileEntityBiomeReplicator extends TileEntity implements IInventory,
 	private int cursorZ;
 
 	public static final int REQUIRED_RF = 10000;
-	private EnergyStorage energyStorage = new EnergyStorage(REQUIRED_RF << 1);
 
 	public TileEntityBiomeReplicator() {
+		super();
 		bounds = generateTerrainBounds(MAX_SIZE);
-		energyStorage.setMaxReceive(200);
+		storage.setMaxReceive(200);
+		storage.setCapacity(REQUIRED_RF << 1);
 	}
 
 	public byte getBiome() {
@@ -62,9 +64,6 @@ public class TileEntityBiomeReplicator extends TileEntity implements IInventory,
 		biomeHandler = NBTHelper.getItemStack(nbt, "biomeHandler", null);
 
 		biome = (biomeHandler == null ? -1 : (byte) NBTHelper.getInt(biomeHandler, "biome", -1));
-		
-		if (nbt.hasKey("energyStorage"))
-			this.energyStorage.readFromNBT(nbt.getCompoundTag("energyStorage"));
 
 		super.readFromNBT(nbt);
 	}
@@ -76,12 +75,6 @@ public class TileEntityBiomeReplicator extends TileEntity implements IInventory,
 		nbt.setInteger("energyLevel", 0);
 
 		NBTHelper.setWritable(nbt, "biomeHandler", biomeHandler);
-		
-		NBTTagCompound energyStorageNBT = new NBTTagCompound();
-		
-		energyStorage.readFromNBT(energyStorageNBT);
-
-		nbt.setCompoundTag("energyStorage", energyStorageNBT);
 
 		super.writeToNBT(nbt);
 	}
@@ -126,12 +119,12 @@ public class TileEntityBiomeReplicator extends TileEntity implements IInventory,
 		}
 
 		if (!PlayerProxies.requiresPower()) {
-			energyStorage.setEnergyStored(energyStorage.getEnergyStored() + energyStorage.getMaxReceive());
+			storage.setEnergyStored(storage.getEnergyStored() + storage.getMaxReceive());
 		}
 		
-		if (energyStorage.getEnergyStored() < REQUIRED_RF) return;
+		if (storage.getEnergyStored() < REQUIRED_RF) return;
 
-		this.energyStorage.extractEnergy(REQUIRED_RF, false);
+		this.storage.extractEnergy(REQUIRED_RF, false);
 		
 		System.out.println("WORKING");
 
@@ -240,23 +233,21 @@ public class TileEntityBiomeReplicator extends TileEntity implements IInventory,
 	@Override
 	public void setInventorySlotContents(int i, ItemStack stack) {
 		this.biomeHandler = stack;
-
+		byte biome = (byte) NBTHelper.getInt(biomeHandler, "biome", -1);
+		this.setBiome(biome);
+		
 		if (stack != null) {
 			if (stack.stackSize > getInventoryStackLimit())
 				stack.stackSize = getInventoryStackLimit();
-			
-			byte biome = (byte) NBTHelper.getInt(biomeHandler, "biome", -1);
-			this.setBiome(biome);
 		} else {
 			this.resetCursor();
 		}
+		
+		onInventoryChanged();
 	}
 	
 	@Override
 	public void onInventoryChanged() {
-		if (this.biomeHandler != null)
-			this.biome = ItemBiomeStorage.getBiome(this.biomeHandler);
-			
 		super.onInventoryChanged();
 	}
 
@@ -292,29 +283,4 @@ public class TileEntityBiomeReplicator extends TileEntity implements IInventory,
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
 		return i == 0 && itemstack.itemID == PlayerProxies.itemBiomeStorage.itemID && NBTHelper.getInt(itemstack, "biome", -1) != -1;
 	}
-
-	@Override
-	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
-		return this.energyStorage.receiveEnergy(maxReceive, simulate);
-	}
-
-	@Override
-	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
-		return this.energyStorage.extractEnergy(maxExtract, simulate);
-	}
-
-	@Override
-	public boolean canInterface(ForgeDirection from) {
-		return true;
-	}
-
-	@Override
-	public int getEnergyStored(ForgeDirection from) {
-		return this.energyStorage.getEnergyStored();
-	}
-
-	@Override
-	public int getMaxEnergyStored(ForgeDirection from) {
-		return this.energyStorage.getMaxEnergyStored();
-	}	
 }
