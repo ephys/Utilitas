@@ -47,6 +47,7 @@ public class PlayerProxies {
 	public static final int GUI_BIOME_SCANNER = 1;
 	
 	public static final boolean DEV_MODE = true;
+	public static boolean REQUIRES_POWER = false;
 
 	@Instance("ephys.playerproxies")
     public static PlayerProxies instance;
