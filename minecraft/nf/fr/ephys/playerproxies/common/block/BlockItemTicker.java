@@ -67,12 +67,10 @@ public class BlockItemTicker extends BlockContainer {
 		if (te != null) {
 			if (te.hasStackInSlot(0))
 				BlockHelper.dropContents(te, world, x, y, z);
-			else if (player.getHeldItem() != null) {
+			else if (te.isItemValidForSlot(0, player.getHeldItem())) {
 				te.setInventorySlotContents(0, player.getHeldItem().copy());
 				player.getHeldItem().stackSize--;
 			}
-
-			world.markBlockForUpdate(x, y, z);
 		}
 
 		return true;

@@ -23,6 +23,31 @@ public class ItemBiomeStorageRenderer implements IItemRenderer {
 	
 	public static final int COLOR_HOT  = 0xffbb7b;
 	public static final int COLOR_COLD = 0x9db4ff;
+	
+	// NEW COLOR HANDLER: disabled because of weird colors, TODO
+	/*private static float HIGH_TEMP = Float.MIN_VALUE;
+	private static float LOW_TEMP = Float.MAX_VALUE;
+	
+	static {
+		getTemperatures();
+	}
+	
+	private static void getTemperatures() {
+		for (int i = 0; i < BiomeGenBase.biomeList.length; i++) {
+			BiomeGenBase biome = BiomeGenBase.biomeList[i];
+			
+			if (biome == null) continue;
+			
+			if (biome.temperature > HIGH_TEMP)
+				HIGH_TEMP = biome.temperature;
+			
+			if (biome.temperature < LOW_TEMP)
+				LOW_TEMP = biome.temperature;
+		}
+		
+		if ((int) HIGH_TEMP == 0)
+			HIGH_TEMP = 1;
+	}*/
 
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type) {
@@ -43,28 +68,34 @@ public class ItemBiomeStorageRenderer implements IItemRenderer {
 		byte biomeID = ItemBiomeStorage.getBiome(itemStack);
 		Icon icon = itemStack.getIconIndex();
 		
-		BiomeGenBase biome = BiomeGenBase.biomeList[biomeID];		
-
+		BiomeGenBase biome = BiomeGenBase.biomeList[biomeID];
+		
+		// NEW COLOR HANDLER: disabled because of weird colors - TODO
+		// float scale = (biome.temperature - LOW_TEMP) / HIGH_TEMP;
+		// int color = (int) ((COLOR_COLD - COLOR_HOT) * scale) + COLOR_HOT;
+		
 		int color = (int) ((COLOR_COLD - COLOR_HOT) * biome.temperature) + COLOR_HOT;
 
 		Color colorObj = new Color(color);
 		
-		GL11.glColor3ub((byte) colorObj.getRed(), (byte) colorObj.getGreen(), (byte) colorObj.getBlue());
+		// NEW COLOR HANDLER: disabled because of weird colors - TODO
+		// GL11.glColor3ub((byte) colorObj.getRed(), (byte) colorObj.getGreen(), (byte) colorObj.getBlue());
+		
+		GL11.glColor3b((byte) colorObj.getRed(), (byte) colorObj.getGreen(), (byte) colorObj.getBlue());
 
 		RenderBlocks renderBlock;
 		switch(type) {
 			case INVENTORY:
 				renderItem.renderIcon(0, 0, icon, 16, 16);
 				break;
+				// /\ that is the only thing working in this class humpf >_<
 			case ENTITY:
 				renderBlock = (RenderBlocks) data[0];
 				EntityItem item = (EntityItem) data[1];
 				
-				//renderItem.;
-				
 				break;
 			
-			case EQUIPPED:
+			case EQUIPPED: 
 			case EQUIPPED_FIRST_PERSON:
 				renderBlock = (RenderBlocks) data[0];
 				EntityClientPlayerMP player = (EntityClientPlayerMP) data[1];

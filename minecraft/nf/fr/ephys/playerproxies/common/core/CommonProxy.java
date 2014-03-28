@@ -148,7 +148,7 @@ public class CommonProxy {
 				"ggg", "gdg", "ggg", 
 				'd', new ItemStack(Item.diamond), 
 				'g', new ItemStack(Block.glass));
-		
+
 		GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockInterface),
 				"dld", "geg", "dgd", 
 				'd', new ItemStack(Item.diamond), 
@@ -180,6 +180,26 @@ public class CommonProxy {
 				'h', new ItemStack(PlayerProxies.blockHardenedStone), 
 				'l', new ItemStack(PlayerProxies.itemLinkFocus), 
 				'd', new ItemStack(Item.diamond));
+
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockToughwoodPlank, 4), 
+				" b ", "bwb", " b ",
+				'b', new ItemStack(Block.planks, 1, 2),
+				'w', new ItemStack(Block.wood)
+		);
+		
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockBiomeChanger), 
+				" c ", "pdp", " p ",
+				'c', new ItemStack(PlayerProxies.itemLinkFocus),
+				'p', new ItemStack(PlayerProxies.blockToughwoodPlank),
+				'd', new ItemStack(Block.blockDiamond)
+		);
+
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockBiomeScanner), 
+				" g ", "pop", " p ",
+				'g', new ItemStack(Item.goldNugget),
+				'o', new ItemStack(Block.obsidian),
+				'p', new ItemStack(PlayerProxies.blockToughwoodPlank)
+		);
 
 		GameRegistry.addShapelessRecipe(new ItemStack(PlayerProxies.blockParticleGenerator), Block.fenceIron, PlayerProxies.blockHardenedStone);
 	}

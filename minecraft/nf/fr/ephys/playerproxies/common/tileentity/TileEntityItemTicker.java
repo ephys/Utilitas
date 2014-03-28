@@ -3,6 +3,7 @@ package nf.fr.ephys.playerproxies.common.tileentity;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
@@ -73,6 +74,8 @@ public class TileEntityItemTicker extends TileEntity implements IInventory {
 
 		if (stack != null && amount > 0) {
 			setInventorySlotContents(slot, null);
+		} else {
+			onInventoryChanged();
 		}
 
 		return stack;
@@ -88,8 +91,10 @@ public class TileEntityItemTicker extends TileEntity implements IInventory {
 
 		if (stack != null) {
 			setInventorySlotContents(i, null);
+		} else {
+			onInventoryChanged();
 		}
-
+		
 		return stack;
 	}
 
@@ -100,6 +105,8 @@ public class TileEntityItemTicker extends TileEntity implements IInventory {
 		if (stack != null && stack.stackSize > getInventoryStackLimit()) {
 			stack.stackSize = getInventoryStackLimit();
 		}
+		
+		onInventoryChanged();
 	}
 
 	@Override
@@ -132,12 +139,15 @@ public class TileEntityItemTicker extends TileEntity implements IInventory {
 
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-		return i == 0;
+		return i == 0 && itemstack != null && !(itemstack.getItem() instanceof ItemBlock);
 	}
 	
 	@Override
 	public void onInventoryChanged() {
-		// TODO Auto-generated method stub
+		if (worldObj != null)
+			worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+		
+		System.out.println("INVENTORY CHANGED");
 		super.onInventoryChanged();
 	}
 	

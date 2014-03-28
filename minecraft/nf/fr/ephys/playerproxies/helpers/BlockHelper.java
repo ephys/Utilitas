@@ -19,7 +19,7 @@ public class BlockHelper {
 	
 	public static void dropContents(IInventory te, World world, int x, int y, int z) {
 		for (int i = 0; i < te.getSizeInventory(); ++i) {
-			ItemStack itemstack = te.getStackInSlot(i);
+			ItemStack itemstack = te.getStackInSlotOnClosing(i);
 
 			if (itemstack != null) {
 				float randX = random.nextFloat() * 0.8F + 0.1F;
