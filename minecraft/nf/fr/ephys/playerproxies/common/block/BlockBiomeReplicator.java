@@ -34,9 +34,7 @@ public class BlockBiomeReplicator extends BlockContainer {
 	}
 
 	@Override
-	public Icon getBlockTexture(IBlockAccess par1iBlockAccess, int par2,
-			int par3, int par4, int par5) {
-		
+	public Icon getBlockTexture(IBlockAccess par1iBlockAccess, int par2, int par3, int par4, int par5) {
 		switch(par5) {
 			case 0: return iconBottom;
 			case 1: return iconTop;
@@ -77,11 +75,9 @@ public class BlockBiomeReplicator extends BlockContainer {
 		
 		if (player.getHeldItem() != null && te.isItemValidForSlot(0, player.getHeldItem())) {
 			te.setInventorySlotContents(0, player.getHeldItem().copy());
-
-			if(!player.capabilities.isCreativeMode)
-				player.getHeldItem().stackSize--;
+			player.getHeldItem().stackSize--;
 		}
-		
+
 		return true;
 	}
 	

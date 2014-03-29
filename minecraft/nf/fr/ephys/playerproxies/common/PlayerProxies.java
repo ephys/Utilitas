@@ -36,7 +36,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 @NetworkMod(clientSideRequired = true,
 			serverSideRequired = false,
 			channels = {
-				"PP_enderToggle"
+				"PlayerProxies"
 			},
 			packetHandler = PacketHandler.class
 )
@@ -104,6 +104,10 @@ public class PlayerProxies {
         BlockItemTicker.BLOCK_ID = config.getBlock("BlockItemTicker", BlockItemTicker.BLOCK_ID).getInt();
 
         config.save();
+    }
+    
+    public static Logger getLogger() {
+    	return logger;
     }
 
     @EventHandler

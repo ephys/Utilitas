@@ -150,7 +150,6 @@ public class TileEntityItemTicker extends TileEntity implements IInventory {
 		if (worldObj != null)
 			worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
 		
-		System.out.println("INVENTORY CHANGED");
 		super.onInventoryChanged();
 	}
 	

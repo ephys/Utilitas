@@ -17,8 +17,10 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.ForgeDirection;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
+import nf.fr.ephys.playerproxies.common.core.PacketHandler;
 import nf.fr.ephys.playerproxies.common.item.ItemBiomeStorage;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
+import nf.fr.ephys.playerproxies.helpers.ParticleHelper;
 
 public class TileEntityBiomeReplicator extends TileEnergyHandler implements IInventory {
 	private static final int MAX_SIZE = 100;
@@ -30,6 +32,8 @@ public class TileEntityBiomeReplicator extends TileEnergyHandler implements IInv
 	
 	private int cursorX;
 	private int cursorZ;
+	
+	private int cooldown = 30;
 
 	public static final int REQUIRED_RF = 10000;
 
@@ -93,13 +97,13 @@ public class TileEntityBiomeReplicator extends TileEnergyHandler implements IInv
 		readFromNBT(packet.data);
 	}
 	
+	private static int portalParticleID = ParticleHelper.getParticleIDFromName("portal");
+	
 	@Override
 	public void updateEntity() {
 		if (worldObj.isRemote) return;
-		
-		if(!hasBiome()) return;
-		
-		System.out.println("HAS BIOME");
+			
+		if (!hasBiome()) return;
 
 		int halfBounds = bounds[0].length >> 1;
 		if(cursorX >= halfBounds)
@@ -111,13 +115,17 @@ public class TileEntityBiomeReplicator extends TileEnergyHandler implements IInv
 		int zTop = this.zCoord + cursorZ;
 		int zBottom = this.zCoord - cursorZ;
 
-		for(int i = 0; i < 4; i++) {
-			worldObj.spawnParticle("portal", xRight+Math.random() / 2 + 0.25, this.yCoord+i+Math.random(), zBottom+Math.random() / 2 + 0.25, 0, 0, 0);
-			worldObj.spawnParticle("portal", xRight+Math.random() / 2 + 0.25, this.yCoord+i+Math.random(), zTop+Math.random() / 2 + 0.25, 0, 0, 0);
-			worldObj.spawnParticle("portal", xLeft+Math.random() / 2 + 0.25, this.yCoord+i+Math.random(), zBottom+Math.random() / 2 + 0.25, 0, 0, 0);
-			worldObj.spawnParticle("portal", xLeft+Math.random() / 2 + 0.25, this.yCoord+i+Math.random(), zTop+Math.random() / 2 + 0.25, 0, 0, 0);
+		if (cooldown-- == 0) {
+			for(int i = 0; i < 4; i++) {
+				PacketHandler.sendPacketSpawnParticle(portalParticleID, xRight+Math.random() / 2 + 0.25, this.yCoord+i+Math.random(), zBottom+Math.random() / 2 + 0.25, 0, 0, 0, worldObj);
+				PacketHandler.sendPacketSpawnParticle(portalParticleID, xRight+Math.random() / 2 + 0.25, this.yCoord+i+Math.random(), zTop+Math.random() / 2 + 0.25, 0, 0, 0, worldObj);
+				PacketHandler.sendPacketSpawnParticle(portalParticleID, xLeft+Math.random() / 2 + 0.25, this.yCoord+i+Math.random(), zBottom+Math.random() / 2 + 0.25, 0, 0, 0, worldObj);
+				PacketHandler.sendPacketSpawnParticle(portalParticleID, xLeft+Math.random() / 2 + 0.25, this.yCoord+i+Math.random(), zTop+Math.random() / 2 + 0.25, 0, 0, 0, worldObj);
+			}
+			
+			cooldown = 30;
 		}
-
+		
 		if (!PlayerProxies.requiresPower()) {
 			storage.setEnergyStored(storage.getEnergyStored() + storage.getMaxReceive());
 		}
@@ -125,50 +133,28 @@ public class TileEntityBiomeReplicator extends TileEnergyHandler implements IInv
 		if (storage.getEnergyStored() < REQUIRED_RF) return;
 
 		this.storage.extractEnergy(REQUIRED_RF, false);
-		
-		System.out.println("WORKING");
 
 		boolean hasNextStep = false;
 		if(cursorZ < bounds[0][halfBounds+cursorX]) {
-			Chunk chunk = worldObj.getChunkFromBlockCoords(xLeft, zTop);
-			byte[] biomes = chunk.getBiomeArray();
-			biomes[(zTop & 15) << 4 | (xLeft & 15)] = biome;
-			
-			chunk.setBiomeArray(biomes);
-			chunk.setChunkModified();
-			
+			changeBiome(xLeft, zTop);
+
 			hasNextStep = true;
 		}
 
 		if(cursorZ < bounds[1][halfBounds+cursorX]) {
-			Chunk chunk = worldObj.getChunkFromBlockCoords(xLeft, zBottom);
-			byte[] biomes = chunk.getBiomeArray();
-			biomes[(zBottom & 15) << 4 | (xLeft & 15)] = biome;
-			
-			chunk.setBiomeArray(biomes);
-			chunk.setChunkModified();
+			changeBiome(xLeft, zBottom);
 			
 			hasNextStep = true;
 		}
 
 		if(cursorZ < bounds[0][halfBounds-cursorX]) {
-			Chunk chunk = worldObj.getChunkFromBlockCoords(xRight, zTop);
-			byte[] biomes = chunk.getBiomeArray();
-			biomes[(zTop & 15) << 4 | (xRight & 15)] = biome;
-			
-			chunk.setBiomeArray(biomes);
-			chunk.setChunkModified();
+			changeBiome(xRight, zTop);
 			
 			hasNextStep = true;
 		}
 
 		if(cursorZ < bounds[1][halfBounds-cursorX]) {
-			Chunk chunk = worldObj.getChunkFromBlockCoords(xRight, zBottom);
-			byte[] biomes = chunk.getBiomeArray();
-			biomes[(zBottom & 15) << 4 | (xRight & 15)] = biome;
-			
-			chunk.setBiomeArray(biomes);
-			chunk.setChunkModified();
+			changeBiome(xRight, zBottom);
 			
 			hasNextStep = true;
 		}
@@ -180,6 +166,17 @@ public class TileEntityBiomeReplicator extends TileEnergyHandler implements IInv
 		}
 
 		super.updateEntity();
+	}
+	
+	private void changeBiome(int x, int z) {
+		Chunk chunk = worldObj.getChunkFromBlockCoords(x, z);
+		byte[] biomes = chunk.getBiomeArray();
+		biomes[(z & 15) << 4 | (x & 15)] = biome;
+		
+		chunk.setBiomeArray(biomes);
+		chunk.setChunkModified();
+		
+		PacketHandler.sendPacketChangeBiome(x, z, biome, worldObj);
 	}
 	
 	private static int[][] generateTerrainBounds(int maxSize) {	

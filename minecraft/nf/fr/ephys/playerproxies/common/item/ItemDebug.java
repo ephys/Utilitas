@@ -43,6 +43,7 @@ public class ItemDebug extends Item {
 
 	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10) {
+		System.out.println(world.getBlockId(x, y, z));
 		if (player.isSneaking() && world.getBlockId(x, y, z) == 0) {
 			int mode = nextMode(stack);
 
