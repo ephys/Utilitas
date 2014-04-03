@@ -21,6 +21,7 @@ import nf.fr.ephys.playerproxies.common.item.ItemBiomeStorage;
 import nf.fr.ephys.playerproxies.common.item.ItemDebug;
 import nf.fr.ephys.playerproxies.common.item.ItemLinkFocus;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
+import nf.fr.ephys.playerproxies.common.openperipheral.AdaptorGravitationalField;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityGravitationalField;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntitySpawnerLoader;
@@ -221,5 +222,6 @@ public class CommonProxy {
 	private void registerHandlers() {
 		NetworkRegistry.instance().registerGuiHandler(this, new GuiHandler());
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
+		AdaptorGravitationalField.register();
 	}
 }

@@ -12,20 +12,49 @@ import nf.fr.ephys.playerproxies.common.core.GravitationalFieldRegistry;
 public class TileEntityGravitationalField extends TileEnergyHandler {
 	public static final int RANGE = 64;
 
-	public static final float MIN_GRAVITY = 0.74F;
-	public static final float MAX_GRAVITY = 1.2F;
-
 	private boolean isPowered;
 	private boolean wasPowered;
 	
 	private boolean hasEnergy;
 	private boolean hadEnergy;
 	
+	public static final float MIN_GRAVITY = 0.7399F;
+	public static final float MAX_GRAVITY = 1.2F;
+	
+	private float gravityModifier = 0.75F;
+
 	public TileEntityGravitationalField() {
 		storage.setCapacity(10000);
 		storage.setMaxReceive(5000);
 	}
+	
+	@Override
+	public void writeToNBT(NBTTagCompound nbt) {
+		nbt.setFloat("gravityModifier", gravityModifier);
 
+		super.writeToNBT(nbt);
+	}
+	
+	@Override
+	public void readFromNBT(NBTTagCompound nbt) {
+		if (nbt.hasKey("gravityModifier"))
+			gravityModifier = nbt.getFloat("gravityModifier");
+		
+		super.readFromNBT(nbt);
+	}
+
+	public float setGravityModifier(float modifier) {
+		this.gravityModifier = Math.min(Math.max(modifier, MIN_GRAVITY), MAX_GRAVITY);
+
+		this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+		
+		return this.gravityModifier;
+	}
+	
+	public float getGravityModifier() {
+		return gravityModifier;
+	}
+	
 	public boolean isActive() {
 		return !isPowered && hasEnergy;
 	}
@@ -34,6 +63,7 @@ public class TileEntityGravitationalField extends TileEnergyHandler {
 		NBTTagCompound nbt = new NBTTagCompound();
 		nbt.setBoolean("isPowered", isPowered);
 		nbt.setBoolean("hasEnergy", hasEnergy);
+		nbt.setFloat("gravityModifier", gravityModifier);
 
 		return new Packet132TileEntityData(xCoord, yCoord, zCoord, 4, nbt);
 	}
@@ -43,11 +73,16 @@ public class TileEntityGravitationalField extends TileEnergyHandler {
 
 		NBTTagCompound nbt = packet.data;
 		
-		if (nbt.hasKey("isPowered")) {
+		if (nbt.hasKey("isPowered"))
 			isPowered = nbt.getBoolean("isPowered");
+		
+		if (nbt.hasKey("hasEnergy"))
 			hasEnergy = nbt.getBoolean("hasEnergy");
-			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
-		}
+		
+		if (nbt.hasKey("gravityModifier"))
+			gravityModifier = nbt.getFloat("gravityModifier");
+		
+		worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
 	}
 
 	public void checkPowered() {
@@ -57,10 +92,6 @@ public class TileEntityGravitationalField extends TileEnergyHandler {
 			this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
 			wasPowered = isPowered;
 		}
-	}
-
-	public float getGravityModifier() {
-		return 0.75F;
 	}
 
 	public final boolean inRange(Entity player) {
