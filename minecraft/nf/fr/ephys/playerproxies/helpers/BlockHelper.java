@@ -2,16 +2,26 @@ package nf.fr.ephys.playerproxies.helpers;
 
 import java.util.Random;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 public class BlockHelper {
 	private static Random random = new Random();
-	
+
+	public static int[] getCoords(TileEntity te) {
+		return new int[] { te.xCoord, te.yCoord, te.zCoord };
+	}
+
+	public static double[] getCoords(Entity e) {
+		return new double[] { e.posX, e.posY, e.posZ };
+	}
+
 	public static int orientationToMetadataXZ(double rotationYaw) {
 	    int l = MathHelper.floor_double((double)(rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 	    return l == 0 ? 2 : (l == 1 ? 5 : (l == 2 ? 3 : (l == 3 ? 4 : 0)));

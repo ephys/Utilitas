@@ -8,6 +8,7 @@ import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.block.BlockBiomeReplicator;
 import nf.fr.ephys.playerproxies.common.block.BlockBiomeScanner;
 import nf.fr.ephys.playerproxies.common.block.BlockEtherealGlass;
+import nf.fr.ephys.playerproxies.common.block.BlockGravitationalField;
 import nf.fr.ephys.playerproxies.common.block.BlockHardenedStone;
 import nf.fr.ephys.playerproxies.common.block.BlockInterface;
 import nf.fr.ephys.playerproxies.common.block.BlockItemTicker;
@@ -20,6 +21,7 @@ import nf.fr.ephys.playerproxies.common.item.ItemBiomeStorage;
 import nf.fr.ephys.playerproxies.common.item.ItemDebug;
 import nf.fr.ephys.playerproxies.common.item.ItemLinkFocus;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
+import nf.fr.ephys.playerproxies.common.tileentity.TileEntityGravitationalField;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntitySpawnerLoader;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBiomeReplicator;
@@ -99,6 +101,12 @@ public class CommonProxy {
 		GameRegistry.registerBlock(PlayerProxies.blockItemTicker, "PP_ItemActivator");
 		GameRegistry.registerTileEntity(TileEntityItemTicker.class, "PP_ItemActivator");
 		LanguageRegistry.instance().addName(PlayerProxies.blockItemTicker, "Sylladex");
+		
+		PlayerProxies.blockGravitationalField = new BlockGravitationalField();
+		PlayerProxies.blockGravitationalField.setUnlocalizedName("PP_GravitationalField");
+		GameRegistry.registerBlock(PlayerProxies.blockGravitationalField, "PP_GravitationalField");
+		GameRegistry.registerTileEntity(TileEntityGravitationalField.class, "PP_GravitationalField");
+		LanguageRegistry.instance().addName(PlayerProxies.blockGravitationalField, "Gravitational Field Handler");
 	}
 
 	private void registerItems() {
@@ -120,7 +128,7 @@ public class CommonProxy {
 		GameRegistry.registerItem(PlayerProxies.itemBiomeStorage, "PP_BiomeStorage");
 		LanguageRegistry.instance().addName(PlayerProxies.itemBiomeStorage,
 				"Biome signature handler");
-
+		
 		if (PlayerProxies.DEV_MODE) {
 			ItemDebug itemDebug = new ItemDebug();
 			itemDebug.setUnlocalizedName("PP_Debug");

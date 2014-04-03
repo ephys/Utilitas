@@ -6,6 +6,7 @@ import net.minecraftforge.common.Configuration;
 import nf.fr.ephys.playerproxies.common.block.BlockBiomeReplicator;
 import nf.fr.ephys.playerproxies.common.block.BlockBiomeScanner;
 import nf.fr.ephys.playerproxies.common.block.BlockEtherealGlass;
+import nf.fr.ephys.playerproxies.common.block.BlockGravitationalField;
 import nf.fr.ephys.playerproxies.common.block.BlockHardenedStone;
 import nf.fr.ephys.playerproxies.common.block.BlockInterface;
 import nf.fr.ephys.playerproxies.common.block.BlockItemTicker;
@@ -13,6 +14,7 @@ import nf.fr.ephys.playerproxies.common.block.BlockParticleGenerator;
 import nf.fr.ephys.playerproxies.common.block.BlockProximitySensor;
 import nf.fr.ephys.playerproxies.common.block.BlockSpawnerLoader;
 import nf.fr.ephys.playerproxies.common.block.BlockToughwoodPlank;
+import nf.fr.ephys.playerproxies.common.command.NicknameCommand;
 import nf.fr.ephys.playerproxies.common.core.CommonProxy;
 import nf.fr.ephys.playerproxies.common.core.PacketHandler;
 import nf.fr.ephys.playerproxies.common.item.ItemBiomeStorage;
@@ -27,6 +29,7 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 
 @Mod(modid = "ephys.playerproxies", name = "Player Proxies",
@@ -42,7 +45,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 )
 
 public class PlayerProxies {
-	public static final String version = "1.6.4-0.0.2";
+	public static final String version = "1.6.4-0.1.0";
 
 	public static final int GUI_UNIVERSAL_INTERFACE = 0;
 	public static final int GUI_BIOME_SCANNER = 1;
@@ -74,6 +77,7 @@ public class PlayerProxies {
 	public static BlockBiomeScanner blockBiomeScanner;
 	public static BlockToughwoodPlank blockToughwoodPlank;
 	public static BlockItemTicker blockItemTicker;
+	public static BlockGravitationalField blockGravitationalField;
 
 	// items
 	public static ItemLinker itemLinker;
@@ -120,5 +124,10 @@ public class PlayerProxies {
     	proxy.registerCrafts();
     	
     	REQUIRES_POWER = Loader.isModLoaded("ThermalExpansion");
+    }
+
+    @EventHandler
+    public void serverStarting(FMLServerStartingEvent event) {
+    	event.registerServerCommand(new NicknameCommand());
     }
 }

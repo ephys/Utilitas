@@ -6,12 +6,20 @@ import net.minecraft.entity.monster.EntityWitch;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.WorldInfo;
+import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
+import nf.fr.ephys.playerproxies.common.tileentity.TileEntityGravitationalField;
 
 public class EventHandler {
 	@ForgeSubscribe
@@ -49,5 +57,41 @@ public class EventHandler {
 				}
 			}
 		}
+	}
+	
+	@ForgeSubscribe
+	public void onChatMessage(ServerChatEvent event) {
+		if (event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).hasKey("nickname")) {
+			String username = event.player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getString("nickname");
+			
+			String message = "<"+username+"> " + event.message;
+
+			event.component = ChatMessageComponent.createFromText(message);
+		}
+	}
+
+	@ForgeSubscribe(priority = EventPriority.HIGH)
+	public void onLivingUpdate(LivingUpdateEvent event) {
+		if (!(event.entityLiving instanceof EntityPlayer) || !event.entityLiving.worldObj.isRemote) return;
+		
+		TileEntityGravitationalField field = GravitationalFieldRegistry.getClosestGravitationalField(event.entityLiving);
+		
+		if (field == null) return;
+		
+		if (event.entityLiving.motionY < 0)
+			event.entityLiving.motionY *= field.getGravityModifier();
+		else
+			event.entityLiving.motionY *= 2 - field.getGravityModifier();
+	}
+	
+	@ForgeSubscribe(priority = EventPriority.HIGH)
+	public void onLivingFall(LivingFallEvent event) {
+		if (!(event.entityLiving instanceof EntityPlayer)) return;
+
+		TileEntityGravitationalField field = GravitationalFieldRegistry.getClosestGravitationalField(event.entityLiving);
+
+		if (field == null) return;
+
+		event.distance *= field.getGravityModifier();
 	}
 }
