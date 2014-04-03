@@ -78,7 +78,7 @@ public class TileEntityProximitySensor extends TileEntity {
 				}
 				
 				break;
-			
+
 			case 4:
 			case 5:
 				if(player.isSneaking()) {
@@ -113,14 +113,14 @@ public class TileEntityProximitySensor extends TileEntity {
 		}
 		
 		player.addChatMessage("Detection radius: "+RADIUS_X+"*"+RADIUS_Y+"*"+RADIUS_Z);
-		updateTick = 25;
+		updateTick = 10;
 	}
 
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
 		
-		if (updateTick != 15) {
+		if (updateTick != 10) {
 			updateTick++;
 			return;
 		}

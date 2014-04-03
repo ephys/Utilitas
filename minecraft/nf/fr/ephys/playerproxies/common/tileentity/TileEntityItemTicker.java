@@ -20,21 +20,22 @@ public class TileEntityItemTicker extends TileEntity implements IInventory {
 	private ItemStack item;
 	private FakePlayer player;
 
-	public TileEntityItemTicker init() {
-		player = new FakePlayer(worldObj, "[TileEntityItemTicker]");
+	@Override
+	public void validate() {
+		player = new FakePlayer(worldObj, "[PlayerProxies::ItemTicker]");
 		player.setPosition(xCoord, yCoord, zCoord);
 		player.playerNetServerHandler =	new NetServerHandlerFake(FMLCommonHandler.instance().getMinecraftServerInstance(), player);
 
-		return this;
+		super.validate();
 	}
-	
+
 	@Override
-	protected void finalize() throws Throwable {
+	public void invalidate() {
 		player.setDead();
 
-		super.finalize();
+		super.invalidate();
 	}
-	
+
 	@Override
 	public Packet getDescriptionPacket() {
 		NBTTagCompound nbtTag = new NBTTagCompound();
@@ -156,11 +157,9 @@ public class TileEntityItemTicker extends TileEntity implements IInventory {
 	@Override
 	public void updateEntity() {
 		if (this.item != null) {
-			if (this.player == null) this.init();
-
 			this.item.getItem().onUpdate(this.item, player.worldObj, player, 0, true);
 		}
-		
+
 		super.updateEntity();
 	}
 }

@@ -53,11 +53,11 @@ public class CommonProxy {
 		GameRegistry.registerTileEntity(TileEntityInterface.class, "PP_UniversalInterface");
 		LanguageRegistry.instance().addName(PlayerProxies.blockInterface, "Universal Interface");
 		
-		PlayerProxies.blockSpawnerLoader = new BlockSpawnerLoader();
+		/*PlayerProxies.blockSpawnerLoader = new BlockSpawnerLoader();
 		PlayerProxies.blockSpawnerLoader.setUnlocalizedName("PP_SpawnerLoader");
 		GameRegistry.registerBlock(PlayerProxies.blockSpawnerLoader, "PP_SpawnerLoader");
 		GameRegistry.registerTileEntity(TileEntitySpawnerLoader.class, "PP_SpawnerLoader");
-		LanguageRegistry.instance().addName(PlayerProxies.blockSpawnerLoader, "Ghost Stabilizer");
+		LanguageRegistry.instance().addName(PlayerProxies.blockSpawnerLoader, "Ghost Stabilizer");*/
 
 		PlayerProxies.blockHardenedStone = new BlockHardenedStone();
 		PlayerProxies.blockHardenedStone.setUnlocalizedName("PP_HardenedStone");
@@ -184,11 +184,11 @@ public class CommonProxy {
 				'l', new ItemStack(PlayerProxies.itemLinkFocus), 
 				'r', new ItemStack(Item.redstone));
 		
-		GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockSpawnerLoader), 
+		/*GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockSpawnerLoader), 
 				"hlh", "hdh", "hhh",
 				'h', new ItemStack(PlayerProxies.blockHardenedStone), 
 				'l', new ItemStack(PlayerProxies.itemLinkFocus), 
-				'd', new ItemStack(Item.diamond));
+				'd', new ItemStack(Item.diamond));*/
 
 		GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockToughwoodPlank, 4), 
 				" b ", "bwb", " b ",
@@ -214,9 +214,9 @@ public class CommonProxy {
 	}
 
 	private void registerEntities() {
-		EntityRegistry.registerModEntity(Ghost.class, "PP_Ghost",
+		/*EntityRegistry.registerModEntity(Ghost.class, "PP_Ghost",
 				EntityRegistry.findGlobalUniqueEntityId(),
-				PlayerProxies.instance, 100, 20, true);
+				PlayerProxies.instance, 100, 20, true);*/
 	}
 
 	private void registerHandlers() {

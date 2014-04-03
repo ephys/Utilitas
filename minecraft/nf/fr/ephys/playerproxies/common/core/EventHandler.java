@@ -72,26 +72,18 @@ public class EventHandler {
 
 	@ForgeSubscribe(priority = EventPriority.HIGH)
 	public void onLivingUpdate(LivingUpdateEvent event) {
-		if (!(event.entityLiving instanceof EntityPlayer) || !event.entityLiving.worldObj.isRemote) return;
-		
-		TileEntityGravitationalField field = GravitationalFieldRegistry.getClosestGravitationalField(event.entityLiving);
-		
-		if (field == null) return;
-		
-		if (event.entityLiving.motionY < 0)
-			event.entityLiving.motionY *= field.getGravityModifier();
-		else
-			event.entityLiving.motionY *= 2 - field.getGravityModifier();
-	}
-	
-	@ForgeSubscribe(priority = EventPriority.HIGH)
-	public void onLivingFall(LivingFallEvent event) {
 		if (!(event.entityLiving instanceof EntityPlayer)) return;
-
+		
 		TileEntityGravitationalField field = GravitationalFieldRegistry.getClosestGravitationalField(event.entityLiving);
-
+		
 		if (field == null) return;
-
-		event.distance *= field.getGravityModifier();
+		
+		if (event.entityLiving.motionY < 0) {
+			if (event.entityLiving.worldObj.isRemote)
+				event.entityLiving.motionY *= field.getGravityModifier();
+			
+			event.entityLiving.fallDistance /= 2 - field.getGravityModifier();
+		} else if (event.entityLiving.worldObj.isRemote)
+			event.entityLiving.motionY *= 2 - field.getGravityModifier();
 	}
 }
