@@ -1,15 +1,20 @@
 package nf.fr.ephys.playerproxies.common.block;
 
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityProximitySensor;
 
 public class BlockProximitySensor extends BlockContainer {
@@ -17,6 +22,22 @@ public class BlockProximitySensor extends BlockContainer {
 	
 	private Icon iconTop;
 	private Icon iconSide;
+	
+	public static void register() {
+		PlayerProxies.blockProximitySensor = new BlockProximitySensor();
+		PlayerProxies.blockProximitySensor.setUnlocalizedName("PP_ProximitySensor");
+		GameRegistry.registerBlock(PlayerProxies.blockProximitySensor, "PP_ProximitySensor");
+		GameRegistry.registerTileEntity(TileEntityProximitySensor.class, "PP_ProximitySensor");
+		LanguageRegistry.instance().addName(PlayerProxies.blockProximitySensor, "Proximity Sensor");
+	}
+	
+	public static void registerCraft() {
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockProximitySensor), 
+				"hhh", "hlh", "hrh",
+				'h', new ItemStack(PlayerProxies.blockHardenedStone), 
+				'l', new ItemStack(PlayerProxies.itemLinkFocus), 
+				'r', new ItemStack(Item.redstone));
+	}
 	
 	public BlockProximitySensor() {
 		super(BLOCK_ID, Material.iron);

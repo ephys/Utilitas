@@ -3,6 +3,8 @@ package nf.fr.ephys.playerproxies.common.block;
 import java.util.List;
 import java.util.Random;
 
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import dan200.turtle.api.TurtleAPI;
@@ -14,12 +16,15 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import nf.fr.ephys.playerproxies.common.PlayerProxies;
+import nf.fr.ephys.playerproxies.common.entity.Ghost;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntitySpawnerLoader;
@@ -29,6 +34,25 @@ public class BlockSpawnerLoader extends BlockContainer {
 	private Icon topIcon;
 	private Icon sideIcon;
 
+	public static void register() {
+		PlayerProxies.blockSpawnerLoader = new BlockSpawnerLoader();
+		PlayerProxies.blockSpawnerLoader.setUnlocalizedName("PP_SpawnerLoader");
+		GameRegistry.registerBlock(PlayerProxies.blockSpawnerLoader, "PP_SpawnerLoader");
+		GameRegistry.registerTileEntity(TileEntitySpawnerLoader.class, "PP_SpawnerLoader");
+		LanguageRegistry.instance().addName(PlayerProxies.blockSpawnerLoader, "Ghost Stabilizer");
+		
+		Ghost.register();
+	}
+	
+	public static void registerCraft() {
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockSpawnerLoader), 
+			"hlh", "hdh", "hhh",
+			'h', new ItemStack(PlayerProxies.blockHardenedStone), 
+			'l', new ItemStack(PlayerProxies.itemLinkFocus), 
+			'd', new ItemStack(Item.diamond)
+		);
+	}
+	
 	public BlockSpawnerLoader() {
 		super(BlockSpawnerLoader.BLOCK_ID, Material.iron);
 

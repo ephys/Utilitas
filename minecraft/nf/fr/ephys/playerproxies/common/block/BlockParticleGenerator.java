@@ -2,6 +2,8 @@ package nf.fr.ephys.playerproxies.common.block;
 
 import java.util.Random;
 
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -20,9 +22,22 @@ public class BlockParticleGenerator extends Block {
 	private Icon iconSide;
 	private Icon iconTop;
 
-	private String[] particleList = new String[] { "depthsuspend", "smoke",
+	private static String[] particleList = new String[] { "depthsuspend", "smoke",
 			"mobSpell", "spell", "instantSpell", "note", "portal",
 			"enchantmenttable", "flame", "lava", "splash", "reddust", "heart" };
+	
+	public static void register() {
+		PlayerProxies.blockParticleGenerator = new BlockParticleGenerator();
+		PlayerProxies.blockParticleGenerator.setUnlocalizedName("PP_ParticleGenerator");
+		GameRegistry.registerBlock(PlayerProxies.blockParticleGenerator, "PP_ParticleGenerator");
+		LanguageRegistry.instance().addName(PlayerProxies.blockParticleGenerator, "Particle Generator");
+		
+		GameRegistry.addShapelessRecipe(new ItemStack(PlayerProxies.blockParticleGenerator), Block.fenceIron, PlayerProxies.blockHardenedStone);
+	}
+	
+	public static void registerCraft() {
+		GameRegistry.addShapelessRecipe(new ItemStack(PlayerProxies.blockParticleGenerator), Block.fenceIron, PlayerProxies.blockHardenedStone);
+	}
 
 	public BlockParticleGenerator() {
 		super(BLOCK_ID, Material.iron);
@@ -34,42 +49,45 @@ public class BlockParticleGenerator extends Block {
 	}
 
 	@Override
-	public Icon getBlockTexture(IBlockAccess par1iBlockAccess, int par2, int par3, int par4, int par5) {
-		int[] offset = new int[3];
+	public Icon getBlockTexture(IBlockAccess blockAccess, int x, int y, int z, int par5) {
+		int[] offset = new int[] { 0, 0, 0 };
 
 		int offsetType = 0;
 		Block block;
 
 		do {
-			offset[0] = 0;
-			offset[1] = 0;
-			offset[2] = 0;
-			
-			offset[offsetType] = -1;
+			offset[offsetType] = 1;
 			offsetType++;
 
-			block = Block.blocksList[par1iBlockAccess.getBlockId(par2+offset[0], par3+offset[1], par4+offset[2])];
-		} while ((block == null || block == this || !block.isOpaqueCube() || block.blockID == PlayerProxies.blockHardenedStone.blockID) && offsetType != 3);
-	
-		offsetType = 0;
-		
-		if (block == null || !block.isOpaqueCube()) {
-			do {
-				offset[0] = 0;
-				offset[1] = 0;
-				offset[2] = 0;
+			block = Block.blocksList[blockAccess.getBlockId(x+offset[0], y+offset[1], z+offset[2])];
+
+			if (block != null) {
+				if (block.blockID == PlayerProxies.blockHardenedStone.blockID) {
+					block = null;
+					break;
+				}
 				
-				offset[offsetType] = 1;
-				offsetType++;
+				if(block != this && block.isOpaqueCube())
+					break;
+			}
+
+			block = Block.blocksList[blockAccess.getBlockId(x-offset[0], y-offset[1], z-offset[2])];
+			
+			if (block != null) {
+				if (block.blockID == PlayerProxies.blockHardenedStone.blockID) {
+					block = null;
+					break;
+				}
 				
-				block = Block.blocksList[par1iBlockAccess.getBlockId(par2+offset[0], par3+offset[1], par4+offset[2])];
-			} while ((block == null || block == this || !block.isOpaqueCube() || block.blockID == PlayerProxies.blockHardenedStone.blockID) && offsetType != 3);
-		}
-		
+				if(block != this && block.isOpaqueCube())
+					break;
+			}
+		} while (offsetType != 3);
+
 		if (block == null || block == this || !block.isOpaqueCube())
 			return par5 == 1 ? iconTop : iconSide;
 
-		return block.getBlockTexture(par1iBlockAccess, par2+offset[0], par3+offset[1], par4+offset[2], par5);
+		return block.getBlockTexture(blockAccess, x+offset[0], y+offset[1], z+offset[2], par5);
 	}
 	
 	@Override

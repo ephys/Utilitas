@@ -1,5 +1,7 @@
 package nf.fr.ephys.playerproxies.common.block;
 
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -9,6 +11,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -28,7 +31,24 @@ public class BlockBiomeScanner extends BlockContainer {
 	private Icon iconSide;
 	private Icon iconBottom;
 	private Icon iconScreen;
+	
+	public static void register() {
+		PlayerProxies.blockBiomeScanner = new BlockBiomeScanner();
+		PlayerProxies.blockBiomeScanner.setUnlocalizedName("PP_BiomeScanner");
+		GameRegistry.registerBlock(PlayerProxies.blockBiomeScanner, "PP_BiomeScanner");
+		GameRegistry.registerTileEntity(TileEntityBiomeScanner.class, "PP_BiomeScanner");
+		LanguageRegistry.instance().addName(PlayerProxies.blockBiomeScanner, "Biome scanner");
+	}
 
+	public static void registerCraft() {
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockBiomeScanner), 
+				" g ", "pop", " p ",
+				'g', new ItemStack(Item.goldNugget),
+				'o', new ItemStack(Block.obsidian),
+				'p', new ItemStack(PlayerProxies.blockToughwoodPlank)
+		);
+	}
+	
 	public BlockBiomeScanner() {
 		super(BLOCK_ID, Material.wood);
 

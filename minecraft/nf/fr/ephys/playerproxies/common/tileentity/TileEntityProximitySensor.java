@@ -17,7 +17,7 @@ public class TileEntityProximitySensor extends TileEntity {
 	private int RADIUS_Y = 3;
 	private int RADIUS_Z = 3;
 
-	public static int MAX_RADIUS = 10;
+	public static int MAX_RADIUS = 15;
 
 	public boolean isActivated = false;
 	private boolean lastIsActivated = false;
@@ -48,7 +48,7 @@ public class TileEntityProximitySensor extends TileEntity {
 			player.addChatMessage("Entity filter already set to "+entityName);
 			return;
 		}
-			
+
 		if(clazz == Entity.class) {
 			player.addChatMessage("Removed entity filter");
 		} else {
@@ -113,7 +113,6 @@ public class TileEntityProximitySensor extends TileEntity {
 		}
 		
 		player.addChatMessage("Detection radius: "+RADIUS_X+"*"+RADIUS_Y+"*"+RADIUS_Z);
-		updateTick = 10;
 	}
 
 	@Override

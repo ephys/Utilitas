@@ -6,6 +6,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -32,6 +33,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.FakePlayer;
 import net.minecraftforge.common.IExtendedEntityProperties;
+import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.core.NetServerHandlerFake;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntitySpawnerLoader;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -62,6 +64,10 @@ public class Ghost extends EntityPlayerMP implements IEntityAdditionalSpawnData 
 	@SideOnly(Side.CLIENT)
 	private ResourceLocation locationCape;
 
+	public static void register() {
+		EntityRegistry.registerModEntity(Ghost.class, "PP_Ghost", EntityRegistry.findGlobalUniqueEntityId(), PlayerProxies.instance, 100, 20, true);
+	}
+	
 	public Ghost(World world) {
 		this(world, "Ghost");
 	}

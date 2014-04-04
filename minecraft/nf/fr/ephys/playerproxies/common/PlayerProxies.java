@@ -122,7 +122,7 @@ public class PlayerProxies {
     @EventHandler
     public void postLoad(FMLPostInitializationEvent event) {
     	proxy.registerCrafts();
-    	
+
     	REQUIRES_POWER = Loader.isModLoaded("ThermalExpansion");
     }
 

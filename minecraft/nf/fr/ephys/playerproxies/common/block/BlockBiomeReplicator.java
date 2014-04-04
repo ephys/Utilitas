@@ -1,12 +1,15 @@
 package nf.fr.ephys.playerproxies.common.block;
 
 import cofh.api.energy.IEnergyHandler;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
@@ -23,6 +26,23 @@ public class BlockBiomeReplicator extends BlockContainer {
 	private Icon iconTop;
 	private Icon iconSide;
 	private Icon iconBottom;
+	
+	public static void register() {
+		PlayerProxies.blockBiomeChanger = new BlockBiomeReplicator();
+		PlayerProxies.blockBiomeChanger.setUnlocalizedName("PP_BiomeChanger");
+		GameRegistry.registerBlock(PlayerProxies.blockBiomeChanger, "PP_BiomeChanger");
+		GameRegistry.registerTileEntity(TileEntityBiomeReplicator.class, "PP_BiomeChanger");
+		LanguageRegistry.instance().addName(PlayerProxies.blockBiomeChanger, "Biome transmuter");
+	}
+	
+	public static void registerCraft() {
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockBiomeChanger), 
+				" c ", "pdp", " p ",
+				'c', new ItemStack(PlayerProxies.itemLinkFocus),
+				'p', new ItemStack(PlayerProxies.blockToughwoodPlank),
+				'd', new ItemStack(Block.blockDiamond)
+		);
+	}
 	
 	public BlockBiomeReplicator() {
 		super(BLOCK_ID, Material.wood);

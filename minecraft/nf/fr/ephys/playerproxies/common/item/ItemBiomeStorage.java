@@ -2,6 +2,8 @@ package nf.fr.ephys.playerproxies.common.item;
 
 import java.util.List;
 
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -12,10 +14,19 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeManager;
+import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
 public class ItemBiomeStorage extends Item {
 	public static int ITEM_ID = 902;
+	
+	public static void register() {
+		PlayerProxies.itemBiomeStorage = new ItemBiomeStorage();
+		PlayerProxies.itemBiomeStorage.setUnlocalizedName("PP_BiomeStorage");
+		GameRegistry.registerItem(PlayerProxies.itemBiomeStorage, "PP_BiomeStorage");
+		LanguageRegistry.instance().addName(PlayerProxies.itemBiomeStorage,
+				"Biome signature handler");
+	}
 
 	public ItemBiomeStorage() {
 		super(ITEM_ID);

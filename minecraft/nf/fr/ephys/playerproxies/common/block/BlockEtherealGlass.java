@@ -3,6 +3,8 @@ package nf.fr.ephys.playerproxies.common.block;
 import java.util.List;
 import java.util.Random;
 
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import dan200.turtle.api.TurtleAPI;
@@ -18,17 +20,33 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
 
 public class BlockEtherealGlass extends Block {
 	public static int BLOCK_ID = 804;
+	
+	public static void register() {
+		PlayerProxies.blockEtherealGlass = new BlockEtherealGlass();
+		PlayerProxies.blockEtherealGlass.setUnlocalizedName("PP_EtherealGlass");
+		GameRegistry.registerBlock(PlayerProxies.blockEtherealGlass, "PP_EtherealGlass");
+		LanguageRegistry.instance().addName(PlayerProxies.blockEtherealGlass, "Ethereal Glass");
+	}
+	
+	public static void registerCraft() {
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockEtherealGlass, 24),
+				"ggg", "gdg", "ggg", 
+				'd', new ItemStack(Item.diamond), 
+				'g', new ItemStack(Block.glass));
+	}
 	
 	public BlockEtherealGlass() {
 		super(BlockEtherealGlass.BLOCK_ID, Material.glass);

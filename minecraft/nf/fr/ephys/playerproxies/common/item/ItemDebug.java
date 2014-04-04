@@ -1,6 +1,8 @@
 package nf.fr.ephys.playerproxies.common.item;
 
 import cofh.api.energy.IEnergyHandler;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -13,6 +15,14 @@ import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 public class ItemDebug extends Item {
 	public static final int ITEM_ID = 9999;
 	private String[] modeNames = new String[]{"Energy level"};
+	
+	public static void register() {
+		ItemDebug itemDebug = new ItemDebug();
+		itemDebug.setUnlocalizedName("PP_Debug");
+		GameRegistry.registerItem(itemDebug, "PP_Debug");
+		LanguageRegistry.instance().addName(itemDebug,
+				"Debug tool -- REPORT THIS A BUG");
+	}
 	
 	public ItemDebug() {
 		super(ITEM_ID);

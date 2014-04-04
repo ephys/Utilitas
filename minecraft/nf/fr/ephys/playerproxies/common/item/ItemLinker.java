@@ -3,6 +3,8 @@ package nf.fr.ephys.playerproxies.common.item;
 import java.util.List;
 
 import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -16,6 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import nf.fr.ephys.playerproxies.client.gui.GuiUniversalInterface;
@@ -26,6 +29,21 @@ import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
 public class ItemLinker extends Item {
 	public static int ITEM_ID = 901;
+	
+	public static void register() {
+		PlayerProxies.itemLinker = new ItemLinker();
+		PlayerProxies.itemLinker.setUnlocalizedName("PP_LinkWand");
+		MinecraftForge.EVENT_BUS.register(PlayerProxies.itemLinker);
+		GameRegistry.registerItem(PlayerProxies.itemLinker, "PP_LinkWand");
+		LanguageRegistry.instance().addName(PlayerProxies.itemLinker,
+				"Linking wand");
+		
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.itemLinker), 
+				" il", " si", "s  ", 
+				'l', new ItemStack(PlayerProxies.itemLinkFocus),
+				'i', new ItemStack(Item.ingotIron), 
+				's', new ItemStack(Item.stick));
+	}
 
 	public ItemLinker() {
 		super(ITEM_ID);
@@ -122,7 +140,7 @@ public class ItemLinker extends Item {
 			return;
 		
 		ItemStack item = event.entityPlayer.getHeldItem();
-		if(item == null || !(item.getItem() instanceof ItemLinker))
+		if(!(item.getItem() instanceof ItemLinker))
 			return;
 
 		String entityName = event.target.getEntityName();
@@ -131,5 +149,7 @@ public class ItemLinker extends Item {
 
 		if(event.entityPlayer != null)
 			event.entityPlayer.addChatMessage("Entity filter set to "+entityName);
+		
+		event.setCanceled(true);
 	}
 }
