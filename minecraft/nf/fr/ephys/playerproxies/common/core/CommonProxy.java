@@ -22,6 +22,7 @@ import nf.fr.ephys.playerproxies.common.item.ItemDebug;
 import nf.fr.ephys.playerproxies.common.item.ItemLinkFocus;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
 import nf.fr.ephys.playerproxies.common.openperipheral.AdaptorGravitationalField;
+import nf.fr.ephys.playerproxies.common.openperipheral.AdaptorProximitySensor;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityGravitationalField;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntitySpawnerLoader;
@@ -47,7 +48,7 @@ public class CommonProxy {
 
 	private void registerBlocks() {
 		BlockInterface.register();
-		//BlockSpawnerLoader.register();
+		// BlockSpawnerLoader.register();
 		BlockHardenedStone.register();
 		BlockParticleGenerator.register();
 		BlockEtherealGlass.register();
@@ -61,7 +62,7 @@ public class CommonProxy {
 	
 	public void registerCrafts() {
 		BlockInterface.registerCraft();
-		//BlockSpawnerLoader.registerCraft();
+		// BlockSpawnerLoader.registerCraft();
 		BlockHardenedStone.registerCraft();
 		BlockParticleGenerator.registerCraft();
 		BlockEtherealGlass.registerCraft();
@@ -71,13 +72,16 @@ public class CommonProxy {
 		BlockToughwoodPlank.registerCraft();
 		BlockItemTicker.registerCraft();
 		BlockGravitationalField.registerCraft();
+
+		ItemLinkFocus.registerCraft();
+		ItemLinker.registerCraft();
 	}
 
 	private void registerItems() {
-		ItemLinker.register();
 		ItemLinkFocus.register();
+		ItemLinker.register();
 		ItemBiomeStorage.register();
-		
+
 		if (PlayerProxies.DEV_MODE) {
 			ItemDebug.register();
 		}
@@ -86,6 +90,10 @@ public class CommonProxy {
 	private void registerHandlers() {
 		NetworkRegistry.instance().registerGuiHandler(this, new GuiHandler());
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
-		AdaptorGravitationalField.register();
+		
+		if (Loader.isModLoaded("OpenPeripheralCore")) {
+			AdaptorGravitationalField.register();
+			AdaptorProximitySensor.register();
+		}
 	}
 }

@@ -78,7 +78,7 @@ public class PlayerProxies {
 	public static BlockToughwoodPlank blockToughwoodPlank;
 	public static BlockItemTicker blockItemTicker;
 	public static BlockGravitationalField blockGravitationalField;
-
+	
 	// items
 	public static ItemLinker itemLinker;
 	public static ItemLinkFocus itemLinkFocus;

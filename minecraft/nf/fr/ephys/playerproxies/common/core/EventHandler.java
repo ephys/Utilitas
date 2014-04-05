@@ -31,7 +31,7 @@ public class EventHandler {
 			event.entity.dropItem(PlayerProxies.itemBiomeStorage.itemID, 1);
 		}
 	}
-	
+
 	@ForgeSubscribe
 	public void onEntityDeath(LivingDeathEvent event) {
 		if (event.entity instanceof EntityPlayer) {

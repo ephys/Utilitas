@@ -9,10 +9,27 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 public class BlockHelper {
 	private static Random random = new Random();
+	
+	public static Vec3 relativePos(TileEntity te, Entity e) {
+		return Vec3.createVectorHelper(te.xCoord - e.posX, te.yCoord - e.posY, te.zCoord - e.posZ);
+	}
+	
+	public static Vec3 relativePos(Entity e, TileEntity te) {
+		return Vec3.createVectorHelper(e.posX - te.xCoord, e.posY - te.yCoord, e.posZ - te.zCoord);
+	}
+	
+	public static Vec3 relativePos(TileEntity te1, TileEntity te2) {
+		return Vec3.createVectorHelper(te1.xCoord - te2.xCoord, te1.yCoord - te2.yCoord, te1.zCoord - te2.zCoord);
+	}
+	
+	public static Vec3 relativePos(Entity e1, Entity e2) {
+		return Vec3.createVectorHelper(e1.posX - e2.posX, e1.posY - e2.posY, e1.posZ - e2.posZ);
+	}
 
 	public static int[] getCoords(TileEntity te) {
 		return new int[] { te.xCoord, te.yCoord, te.zCoord };

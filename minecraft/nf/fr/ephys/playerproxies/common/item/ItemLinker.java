@@ -35,9 +35,10 @@ public class ItemLinker extends Item {
 		PlayerProxies.itemLinker.setUnlocalizedName("PP_LinkWand");
 		MinecraftForge.EVENT_BUS.register(PlayerProxies.itemLinker);
 		GameRegistry.registerItem(PlayerProxies.itemLinker, "PP_LinkWand");
-		LanguageRegistry.instance().addName(PlayerProxies.itemLinker,
-				"Linking wand");
-		
+		LanguageRegistry.instance().addName(PlayerProxies.itemLinker, "Linking wand");
+	}
+	
+	public static void registerCraft() {
 		GameRegistry.addRecipe(new ItemStack(PlayerProxies.itemLinker), 
 				" il", " si", "s  ", 
 				'l', new ItemStack(PlayerProxies.itemLinkFocus),

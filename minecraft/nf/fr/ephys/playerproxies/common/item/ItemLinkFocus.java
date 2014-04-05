@@ -21,7 +21,9 @@ public class ItemLinkFocus extends Item {
 		GameRegistry.registerItem(PlayerProxies.itemLinkFocus, "PP_LinkFocus");
 		LanguageRegistry.instance().addName(PlayerProxies.itemLinkFocus,
 				"Link focus");
-		
+	}
+	
+	public static void registerCraft() {
 		GameRegistry.addRecipe(new ItemStack(PlayerProxies.itemLinkFocus),
 				"ipi", "qeq", "ipi", 
 				'e', new ItemStack(Item.emerald), 

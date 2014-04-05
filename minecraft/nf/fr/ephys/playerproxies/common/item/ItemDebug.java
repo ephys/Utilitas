@@ -10,11 +10,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import nf.fr.ephys.playerproxies.common.entity.Ghost;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
 public class ItemDebug extends Item {
 	public static final int ITEM_ID = 9999;
-	private String[] modeNames = new String[]{"Energy level"};
+	private String[] modeNames = new String[]{"Energy level", "Spawn Ghost"};
 	
 	public static void register() {
 		ItemDebug itemDebug = new ItemDebug();
@@ -40,7 +41,7 @@ public class ItemDebug extends Item {
 	private int nextMode(ItemStack stack) {
 		int mode = getMode(stack);
 		
-		mode = mode + 1 % modeNames.length;
+		mode = (mode + 1) % modeNames.length;
 		
 		NBTHelper.setInt(stack, "mode", mode);
 		
@@ -52,16 +53,18 @@ public class ItemDebug extends Item {
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10) {
-		System.out.println(world.getBlockId(x, y, z));
-		if (player.isSneaking() && world.getBlockId(x, y, z) == 0) {
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+		if (player.isSneaking()) {
 			int mode = nextMode(stack);
 
 			System.out.println("Current debug mode: "+modeNames[mode]);
-
-			return true;
 		}
 
+		return super.onItemRightClick(stack, world, player);
+	}
+
+	@Override
+	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10) {
 		int mode = getMode(stack);
 		
 		switch (mode) {
@@ -76,8 +79,11 @@ public class ItemDebug extends Item {
 					else
 						player.addChatMessage("[Server] Energy: "+energy);
 				}
-	
+
 				return true;
+				
+			case 1:
+				Ghost.spawn(world, x, y, z);
 		}
 		
 		return false;

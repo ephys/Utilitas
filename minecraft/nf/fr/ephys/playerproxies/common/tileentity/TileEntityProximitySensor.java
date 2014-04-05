@@ -23,6 +23,8 @@ public class TileEntityProximitySensor extends TileEntity {
 	private boolean lastIsActivated = false;
 
 	private int updateTick = 0;
+	
+	private Object[] entityList = new Entity[0];
 
 	private Class<? extends Entity> entityFilter = Entity.class;
 	private String playerFilter = null;
@@ -32,7 +34,7 @@ public class TileEntityProximitySensor extends TileEntity {
 			player.addChatMessage("Entity filter already set to "+playerName);
 			return;
 		}
-		
+
 		player.addChatMessage("Sensor filtered to only match player "+playerName);
 
 		this.playerFilter = playerName;
@@ -118,14 +120,14 @@ public class TileEntityProximitySensor extends TileEntity {
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
-		
+
 		if (updateTick != 10) {
 			updateTick++;
 			return;
 		}
-		
+
 		updateTick = 0;
-		
+
 		AxisAlignedBB radius = AxisAlignedBB.getBoundingBox(
 			xCoord-RADIUS_X, 
 			yCoord-RADIUS_Y, 
@@ -138,10 +140,14 @@ public class TileEntityProximitySensor extends TileEntity {
 		if(this.entityFilter != null) {
 			List entityList = this.worldObj.getEntitiesWithinAABB(entityFilter, radius);
 			
+			this.entityList = entityList.toArray();
+			
 			isActivated = (entityList.size() != 0);
 		} else if(this.playerFilter != null) {
 			List<EntityPlayer> entityList = this.worldObj.getEntitiesWithinAABB(EntityPlayer.class, radius);
-			
+
+			this.entityList = entityList.toArray();
+
 			isActivated = false;
 			for (int i = 0; i < entityList.size(); i++) {
 				if (entityList.get(i).username.equals(this.playerFilter))
@@ -194,5 +200,17 @@ public class TileEntityProximitySensor extends TileEntity {
 		return new Packet132TileEntityData(this.xCoord, this.yCoord, this.zCoord, 1, nbtTag);
 	}
 
+	public void setRadius(int x, int y, int z) {
+		RADIUS_X = Math.min(x, MAX_RADIUS);
+		RADIUS_Y = Math.min(y, MAX_RADIUS);
+		RADIUS_Z = Math.min(z, MAX_RADIUS);
+	}
 
+	public int[] getRadius() {
+		return new int[] { RADIUS_X, RADIUS_Y, RADIUS_Z };
+	}
+	
+	public Object[] getEntityList() {
+		return entityList;
+	}
 }

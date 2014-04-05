@@ -68,6 +68,15 @@ public class Ghost extends EntityPlayerMP implements IEntityAdditionalSpawnData 
 		EntityRegistry.registerModEntity(Ghost.class, "PP_Ghost", EntityRegistry.findGlobalUniqueEntityId(), PlayerProxies.instance, 100, 20, true);
 	}
 	
+	public static void spawn(World world, double x, double y, double z) {
+		Ghost ghost = new Ghost(world);
+		ghost.posX = x;
+		ghost.posY = y;
+		ghost.posZ = z;
+		
+		world.spawnEntityInWorld(ghost);
+	}
+	
 	public Ghost(World world) {
 		this(world, "Ghost");
 	}
