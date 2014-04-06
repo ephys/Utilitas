@@ -125,7 +125,7 @@ public class BlockToughwoodPlank extends BlockContainer {
 	
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int metadata, float par7, float par8, float par9) {
-		if (metadata != METADATA_BIOME_REPLICATOR) return false;
+		if (world.getBlockMetadata(x, y, z) != METADATA_BIOME_REPLICATOR) return false;
 		
 		if (world.isRemote) return true;
 

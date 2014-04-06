@@ -98,8 +98,8 @@ public class PacketHandler implements IPacketHandler {
 		}
 	}
 
-	public static void sendPacketSpawnParticle(int particleID, double x, double y, double z, int velX, int velY, int velZ, World world) {
-		ByteArrayOutputStream bos = new ByteArrayOutputStream(38);
+	public static void sendPacketSpawnParticle(int particleID, double x, double y, double z, double velX, double velY, double velZ, World world) {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream(50);
 		DataOutputStream outputStream = new DataOutputStream(bos);
 
 		try {
@@ -111,9 +111,9 @@ public class PacketHandler implements IPacketHandler {
 			outputStream.writeDouble(y);
 			outputStream.writeDouble(z);
 			
-			outputStream.writeInt(velX);
-			outputStream.writeInt(velY);
-			outputStream.writeInt(velZ);
+			outputStream.writeDouble(velX);
+			outputStream.writeDouble(velY);
+			outputStream.writeDouble(velZ);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -135,9 +135,9 @@ public class PacketHandler implements IPacketHandler {
 			double y = stream.readDouble();
 			double z = stream.readDouble();
 			
-			int velX = stream.readInt();
-			int velY = stream.readInt();
-			int velZ = stream.readInt();
+			double velX = stream.readDouble();
+			double velY = stream.readDouble();
+			double velZ = stream.readDouble();
 			
 			world.spawnParticle(ParticleHelper.getParticleNameFromID(particleID), x, y, z, velX, velY, velZ);
 		} catch (IOException e) {

@@ -90,11 +90,6 @@ public class BlockProximitySensor extends BlockContainer {
 	}
 	
 	@Override
-	public Icon getBlockTexture(IBlockAccess par1iBlockAccess, int par2, int par3, int par4, int par5) {
-		return par5 == 1 ? iconTop : iconSide;
-	}
-	
-	@Override
 	public Icon getIcon(int par1, int par2) {
 		return par1 == 1 ? iconTop : iconSide;
 	}

@@ -7,6 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
+import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.core.GravitationalFieldRegistry;
 
 public class TileEntityGravitationalField extends TileEnergyHandler {
@@ -15,8 +16,8 @@ public class TileEntityGravitationalField extends TileEnergyHandler {
 	private boolean isPowered;
 	private boolean wasPowered;
 	
-	private boolean hasEnergy;
-	private boolean hadEnergy;
+	private boolean hasEnergy = true;
+	private boolean hadEnergy = true;
 	
 	public static final float MIN_GRAVITY = 0.7399F;
 	public static final float MAX_GRAVITY = 1.2F;
@@ -86,7 +87,10 @@ public class TileEntityGravitationalField extends TileEnergyHandler {
 	}
 
 	public void checkPowered() {
-		isPowered = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
+		if (worldObj == null)
+			isPowered = false;
+		else
+			isPowered = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
 		
 		if (isPowered ^ wasPowered) {
 			this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
@@ -112,14 +116,16 @@ public class TileEntityGravitationalField extends TileEnergyHandler {
 		if (this.worldObj.isRemote) return;
 		if (isPowered) return;
 
-		this.hasEnergy = this.storage.getEnergyStored() > 100;
-
-		if (this.hasEnergy)
-			this.storage.extractEnergy(100, false);
-		
-		if (hasEnergy ^ hadEnergy) {
-			this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
-			hadEnergy = hasEnergy;
+		if (PlayerProxies.requiresPower()) {
+			this.hasEnergy = this.storage.getEnergyStored() >= 100;
+	
+			if (this.hasEnergy)
+				this.storage.extractEnergy(100, false);
+			
+			if (hasEnergy ^ hadEnergy) {
+				this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+				hadEnergy = hasEnergy;
+			}
 		}
 	}
 

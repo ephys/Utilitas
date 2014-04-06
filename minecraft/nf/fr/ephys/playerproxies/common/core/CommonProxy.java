@@ -14,7 +14,6 @@ import nf.fr.ephys.playerproxies.common.block.BlockParticleGenerator;
 import nf.fr.ephys.playerproxies.common.block.BlockProximitySensor;
 import nf.fr.ephys.playerproxies.common.block.BlockSpawnerLoader;
 import nf.fr.ephys.playerproxies.common.block.BlockToughwoodPlank;
-import nf.fr.ephys.playerproxies.common.entity.Ghost;
 import nf.fr.ephys.playerproxies.common.item.ItemBiomeStorage;
 import nf.fr.ephys.playerproxies.common.item.ItemDebug;
 import nf.fr.ephys.playerproxies.common.item.ItemLinkFocus;
@@ -42,7 +41,7 @@ public class CommonProxy {
 		registerBlocks();
 		registerItems();
 		registerHandlers();
-		
+
 		LanguageRegistry.instance().addStringLocalization("itemGroup.playerProxies", "en_US", "Player Proxies");
 	}
 

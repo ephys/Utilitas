@@ -5,7 +5,7 @@ import java.awt.Color;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
+//import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
@@ -98,7 +98,7 @@ public class ItemBiomeStorageRenderer implements IItemRenderer {
 			case EQUIPPED:
 			case EQUIPPED_FIRST_PERSON:
 				renderBlock = (RenderBlocks) data[0];
-				EntityClientPlayerMP player = (EntityClientPlayerMP) data[1];
+				//EntityClientPlayerMP player = (EntityClientPlayerMP) data[1];
 				break;
 				
 			case FIRST_PERSON_MAP:
