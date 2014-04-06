@@ -58,7 +58,7 @@ public class BlockSpawnerLoader extends BlockContainer {
 
 		setHardness(2.5F);
 		setResistance(1000.0F);
-		setCreativeTab(CreativeTabs.tabDecorations);
+		setCreativeTab(PlayerProxies.creativeTab);
 		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.5F, 1.0F);
 	}
 

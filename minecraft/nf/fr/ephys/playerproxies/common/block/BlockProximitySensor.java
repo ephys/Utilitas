@@ -45,7 +45,7 @@ public class BlockProximitySensor extends BlockContainer {
 		setHardness(2F);
 		setResistance(500.0F);
 		
-		setCreativeTab(CreativeTabs.tabDecorations);
+		setCreativeTab(PlayerProxies.creativeTab);
 	}
 	
 	@Override

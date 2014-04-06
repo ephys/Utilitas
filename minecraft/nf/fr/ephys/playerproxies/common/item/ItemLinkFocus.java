@@ -35,7 +35,7 @@ public class ItemLinkFocus extends Item {
 	public ItemLinkFocus() {
 		super(ITEM_ID);
 		setMaxStackSize(64);
-		setCreativeTab(CreativeTabs.tabMaterials);
+		setCreativeTab(PlayerProxies.creativeTab);
 		setTextureName("ephys.pp:linkFocus");
 	}
 }

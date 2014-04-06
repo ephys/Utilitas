@@ -33,7 +33,7 @@ public class BlockItemTicker extends BlockContainer {
 	}
 	
 	public static void registerCraft() {
-		GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockBiomeChanger), 
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockItemTicker), 
 				"   ", " c ", "sss",
 				'c', new ItemStack(Item.pocketSundial),
 				's', new ItemStack(Block.stoneSingleSlab)
@@ -44,7 +44,7 @@ public class BlockItemTicker extends BlockContainer {
 		super(BLOCK_ID, Material.iron);
 
 		setHardness(2.5F);
-		setCreativeTab(CreativeTabs.tabDecorations);
+		setCreativeTab(PlayerProxies.creativeTab);
 		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.8F, 1.0F);
 	}
 

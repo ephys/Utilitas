@@ -32,7 +32,7 @@ public class ItemBiomeStorage extends Item {
 		super(ITEM_ID);
 
 		setMaxStackSize(1);
-		setCreativeTab(CreativeTabs.tabMaterials);
+		setCreativeTab(PlayerProxies.creativeTab);
 
 		setTextureName("ephys.pp:biomeStorage");
 	}

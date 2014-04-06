@@ -41,7 +41,7 @@ public class BlockHardenedStone extends Block {
 
 		setHardness(2.5F);
 		setResistance(5000.0F);
-		setCreativeTab(CreativeTabs.tabBlock);
+		setCreativeTab(PlayerProxies.creativeTab);
 		setTextureName("ephys.pp:hardenedStone");
 	}
 }

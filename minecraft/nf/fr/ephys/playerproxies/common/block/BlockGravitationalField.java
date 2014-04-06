@@ -30,7 +30,7 @@ public class BlockGravitationalField extends BlockContainer {
 	public BlockGravitationalField() {
 		super(BLOCK_ID, Material.iron);
 		
-		this.setCreativeTab(CreativeTabs.tabDecorations);
+		this.setCreativeTab(PlayerProxies.creativeTab);
 	}
 
 	@Override

@@ -53,7 +53,7 @@ public class BlockBiomeScanner extends BlockContainer {
 		super(BLOCK_ID, Material.wood);
 
 		setHardness(1.0F);
-		setCreativeTab(CreativeTabs.tabDecorations);
+		setCreativeTab(PlayerProxies.creativeTab);
 		
 		setStepSound(soundWoodFootstep);
 	}

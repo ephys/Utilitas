@@ -5,12 +5,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
-import nf.fr.ephys.playerproxies.common.block.BlockBiomeReplicator;
 import nf.fr.ephys.playerproxies.common.block.BlockBiomeScanner;
-import nf.fr.ephys.playerproxies.common.block.BlockEtherealGlass;
+import nf.fr.ephys.playerproxies.common.block.BlockBaseShineyGlass;
 import nf.fr.ephys.playerproxies.common.block.BlockGravitationalField;
 import nf.fr.ephys.playerproxies.common.block.BlockHardenedStone;
-import nf.fr.ephys.playerproxies.common.block.BlockInterface;
 import nf.fr.ephys.playerproxies.common.block.BlockItemTicker;
 import nf.fr.ephys.playerproxies.common.block.BlockParticleGenerator;
 import nf.fr.ephys.playerproxies.common.block.BlockProximitySensor;
@@ -44,16 +42,16 @@ public class CommonProxy {
 		registerBlocks();
 		registerItems();
 		registerHandlers();
+		
+		LanguageRegistry.instance().addStringLocalization("itemGroup.playerProxies", "en_US", "Player Proxies");
 	}
 
 	private void registerBlocks() {
-		BlockInterface.register();
 		// BlockSpawnerLoader.register();
 		BlockHardenedStone.register();
 		BlockParticleGenerator.register();
-		BlockEtherealGlass.register();
+		BlockBaseShineyGlass.register();
 		BlockProximitySensor.register();
-		BlockBiomeReplicator.register();
 		BlockBiomeScanner.register();
 		BlockToughwoodPlank.register();
 		BlockItemTicker.register();
@@ -61,13 +59,11 @@ public class CommonProxy {
 	}
 	
 	public void registerCrafts() {
-		BlockInterface.registerCraft();
 		// BlockSpawnerLoader.registerCraft();
 		BlockHardenedStone.registerCraft();
 		BlockParticleGenerator.registerCraft();
-		BlockEtherealGlass.registerCraft();
+		BlockBaseShineyGlass.registerCraft();
 		BlockProximitySensor.registerCraft();
-		BlockBiomeReplicator.registerCraft();
 		BlockBiomeScanner.registerCraft();
 		BlockToughwoodPlank.registerCraft();
 		BlockItemTicker.registerCraft();

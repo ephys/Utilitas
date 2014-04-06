@@ -49,7 +49,7 @@ public class ItemLinker extends Item {
 	public ItemLinker() {
 		super(ITEM_ID);
 		setMaxStackSize(1);
-		setCreativeTab(CreativeTabs.tabTools);
+		setCreativeTab(PlayerProxies.creativeTab);
 		setTextureName("ephys.pp:linkDevice");
 	}
 
