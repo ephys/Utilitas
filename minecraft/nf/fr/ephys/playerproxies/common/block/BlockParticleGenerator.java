@@ -100,6 +100,11 @@ public class BlockParticleGenerator extends Block {
 		this.iconTop = par1IconRegister.registerIcon("ephys.pp:particleGenerator");
 		this.iconSide = par1IconRegister.registerIcon("ephys.pp:hardenedStone");
 	}
+	
+	@Override
+	public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side) {
+		return true;
+	}
 
 	@Override
 	public void randomDisplayTick(World world, int x, int y, int z,
