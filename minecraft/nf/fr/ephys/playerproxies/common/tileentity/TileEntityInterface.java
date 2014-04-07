@@ -27,6 +27,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
+import nf.fr.ephys.playerproxies.helpers.BlockHelper;
 
 public class TileEntityInterface extends TileEntity implements ISidedInventory, IFluidHandler {
 	private String userName = null;
@@ -190,8 +191,7 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 		} else if (isValidTE(te))
 			if (this.blockEntity == te) {
 				this.blockEntity = null;
-				player.addChatMessage((new ItemStack(te.getBlockType(),
-						te.blockMetadata).getDisplayName())
+				player.addChatMessage(BlockHelper.getDisplayName(te)
 						+ " unlinked to the universal interface");
 			} else {
 				this.blockEntity = te;
@@ -201,8 +201,7 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 
 				this.enderMode = false;
 
-				player.addChatMessage((new ItemStack(te.getBlockType(),
-						te.blockMetadata).getDisplayName())
+				player.addChatMessage(BlockHelper.getDisplayName(te)
 						+ " linked to the universal interface");
 			}
 
@@ -233,10 +232,10 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 		if (invType == this.INVTYPE_PLAYER)
 			return this.userName;
 
-		if (invType == this.INVTYPE_TE || invType == this.INVTYPE_TURTLE)
-			return new ItemStack(this.blockEntity.getBlockType(),
-					this.blockEntity.blockMetadata).getDisplayName();
-
+		if (invType == this.INVTYPE_TE || invType == this.INVTYPE_TURTLE) {
+			return BlockHelper.getDisplayName(this.blockEntity);
+		}
+		
 		return "None";
 	}
 

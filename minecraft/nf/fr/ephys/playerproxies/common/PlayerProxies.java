@@ -45,12 +45,12 @@ import cpw.mods.fml.common.network.NetworkMod;
 )
 
 public class PlayerProxies {
-	public static final String version = "1.6.4-0.1.0";
+	public static final String version = "1.6.4-0.1.0a";
 	public static final String modid = "ephys.playerproxies";
 
 	public static final int GUI_UNIVERSAL_INTERFACE = 0;
 	public static final int GUI_BIOME_SCANNER = 1;
-	
+
 	public static final boolean DEV_MODE = true;
 	private static boolean REQUIRES_POWER = false;
 	

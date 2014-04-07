@@ -15,6 +15,10 @@ import net.minecraft.world.World;
 public class BlockHelper {
 	private static Random random = new Random();
 	
+	public static String getDisplayName(TileEntity te) {
+		return new ItemStack(te.getBlockType(), 1, te.getBlockMetadata()).getDisplayName();
+	}
+	
 	public static Vec3 relativePos(TileEntity te, Entity e) {
 		return Vec3.createVectorHelper(te.xCoord - e.posX, te.yCoord - e.posY, te.zCoord - e.posZ);
 	}

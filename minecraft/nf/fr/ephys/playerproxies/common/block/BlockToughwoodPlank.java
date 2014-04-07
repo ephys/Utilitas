@@ -49,6 +49,7 @@ public class BlockToughwoodPlank extends BlockContainer {
 			ItemStack stackMultiBlock = new ItemStack(PlayerProxies.blockToughwoodPlank, 1, metadata);
 
 			LanguageRegistry.addName(stackMultiBlock, blockNames[metadata]);
+			LanguageRegistry.instance().addStringLocalization("PP_ToughwoodPlank." + metadata, "EN_US", blockNames[metadata]);
 		}
 	}
 	
