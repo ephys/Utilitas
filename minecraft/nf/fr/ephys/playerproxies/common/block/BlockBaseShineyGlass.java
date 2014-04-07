@@ -55,6 +55,7 @@ public class BlockBaseShineyGlass extends BlockContainer {
 			ItemStack stackMultiBlock = new ItemStack(PlayerProxies.blockBaseShineyGlass, 1, metadata);
 
 			LanguageRegistry.addName(stackMultiBlock, blockNames[metadata]);
+			LanguageRegistry.instance().addStringLocalization("PP_ShineyGlass." + metadata, "EN_US", blockNames[metadata]);
 		}
 	}
 
