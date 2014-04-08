@@ -47,20 +47,24 @@ public class BlockHardenedStone extends BlockContainer {
 
 	public static void registerCraft() {
 		if(Loader.isModLoaded("IC2")) {
-			GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockHardenedStone, 8),
+			GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockHardenedStone, 8, METADATA_HARDENED_STONE),
 					"ioi", "oso", "ioi", 
 					'i', ic2.api.item.Items.getItem("advancedAlloy"), 
 					's', ic2.api.item.Items.getItem("reinforcedStone"), 
 					'o', new ItemStack(Block.obsidian));
 		} else {
-			GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockHardenedStone, 6),
+			GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockHardenedStone, 6, METADATA_HARDENED_STONE),
 					"ioi", "oso", "ioi", 
-					'i', new ItemStack(Item.ingotIron), 
-					's', new ItemStack(Block.stone), 
-					'o', new ItemStack(Block.obsidian));
+					'i', Item.ingotIron, 
+					's', Block.stone, 
+					'o', Block.obsidian);
 		}
-		
-		System.err.println("WARNING: POTION DIFFUSER CRAFT NOT IMPLEMENTED");
+
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockHardenedStone, 1, METADATA_POTION_DIFFUSER),
+				"p", "g", "d", 
+				'p', Item.glassBottle, 
+				'g', PlayerProxies.blockParticleGenerator, 
+				'd', Item.diamond);
 	}
 	
 	@SideOnly(Side.CLIENT)
