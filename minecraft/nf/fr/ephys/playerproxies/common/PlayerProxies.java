@@ -45,7 +45,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 )
 
 public class PlayerProxies {
-	public static final String version = "1.6.4-0.1.0a";
+	public static final String version = "1.6.4-0.1.1";
 	public static final String modid = "ephys.playerproxies";
 
 	public static final int GUI_UNIVERSAL_INTERFACE = 0;
