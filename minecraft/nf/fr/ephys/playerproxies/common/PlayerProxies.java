@@ -1,5 +1,6 @@
 package nf.fr.ephys.playerproxies.common;
 
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 import net.minecraft.creativetab.CreativeTabs;
@@ -20,11 +21,13 @@ import nf.fr.ephys.playerproxies.common.core.PacketHandler;
 import nf.fr.ephys.playerproxies.common.item.ItemBiomeStorage;
 import nf.fr.ephys.playerproxies.common.item.ItemLinkFocus;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
+import cpw.mods.fml.common.DummyModContainer;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.ModMetadata;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -32,7 +35,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 
-@Mod(modid = PlayerProxies.modid, name = "Player Proxies",
+@Mod(modid = PlayerProxies.modid, name = PlayerProxies.name,
 	 version = PlayerProxies.version
 )
 
@@ -44,9 +47,10 @@ import cpw.mods.fml.common.network.NetworkMod;
 			packetHandler = PacketHandler.class
 )
 
-public class PlayerProxies {
+public class PlayerProxies extends DummyModContainer {
 	public static final String version = "1.6.4-0.1.1";
 	public static final String modid = "ephys.playerproxies";
+	public static final String name = "Player Proxies";
 
 	public static final int GUI_UNIVERSAL_INTERFACE = 0;
 	public static final int GUI_BIOME_SCANNER = 1;
@@ -89,6 +93,18 @@ public class PlayerProxies {
 	public static ItemLinkFocus itemLinkFocus;
 	public static ItemBiomeStorage itemBiomeStorage;
 
+	public PlayerProxies() {
+		super(new ModMetadata());
+
+		ModMetadata meta = getMetadata();
+		meta.modId = this.modid;
+		meta.name = this.name;
+		meta.version = this.version;
+		meta.authorList = Arrays.asList("ephyspotato", "Mikee");
+		meta.url = "https://github.com/Ephys/PlayerProxies";
+		meta.description = "Must. Have. More. Blocks.";
+	}
+	
 	@EventHandler
 	public void preLoad(FMLPreInitializationEvent event) {
 		logger = Logger.getLogger("ephys.playerproxies");
