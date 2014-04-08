@@ -11,6 +11,7 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -36,6 +37,51 @@ public class TileEntityPotionDiffuser extends TileEnergyHandler implements ISide
 	public static final int SLOT_BOTTLE = 0;
 
 	public static final int RANGE = 8;
+	
+	@Override
+	public void writeToNBT(NBTTagCompound nbt) {
+		NBTTagCompound potions = new NBTTagCompound();
+		
+		int i = 0;
+		for (PotionEffect potion : potionEffects) {
+			NBTTagCompound potionNBT = new NBTTagCompound();
+			
+			potion.writeCustomPotionEffectToNBT(potionNBT);
+			
+			potions.setCompoundTag(String.valueOf(i++), potionNBT);
+		}
+
+		nbt.setCompoundTag("potionEffects", potions);
+
+		NBTHelper.setWritable(nbt, "slot0", this.inventorySlots[0]);
+		NBTHelper.setWritable(nbt, "slot1", this.inventorySlots[1]);
+		
+		this.storage.writeToNBT(nbt);
+
+		super.writeToNBT(nbt);
+	}
+	
+	@Override
+	public void readFromNBT(NBTTagCompound nbt) {
+		this.storage.readFromNBT(nbt);
+		
+		this.inventorySlots[0] = NBTHelper.getItemStack(nbt, "slot0", null);
+		this.inventorySlots[1] = NBTHelper.getItemStack(nbt, "slot1", null);
+		
+		if (nbt.hasKey("potionEffects")) {
+			NBTTagCompound potions = nbt.getCompoundTag("potionEffects");
+			
+			this.potionEffects = new ArrayList<PotionEffect>();
+			
+			for (int i = 0; potions.hasKey(String.valueOf(i)); i++) {
+				PotionEffect potion = PotionEffect.readCustomPotionEffectFromNBT(potions.getCompoundTag(String.valueOf(i)));
+				
+				potionEffects.add(potion);
+			}
+		}
+		
+		super.readFromNBT(nbt);
+	}
 
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
