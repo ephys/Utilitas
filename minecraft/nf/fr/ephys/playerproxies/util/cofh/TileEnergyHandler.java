@@ -1,5 +1,6 @@
-package cofh.api.energy;
+package nf.fr.ephys.playerproxies.util.cofh;
 
+import cofh.api.energy.IEnergyHandler;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;

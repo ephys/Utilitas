@@ -1,6 +1,5 @@
 package nf.fr.ephys.playerproxies.common.tileentity;
 
-import cofh.api.energy.TileEnergyHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -9,6 +8,7 @@ import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.core.GravitationalFieldRegistry;
+import nf.fr.ephys.playerproxies.util.cofh.TileEnergyHandler;
 
 public class TileEntityGravitationalField extends TileEnergyHandler {
 	public static final int RANGE = 64;
@@ -87,14 +87,15 @@ public class TileEntityGravitationalField extends TileEnergyHandler {
 	}
 
 	public void checkPowered() {
-		if (worldObj == null)
+		if (this.getWorldObj() == null)
 			isPowered = false;
-		else
-			isPowered = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
+		else {
+			isPowered = this.getWorldObj().isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
 		
-		if (isPowered ^ wasPowered) {
-			this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
-			wasPowered = isPowered;
+			if (isPowered ^ wasPowered) {
+				this.getWorldObj().markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+				wasPowered = isPowered;
+			}
 		}
 	}
 

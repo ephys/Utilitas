@@ -1,5 +1,6 @@
-package cofh.api.energy;
+package nf.fr.ephys.playerproxies.util.cofh;
 
+import cofh.api.energy.IEnergyStorage;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**

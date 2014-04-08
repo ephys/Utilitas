@@ -1,8 +1,6 @@
 package nf.fr.ephys.playerproxies.common.tileentity;
 
-import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
-import cofh.api.energy.TileEnergyHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -21,6 +19,8 @@ import nf.fr.ephys.playerproxies.common.core.PacketHandler;
 import nf.fr.ephys.playerproxies.common.item.ItemBiomeStorage;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 import nf.fr.ephys.playerproxies.helpers.ParticleHelper;
+import nf.fr.ephys.playerproxies.util.cofh.EnergyStorage;
+import nf.fr.ephys.playerproxies.util.cofh.TileEnergyHandler;
 
 public class TileEntityBiomeReplicator extends TileEnergyHandler implements IInventory {
 	private static final int MAX_SIZE = 100;

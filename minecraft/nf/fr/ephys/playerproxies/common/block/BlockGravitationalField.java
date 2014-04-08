@@ -56,7 +56,7 @@ public class BlockGravitationalField extends BlockContainer {
     public void onNeighborBlockChange(World world, int x, int y, int z, int par5) {
         if (world.isRemote) return;
 
-        ((TileEntityGravitationalField)world.getBlockTileEntity(x, y, z)).checkPowered();
+        ((TileEntityGravitationalField) world.getBlockTileEntity(x, y, z)).checkPowered();
     }
 
 	@Override
