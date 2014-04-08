@@ -37,6 +37,10 @@ public class TileEntityPotionDiffuser extends TileEnergyHandler implements ISide
 	public static final int SLOT_BOTTLE = 0;
 
 	public static final int RANGE = 8;
+	public static final int ENERGY_CONSUMPTION = 25;
+	public static final int INTERVAL = 10;
+
+	private int tick = INTERVAL;
 	
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
@@ -55,7 +59,7 @@ public class TileEntityPotionDiffuser extends TileEnergyHandler implements ISide
 
 		NBTHelper.setWritable(nbt, "slot0", this.inventorySlots[0]);
 		NBTHelper.setWritable(nbt, "slot1", this.inventorySlots[1]);
-		
+
 		this.storage.writeToNBT(nbt);
 
 		super.writeToNBT(nbt);
@@ -118,11 +122,12 @@ public class TileEntityPotionDiffuser extends TileEnergyHandler implements ISide
 		return new FluidTankInfo[] { this.tank.getInfo() };
 	}
 	
-	private static final int INTERVAL = 20;
-	private int tick = INTERVAL;
-	
 	@Override
 	public void updateEntity() {
+		if (storage.getEnergyStored() < ENERGY_CONSUMPTION) return;
+		
+		storage.extractEnergy(ENERGY_CONSUMPTION, false);
+
 		if (tick-- == 0) {
 			tick = INTERVAL;
 

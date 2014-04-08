@@ -31,8 +31,6 @@ public class BlockParticleGenerator extends Block {
 		PlayerProxies.blockParticleGenerator.setUnlocalizedName("PP_ParticleGenerator");
 		GameRegistry.registerBlock(PlayerProxies.blockParticleGenerator, "PP_ParticleGenerator");
 		LanguageRegistry.instance().addName(PlayerProxies.blockParticleGenerator, "Particle Generator");
-		
-		GameRegistry.addShapelessRecipe(new ItemStack(PlayerProxies.blockParticleGenerator), Block.fenceIron, PlayerProxies.blockHardenedStone);
 	}
 	
 	public static void registerCraft() {
