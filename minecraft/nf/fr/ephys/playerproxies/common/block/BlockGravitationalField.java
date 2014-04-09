@@ -34,9 +34,9 @@ public class BlockGravitationalField extends BlockContainer {
 	public static void registerCraft() {
 		GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockGravitationalField), 
 			" l ", "gsg", " l ",
-			'l', new ItemStack(PlayerProxies.itemLinkFocus), 
+			'l', PlayerProxies.itemLinkFocus, 
 			'g', new ItemStack(PlayerProxies.blockBaseShineyGlass, 1, BlockBaseShineyGlass.METADATA_ETHEREAL_GLASS), 
-			's', new ItemStack(PlayerProxies.blockHardenedStone)
+			's', PlayerProxies.blockHardenedStone
 		);
 	}
 	

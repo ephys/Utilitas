@@ -3,13 +3,16 @@ package nf.fr.ephys.playerproxies.common;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.Property;
 import nf.fr.ephys.playerproxies.common.block.BlockBiomeScanner;
 import nf.fr.ephys.playerproxies.common.block.BlockBaseShineyGlass;
 import nf.fr.ephys.playerproxies.common.block.BlockGravitationalField;
 import nf.fr.ephys.playerproxies.common.block.BlockHardenedStone;
+import nf.fr.ephys.playerproxies.common.block.BlockHomeShield;
 import nf.fr.ephys.playerproxies.common.block.BlockItemTicker;
 import nf.fr.ephys.playerproxies.common.block.BlockParticleGenerator;
 import nf.fr.ephys.playerproxies.common.block.BlockProximitySensor;
@@ -87,6 +90,7 @@ public class PlayerProxies extends DummyModContainer {
 	public static BlockToughwoodPlank blockToughwoodPlank;
 	public static BlockItemTicker blockItemTicker;
 	public static BlockGravitationalField blockGravitationalField;
+	public static BlockHomeShield blockHomeShield;
 	
 	// items
 	public static ItemLinker itemLinker;
@@ -130,6 +134,13 @@ public class PlayerProxies extends DummyModContainer {
 		BlockGravitationalField.BLOCK_ID = config.getBlock("BlockGravitationalField", BlockGravitationalField.BLOCK_ID).getInt();
 		BlockSpawnerLoader.BLOCK_ID = config.getBlock("BlockSpawnerLoader", BlockSpawnerLoader.BLOCK_ID).getInt();
 
+
+		BlockHomeShield.BLOCK_ID = config.getBlock("BlockHomeShield", BlockHomeShield.BLOCK_ID).getInt();
+		Property property = config.get("BlockProperties", "HomeshieldRequiresTwilightForest", BlockHomeShield.requiresTwilightForest);
+		property.comment = "True: Will overwrite the TF Stronghold Shield to add a locked state [unbreakable but unlockable]. \nFalse: Will add a new Shield Block having that behavior";
+
+		BlockHomeShield.requiresTwilightForest = property.getBoolean(BlockHomeShield.requiresTwilightForest);
+
 		config.save();
 	}
 	
@@ -145,6 +156,9 @@ public class PlayerProxies extends DummyModContainer {
 	@EventHandler
 	public void postLoad(FMLPostInitializationEvent event) {
 		proxy.registerCrafts();
+		
+		if (BlockHomeShield.requiresTwilightForest)
+			BlockHomeShield.register();
 
 		REQUIRES_POWER = Loader.isModLoaded("ThermalExpansion");
 	}

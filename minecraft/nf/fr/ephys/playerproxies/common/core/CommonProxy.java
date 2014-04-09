@@ -9,6 +9,7 @@ import nf.fr.ephys.playerproxies.common.block.BlockBiomeScanner;
 import nf.fr.ephys.playerproxies.common.block.BlockBaseShineyGlass;
 import nf.fr.ephys.playerproxies.common.block.BlockGravitationalField;
 import nf.fr.ephys.playerproxies.common.block.BlockHardenedStone;
+import nf.fr.ephys.playerproxies.common.block.BlockHomeShield;
 import nf.fr.ephys.playerproxies.common.block.BlockItemTicker;
 import nf.fr.ephys.playerproxies.common.block.BlockParticleGenerator;
 import nf.fr.ephys.playerproxies.common.block.BlockProximitySensor;
@@ -55,6 +56,9 @@ public class CommonProxy {
 		BlockToughwoodPlank.register();
 		BlockItemTicker.register();
 		BlockGravitationalField.register();
+		
+		if (!BlockHomeShield.requiresTwilightForest)
+			BlockHomeShield.register();
 	}
 	
 	public void registerCrafts() {
@@ -67,6 +71,7 @@ public class CommonProxy {
 		BlockToughwoodPlank.registerCraft();
 		BlockItemTicker.registerCraft();
 		BlockGravitationalField.registerCraft();
+		BlockHomeShield.registerCraft();
 
 		ItemLinkFocus.registerCraft();
 		ItemLinker.registerCraft();

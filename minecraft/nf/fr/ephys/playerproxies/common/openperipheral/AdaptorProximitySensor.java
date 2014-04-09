@@ -41,7 +41,6 @@ public class AdaptorProximitySensor implements IPeripheralAdapter {
 
 			System.out.println("openperipheral.util.EntityUtils probably not found");
 
-			// in dev mode, force die because we HAVE to know that it failed to find the class.
 			if (PlayerProxies.DEV_MODE)
 				System.exit(1);
 
