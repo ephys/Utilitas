@@ -39,7 +39,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 
 @Mod(modid = PlayerProxies.modid, name = PlayerProxies.name,
-	 version = PlayerProxies.version
+	 version = PlayerProxies.version, dependencies="after:Thaumcraft"
 )
 
 @NetworkMod(clientSideRequired = true,
@@ -51,7 +51,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 )
 
 public class PlayerProxies extends DummyModContainer {
-	public static final String version = "1.6.4-0.1.1";
+	public static final String version = "1.6.4-0.1.2";
 	public static final String modid = "ephys.playerproxies";
 	public static final String name = "Player Proxies";
 

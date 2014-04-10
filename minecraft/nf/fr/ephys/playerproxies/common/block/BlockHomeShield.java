@@ -1,5 +1,6 @@
 package nf.fr.ephys.playerproxies.common.block;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Random;
@@ -9,8 +10,11 @@ import net.minecraft.block.BlockPistonBase;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MovingObjectPosition;
@@ -48,12 +52,16 @@ public class BlockHomeShield extends Block {
 		setResistance(2000.0F);
 		setBlockUnbreakable();
 		setStepSound(Block.soundMetalFootstep);
-
-		if (!requiresTwilightForest)
-			setCreativeTab(PlayerProxies.creativeTab);
+		setCreativeTab(PlayerProxies.creativeTab);
 	}
 	
+	@Override
+	public boolean canEntityDestroy(World world, int x, int y, int z, Entity entity) {
+		return entity instanceof EntityPlayer;
+	}
+
 	public static void register() {
+		requiresTwilightForest = true;
 		if (requiresTwilightForest) {
 			if (!Loader.isModLoaded("TwilightForest")) {
 				PlayerProxies.getLogger().info("BlockHomeShield set to require mod Twilight Forest. TF not found, disabling block.");
@@ -81,6 +89,11 @@ public class BlockHomeShield extends Block {
 
 			Block.blocksList[tfShieldID] = null;
 			PlayerProxies.blockHomeShield = new BlockHomeShield(tfShieldID, Material.rock);
+			//Block.blocksList[tfShieldID] = PlayerProxies.blockHomeShield;
+
+			Item.itemsList[tfShieldID] = null;
+			ItemBlock shieldItem = new ItemBlock(tfShieldID - 256);
+			//Item.itemsList[tfShieldID] = shieldItem;
 		} else {
 			PlayerProxies.blockHomeShield = new BlockHomeShield(BLOCK_ID, Material.rock);
 			GameRegistry.registerBlock(PlayerProxies.blockHomeShield, "PP_HomeShield");
@@ -121,14 +134,11 @@ public class BlockHomeShield extends Block {
 	}
 
 	public int toggleBreakable(World world, int x, int y, int z, int metadata) {
-		System.out.println("Setting block metadata from " + metadata);
-		
 		if (isUnbreakable(metadata))
 			metadata -= 6;
 		else
 			metadata += 6;
 
-		System.out.println("Setting block metadata to " + metadata);
 		world.setBlockMetadataWithNotify(x, y, z, metadata, 1 + 2);
 
 		return metadata;
@@ -185,7 +195,7 @@ public class BlockHomeShield extends Block {
 
 	public float getPlayerRelativeBlockHardness(EntityPlayer player, World world, int x, int y, int z) {
 		int metadata = world.getBlockMetadata(x, y, z);
-		
+
 		if (!isUnbreakable(metadata)) {
 			MovingObjectPosition mop = getPlayerPointVec(world, player, 6.0D);
 	
