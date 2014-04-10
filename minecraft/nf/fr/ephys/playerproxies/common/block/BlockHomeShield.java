@@ -35,6 +35,9 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public class BlockHomeShield extends Block {
 	public static boolean requiresTwilightForest = false;
+	public static boolean requiresSilkTouch = true;
+	private int renderPass = 0;
+
 	public static int BLOCK_ID = 811;
 
 	private Icon accessible;
@@ -53,6 +56,19 @@ public class BlockHomeShield extends Block {
 		setBlockUnbreakable();
 		setStepSound(Block.soundMetalFootstep);
 		setCreativeTab(PlayerProxies.creativeTab);
+		
+		if (!requiresTwilightForest)
+			renderPass = 1;
+	}
+	
+	@Override
+	public int quantityDropped(int meta, int fortune, Random random) {
+		return requiresSilkTouch ? 0 : 1;
+	}
+	
+	@Override
+	protected boolean canSilkHarvest() {
+		return requiresSilkTouch;
 	}
 	
 	@Override
@@ -61,7 +77,7 @@ public class BlockHomeShield extends Block {
 	}
 
 	public static void register() {
-		requiresTwilightForest = true;
+		//requiresTwilightForest = true;
 		if (requiresTwilightForest) {
 			if (!Loader.isModLoaded("TwilightForest")) {
 				PlayerProxies.getLogger().info("BlockHomeShield set to require mod Twilight Forest. TF not found, disabling block.");
@@ -117,17 +133,17 @@ public class BlockHomeShield extends Block {
 		return unbreakable;
 	}
 
-	public int getRenderBlockPass() {
-		return 0;
+	/*public int getRenderBlockPass() {
+		return renderPass;
 	}
 
 	public boolean isOpaqueCube() {
-		return true;
+		return requiresTwilightForest;
 	}
 
 	public boolean renderAsNormalBlock() {
-		return true;
-	}
+		return requiresTwilightForest;
+	}*/
 
 	public int quantityDropped(Random random) {
 		return 1;
@@ -186,6 +202,8 @@ public class BlockHomeShield extends Block {
 		if (isSideBreakable(side, metadata)) {
 			if (!world.isRemote)
 				toggleBreakable(world, x, y, z, metadata);
+			
+			world.playSoundEffect((double) x + 0.5D, (double) y + 0.5D, (double) z + 0.5D, "random.orb", 1.0F, world.rand.nextFloat() * 0.1F + 0.9F);
 
 			return true;
 		}

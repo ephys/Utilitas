@@ -141,6 +141,11 @@ public class PlayerProxies extends DummyModContainer {
 
 		BlockHomeShield.requiresTwilightForest = property.getBoolean(BlockHomeShield.requiresTwilightForest);
 
+		property = config.get("BlockProperties", "HomeshieldRequiresSilkTouch", BlockHomeShield.requiresSilkTouch);
+		property.comment = "True is the shield only drops if silk touched";
+
+		BlockHomeShield.requiresSilkTouch = property.getBoolean(BlockHomeShield.requiresSilkTouch);
+
 		config.save();
 	}
 	
