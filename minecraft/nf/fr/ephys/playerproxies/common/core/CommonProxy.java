@@ -38,12 +38,21 @@ import dan200.turtle.api.ITurtleUpgrade;
 import dan200.turtle.api.TurtleAPI;
 
 public class CommonProxy {
-	public void initMod() {
+	public void preInit() {
+		LanguageRegistry.instance().addStringLocalization("itemGroup.playerProxies", "en_US", "Player Proxies");
+	}
+	
+	public void init() {
 		registerBlocks();
 		registerItems();
+	}
+	
+	public void postInit() {
 		registerHandlers();
-
-		LanguageRegistry.instance().addStringLocalization("itemGroup.playerProxies", "en_US", "Player Proxies");
+		registerCrafts();
+		
+		if (BlockHomeShield.requiresTwilightForest)
+			BlockHomeShield.register();
 	}
 
 	private void registerBlocks() {

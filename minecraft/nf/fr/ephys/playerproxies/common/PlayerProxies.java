@@ -39,7 +39,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 
 @Mod(modid = PlayerProxies.modid, name = PlayerProxies.name,
-	 version = PlayerProxies.version, dependencies="after:Thaumcraft"
+	 version = PlayerProxies.version, dependencies="after:IC2,TwilightForest,OpenPeripheralCore" 
 )
 
 @NetworkMod(clientSideRequired = true,
@@ -147,6 +147,8 @@ public class PlayerProxies extends DummyModContainer {
 		BlockHomeShield.requiresSilkTouch = property.getBoolean(BlockHomeShield.requiresSilkTouch);
 
 		config.save();
+		
+		proxy.preInit();
 	}
 	
 	public static Logger getLogger() {
@@ -155,15 +157,12 @@ public class PlayerProxies extends DummyModContainer {
 
 	@EventHandler
 	public void load(FMLInitializationEvent event) {
-		proxy.initMod();
+		proxy.init();
 	}
 	
 	@EventHandler
 	public void postLoad(FMLPostInitializationEvent event) {
-		proxy.registerCrafts();
-		
-		if (BlockHomeShield.requiresTwilightForest)
-			BlockHomeShield.register();
+		proxy.postInit();
 
 		REQUIRES_POWER = Loader.isModLoaded("ThermalExpansion");
 	}
