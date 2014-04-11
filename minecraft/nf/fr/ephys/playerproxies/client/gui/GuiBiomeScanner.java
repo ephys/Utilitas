@@ -15,7 +15,7 @@ import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBiomeScanner;
 
 public class GuiBiomeScanner extends GuiContainer {
 	private ContainerBiomeScanner container;
-	private static ResourceLocation background = new ResourceLocation("ephys.pp", "/textures/gui/biomeScanner.png");
+	private static ResourceLocation background = new ResourceLocation("ephys.pp", "textures/gui/biomeScanner.png");
 
 	public GuiBiomeScanner(ContainerBiomeScanner container) {
 		super(container);

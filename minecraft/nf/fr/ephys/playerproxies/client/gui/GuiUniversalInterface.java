@@ -12,7 +12,7 @@ import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
 
 public class GuiUniversalInterface extends GuiContainer {
 	private ContainerUniversalInterface container;
-	private static ResourceLocation background = new ResourceLocation("ephys.pp", "/textures/gui/universalInterface.png");
+	private static ResourceLocation background = new ResourceLocation("ephys.pp", "textures/gui/universalInterface.png");
 
 	public GuiUniversalInterface(ContainerUniversalInterface container) {
 		super(container);

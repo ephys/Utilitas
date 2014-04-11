@@ -79,7 +79,7 @@ public class TileEntityPotionDiffuser extends TileEnergyHandler implements ISide
 			
 			for (int i = 0; potions.hasKey(String.valueOf(i)); i++) {
 				PotionEffect potion = PotionEffect.readCustomPotionEffectFromNBT(potions.getCompoundTag(String.valueOf(i)));
-				
+
 				potionEffects.add(potion);
 			}
 		}

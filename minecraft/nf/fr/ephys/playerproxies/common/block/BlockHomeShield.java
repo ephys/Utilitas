@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockBed;
 import net.minecraft.block.BlockPistonBase;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -21,6 +22,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
+import nf.fr.ephys.playerproxies.helpers.EntityHelper;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -35,10 +37,10 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public class BlockHomeShield extends Block {
 	public static boolean requiresTwilightForest = false;
-	public static boolean requiresSilkTouch = true;
-	private int renderPass = 0;
+	public static boolean requiresSilkTouch = false;
 
 	public static int BLOCK_ID = 811;
+	public static int twilightForestShieldID = -1;
 
 	private Icon accessible;
 	private Icon unaccessible;
@@ -52,17 +54,14 @@ public class BlockHomeShield extends Block {
 	public BlockHomeShield(int id, Material material) {
 		super(id, material);
 
-		setResistance(2000.0F);
+		setResistance(6000000);
 		setBlockUnbreakable();
 		setStepSound(Block.soundMetalFootstep);
 		setCreativeTab(PlayerProxies.creativeTab);
-		
-		if (!requiresTwilightForest)
-			renderPass = 1;
 	}
 	
 	@Override
-	public int quantityDropped(int meta, int fortune, Random random) {
+	public int quantityDropped(Random random) {
 		return requiresSilkTouch ? 0 : 1;
 	}
 	
@@ -77,39 +76,37 @@ public class BlockHomeShield extends Block {
 	}
 
 	public static void register() {
-		//requiresTwilightForest = true;
-		if (requiresTwilightForest) {
-			if (!Loader.isModLoaded("TwilightForest")) {
-				PlayerProxies.getLogger().info("BlockHomeShield set to require mod Twilight Forest. TF not found, disabling block.");
-				return;
-			}
-			
-			int tfShieldID;
-			PlayerProxies.getLogger().info("Twilight Forest found. PP will try to overwrite the TF shield block...");
+		requiresTwilightForest = true;
+		if (Loader.isModLoaded("TwilightForest")) {
 			try {
 				Class<?> tfBlocks = Class.forName("twilightforest.block.TFBlocks");
 				Block tfShield = (Block) ReflectionHelper.findField(tfBlocks, "shield").get(null);
 				
-				tfShieldID = tfShield.blockID;
+				twilightForestShieldID = tfShield.blockID;
 			} catch (Exception e) {
-				PlayerProxies.getLogger().warning("Error while accessing the TF Shield block. Disabling block.");
+				PlayerProxies.getLogger().warning("Error while accessing the TF Shield block.");
 				e.printStackTrace();
 				
 				if (PlayerProxies.DEV_MODE) {
 					PlayerProxies.getLogger().severe("Exciting loading because an error occured in dev mode.");
 					System.exit(1);
 				}
-
+			}
+		}
+		
+		if (requiresTwilightForest) {	
+			if (twilightForestShieldID < 0) {
+				PlayerProxies.getLogger().info("BlockHomeShield set to require mod Twilight Forest ; Cannot access TF Shield block. Disabling block.");
 				return;
 			}
+			
+			PlayerProxies.getLogger().info("Twilight Forest found. PP will try to overwrite the TF shield block...");
 
-			Block.blocksList[tfShieldID] = null;
-			PlayerProxies.blockHomeShield = new BlockHomeShield(tfShieldID, Material.rock);
-			//Block.blocksList[tfShieldID] = PlayerProxies.blockHomeShield;
+			Block.blocksList[twilightForestShieldID] = null;
+			PlayerProxies.blockHomeShield = new BlockHomeShield(twilightForestShieldID, Material.rock);
 
-			Item.itemsList[tfShieldID] = null;
-			ItemBlock shieldItem = new ItemBlock(tfShieldID - 256);
-			//Item.itemsList[tfShieldID] = shieldItem;
+			Item.itemsList[twilightForestShieldID] = null;
+			ItemBlock shieldItem = new ItemBlock(twilightForestShieldID - 256);
 		} else {
 			PlayerProxies.blockHomeShield = new BlockHomeShield(BLOCK_ID, Material.rock);
 			GameRegistry.registerBlock(PlayerProxies.blockHomeShield, "PP_HomeShield");
@@ -121,6 +118,13 @@ public class BlockHomeShield extends Block {
 	
 	public static void registerCraft() {
 		if (requiresTwilightForest) return;
+		
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockHomeShield, 4), 
+				"isi", "opo", "ioi",
+				'i', Item.ingotIron, 
+				's', Block.stone, 
+				'o', Block.obsidian,
+				'p', Item.eyeOfEnder);
 	}
 
 	public Icon getIcon(int side, int metadata) {
@@ -133,23 +137,7 @@ public class BlockHomeShield extends Block {
 		return unbreakable;
 	}
 
-	/*public int getRenderBlockPass() {
-		return renderPass;
-	}
-
-	public boolean isOpaqueCube() {
-		return requiresTwilightForest;
-	}
-
-	public boolean renderAsNormalBlock() {
-		return requiresTwilightForest;
-	}*/
-
-	public int quantityDropped(Random random) {
-		return 1;
-	}
-
-	public int toggleBreakable(World world, int x, int y, int z, int metadata) {
+	public static int toggleBreakable(World world, int x, int y, int z, int metadata) {
 		if (isUnbreakable(metadata))
 			metadata -= 6;
 		else
@@ -160,15 +148,15 @@ public class BlockHomeShield extends Block {
 		return metadata;
 	}
 
-	public boolean isUnbreakable(World world, int x, int y, int z) {
+	public static boolean isUnbreakable(World world, int x, int y, int z) {
 		return isUnbreakable(world.getBlockMetadata(x, y, z));
 	}
 
-	public boolean isUnbreakable(int metadata) {
+	public static boolean isUnbreakable(int metadata) {
 		return metadata >= 6;
 	}
 
-	public boolean isSideBreakable(int side, int metadata) {
+	public static boolean isSideBreakable(int side, int metadata) {
 		return isUnbreakable(metadata) ? side == (metadata - 6) : side == metadata;
 	}
 
@@ -197,6 +185,8 @@ public class BlockHomeShield extends Block {
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float par7, float par8, float par9) {
+		if (EntityHelper.isFakePlayer(player)) return false;
+
 		int metadata = world.getBlockMetadata(x, y, z);
 
 		if (isSideBreakable(side, metadata)) {
@@ -215,7 +205,7 @@ public class BlockHomeShield extends Block {
 		int metadata = world.getBlockMetadata(x, y, z);
 
 		if (!isUnbreakable(metadata)) {
-			MovingObjectPosition mop = getPlayerPointVec(world, player, 6.0D);
+			MovingObjectPosition mop = EntityHelper.getPlayerMOP(player, 6.0D);
 	
 			int facing = mop != null ? mop.sideHit : -1;
 
@@ -225,13 +215,5 @@ public class BlockHomeShield extends Block {
 		}
 
 		return super.getPlayerRelativeBlockHardness(player, world, x, y, z);
-	}
-
-	private MovingObjectPosition getPlayerPointVec(World worldObj, EntityPlayer player, double range) {
-		Vec3 position = worldObj.getWorldVec3Pool().getVecFromPool(player.posX, player.posY + player.getEyeHeight(), player.posZ);
-		Vec3 look = player.getLook(1.0F);
-		Vec3 dest = position.addVector(look.xCoord * range, look.yCoord * range, look.zCoord * range);
-
-		return worldObj.clip(position, dest);
 	}
 }
