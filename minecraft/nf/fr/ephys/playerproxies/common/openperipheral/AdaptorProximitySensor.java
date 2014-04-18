@@ -1,13 +1,12 @@
 package nf.fr.ephys.playerproxies.common.openperipheral;
 
-import dan200.computer.api.IComputerAccess;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IMerchant;

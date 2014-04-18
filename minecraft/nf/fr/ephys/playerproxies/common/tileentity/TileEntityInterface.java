@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import dan200.turtle.api.ITurtleAccess;
+import dan200.computercraft.api.turtle.ITurtleAccess;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,6 +19,7 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -148,9 +149,10 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 	}
 
 	private TileEntity findTurtleTE() {
-		Vec3 pos = this.turtleAccess.getPosition();
+		ChunkCoordinates pos = this.turtleAccess.getPosition();
+
 		return this.turtleAccess.getWorld().getBlockTileEntity(
-				(int) pos.xCoord, (int) pos.yCoord, (int) pos.zCoord);
+				(int) pos.posX, (int) pos.posY, (int) pos.posZ);
 	}
 
 	public static boolean isValidTE(TileEntity te) {

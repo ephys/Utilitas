@@ -1,10 +1,9 @@
 package nf.fr.ephys.playerproxies.common.openperipheral;
 
-import dan200.computer.api.IComputerAccess;
-
 import java.util.HashMap;
 import java.util.List;
 
+import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IMerchant;

@@ -33,9 +33,6 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
-import dan200.computer.api.ComputerCraftAPI;
-import dan200.turtle.api.ITurtleUpgrade;
-import dan200.turtle.api.TurtleAPI;
 
 public class CommonProxy {
 	public void preInit() {
