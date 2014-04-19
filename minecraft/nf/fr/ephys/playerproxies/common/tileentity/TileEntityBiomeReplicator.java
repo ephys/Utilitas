@@ -278,6 +278,6 @@ public class TileEntityBiomeReplicator extends TileEnergyHandler implements IInv
 
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-		return i == 0 && itemstack.itemID == PlayerProxies.itemBiomeStorage.itemID && NBTHelper.getInt(itemstack, "biome", -1) != -1;
+		return i == 0 && itemstack.itemID == PlayerProxies.Items.biomeStorage.itemID && NBTHelper.getInt(itemstack, "biome", -1) != -1;
 	}
 }

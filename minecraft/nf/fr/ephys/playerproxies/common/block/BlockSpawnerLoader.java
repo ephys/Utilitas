@@ -34,20 +34,20 @@ public class BlockSpawnerLoader extends BlockContainer {
 	private Icon sideIcon;
 
 	public static void register() {
-		PlayerProxies.blockSpawnerLoader = new BlockSpawnerLoader();
-		PlayerProxies.blockSpawnerLoader.setUnlocalizedName("PP_SpawnerLoader");
-		GameRegistry.registerBlock(PlayerProxies.blockSpawnerLoader, "PP_SpawnerLoader");
+		PlayerProxies.Blocks.spawnerLoader = new BlockSpawnerLoader();
+		PlayerProxies.Blocks.spawnerLoader.setUnlocalizedName("PP_SpawnerLoader");
+		GameRegistry.registerBlock(PlayerProxies.Blocks.spawnerLoader, "PP_SpawnerLoader");
 		GameRegistry.registerTileEntity(TileEntitySpawnerLoader.class, "PP_SpawnerLoader");
-		LanguageRegistry.instance().addName(PlayerProxies.blockSpawnerLoader, "Ghost Stabilizer");
+		LanguageRegistry.instance().addName(PlayerProxies.Blocks.spawnerLoader, "Ghost Stabilizer");
 		
 		Ghost.register();
 	}
 	
 	public static void registerCraft() {
-		GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockSpawnerLoader), 
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.spawnerLoader), 
 			"hlh", "hdh", "hhh",
-			'h', new ItemStack(PlayerProxies.blockHardenedStone), 
-			'l', new ItemStack(PlayerProxies.itemLinkFocus), 
+			'h', new ItemStack(PlayerProxies.Blocks.hardenedStone), 
+			'l', new ItemStack(PlayerProxies.Items.linkFocus), 
 			'd', new ItemStack(Item.diamond)
 		);
 	}

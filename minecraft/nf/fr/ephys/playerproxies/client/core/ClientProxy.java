@@ -15,6 +15,8 @@ import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityItemTicker;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.Side;
 
 public class ClientProxy extends CommonProxy {
 	@Override
@@ -24,11 +26,18 @@ public class ClientProxy extends CommonProxy {
 		registerRenderers();
 	}
 	
+	@Override
+	public void postInit() {
+		super.postInit();
+		
+		TickRegistry.registerTickHandler(new TickHandlerVoidFog(), Side.CLIENT);
+	}
+	
 	public void registerRenderers() {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityInterface.class, new TileEntityInterfaceRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityItemTicker.class, new TileEntityItemTickerRenderer());
-		
+
 		//RenderingRegistry.registerEntityRenderingHandler(Ghost.class, new GhostRenderer());
-		MinecraftForgeClient.registerItemRenderer(PlayerProxies.itemBiomeStorage.itemID, new ItemBiomeStorageRenderer());
+		MinecraftForgeClient.registerItemRenderer(PlayerProxies.Items.biomeStorage.itemID, new ItemBiomeStorageRenderer());
 	}
 }

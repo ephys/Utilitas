@@ -6,6 +6,11 @@ import net.minecraft.util.Vec3;
 import net.minecraftforge.common.FakePlayer;
 
 public class EntityHelper {
+	public static final int ARMORSLOT_HELMET = 3;
+	public static final int ARMORSLOT_CHEST = 2;
+	public static final int ARMORSLOT_PANTS = 1;
+	public static final int ARMORSLOT_BOOT = 0;
+	
 	public static boolean isFakePlayer(EntityPlayer player) {
 		if (player == null) return false;
 		

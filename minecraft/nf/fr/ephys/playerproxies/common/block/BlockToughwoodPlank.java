@@ -39,14 +39,14 @@ public class BlockToughwoodPlank extends BlockContainer {
 	};
 
 	public static void register() {
-		PlayerProxies.blockToughwoodPlank = new BlockToughwoodPlank(BLOCK_ID, Material.wood);
-		PlayerProxies.blockToughwoodPlank.setUnlocalizedName("PP_ToughwoodPlank");
+		PlayerProxies.Blocks.toughwoodPlank = new BlockToughwoodPlank(BLOCK_ID, Material.wood);
+		PlayerProxies.Blocks.toughwoodPlank.setUnlocalizedName("PP_ToughwoodPlank");
 		
-		GameRegistry.registerBlock(PlayerProxies.blockToughwoodPlank, MultitemBlock.class, "PP_ToughwoodPlank", PlayerProxies.modid);
+		GameRegistry.registerBlock(PlayerProxies.Blocks.toughwoodPlank, MultitemBlock.class, "PP_ToughwoodPlank", PlayerProxies.modid);
 		GameRegistry.registerTileEntity(TileEntityBiomeReplicator.class, "PP_BiomeChanger");
 
 		for (int metadata = 0; metadata < blockNames.length; metadata++) {
-			ItemStack stackMultiBlock = new ItemStack(PlayerProxies.blockToughwoodPlank, 1, metadata);
+			ItemStack stackMultiBlock = new ItemStack(PlayerProxies.Blocks.toughwoodPlank, 1, metadata);
 
 			LanguageRegistry.addName(stackMultiBlock, blockNames[metadata]);
 			LanguageRegistry.instance().addStringLocalization("PP_ToughwoodPlank." + metadata, "EN_US", blockNames[metadata]);
@@ -54,16 +54,16 @@ public class BlockToughwoodPlank extends BlockContainer {
 	}
 	
 	public static void registerCraft() {
-		GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockToughwoodPlank, 4, METADATA_TOUGHWOOD), 
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.toughwoodPlank, 4, METADATA_TOUGHWOOD), 
 				" b ", "bwb", " b ",
 				'b', new ItemStack(Block.planks, 1, 2),
 				'w', new ItemStack(Block.wood)
 		);
 
-		GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockToughwoodPlank, 1, METADATA_BIOME_REPLICATOR), 
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.toughwoodPlank, 1, METADATA_BIOME_REPLICATOR), 
 				" c ", "pdp", " p ",
-				'c', new ItemStack(PlayerProxies.itemLinkFocus),
-				'p', new ItemStack(PlayerProxies.blockToughwoodPlank),
+				'c', new ItemStack(PlayerProxies.Items.linkFocus),
+				'p', new ItemStack(PlayerProxies.Blocks.toughwoodPlank),
 				'd', new ItemStack(Block.blockDiamond)
 		);
 	}

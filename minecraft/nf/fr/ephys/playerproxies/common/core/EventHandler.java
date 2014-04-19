@@ -41,7 +41,7 @@ public class EventHandler {
 				&& event.source.getEntity() instanceof EntityPlayer && Math
 				.random() < 0.25D * (1 + event.lootingLevel))
 				|| (event.entity instanceof EntityWitch && Math.random() < 0.05D * (1 + event.lootingLevel))) {
-			event.entity.dropItem(PlayerProxies.itemBiomeStorage.itemID, 1);
+			event.entity.dropItem(PlayerProxies.Items.biomeStorage.itemID, 1);
 		}
 	}
 
@@ -112,7 +112,7 @@ public class EventHandler {
 
 		ItemStack item = event.entityPlayer.getHeldItem();
 	//	ItemStack item = event.entityPlayer.getItemInUse();
-		if (item == null || (item.itemID != PlayerProxies.blockHomeShield.blockID && item.itemID != BlockHomeShield.twilightForestShieldID)) return;
+		if (item == null || (item.itemID != PlayerProxies.Blocks.homeShield.blockID && item.itemID != BlockHomeShield.twilightForestShieldID)) return;
 
 		int x = event.x;
 		int y = event.y;
@@ -145,7 +145,7 @@ public class EventHandler {
 		}
 		
 		int facingBlockID = event.entityPlayer.worldObj.getBlockId(facingBlockX, facingBlockY, facingBlockZ);
-		if (facingBlockID == PlayerProxies.blockHomeShield.blockID || facingBlockID == BlockHomeShield.twilightForestShieldID) {
+		if (facingBlockID == PlayerProxies.Blocks.homeShield.blockID || facingBlockID == BlockHomeShield.twilightForestShieldID) {
 			int facingBlockMetadata = event.entityPlayer.worldObj.getBlockMetadata(facingBlockX, facingBlockY, facingBlockZ);
 			
 			int facingBlockSide = facingBlocks[toPlaceMetadata];

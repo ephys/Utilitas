@@ -31,17 +31,17 @@ public class ItemLinker extends Item {
 	public static int ITEM_ID = 901;
 	
 	public static void register() {
-		PlayerProxies.itemLinker = new ItemLinker();
-		PlayerProxies.itemLinker.setUnlocalizedName("PP_LinkWand");
-		MinecraftForge.EVENT_BUS.register(PlayerProxies.itemLinker);
-		GameRegistry.registerItem(PlayerProxies.itemLinker, "PP_LinkWand");
-		LanguageRegistry.instance().addName(PlayerProxies.itemLinker, "Linking wand");
+		PlayerProxies.Items.linkeDevice = new ItemLinker();
+		PlayerProxies.Items.linkeDevice.setUnlocalizedName("PP_LinkWand");
+		MinecraftForge.EVENT_BUS.register(PlayerProxies.Items.linkeDevice);
+		GameRegistry.registerItem(PlayerProxies.Items.linkeDevice, "PP_LinkWand");
+		LanguageRegistry.instance().addName(PlayerProxies.Items.linkeDevice, "Linking wand");
 	}
 	
 	public static void registerCraft() {
-		GameRegistry.addRecipe(new ItemStack(PlayerProxies.itemLinker), 
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Items.linkeDevice), 
 				" il", " si", "s  ", 
-				'l', new ItemStack(PlayerProxies.itemLinkFocus),
+				'l', new ItemStack(PlayerProxies.Items.linkFocus),
 				'i', new ItemStack(Item.ingotIron), 
 				's', new ItemStack(Item.stick));
 	}

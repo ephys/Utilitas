@@ -24,19 +24,19 @@ public class BlockGravitationalField extends BlockContainer {
 	private Icon iconSide;
 
 	public static void register() {
-		PlayerProxies.blockGravitationalField = new BlockGravitationalField();
-		PlayerProxies.blockGravitationalField.setUnlocalizedName("PP_GravitationalField");
-		GameRegistry.registerBlock(PlayerProxies.blockGravitationalField, "PP_GravitationalField");
+		PlayerProxies.Blocks.gravitationalField = new BlockGravitationalField();
+		PlayerProxies.Blocks.gravitationalField.setUnlocalizedName("PP_GravitationalField");
+		GameRegistry.registerBlock(PlayerProxies.Blocks.gravitationalField, "PP_GravitationalField");
 		GameRegistry.registerTileEntity(TileEntityGravitationalField.class, "PP_GravitationalField");
-		LanguageRegistry.instance().addName(PlayerProxies.blockGravitationalField, "Gravitational Field Handler");
+		LanguageRegistry.instance().addName(PlayerProxies.Blocks.gravitationalField, "Gravitational Field Handler");
 	}
 	
 	public static void registerCraft() {
-		GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockGravitationalField), 
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.gravitationalField), 
 			" l ", "gsg", " l ",
-			'l', PlayerProxies.itemLinkFocus, 
-			'g', new ItemStack(PlayerProxies.blockBaseShineyGlass, 1, BlockBaseShineyGlass.METADATA_ETHEREAL_GLASS), 
-			's', PlayerProxies.blockHardenedStone
+			'l', PlayerProxies.Items.linkFocus, 
+			'g', new ItemStack(PlayerProxies.Blocks.baseShineyGlass, 1, BlockBaseShineyGlass.METADATA_ETHEREAL_GLASS), 
+			's', PlayerProxies.Blocks.hardenedStone
 		);
 	}
 	

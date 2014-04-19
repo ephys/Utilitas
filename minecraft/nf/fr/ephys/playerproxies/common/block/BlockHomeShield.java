@@ -103,23 +103,23 @@ public class BlockHomeShield extends Block {
 			PlayerProxies.getLogger().info("Twilight Forest found. PP will try to overwrite the TF shield block...");
 
 			Block.blocksList[twilightForestShieldID] = null;
-			PlayerProxies.blockHomeShield = new BlockHomeShield(twilightForestShieldID, Material.rock);
+			PlayerProxies.Blocks.homeShield = new BlockHomeShield(twilightForestShieldID, Material.rock);
 
 			Item.itemsList[twilightForestShieldID] = null;
 			ItemBlock shieldItem = new ItemBlock(twilightForestShieldID - 256);
 		} else {
-			PlayerProxies.blockHomeShield = new BlockHomeShield(BLOCK_ID, Material.rock);
-			GameRegistry.registerBlock(PlayerProxies.blockHomeShield, "PP_HomeShield");
+			PlayerProxies.Blocks.homeShield = new BlockHomeShield(BLOCK_ID, Material.rock);
+			GameRegistry.registerBlock(PlayerProxies.Blocks.homeShield, "PP_HomeShield");
 		}
 		
-		PlayerProxies.blockHomeShield.setUnlocalizedName("PP_HomeShield");
-		LanguageRegistry.instance().addName(PlayerProxies.blockHomeShield, requiresTwilightForest ? "Stronghold Shield" : "Shield");
+		PlayerProxies.Blocks.homeShield.setUnlocalizedName("PP_HomeShield");
+		LanguageRegistry.instance().addName(PlayerProxies.Blocks.homeShield, requiresTwilightForest ? "Stronghold Shield" : "Shield");
 	}
 	
 	public static void registerCraft() {
 		if (requiresTwilightForest) return;
 		
-		GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockHomeShield, 4), 
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.homeShield, 4), 
 				"isi", "opo", "ioi",
 				'i', Item.ingotIron, 
 				's', Block.stone, 

@@ -21,6 +21,7 @@ import nf.fr.ephys.playerproxies.common.block.BlockToughwoodPlank;
 import nf.fr.ephys.playerproxies.common.command.NicknameCommand;
 import nf.fr.ephys.playerproxies.common.core.CommonProxy;
 import nf.fr.ephys.playerproxies.common.core.PacketHandler;
+import nf.fr.ephys.playerproxies.common.enchantment.EnchantmentNoVoidFog;
 import nf.fr.ephys.playerproxies.common.item.ItemBiomeStorage;
 import nf.fr.ephys.playerproxies.common.item.ItemLinkFocus;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
@@ -76,27 +77,33 @@ public class PlayerProxies extends DummyModContainer {
 	
 	public static final CreativeTabs creativeTab = new CreativeTabs("playerProxies") {
 		public ItemStack getIconItemStack() {
-			return new ItemStack(blockProximitySensor, 1, 0);
+			return new ItemStack(Blocks.proximitySensor, 1, 0);
 		}
 	};
 
-	// blocks
-	public static BlockSpawnerLoader blockSpawnerLoader;
-	public static BlockHardenedStone blockHardenedStone;
-	public static BlockParticleGenerator blockParticleGenerator;
-	public static BlockBaseShineyGlass blockBaseShineyGlass;
-	public static BlockProximitySensor blockProximitySensor;
-	public static BlockBiomeScanner blockBiomeScanner;
-	public static BlockToughwoodPlank blockToughwoodPlank;
-	public static BlockItemTicker blockItemTicker;
-	public static BlockGravitationalField blockGravitationalField;
-	public static BlockHomeShield blockHomeShield;
-	
-	// items
-	public static ItemLinker itemLinker;
-	public static ItemLinkFocus itemLinkFocus;
-	public static ItemBiomeStorage itemBiomeStorage;
+	public static final class Blocks {
+		public static BlockSpawnerLoader spawnerLoader;
+		public static BlockHardenedStone hardenedStone;
+		public static BlockParticleGenerator particleGenerator;
+		public static BlockBaseShineyGlass baseShineyGlass;
+		public static BlockProximitySensor proximitySensor;
+		public static BlockBiomeScanner biomeScanner;
+		public static BlockToughwoodPlank toughwoodPlank;
+		public static BlockItemTicker itemTicker;
+		public static BlockGravitationalField gravitationalField;
+		public static BlockHomeShield homeShield;
+	}
 
+	public static final class Items {
+		public static ItemLinker linkeDevice;
+		public static ItemLinkFocus linkFocus;
+		public static ItemBiomeStorage biomeStorage;
+	}
+
+	public static final class Enchantments {
+		public static EnchantmentNoVoidFog noVoidFog;
+	}
+	
 	public PlayerProxies() {
 		super(new ModMetadata());
 
@@ -133,19 +140,20 @@ public class PlayerProxies extends DummyModContainer {
 		BlockItemTicker.BLOCK_ID = config.getBlock("BlockItemTicker", BlockItemTicker.BLOCK_ID).getInt();
 		BlockGravitationalField.BLOCK_ID = config.getBlock("BlockGravitationalField", BlockGravitationalField.BLOCK_ID).getInt();
 		BlockSpawnerLoader.BLOCK_ID = config.getBlock("BlockSpawnerLoader", BlockSpawnerLoader.BLOCK_ID).getInt();
-
-
+		
 		BlockHomeShield.BLOCK_ID = config.getBlock("BlockHomeShield", BlockHomeShield.BLOCK_ID).getInt();
+		
 		Property property = config.get("BlockProperties", "HomeshieldRequiresTwilightForest", BlockHomeShield.requiresTwilightForest);
 		property.comment = "True: Will overwrite the TF Stronghold Shield to add a locked state [unbreakable but unlockable]. \nFalse: Will add a new Shield Block having that behavior";
-
 		BlockHomeShield.requiresTwilightForest = property.getBoolean(BlockHomeShield.requiresTwilightForest);
 
 		property = config.get("BlockProperties", "HomeshieldRequiresSilkTouch", BlockHomeShield.requiresSilkTouch);
 		property.comment = "True if the shield only drops if silk touched";
-
 		BlockHomeShield.requiresSilkTouch = property.getBoolean(BlockHomeShield.requiresSilkTouch);
 
+		property = config.get("Enchantments", "NoVoidFodID", EnchantmentNoVoidFog.ENCHANTMENT_ID);
+		EnchantmentNoVoidFog.ENCHANTMENT_ID = property.getInt(EnchantmentNoVoidFog.ENCHANTMENT_ID);
+		
 		config.save();
 		
 		proxy.preInit();

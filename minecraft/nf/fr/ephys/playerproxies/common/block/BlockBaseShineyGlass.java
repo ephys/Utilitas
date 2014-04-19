@@ -44,14 +44,14 @@ public class BlockBaseShineyGlass extends BlockContainer {
 	};
 
 	public static void register() {
-		PlayerProxies.blockBaseShineyGlass = new BlockBaseShineyGlass(BlockBaseShineyGlass.BLOCK_ID, Material.glass);
-		PlayerProxies.blockBaseShineyGlass.setUnlocalizedName("PP_ShineyGlass");
+		PlayerProxies.Blocks.baseShineyGlass = new BlockBaseShineyGlass(BlockBaseShineyGlass.BLOCK_ID, Material.glass);
+		PlayerProxies.Blocks.baseShineyGlass.setUnlocalizedName("PP_ShineyGlass");
 		
-		GameRegistry.registerBlock(PlayerProxies.blockBaseShineyGlass, MultitemBlock.class, "PP_ShineyGlass", PlayerProxies.modid);
+		GameRegistry.registerBlock(PlayerProxies.Blocks.baseShineyGlass, MultitemBlock.class, "PP_ShineyGlass", PlayerProxies.modid);
 		GameRegistry.registerTileEntity(TileEntityInterface.class, "PP_Interface");
 
 		for (int metadata = 0; metadata < blockNames.length; metadata++) {
-			ItemStack stackMultiBlock = new ItemStack(PlayerProxies.blockBaseShineyGlass, 1, metadata);
+			ItemStack stackMultiBlock = new ItemStack(PlayerProxies.Blocks.baseShineyGlass, 1, metadata);
 
 			LanguageRegistry.addName(stackMultiBlock, blockNames[metadata]);
 			LanguageRegistry.instance().addStringLocalization("PP_ShineyGlass." + metadata, "EN_US", blockNames[metadata]);
@@ -66,16 +66,16 @@ public class BlockBaseShineyGlass extends BlockContainer {
 	}
 	
 	public static void registerCraft() {
-		GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockBaseShineyGlass, 12, METADATA_ETHEREAL_GLASS),
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.baseShineyGlass, 12, METADATA_ETHEREAL_GLASS),
 				"ggg", "gdg", "ggg", 
 				'd', new ItemStack(Item.diamond), 
 				'g', new ItemStack(Block.glass));
 		
-		GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockBaseShineyGlass, 1, METADATA_INTERFACE),
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.baseShineyGlass, 1, METADATA_INTERFACE),
 				"dld", "geg", "dgd", 
 				'd', new ItemStack(Item.diamond), 
-				'l', new ItemStack(PlayerProxies.itemLinkFocus), 
-				'g', new ItemStack(PlayerProxies.blockBaseShineyGlass, METADATA_ETHEREAL_GLASS), 
+				'l', new ItemStack(PlayerProxies.Items.linkFocus), 
+				'g', new ItemStack(PlayerProxies.Blocks.baseShineyGlass, METADATA_ETHEREAL_GLASS), 
 				'e', new ItemStack(Block.enderChest));
 	}
 	

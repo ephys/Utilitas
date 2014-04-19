@@ -27,14 +27,14 @@ public class BlockParticleGenerator extends Block {
 			"enchantmenttable", "flame", "lava", "splash", "reddust", "heart" };
 	
 	public static void register() {
-		PlayerProxies.blockParticleGenerator = new BlockParticleGenerator();
-		PlayerProxies.blockParticleGenerator.setUnlocalizedName("PP_ParticleGenerator");
-		GameRegistry.registerBlock(PlayerProxies.blockParticleGenerator, "PP_ParticleGenerator");
-		LanguageRegistry.instance().addName(PlayerProxies.blockParticleGenerator, "Particle Generator");
+		PlayerProxies.Blocks.particleGenerator = new BlockParticleGenerator();
+		PlayerProxies.Blocks.particleGenerator.setUnlocalizedName("PP_ParticleGenerator");
+		GameRegistry.registerBlock(PlayerProxies.Blocks.particleGenerator, "PP_ParticleGenerator");
+		LanguageRegistry.instance().addName(PlayerProxies.Blocks.particleGenerator, "Particle Generator");
 	}
 	
 	public static void registerCraft() {
-		GameRegistry.addShapelessRecipe(new ItemStack(PlayerProxies.blockParticleGenerator), Block.fenceIron, PlayerProxies.blockHardenedStone);
+		GameRegistry.addShapelessRecipe(new ItemStack(PlayerProxies.Blocks.particleGenerator), Block.fenceIron, PlayerProxies.Blocks.hardenedStone);
 	}
 
 	public BlockParticleGenerator() {
@@ -60,7 +60,7 @@ public class BlockParticleGenerator extends Block {
 			block = Block.blocksList[blockAccess.getBlockId(x+offset[0], y+offset[1], z+offset[2])];
 
 			if (block != null) {
-				if (block.blockID == PlayerProxies.blockHardenedStone.blockID) {
+				if (block.blockID == PlayerProxies.Blocks.hardenedStone.blockID) {
 					block = null;
 					break;
 				}
@@ -72,7 +72,7 @@ public class BlockParticleGenerator extends Block {
 			block = Block.blocksList[blockAccess.getBlockId(x-offset[0], y-offset[1], z-offset[2])];
 			
 			if (block != null) {
-				if (block.blockID == PlayerProxies.blockHardenedStone.blockID) {
+				if (block.blockID == PlayerProxies.Blocks.hardenedStone.blockID) {
 					block = null;
 					break;
 				}

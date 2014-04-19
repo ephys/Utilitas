@@ -21,10 +21,10 @@ public class ItemBiomeStorage extends Item {
 	public static int ITEM_ID = 902;
 	
 	public static void register() {
-		PlayerProxies.itemBiomeStorage = new ItemBiomeStorage();
-		PlayerProxies.itemBiomeStorage.setUnlocalizedName("PP_BiomeStorage");
-		GameRegistry.registerItem(PlayerProxies.itemBiomeStorage, "PP_BiomeStorage");
-		LanguageRegistry.instance().addName(PlayerProxies.itemBiomeStorage,
+		PlayerProxies.Items.biomeStorage = new ItemBiomeStorage();
+		PlayerProxies.Items.biomeStorage.setUnlocalizedName("PP_BiomeStorage");
+		GameRegistry.registerItem(PlayerProxies.Items.biomeStorage, "PP_BiomeStorage");
+		LanguageRegistry.instance().addName(PlayerProxies.Items.biomeStorage,
 				"Biome signature handler");
 	}
 

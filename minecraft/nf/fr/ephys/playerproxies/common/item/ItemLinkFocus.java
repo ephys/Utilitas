@@ -16,15 +16,15 @@ public class ItemLinkFocus extends Item {
 	public static int ITEM_ID = 900;
 	
 	public static void register() {
-		PlayerProxies.itemLinkFocus = new ItemLinkFocus();
-		PlayerProxies.itemLinkFocus.setUnlocalizedName("PP_LinkFocus");
-		GameRegistry.registerItem(PlayerProxies.itemLinkFocus, "PP_LinkFocus");
-		LanguageRegistry.instance().addName(PlayerProxies.itemLinkFocus,
+		PlayerProxies.Items.linkFocus = new ItemLinkFocus();
+		PlayerProxies.Items.linkFocus.setUnlocalizedName("PP_LinkFocus");
+		GameRegistry.registerItem(PlayerProxies.Items.linkFocus, "PP_LinkFocus");
+		LanguageRegistry.instance().addName(PlayerProxies.Items.linkFocus,
 				"Link focus");
 	}
 	
 	public static void registerCraft() {
-		GameRegistry.addRecipe(new ItemStack(PlayerProxies.itemLinkFocus),
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Items.linkFocus),
 				"ipi", "qeq", "ipi", 
 				'e', new ItemStack(Item.emerald), 
 				'p', new ItemStack(Item.enderPearl), 

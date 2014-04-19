@@ -25,15 +25,15 @@ public class BlockItemTicker extends BlockContainer {
 	private Icon iconBottom;
 	
 	public static void register() {
-		PlayerProxies.blockItemTicker = new BlockItemTicker();
-		PlayerProxies.blockItemTicker.setUnlocalizedName("PP_ItemActivator");
-		GameRegistry.registerBlock(PlayerProxies.blockItemTicker, "PP_ItemActivator");
+		PlayerProxies.Blocks.itemTicker = new BlockItemTicker();
+		PlayerProxies.Blocks.itemTicker.setUnlocalizedName("PP_ItemActivator");
+		GameRegistry.registerBlock(PlayerProxies.Blocks.itemTicker, "PP_ItemActivator");
 		GameRegistry.registerTileEntity(TileEntityItemTicker.class, "PP_ItemActivator");
-		LanguageRegistry.instance().addName(PlayerProxies.blockItemTicker, "Sylladex");
+		LanguageRegistry.instance().addName(PlayerProxies.Blocks.itemTicker, "Sylladex");
 	}
 	
 	public static void registerCraft() {
-		GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockItemTicker), 
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.itemTicker), 
 				"   ", " c ", "sss",
 				'c', new ItemStack(Item.pocketSundial),
 				's', new ItemStack(Block.stoneSingleSlab)

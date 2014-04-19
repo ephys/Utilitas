@@ -37,14 +37,14 @@ public class BlockHardenedStone extends BlockContainer {
 	};
 
 	public static void register() {
-		PlayerProxies.blockHardenedStone = new BlockHardenedStone(BlockHardenedStone.BLOCK_ID, Material.iron);
-		PlayerProxies.blockHardenedStone.setUnlocalizedName("PP_HardenedStone");
-		GameRegistry.registerBlock(PlayerProxies.blockHardenedStone, MultitemBlock.class, "PP_HardenedStone");
+		PlayerProxies.Blocks.hardenedStone = new BlockHardenedStone(BlockHardenedStone.BLOCK_ID, Material.iron);
+		PlayerProxies.Blocks.hardenedStone.setUnlocalizedName("PP_HardenedStone");
+		GameRegistry.registerBlock(PlayerProxies.Blocks.hardenedStone, MultitemBlock.class, "PP_HardenedStone");
 
 		GameRegistry.registerTileEntity(TileEntityPotionDiffuser.class, "PP_PotionDiffuser");
 
 		for (int metadata = 0; metadata < blockNames.length; metadata++) {
-			ItemStack stackMultiBlock = new ItemStack(PlayerProxies.blockHardenedStone, 1, metadata);
+			ItemStack stackMultiBlock = new ItemStack(PlayerProxies.Blocks.hardenedStone, 1, metadata);
 
 			LanguageRegistry.addName(stackMultiBlock, blockNames[metadata]);
 			LanguageRegistry.instance().addStringLocalization("PP_HardenedStone." + metadata, "EN_US", blockNames[metadata]);
@@ -53,23 +53,23 @@ public class BlockHardenedStone extends BlockContainer {
 
 	public static void registerCraft() {
 		if(Loader.isModLoaded("IC2")) {
-			GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockHardenedStone, 8, METADATA_HARDENED_STONE),
+			GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.hardenedStone, 8, METADATA_HARDENED_STONE),
 					"ioi", "oso", "ioi", 
 					'i', ic2.api.item.Items.getItem("advancedAlloy"), 
 					's', ic2.api.item.Items.getItem("reinforcedStone"), 
 					'o', new ItemStack(Block.obsidian));
 		} else {
-			GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockHardenedStone, 6, METADATA_HARDENED_STONE),
+			GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.hardenedStone, 6, METADATA_HARDENED_STONE),
 					"ioi", "oso", "ioi", 
 					'i', Item.ingotIron, 
 					's', Block.stone, 
 					'o', Block.obsidian);
 		}
 
-		GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockHardenedStone, 1, METADATA_POTION_DIFFUSER),
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.hardenedStone, 1, METADATA_POTION_DIFFUSER),
 				"p", "g", "d", 
 				'p', Item.glassBottle, 
-				'g', PlayerProxies.blockParticleGenerator, 
+				'g', PlayerProxies.Blocks.particleGenerator, 
 				'd', Item.diamond);
 	}
 	

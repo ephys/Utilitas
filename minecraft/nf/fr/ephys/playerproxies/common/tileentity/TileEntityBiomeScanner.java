@@ -178,7 +178,7 @@ public class TileEntityBiomeScanner extends TileEntity implements IInventory {
 
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-		return itemstack.itemID == PlayerProxies.itemBiomeStorage.itemID;
+		return itemstack.itemID == PlayerProxies.Items.biomeStorage.itemID;
 	}
 
 	@Override

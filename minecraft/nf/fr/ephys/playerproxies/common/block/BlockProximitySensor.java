@@ -24,18 +24,18 @@ public class BlockProximitySensor extends BlockContainer {
 	private Icon iconSide;
 	
 	public static void register() {
-		PlayerProxies.blockProximitySensor = new BlockProximitySensor();
-		PlayerProxies.blockProximitySensor.setUnlocalizedName("PP_ProximitySensor");
-		GameRegistry.registerBlock(PlayerProxies.blockProximitySensor, "PP_ProximitySensor");
+		PlayerProxies.Blocks.proximitySensor = new BlockProximitySensor();
+		PlayerProxies.Blocks.proximitySensor.setUnlocalizedName("PP_ProximitySensor");
+		GameRegistry.registerBlock(PlayerProxies.Blocks.proximitySensor, "PP_ProximitySensor");
 		GameRegistry.registerTileEntity(TileEntityProximitySensor.class, "PP_ProximitySensor");
-		LanguageRegistry.instance().addName(PlayerProxies.blockProximitySensor, "Proximity Sensor");
+		LanguageRegistry.instance().addName(PlayerProxies.Blocks.proximitySensor, "Proximity Sensor");
 	}
 	
 	public static void registerCraft() {
-		GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockProximitySensor), 
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.proximitySensor), 
 				"hhh", "hlh", "hrh",
-				'h', new ItemStack(PlayerProxies.blockHardenedStone), 
-				'l', new ItemStack(PlayerProxies.itemLinkFocus), 
+				'h', new ItemStack(PlayerProxies.Blocks.hardenedStone), 
+				'l', new ItemStack(PlayerProxies.Items.linkFocus), 
 				'r', new ItemStack(Item.redstone));
 	}
 	

@@ -28,7 +28,7 @@ public class ContainerBiomeScanner extends Container {
 		this.te = te;
 		this.player = player;
 
-		this.cardSlot = new FilteredSlot(te, 0, 226, 25, new int[] { PlayerProxies.itemBiomeStorage.itemID });
+		this.cardSlot = new FilteredSlot(te, 0, 226, 25, new int[] { PlayerProxies.Items.biomeStorage.itemID });
 		
 		addSlotToContainer(this.cardSlot);
 

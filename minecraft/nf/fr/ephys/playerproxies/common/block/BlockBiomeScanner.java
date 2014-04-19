@@ -33,19 +33,19 @@ public class BlockBiomeScanner extends BlockContainer {
 	private Icon iconScreen;
 	
 	public static void register() {
-		PlayerProxies.blockBiomeScanner = new BlockBiomeScanner();
-		PlayerProxies.blockBiomeScanner.setUnlocalizedName("PP_BiomeScanner");
-		GameRegistry.registerBlock(PlayerProxies.blockBiomeScanner, "PP_BiomeScanner");
+		PlayerProxies.Blocks.biomeScanner = new BlockBiomeScanner();
+		PlayerProxies.Blocks.biomeScanner.setUnlocalizedName("PP_BiomeScanner");
+		GameRegistry.registerBlock(PlayerProxies.Blocks.biomeScanner, "PP_BiomeScanner");
 		GameRegistry.registerTileEntity(TileEntityBiomeScanner.class, "PP_BiomeScanner");
-		LanguageRegistry.instance().addName(PlayerProxies.blockBiomeScanner, "Biome scanner");
+		LanguageRegistry.instance().addName(PlayerProxies.Blocks.biomeScanner, "Biome scanner");
 	}
 
 	public static void registerCraft() {
-		GameRegistry.addRecipe(new ItemStack(PlayerProxies.blockBiomeScanner), 
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.biomeScanner), 
 				" g ", "pop", " p ",
 				'g', new ItemStack(Item.goldNugget),
 				'o', new ItemStack(Block.obsidian),
-				'p', new ItemStack(PlayerProxies.blockToughwoodPlank)
+				'p', new ItemStack(PlayerProxies.Blocks.toughwoodPlank)
 		);
 	}
 	
