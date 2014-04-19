@@ -23,9 +23,7 @@ public class TickHandlerVoidFog implements ITickHandler {
 	private HashMap<Integer, WorldProvider> worldProvidersOrigin = new LinkedHashMap<Integer, WorldProvider>(3);
 	private HashMap<Integer, WorldProvider> worldProvidersReplaced = new LinkedHashMap<Integer, WorldProvider>(3);
 
-	public WorldProvider generateDimention(int id) {
-		World world = DimensionManager.getWorld(id);
-		
+	public WorldProvider generateDimention(World world) {
 		PlayerProxies.getLogger().info("generating new provider for world "+world.provider.getDimensionName() + "(" + world.provider.dimensionId + ")");
 			
 		worldProvidersOrigin.put(world.provider.dimensionId, world.provider);
@@ -54,7 +52,7 @@ public class TickHandlerVoidFog implements ITickHandler {
 				WorldProvider newProvider = worldProvidersReplaced.get(dimention);
 				
 				if (newProvider == null)
-					newProvider = generateDimention(player.worldObj.provider.dimensionId);
+					newProvider = generateDimention(player.worldObj);
 
 				if (player.worldObj.provider != newProvider) {
 					setWorldProvider(newProvider);
