@@ -141,7 +141,7 @@ public class ItemLinker extends Item {
 			return;
 		
 		ItemStack item = event.entityPlayer.getHeldItem();
-		if(!(item.getItem() instanceof ItemLinker))
+		if(item == null || !(item.getItem() instanceof ItemLinker))
 			return;
 
 		String entityName = event.target.getEntityName();
