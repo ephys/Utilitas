@@ -22,7 +22,8 @@ import cpw.mods.fml.common.TickType;
 public class TickHandlerVoidFog implements ITickHandler {
 	private HashMap<Integer, WorldProvider> worldProvidersOrigin = new LinkedHashMap<Integer, WorldProvider>(3);
 	private HashMap<Integer, WorldProvider> worldProvidersReplaced = new LinkedHashMap<Integer, WorldProvider>(3);
-
+	private Field worldProvider;
+	
 	public WorldProvider generateDimention(World world) {
 		PlayerProxies.getLogger().info("generating new provider for world "+world.provider.getDimensionName() + "(" + world.provider.dimensionId + ")");
 			
@@ -35,7 +36,36 @@ public class TickHandlerVoidFog implements ITickHandler {
 		return newWorldProvider;
 	}
 	
-	public TickHandlerVoidFog() {}
+	public TickHandlerVoidFog() {
+		getWorldProviderField();
+	}
+	
+	public boolean isValid() {
+		return worldProvider != null;
+	}
+	
+	public void getWorldProviderField() {
+		try {
+			Field[] fields = World.class.getDeclaredFields();
+			
+			for (Field field : fields) {
+				if (field.getType().equals(WorldProvider.class)) {
+					worldProvider = field;
+					break;
+				}
+			}
+			
+			if (worldProvider == null) {
+				PlayerProxies.getLogger().severe("Did not find World.provider field. Void Fog remover enchant will not work.");
+
+				if (PlayerProxies.DEV_MODE) System.exit(1);
+			}
+
+			worldProvider.setAccessible(true);
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData) {}
@@ -71,21 +101,12 @@ public class TickHandlerVoidFog implements ITickHandler {
 		if (provider == null) return;
 		
 		World theWorld = FMLClientHandler.instance().getClient().theWorld;
-	
-		try {
-			Field worldProvider = World.class.getField("provider");
-			worldProvider.setAccessible(true);
 
-			try {
-				worldProvider.set(theWorld, provider);
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			}
-		} catch (NoSuchFieldException e) {
+		try {
+			worldProvider.set(theWorld, provider);
+		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		} catch (SecurityException e) {
+		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
 	}

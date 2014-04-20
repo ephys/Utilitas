@@ -30,7 +30,10 @@ public class ClientProxy extends CommonProxy {
 	public void postInit() {
 		super.postInit();
 		
-		TickRegistry.registerTickHandler(new TickHandlerVoidFog(), Side.CLIENT);
+		TickHandlerVoidFog voidFogHandler = new TickHandlerVoidFog();
+		
+		if (voidFogHandler.isValid())
+			TickRegistry.registerTickHandler(new TickHandlerVoidFog(), Side.CLIENT);
 	}
 	
 	public void registerRenderers() {
