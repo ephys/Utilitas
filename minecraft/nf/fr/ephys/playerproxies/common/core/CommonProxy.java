@@ -44,7 +44,7 @@ public class CommonProxy {
 		registerBlocks();
 		registerItems();
 		
-		EnchantmentNoVoidFog.register();
+		//EnchantmentNoVoidFog.register();
 	}
 	
 	public void postInit() {

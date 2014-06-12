@@ -18,7 +18,7 @@ import nf.fr.ephys.playerproxies.common.block.BlockParticleGenerator;
 import nf.fr.ephys.playerproxies.common.block.BlockProximitySensor;
 import nf.fr.ephys.playerproxies.common.block.BlockSpawnerLoader;
 import nf.fr.ephys.playerproxies.common.block.BlockToughwoodPlank;
-import nf.fr.ephys.playerproxies.common.command.NicknameCommand;
+import nf.fr.ephys.playerproxies.common.command.CommandNickname;
 import nf.fr.ephys.playerproxies.common.core.CommonProxy;
 import nf.fr.ephys.playerproxies.common.core.PacketHandler;
 import nf.fr.ephys.playerproxies.common.enchantment.EnchantmentNoVoidFog;
@@ -52,7 +52,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 )
 
 public class PlayerProxies extends DummyModContainer {
-	public static final String version = "1.6.4-0.1.2";
+	public static final String version = "1.6.4-0.1.3";
 	public static final String modid = "ephys.playerproxies";
 	public static final String name = "Player Proxies";
 
@@ -101,7 +101,7 @@ public class PlayerProxies extends DummyModContainer {
 	}
 
 	public static final class Enchantments {
-		public static EnchantmentNoVoidFog noVoidFog;
+		//public static EnchantmentNoVoidFog noVoidFog;
 	}
 	
 	public PlayerProxies() {
@@ -177,6 +177,6 @@ public class PlayerProxies extends DummyModContainer {
 
 	@EventHandler
 	public void serverStarting(FMLServerStartingEvent event) {
-		event.registerServerCommand(new NicknameCommand());
+		event.registerServerCommand(new CommandNickname());
 	}
 }

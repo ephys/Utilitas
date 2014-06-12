@@ -4,15 +4,24 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import nf.fr.ephys.playerproxies.client.core.NicknamesRegistry;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.entity.Ghost;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
@@ -27,7 +36,8 @@ public class PacketHandler implements IPacketHandler {
 	private static enum subChannels {
 		ENDER_TOGGLE,
 		SPAWN_PARTICLE,
-		CHANGE_BIOME
+		CHANGE_BIOME,
+		SET_NICKNAME
 	}
 
 	/*
@@ -47,17 +57,20 @@ public class PacketHandler implements IPacketHandler {
 
 		try {
 			int subChannel = inputStream.readByte();
-			
+
 			if (subChannel == subChannels.ENDER_TOGGLE.ordinal())
 				toggleInterfaceEnderMode(inputStream, ((EntityPlayer) player).worldObj);
 			else if (subChannel == subChannels.SPAWN_PARTICLE.ordinal())
 				spawnParticle(inputStream, ((EntityPlayer) player).worldObj);
 			else if (subChannel == subChannels.CHANGE_BIOME.ordinal())
 				changeBiome(inputStream, ((EntityPlayer) player).worldObj);
+			else if (subChannel == subChannels.SET_NICKNAME.ordinal())
+				updateNicknames(inputStream);
 			else
 				PlayerProxies.getLogger().severe("Packet manager received unknown subpacket id");
 		} catch (IOException e) {
 			e.printStackTrace();
+			return;
 		}
 	}
 
@@ -72,6 +85,7 @@ public class PacketHandler implements IPacketHandler {
 			outputStream.writeInt(zCoord);
 		} catch (Exception ex) {
 			ex.printStackTrace();
+			return;
 		}
 
 		Packet250CustomPayload packet = new Packet250CustomPayload();
@@ -95,6 +109,7 @@ public class PacketHandler implements IPacketHandler {
 				((TileEntityInterface) te).toggleEnderMode();
 		} catch (IOException e) {
 			e.printStackTrace();
+			return;
 		}
 	}
 
@@ -116,6 +131,7 @@ public class PacketHandler implements IPacketHandler {
 			outputStream.writeDouble(velZ);
 		} catch (Exception ex) {
 			ex.printStackTrace();
+			return;
 		}
 
 		Packet250CustomPayload packet = new Packet250CustomPayload();
@@ -142,6 +158,7 @@ public class PacketHandler implements IPacketHandler {
 			world.spawnParticle(ParticleHelper.getParticleNameFromID(particleID), x, y, z, velX, velY, velZ);
 		} catch (IOException e) {
 			e.printStackTrace();
+			return;
 		}
 	}
 	
@@ -158,6 +175,7 @@ public class PacketHandler implements IPacketHandler {
 			outputStream.writeInt(z);
 		} catch (Exception ex) {
 			ex.printStackTrace();
+			return;
 		}
 
 		Packet250CustomPayload packet = new Packet250CustomPayload();
@@ -183,6 +201,106 @@ public class PacketHandler implements IPacketHandler {
 			chunk.setBiomeArray(biomes);
 			chunk.setChunkModified();
 		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
+	}
+
+	/**
+	 * Sends a packet to every player containing the player's new nickname 
+	 * @param entity
+	 */
+	public static void sendPacketSetNickname(EntityPlayer player) {
+		NBTTagCompound nbt = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+
+		if (!nbt.hasKey("nickname")) return;
+
+		String nickname = nbt.getString("nickname");
+		String realname = player.getEntityName();
+
+		ByteArrayOutputStream bos = new ByteArrayOutputStream(20);
+		DataOutputStream outputStream = new DataOutputStream(bos);
+
+		try {
+			outputStream.writeByte(subChannels.SET_NICKNAME.ordinal());
+
+			outputStream.writeUTF(realname+":"+nickname);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return;
+		}
+
+		Packet250CustomPayload packet = new Packet250CustomPayload();
+
+		packet.channel = "PlayerProxies";
+		packet.data = bos.toByteArray();
+		packet.length = bos.size();
+
+		PacketDispatcher.sendPacketToAllPlayers(packet);
+		
+		System.out.println("SENDING "+player.username+"'s NICK PACKET TO ALL");
+	}
+
+	/**
+	 * Sends a packet containing every online player's nickname to this player
+	 * 
+	 * @param player
+	 */
+	public static void sendPacketNicknames(EntityPlayer player) {
+		Map<String, String> nicknames = new HashMap<String, String>();
+
+		for (Object entity : MinecraftServer.getServerConfigurationManager(MinecraftServer.getServer()).playerEntityList) {
+			NBTTagCompound nbt = ((EntityPlayer) entity).getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+		
+			if (nbt.hasKey("nickname")) {
+				nicknames.put(((EntityPlayer) entity).getEntityName(), nbt.getString("nickname"));
+			}
+		}
+
+		ByteArrayOutputStream bos = new ByteArrayOutputStream(20);
+		DataOutputStream outputStream = new DataOutputStream(bos);
+
+		try {
+			outputStream.writeByte(subChannels.SET_NICKNAME.ordinal());
+
+			int i = 0;
+			for (Map.Entry<String, String> set : nicknames.entrySet()) {
+				outputStream.writeUTF(set.getKey()+":"+set.getValue());
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return;
+		}
+
+		Packet250CustomPayload packet = new Packet250CustomPayload();
+
+		packet.channel = "PlayerProxies";
+		packet.data = bos.toByteArray();
+		packet.length = bos.size();
+
+		System.out.println("SENDING NICKS PACKET TO "+player.username);
+		PacketDispatcher.sendPacketToPlayer(packet, (Player) player);
+	}
+	
+	private void dumpPacket(Packet250CustomPayload packet) {
+		System.out.println("packet size: "+packet.length);
+		System.out.println("packet data:");
+		for (int i = 0; i < packet.data.length; i++) {
+			System.out.print(Integer.toHexString(packet.data[i])+" ");
+		}
+		
+		System.out.println();	
+	}
+	
+	private void updateNicknames(DataInputStream stream) {
+		System.out.println("RECEIVED PACKET");
+
+		try {
+			String[] names = stream.readUTF().split(":");
+
+			NicknamesRegistry.set(names[0], names[1]);
+		} catch (EOFException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

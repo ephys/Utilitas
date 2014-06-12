@@ -14,6 +14,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.common.BiomeManager;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
@@ -30,6 +31,9 @@ public class TileEntityBiomeScanner extends TileEntity implements IInventory {
 		if (storedBiome != -1)
 			return BiomeGenBase.biomeList[storedBiome];
 
+		//BiomeGenBase.biomeList
+		// chunk.getBiomeGenForWorldCoords(k3 & 15, l4 & 15, this.mc.theWorld.getWorldChunkManager()) <-- use that
+		
 		return BiomeGenBase.biomeList[biome];
 	}
 

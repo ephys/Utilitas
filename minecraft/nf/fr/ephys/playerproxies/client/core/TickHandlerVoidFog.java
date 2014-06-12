@@ -72,7 +72,7 @@ public class TickHandlerVoidFog implements ITickHandler {
 
 	@Override
 	public void tickEnd(EnumSet<TickType> type, Object... tickData) {
-		if (type.equals(EnumSet.of(TickType.CLIENT))) {
+		/*if (type.equals(EnumSet.of(TickType.CLIENT))) {
 			EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;
 			
 			if (player == null || player.inventory == null) return;
@@ -94,7 +94,7 @@ public class TickHandlerVoidFog implements ITickHandler {
 					setWorldProvider(newProvider);
 				}
 			}
-		}
+		}*/
 	}
 	
 	public void setWorldProvider(WorldProvider provider) {

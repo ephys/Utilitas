@@ -8,7 +8,7 @@ public class EnchantmentNoVoidFog extends Enchantment {
 	public static int ENCHANTMENT_ID = 150;
 
 	public static void register() {
-		PlayerProxies.Enchantments.noVoidFog = new EnchantmentNoVoidFog(ENCHANTMENT_ID);
+		//PlayerProxies.Enchantments.noVoidFog = new EnchantmentNoVoidFog(ENCHANTMENT_ID);
 	}
 	
 	protected EnchantmentNoVoidFog(int id) {
