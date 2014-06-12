@@ -28,7 +28,9 @@ public class TileEntityBiomeScanner extends TileEntity implements IInventory {
 	public ItemStack card;
 
 	public BiomeGenBase getBiome() {
-		if (storedBiome == -1) return null;
+		if (storedBiome == -1) {
+			return this.worldObj.getBiomeGenForCoords(xCoord, zCoord);
+		}
 		
 		return BiomeGenBase.biomeList[storedBiome];
 

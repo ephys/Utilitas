@@ -237,8 +237,6 @@ public class PacketHandler implements IPacketHandler {
 		packet.length = bos.size();
 
 		PacketDispatcher.sendPacketToAllPlayers(packet);
-		
-		System.out.println("SENDING "+player.username+"'s NICK PACKET TO ALL");
 	}
 
 	/**
@@ -278,7 +276,6 @@ public class PacketHandler implements IPacketHandler {
 		packet.data = bos.toByteArray();
 		packet.length = bos.size();
 
-		System.out.println("SENDING NICKS PACKET TO "+player.username);
 		PacketDispatcher.sendPacketToPlayer(packet, (Player) player);
 	}
 	
@@ -293,8 +290,6 @@ public class PacketHandler implements IPacketHandler {
 	}
 	
 	private void updateNicknames(DataInputStream stream) {
-		System.out.println("RECEIVED PACKET");
-
 		try {
 			String[] names = stream.readUTF().split(":");
 
