@@ -51,37 +51,6 @@ public class EventHandler {
 		}
 	}
 
-	private static final int portalParticleID = ParticleHelper
-			.getParticleIDFromName("portal");
-
-	@ForgeSubscribe
-	public void onAttack(LivingHurtEvent event) {
-		if (event.entity instanceof EntityPlayer
-				&& ((EntityPlayer) event.entity).username
-						.equalsIgnoreCase("M_Bardin")) {
-			Entity entity = event.entity;
-			World world = entity.worldObj;
-
-			int signe = 1;
-			for (int i = 0; i < 5; i++) {
-				double velx = world.rand.nextDouble() - 0.5;
-				double vely = (world.rand.nextDouble() - 0.5) * signe;
-				double velz = world.rand.nextDouble() - 0.5;
-
-				signe *= -1;
-
-				/*
-				 * world.spawnParticle("portal", entity.posX + velx, entity.posY
-				 * + vely, entity.posZ + velz, -velx, -vely, -velz );
-				 */
-
-				PacketHandler.sendPacketSpawnParticle(portalParticleID,
-						entity.posX + velx, entity.posY + vely + 1.5,
-						entity.posZ + velz, -velx, -vely, -velz, world);
-			}
-		}
-	}
-
 	// ========================== NICKNAME MANAGEMENT ==========================
 	@ForgeSubscribe
 	public void changePlayerName(PlayerEvent.NameFormat event) {
