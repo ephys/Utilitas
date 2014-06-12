@@ -55,10 +55,10 @@ public class GuiBiomeScanner extends GuiContainer {
 		final int xOffset = 4;		
 		fontRenderer.drawString("Biome: " + biome.biomeName, 8, 23+xOffset, 0xeeeeee);
 		fontRenderer.drawString("Weather type: "+(biome.getEnableSnow() ? "Snow":"Rain"), 12, 35+xOffset, 0xeeeeee);
-		fontRenderer.drawString("Average temperature: "+(biome.getFloatTemperature()*10)+"°c", 12, 47+xOffset, 0xeeeeee);
-		fontRenderer.drawString("Average rainfall: "+biome.getFloatRainfall()+"mb", 12, 59+xOffset, 0xeeeeee);
+		fontRenderer.drawString("Average temperature: "+(biome.getFloatTemperature()*100)+"%", 12, 47+xOffset, 0xeeeeee);
+		fontRenderer.drawString("Average rainfall: "+(biome.getFloatRainfall()*100)+"%", 12, 59+xOffset, 0xeeeeee);
 		fontRenderer.drawString("Spawn capacity: "+(biome.getSpawningChance()*100)+"%", 12, 71+xOffset, 0xeeeeee);
-	
+
 		if (getTileEntity().getProgress() != -1)
 			fontRenderer.drawString("Decrypting biome signature : "+getTileEntity().getProgress()+"%", 8, 94, 0xeeeeee);
 	}
