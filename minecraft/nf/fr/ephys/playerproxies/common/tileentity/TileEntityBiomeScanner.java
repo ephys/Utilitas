@@ -28,13 +28,11 @@ public class TileEntityBiomeScanner extends TileEntity implements IInventory {
 	public ItemStack card;
 
 	public BiomeGenBase getBiome() {
-		if (storedBiome != -1)
-			return BiomeGenBase.biomeList[storedBiome];
-
-		//BiomeGenBase.biomeList
-		// chunk.getBiomeGenForWorldCoords(k3 & 15, l4 & 15, this.mc.theWorld.getWorldChunkManager()) <-- use that
+		if (storedBiome == -1) return null;
 		
-		return BiomeGenBase.biomeList[biome];
+		return BiomeGenBase.biomeList[storedBiome];
+
+		// chunk.getBiomeGenForWorldCoords(k3 & 15, l4 & 15, this.mc.theWorld.getWorldChunkManager()) <-- use that
 	}
 
 	@Override

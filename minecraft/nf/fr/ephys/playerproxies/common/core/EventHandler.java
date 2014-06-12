@@ -2,7 +2,6 @@ package nf.fr.ephys.playerproxies.common.core;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockPistonBase;
-import net.minecraft.client.renderer.entity.PP_RenderPlayerAccessor;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityWither;
@@ -167,8 +166,11 @@ public class EventHandler {
 
 		ItemStack item = event.entityPlayer.getHeldItem();
 		// ItemStack item = event.entityPlayer.getItemInUse();
-		if (item == null
-				|| (item.itemID != PlayerProxies.Blocks.homeShield.blockID && item.itemID != BlockHomeShield.twilightForestShieldID))
+		if (item == null)
+			return;
+
+		if ((PlayerProxies.Blocks.homeShield == null || item.itemID != PlayerProxies.Blocks.homeShield.blockID) 
+				&& item.itemID != BlockHomeShield.twilightForestShieldID)
 			return;
 
 		int x = event.x;
