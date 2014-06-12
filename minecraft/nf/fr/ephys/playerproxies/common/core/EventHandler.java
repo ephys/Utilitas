@@ -44,9 +44,9 @@ public class EventHandler {
 			return;
 
 		if ((event.entity instanceof EntityWither
-				&& event.source.getEntity() instanceof EntityPlayer && Math
-				.random() < 0.25D * (1 + event.lootingLevel))
-				|| (event.entity instanceof EntityWitch && Math.random() < 0.05D * (1 + event.lootingLevel))) {
+				&& event.source.getEntity() instanceof EntityPlayer 
+				&& Math.random() < 0.25D * (1 + event.lootingLevel))
+				|| (event.entity instanceof EntityWitch && Math.random() < 0.005D)) {
 			event.entity.dropItem(PlayerProxies.Items.biomeStorage.itemID, 1);
 		}
 	}
