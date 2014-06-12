@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockFluid;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -139,11 +141,22 @@ public class TileEntityPotionDiffuser extends TileEnergyHandler implements ISide
 			if (this.tank.getFluidAmount() >= INTERVAL) {
 				for (EntityLivingBase entity : entities) {
 					Block block = Block.blocksList[this.tank.getFluid().getFluid().getBlockID()];
-	
-					block.onEntityCollidedWithBlock(worldObj, xCoord, yCoord, zCoord, entity);
-					block.onEntityWalking(worldObj, xCoord, yCoord, zCoord, entity);
+					
+					if (block instanceof BlockFluid) {
+						// TODO: add a new fluid that will remove the effects
+						if (block.blockMaterial == Material.water) {
+							entity.clearActivePotions();
+						} else if (block.blockMaterial == Material.lava) {
+							if (!entity.isImmuneToFire()) {
+								entity.setFire(INTERVAL);
+							}
+						} else {
+							block.onEntityCollidedWithBlock(worldObj, xCoord, yCoord, zCoord, entity);
+							block.onEntityWalking(worldObj, xCoord, yCoord, zCoord, entity);
+						}
+					}
 				}
-	
+
 				this.tank.drain(INTERVAL, true);
 			}
 
