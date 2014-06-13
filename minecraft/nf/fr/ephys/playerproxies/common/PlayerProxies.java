@@ -52,7 +52,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 )
 
 public class PlayerProxies extends DummyModContainer {
-	public static final String version = "1.6.4-0.2.0";
+	public static final String version = "1.6.4-0.2.1";
 	public static final String modid = "ephys.playerproxies";
 	public static final String name = "Player Proxies";
 
