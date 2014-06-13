@@ -60,9 +60,11 @@ public class EventHandler {
 			event.displayname = nbt.getString("nickname");
 		} else {
 			String name = NicknamesRegistry.get(event.entityPlayer.username);
-			
-			if (name != null)
+
+			if (name != null) {
+				nbt.setString("nickname", name);
 				event.displayname = name;
+			}
 		}
 	}
 

@@ -291,7 +291,9 @@ public class PacketHandler implements IPacketHandler {
 	
 	private void updateNicknames(DataInputStream stream) {
 		try {
-			String[] names = stream.readUTF().split(":");
+			String data =  stream.readUTF();
+			
+			String[] names = data.split(":");
 
 			NicknamesRegistry.set(names[0], names[1]);
 		} catch (EOFException e) {

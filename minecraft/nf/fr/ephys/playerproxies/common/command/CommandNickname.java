@@ -7,6 +7,7 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatMessageComponent;
 import nf.fr.ephys.playerproxies.common.core.PacketHandler;
@@ -37,7 +38,7 @@ public class CommandNickname extends CommandBase {
 	public void processCommand(ICommandSender sender, String[] args) {
 		EntityPlayer target;
 		String nickname;
-		
+
 		if (args.length == 1) {
 			if (!(sender instanceof EntityPlayer)) {
 				sender.sendChatToPlayer(ChatMessageComponent.createFromText("Specify a player."));
@@ -63,9 +64,16 @@ public class CommandNickname extends CommandBase {
 		
 		if (!nickname.matches("^[a-zA-Z0-9_]*$")) {
 			sender.sendChatToPlayer(ChatMessageComponent.createFromText("Invalid nickname: Alphanumerical characters and underscores only"));
+			return;
 		}
 
-		target.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).setString("nickname", nickname);
+		NBTTagCompound playerNBT = target.getEntityData();
+		
+		if (!playerNBT.hasKey(EntityPlayer.PERSISTED_NBT_TAG))
+			playerNBT.setTag(EntityPlayer.PERSISTED_NBT_TAG, new NBTTagCompound());
+
+		playerNBT.getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).setString("nickname", nickname);
+
 		MinecraftServer.getServer().getConfigurationManager().sendChatMsg(ChatMessageComponent.createFromText(target.getEntityName()+" is now known as "+nickname));
 
 		target.refreshDisplayName();
