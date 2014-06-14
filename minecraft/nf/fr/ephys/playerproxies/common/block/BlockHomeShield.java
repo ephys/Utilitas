@@ -76,12 +76,11 @@ public class BlockHomeShield extends Block {
 	}
 
 	public static void register() {
-		requiresTwilightForest = true;
 		if (Loader.isModLoaded("TwilightForest")) {
 			try {
 				Class<?> tfBlocks = Class.forName("twilightforest.block.TFBlocks");
 				Block tfShield = (Block) ReflectionHelper.findField(tfBlocks, "shield").get(null);
-				
+
 				twilightForestShieldID = tfShield.blockID;
 			} catch (Exception e) {
 				PlayerProxies.getLogger().warning("Error while accessing the TF Shield block.");
@@ -99,7 +98,7 @@ public class BlockHomeShield extends Block {
 				PlayerProxies.getLogger().info("BlockHomeShield set to require mod Twilight Forest ; Cannot access TF Shield block. Disabling block.");
 				return;
 			}
-			
+
 			PlayerProxies.getLogger().info("Twilight Forest found. PP will try to overwrite the TF shield block...");
 
 			Block.blocksList[twilightForestShieldID] = null;
@@ -107,11 +106,13 @@ public class BlockHomeShield extends Block {
 
 			Item.itemsList[twilightForestShieldID] = null;
 			ItemBlock shieldItem = new ItemBlock(twilightForestShieldID - 256);
+			
+			BLOCK_ID = twilightForestShieldID;
 		} else {
 			PlayerProxies.Blocks.homeShield = new BlockHomeShield(BLOCK_ID, Material.rock);
 			GameRegistry.registerBlock(PlayerProxies.Blocks.homeShield, "PP_HomeShield");
 		}
-		
+
 		PlayerProxies.Blocks.homeShield.setUnlocalizedName("PP_HomeShield");
 		LanguageRegistry.instance().addName(PlayerProxies.Blocks.homeShield, requiresTwilightForest ? "Stronghold Shield" : "Shield");
 	}
