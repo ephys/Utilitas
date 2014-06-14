@@ -207,7 +207,7 @@ public class BlockHomeShield extends Block {
 
 		if (!isUnbreakable(metadata)) {
 			MovingObjectPosition mop = EntityHelper.getPlayerMOP(player, 6.0D);
-	
+
 			int facing = mop != null ? mop.sideHit : -1;
 
 			if (facing == metadata) {
