@@ -102,6 +102,8 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 
 	public void unlink() {
 		this.uniterface = null;
+		
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 
 	@Override
@@ -116,7 +118,7 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 		if (uniterface != null) {
 			uniterface = null;
 			player.addChatMessage("Interface unlinked");
-			
+
 			return true;
 		}
 
@@ -128,6 +130,14 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 			toLink = player;
 		} else if (player.getHeldItem().itemID == PlayerProxies.Items.linkDevice.itemID) {
 			toLink = ItemLinker.getLinkedObject(player.getHeldItem(), worldObj);
+			
+			if (toLink instanceof TileEntityInterface) {
+				player.addChatMessage("You're not a good person. You know that, right ?");
+				return false;
+			}
+			
+			if (toLink instanceof EntityPlayer && EntityHelper.isFakePlayer((EntityPlayer) toLink))
+				return false;
 
 			if (toLink == null) {
 				player.addChatMessage("Link wand not bound");

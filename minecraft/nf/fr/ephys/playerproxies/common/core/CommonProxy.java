@@ -26,6 +26,7 @@ import nf.fr.ephys.playerproxies.common.item.ItemBiomeStorage;
 import nf.fr.ephys.playerproxies.common.item.ItemDebug;
 import nf.fr.ephys.playerproxies.common.item.ItemLinkFocus;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
+import nf.fr.ephys.playerproxies.common.openperipheral.AdaptorBiomeScanner;
 import nf.fr.ephys.playerproxies.common.openperipheral.AdaptorGravitationalField;
 import nf.fr.ephys.playerproxies.common.openperipheral.AdaptorProximitySensor;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityGravitationalField;
@@ -112,6 +113,7 @@ public class CommonProxy {
 		if (Loader.isModLoaded("OpenPeripheralCore")) {
 			AdaptorGravitationalField.register();
 			AdaptorProximitySensor.register();
+			AdaptorBiomeScanner.register();
 		}
 	}
 }

@@ -1,7 +1,10 @@
 package nf.fr.ephys.playerproxies.common.core;
 
+import java.util.Random;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockPistonBase;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityWither;
@@ -38,6 +41,9 @@ import nf.fr.ephys.playerproxies.common.tileentity.TileEntityGravitationalField;
 import nf.fr.ephys.playerproxies.helpers.ParticleHelper;
 
 public class EventHandler {
+	private Random random = new Random();
+	private int portalParticle = ParticleHelper.getParticleIDFromName("portal");
+	
 	@ForgeSubscribe
 	public void onEntityDrop(LivingDropsEvent event) {
 		if (event.entity.worldObj.isRemote)
@@ -125,6 +131,19 @@ public class EventHandler {
 	
 	// ========================== /NICKNAME MANAGEMENT ==========================
 
+	@ForgeSubscribe
+	public void renderParticles(LivingUpdateEvent event) {
+		if (event.entityLiving instanceof EntityPlayer) {
+			EntityPlayer player = (EntityPlayer) event.entityLiving;
+			
+			if (player.username.equals("GC_Darma") && !player.worldObj.isDaytime())
+				PacketHandler.sendPacketSpawnParticle(portalParticle, player.posX + (random.nextDouble() - 0.5D) * (double) player.width, 
+						player.posY + random.nextDouble() * (double) player.height - 0.25D, 
+						player.posZ + (random.nextDouble() - 0.5D) * (double) player.width, (random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(), 
+						(random.nextDouble() - 0.5D) * 2.0D, player.worldObj);
+		}
+	}
+	
 	@ForgeSubscribe(priority = EventPriority.HIGH)
 	public void onLivingUpdate(LivingUpdateEvent event) {
 		if (!(event.entityLiving instanceof EntityPlayer))
