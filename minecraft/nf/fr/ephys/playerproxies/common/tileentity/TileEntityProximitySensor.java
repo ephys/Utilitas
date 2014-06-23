@@ -29,21 +29,22 @@ public class TileEntityProximitySensor extends TileEntity {
 	private Class<? extends Entity> entityFilter = Entity.class;
 	private String playerFilter = null;
 
-	public void setEntityFilter(String playerName, EntityPlayer player) {
-		if(playerFilter != null && playerFilter.equals(playerName)) {
-			player.addChatMessage("Entity filter already set to "+playerName);
+	public void setEntityFilter(Entity entity, EntityPlayer player) {
+		/*// TODO set entity (get class if not player, get username if is)
+		if(playerFilter != null && playerFilter.equals(entity)) {
+			player.addChatMessage("Entity filter already set to "+entity);
 			return;
 		}
 
-		player.addChatMessage("Sensor filtered to only match player "+playerName);
+		player.addChatMessage("Sensor filtered to only match player "+entity);
 
-		this.playerFilter = playerName;
+		this.playerFilter = entity;
 		this.entityFilter = null;
 		
-		this.updateTick = 25;
+		this.updateTick = 25;*/
 	}
 	
-	public void setEntityFilter(Class<? extends Entity> clazz, EntityPlayer player, String entityName) {
+	/*public void setEntityFilter(Class<? extends Entity> clazz, EntityPlayer player, String entityName) {
 		clazz = (clazz == null) ? Entity.class : clazz;
 
 		if(this.entityFilter != null && this.entityFilter.equals(clazz)) {
@@ -61,7 +62,7 @@ public class TileEntityProximitySensor extends TileEntity {
 		this.entityFilter = clazz;
 		
 		this.updateTick = 25;
-	}
+	}*/
 
 	public void updateRadius(int side, EntityPlayer player) {
 		switch(side) {

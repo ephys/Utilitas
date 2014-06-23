@@ -19,8 +19,9 @@ import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
 public class TileEntityBiomeScanner extends TileEntity implements IInventory {
-	private byte biome;
-	private byte storedBiome;
+	private int biome;
+	private int storedBiome = NO_STORED_VALUE;
+	public static final int NO_STORED_VALUE = 256; // max biome length = 256 (0 - 255)
 
 	private int tick = 0;
 	private int progress = -1;
@@ -28,13 +29,11 @@ public class TileEntityBiomeScanner extends TileEntity implements IInventory {
 	public ItemStack card;
 
 	public BiomeGenBase getBiome() {
-		if (storedBiome == -1) {
+		if (storedBiome == 128) {
 			return this.worldObj.getBiomeGenForCoords(xCoord, zCoord);
 		}
 		
 		return BiomeGenBase.biomeList[storedBiome];
-
-		// chunk.getBiomeGenForWorldCoords(k3 & 15, l4 & 15, this.mc.theWorld.getWorldChunkManager()) <-- use that
 	}
 
 	@Override
@@ -50,7 +49,7 @@ public class TileEntityBiomeScanner extends TileEntity implements IInventory {
 	}
 	
 	public void setBiome(BiomeGenBase biome) {
-		this.biome = (byte) biome.biomeID;
+		this.biome = biome.biomeID;
 	}
 
 	@Override
@@ -67,7 +66,7 @@ public class TileEntityBiomeScanner extends TileEntity implements IInventory {
 		this.card = NBTHelper.getItemStack(nbt, "card", null);
 
 		if (this.card != null)
-			this.storedBiome = (byte) NBTHelper.getInt(this.card, "biome", -1);
+			this.storedBiome = NBTHelper.getInt(this.card, "biome", NO_STORED_VALUE);
 		
 		super.readFromNBT(nbt);
 	}
@@ -187,14 +186,17 @@ public class TileEntityBiomeScanner extends TileEntity implements IInventory {
 
 	@Override
 	public void onInventoryChanged() {
-		byte biome = (byte) NBTHelper.getInt(this.card, "biome", -1);
-
-		if (this.card == null || biome != -1) {
-			this.progress = -1;
-			this.storedBiome = biome;
-		} else
-			this.startReckoning();
-
+		if (this.card != null) {
+			NBTTagCompound nbt = NBTHelper.getNBT(this.card);
+			
+			if (nbt.hasKey("biome")) {
+				this.storedBiome = nbt.getInteger("biome");
+				this.progress = -1;
+			} else {
+				this.startReckoning();
+			}
+		}
+		
 		super.onInventoryChanged();
 	}
 }

@@ -57,7 +57,6 @@ public class PlayerProxies extends DummyModContainer {
 	public static final String modid = "ephys.playerproxies";
 	public static final String name = "Player Proxies";
 
-	public static final int GUI_UNIVERSAL_INTERFACE = 0;
 	public static final int GUI_BIOME_SCANNER = 1;
 
 	public static final boolean DEV_MODE = false;
@@ -96,7 +95,7 @@ public class PlayerProxies extends DummyModContainer {
 	}
 
 	public static final class Items {
-		public static ItemLinker linkeDevice;
+		public static ItemLinker linkDevice;
 		public static ItemLinkFocus linkFocus;
 		public static ItemBiomeStorage biomeStorage;
 	}

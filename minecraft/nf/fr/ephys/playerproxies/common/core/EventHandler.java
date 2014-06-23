@@ -52,7 +52,7 @@ public class EventHandler {
 	}
 
 	// ========================== NICKNAME MANAGEMENT ==========================
-	@ForgeSubscribe
+	@ForgeSubscribe(priority = EventPriority.HIGHEST)
 	public void changePlayerName(PlayerEvent.NameFormat event) {
 		NBTTagCompound nbt = event.entityPlayer.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
 
@@ -68,7 +68,24 @@ public class EventHandler {
 		}
 	}
 
-	@ForgeSubscribe
+	// I DON'T KNOW WHICH ONE AND I DON'T HAVE TIME TO TEST SO HOTFIX
+	@ForgeSubscribe(priority = EventPriority.LOWEST)
+	public void changePlayerName2(PlayerEvent.NameFormat event) {
+		NBTTagCompound nbt = event.entityPlayer.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+
+		if (nbt.hasKey("nickname")) {
+			event.displayname = nbt.getString("nickname");
+		} else {
+			String name = NicknamesRegistry.get(event.entityPlayer.username);
+
+			if (name != null) {
+				nbt.setString("nickname", name);
+				event.displayname = name;
+			}
+		}
+	}
+	
+	@ForgeSubscribe(priority = EventPriority.LOWEST)
 	public void onJoin(EntityJoinWorldEvent event) {
 		if (event.entity instanceof EntityPlayer) {
 			if (!event.world.isRemote) { // server side

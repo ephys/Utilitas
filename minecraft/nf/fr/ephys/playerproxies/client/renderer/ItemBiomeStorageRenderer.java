@@ -51,7 +51,7 @@ public class ItemBiomeStorageRenderer implements IItemRenderer {
 
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-		return ItemBiomeStorage.hasBiome(item) && type.equals(type.INVENTORY); // TODO: why isn't there a pre/post render event for items ? >_>
+		return NBTHelper.getNBT(item).hasKey("biome") && type.equals(type.INVENTORY); // TODO: why isn't there a pre/post render event for items ? >_>
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class ItemBiomeStorageRenderer implements IItemRenderer {
 
 	@Override
 	public void renderItem(ItemRenderType type, ItemStack itemStack, Object... data) {
-		byte biomeID = ItemBiomeStorage.getBiome(itemStack);
+		int biomeID = NBTHelper.getNBT(itemStack).getInteger("biome");
 		Icon icon = itemStack.getIconIndex();
 		
 		BiomeGenBase biome = BiomeGenBase.biomeList[biomeID];

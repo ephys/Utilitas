@@ -34,7 +34,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PacketHandler implements IPacketHandler {
 	private static enum subChannels {
-		ENDER_TOGGLE,
 		SPAWN_PARTICLE,
 		CHANGE_BIOME,
 		SET_NICKNAME
@@ -58,9 +57,7 @@ public class PacketHandler implements IPacketHandler {
 		try {
 			int subChannel = inputStream.readByte();
 
-			if (subChannel == subChannels.ENDER_TOGGLE.ordinal())
-				toggleInterfaceEnderMode(inputStream, ((EntityPlayer) player).worldObj);
-			else if (subChannel == subChannels.SPAWN_PARTICLE.ordinal())
+			if (subChannel == subChannels.SPAWN_PARTICLE.ordinal())
 				spawnParticle(inputStream, ((EntityPlayer) player).worldObj);
 			else if (subChannel == subChannels.CHANGE_BIOME.ordinal())
 				changeBiome(inputStream, ((EntityPlayer) player).worldObj);
@@ -68,45 +65,6 @@ public class PacketHandler implements IPacketHandler {
 				updateNicknames(inputStream);
 			else
 				PlayerProxies.getLogger().severe("Packet manager received unknown subpacket id");
-		} catch (IOException e) {
-			e.printStackTrace();
-			return;
-		}
-	}
-
-	public static void sendPacketInterfaceToggle(int xCoord, int yCoord, int zCoord) {
-		ByteArrayOutputStream bos = new ByteArrayOutputStream(21);
-		DataOutputStream outputStream = new DataOutputStream(bos);
-
-		try {
-			outputStream.writeByte(subChannels.ENDER_TOGGLE.ordinal());
-			outputStream.writeInt(xCoord);
-			outputStream.writeInt(yCoord);
-			outputStream.writeInt(zCoord);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			return;
-		}
-
-		Packet250CustomPayload packet = new Packet250CustomPayload();
-
-		packet.channel = "PlayerProxies";
-		packet.data = bos.toByteArray();
-		packet.length = bos.size();
-
-		PacketDispatcher.sendPacketToServer(packet);
-	}
-
-	private void toggleInterfaceEnderMode(DataInputStream inputStream, World world) {
-		try {
-			int xCoord = inputStream.readInt();
-			int yCoord = inputStream.readInt();
-			int zCoord = inputStream.readInt();
-
-			TileEntity te = world.getBlockTileEntity(xCoord, yCoord, zCoord);
-
-			if (te instanceof TileEntityInterface)
-				((TileEntityInterface) te).toggleEnderMode();
 		} catch (IOException e) {
 			e.printStackTrace();
 			return;

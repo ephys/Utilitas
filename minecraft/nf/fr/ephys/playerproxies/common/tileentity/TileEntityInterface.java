@@ -8,6 +8,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
@@ -28,33 +29,38 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
+import nf.fr.ephys.playerproxies.common.PlayerProxies;
+import nf.fr.ephys.playerproxies.common.block.uniterface.UniversalInterface;
+import nf.fr.ephys.playerproxies.common.block.uniterface.UniversalInterfaceRegistry;
+import nf.fr.ephys.playerproxies.common.core.PacketHandler;
+import nf.fr.ephys.playerproxies.common.item.ItemLinker;
 import nf.fr.ephys.playerproxies.helpers.BlockHelper;
 
 public class TileEntityInterface extends TileEntity implements ISidedInventory, IFluidHandler {
-	private String userName = null;
-	private EntityPlayer userEntity = null;
-	public boolean enderMode = false;
+	private UniversalInterface uniterface = null;
 
-	private TileEntity blockEntity = null;
-	private ITurtleAccess turtleAccess = null;
+	public UniversalInterface getInterface() {
+		return uniterface;
+	}
 
-	private int[] entityLocation = null;
-
-	public static final int INVTYPE_NULL = -1;
-	public static final int INVTYPE_PLAYER = 0;
-	public static final int INVTYPE_TE = 1;
-	public static final int INVTYPE_TURTLE = 2;
-
-	private int[] getTileLocation(TileEntity te) {
-		return new int[] { te.xCoord, te.yCoord, te.zCoord };
+	public void onBlockUpdate(int side) {
+		this.uniterface.onBlockUpdate(side);
+	}
+	
+	private IInventory getInventory() {
+		return uniterface == null ? null : uniterface.getInventory();
+	}
+	
+	private IFluidHandler getFluidHandler() {
+		return uniterface == null ? null : uniterface.getFluidHandler();
 	}
 
 	@Override
 	public Packet getDescriptionPacket() {
 		NBTTagCompound nbtTag = new NBTTagCompound();
 		this.writeToNBT(nbtTag);
-		return new Packet132TileEntityData(this.xCoord, this.yCoord,
-				this.zCoord, 1, nbtTag);
+
+		return new Packet132TileEntityData(this.xCoord, this.yCoord, this.zCoord, 1, nbtTag);
 	}
 
 	@Override
@@ -63,213 +69,57 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound par1NBTTagCompound) {
-		super.writeToNBT(par1NBTTagCompound);
+	public void writeToNBT(NBTTagCompound nbt) {
+		super.writeToNBT(nbt);
 
-		par1NBTTagCompound.setBoolean("enderMode", this.enderMode);
-
-		if (this.userName != null)
-			par1NBTTagCompound.setString("userName", userName);
-		else if (this.blockEntity != null) {
-			par1NBTTagCompound.setIntArray("entityLocation",
-					getTileLocation(blockEntity));
-		}
+		if (this.uniterface != null)
+			this.uniterface.writeToNBT(nbt);
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
 
-		this.enderMode = nbt.getBoolean("enderMode");
-
-		if (nbt.hasKey("userName")) {
-			this.userName = nbt.getString("userName");
-		} else {
-			this.userName = null;
-		}
-
-		if (nbt.hasKey("entityLocation")) {
-			this.entityLocation = nbt.getIntArray("entityLocation");
-		} else {
-			this.blockEntity = null;
-		}
+		if (this.uniterface != null)
+			this.uniterface.readFromNBT(nbt);
+	}
+	
+	public void unlink() {
+		this.uniterface = null;
 	}
 
+	@Override
 	public void updateEntity() {
 		super.updateEntity();
-
-		int invType = this.getCurrentInventoryType();
-		if (invType != INVTYPE_PLAYER) {
-			if (entityLocation != null && entityLocation.length == 3) {
-				this.blockEntity = this.getWorldObj()
-						.getBlockTileEntity(entityLocation[0],
-								entityLocation[1], entityLocation[2]);
-
-				if (this.blockEntity instanceof ITurtleAccess)
-					this.turtleAccess = (ITurtleAccess) this.blockEntity;
-
-				entityLocation = null;
-			}
-		}
-
-		if (!worldObj.isRemote) {
-			switch (invType) {
-			case INVTYPE_PLAYER:
-				if (userEntity == null || userEntity.isDead) {
-					userEntity = MinecraftServer.getServer()
-							.getConfigurationManager()
-							.getPlayerForUsername(userName);
-				}
-				break;
-
-			case INVTYPE_TE:
-				if (this.blockEntity == null)
-					break;
-
-				if (this.blockEntity.isInvalid()) {
-					this.blockEntity = null;
-				}
-
-				break;
-
-			case INVTYPE_TURTLE:
-				if (this.turtleAccess == null)
-					this.blockEntity = null;
-
-				if (this.blockEntity == null || this.blockEntity.isInvalid()) {
-					if (this.turtleAccess.getWorld() == null)
-						this.turtleAccess = null;
-					else
-						this.blockEntity = this.findTurtleTE();
-
-					this.onInventoryChanged();
-				}
-			}
-		}
-	}
-
-	private TileEntity findTurtleTE() {
-		ChunkCoordinates pos = this.turtleAccess.getPosition();
-
-		return this.turtleAccess.getWorld().getBlockTileEntity(
-				(int) pos.posX, (int) pos.posY, (int) pos.posZ);
-	}
-
-	public static boolean isValidTE(TileEntity te) {
-		return te instanceof IInventory || te instanceof IFluidHandler;
-	}
-
-	public int getCurrentInventoryType() {
-		if (this.userName != null)
-			return INVTYPE_PLAYER;
-
-		if (this.turtleAccess != null)
-			return INVTYPE_TURTLE;
-
-		if (this.blockEntity != null)
-			return INVTYPE_TE;
-
-		return INVTYPE_NULL;
-	}
-
-	public void toggleLinked(TileEntity te, EntityPlayer player) {
-		if (te instanceof ITurtleAccess) {
-			if (this.turtleAccess == (ITurtleAccess) te) {
-				this.turtleAccess = null;
-				this.blockEntity = null;
-
-				player.addChatMessage("Turtle unlinked to this universal interface");
-			} else {
-				this.turtleAccess = (ITurtleAccess) te;
-				this.blockEntity = this.findTurtleTE();
-
-				this.userName = null;
-				this.userEntity = null;
-
-				this.enderMode = false;
-
-				player.addChatMessage("Turtle linked to this universal interface");
-			}
-		} else if (isValidTE(te))
-			if (this.blockEntity == te) {
-				this.blockEntity = null;
-				player.addChatMessage(BlockHelper.getDisplayName(te)
-						+ " unlinked to the universal interface");
-			} else {
-				this.blockEntity = te;
-				this.userName = null;
-				this.userEntity = null;
-				this.turtleAccess = null;
-
-				this.enderMode = false;
-
-				player.addChatMessage(BlockHelper.getDisplayName(te)
-						+ " linked to the universal interface");
-			}
-
-		this.onInventoryChanged();
-	}
-
-	public void toggleLinked(EntityPlayer player) {
-		if (this.userName != null && this.userName.equals(player.username)) {
-			this.userName = null;
-			this.userEntity = null;
-
-			player.addChatMessage("Your inventory is now unlinked to this universal interface");
-		} else {
-			this.userEntity = player;
-			this.userName = player.username;
-			this.turtleAccess = null;
-			this.blockEntity = null;
-
-			player.addChatMessage("Your inventory is now linked to this universal interface");
-		}
-
-		this.onInventoryChanged();
-	}
-
-	public String getLinkedInventoryName() {
-		int invType = this.getCurrentInventoryType();
-
-		if (invType == this.INVTYPE_PLAYER)
-			return this.userName;
-
-		if (invType == this.INVTYPE_TE || invType == this.INVTYPE_TURTLE) {
-			return BlockHelper.getDisplayName(this.blockEntity);
-		}
 		
-		return "None";
+		if (this.uniterface != null)
+			this.uniterface.onTick();
 	}
-
-	public IInventory getLinkedInventory() {
-		if (this.userEntity != null) {
-			if (this.enderMode)
-				return this.userEntity.getInventoryEnderChest();
-
-			return this.userEntity.inventory;
+	
+	public boolean link(EntityPlayer player) {
+		Object toLink;
+		if (player.getHeldItem() == null) {
+			toLink = player;
+		} else if (player.getHeldItem().itemID == PlayerProxies.Items.linkDevice.itemID) {
+			toLink = ItemLinker.getLinkedObject(player.getHeldItem(), worldObj);
+			
+			if (toLink == null) {
+				player.addChatMessage("Link wand not bound");
+				return false;
+			}
+		} else {
+			return false;
 		}
 
-		if (this.blockEntity instanceof IInventory)
-			return (IInventory) this.blockEntity;
+		UniversalInterface handler = UniversalInterfaceRegistry.getHandler(toLink, this);
 
-		return null;
-	}
+		if (handler != null) {
+			this.uniterface = handler;
+		} else {
+			player.addChatMessage("Could not link the universal interface to this link wand");
+		}
 
-	public TileEntity getLinkedTileEntity() {
-		return this.blockEntity;
-	}
-
-	@SideOnly(Side.CLIENT)
-	public String getLinkedPlayer() {
-		return this.userName;
-	}
-
-	public void toggleEnderMode() {
-		if (this.getCurrentInventoryType() != this.INVTYPE_PLAYER)
-			return;
-
-		this.enderMode = !this.enderMode;
-		this.onInventoryChanged();
+		return true;
 	}
 
 	// ================================================================================
@@ -277,14 +127,14 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 	// ================================================================================
 	@Override
 	public int getSizeInventory() {
-		IInventory linkedInventory = this.getLinkedInventory();
+		IInventory linkedInventory = this.getInventory();
 		return (linkedInventory != null) ? linkedInventory.getSizeInventory()
 				: 0;
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int i) {
-		IInventory linkedInventory = this.getLinkedInventory();
+		IInventory linkedInventory = this.getInventory();
 
 		if (linkedInventory == null)
 			return null;
@@ -296,7 +146,7 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 
 	@Override
 	public ItemStack decrStackSize(int i, int j) {
-		IInventory linkedInventory = this.getLinkedInventory();
+		IInventory linkedInventory = this.getInventory();
 
 		if (linkedInventory == null)
 			return null;
@@ -313,7 +163,7 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 
 	@Override
 	public void setInventorySlotContents(int i, ItemStack itemstack) {
-		IInventory linkedInventory = this.getLinkedInventory();
+		IInventory linkedInventory = this.getInventory();
 		if (linkedInventory != null)
 			linkedInventory.setInventorySlotContents(i, itemstack);
 	}
@@ -330,7 +180,7 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 
 	@Override
 	public int getInventoryStackLimit() {
-		IInventory linkedInventory = this.getLinkedInventory();
+		IInventory linkedInventory = this.getInventory();
 		return (linkedInventory != null) ? linkedInventory
 				.getInventoryStackLimit() : 0;
 	}
@@ -339,7 +189,7 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 	public void onInventoryChanged() {
 		super.onInventoryChanged();
 
-		IInventory linkedInventory = this.getLinkedInventory();
+		IInventory linkedInventory = this.getInventory();
 		if (linkedInventory != null)
 			linkedInventory.onInventoryChanged();
 	}
@@ -359,7 +209,7 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-		IInventory linkedInventory = this.getLinkedInventory();
+		IInventory linkedInventory = this.getInventory();
 
 		return (linkedInventory != null) ? linkedInventory.isItemValidForSlot(
 				i, itemstack) : false;
@@ -371,7 +221,7 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 
 	@Override
 	public int[] getAccessibleSlotsFromSide(int var1) {
-		IInventory linkedInventory = this.getLinkedInventory();
+		IInventory linkedInventory = this.getInventory();
 
 		return (linkedInventory instanceof ISidedInventory) ? ((ISidedInventory) linkedInventory)
 				.getAccessibleSlotsFromSide(var1)
@@ -381,7 +231,7 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 
 	@Override
 	public boolean canInsertItem(int i, ItemStack itemstack, int j) {
-		IInventory linkedInventory = this.getLinkedInventory();
+		IInventory linkedInventory = this.getInventory();
 
 		return (linkedInventory instanceof ISidedInventory) ? ((ISidedInventory) linkedInventory)
 				.canInsertItem(i, itemstack, j) : linkedInventory != null;
@@ -389,7 +239,7 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 
 	@Override
 	public boolean canExtractItem(int i, ItemStack itemstack, int j) {
-		IInventory linkedInventory = this.getLinkedInventory();
+		IInventory linkedInventory = this.getInventory();
 
 		return (linkedInventory instanceof ISidedInventory) ? ((ISidedInventory) linkedInventory)
 				.canExtractItem(i, itemstack, j) : linkedInventory != null;
@@ -411,51 +261,43 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
+		IFluidHandler fluidHandler = this.getFluidHandler();
 
-		return (linkedTE instanceof IFluidHandler) ? ((IFluidHandler) linkedTE)
-				.fill(from, resource, doFill) : 0;
+		return fluidHandler == null ? 0 : fluidHandler.fill(from, resource, doFill);
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource,
-			boolean doDrain) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
+	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
+		IFluidHandler fluidHandler = this.getFluidHandler();
 
-		return (linkedTE instanceof IFluidHandler) ? ((IFluidHandler) linkedTE)
-				.drain(from, resource, doDrain) : null;
+		return fluidHandler == null ? null : fluidHandler.drain(from, resource, doDrain);
 	}
 
 	@Override
 	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
+		IFluidHandler fluidHandler = this.getFluidHandler();
 
-		return (linkedTE instanceof IFluidHandler) ? ((IFluidHandler) linkedTE)
-				.drain(from, maxDrain, doDrain) : null;
-
+		return fluidHandler == null ? null : fluidHandler.drain(from, maxDrain, doDrain);
 	}
 
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
+		IFluidHandler fluidHandler = this.getFluidHandler();
 
-		return (linkedTE instanceof IFluidHandler) ? ((IFluidHandler) linkedTE)
-				.canFill(from, fluid) : false;
+		return fluidHandler == null ?  false : fluidHandler.canFill(from, fluid);
 	}
 
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
+		IFluidHandler fluidHandler = this.getFluidHandler();
 
-		return (linkedTE instanceof IFluidHandler) ? ((IFluidHandler) linkedTE)
-				.canDrain(from, fluid) : false;
+		return fluidHandler == null ? false : fluidHandler.canDrain(from, fluid);
 	}
 
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from) {
-		TileEntity linkedTE = this.getLinkedTileEntity();
+		IFluidHandler fluidHandler = this.getFluidHandler();
 
-		return (linkedTE instanceof IFluidHandler) ? ((IFluidHandler) linkedTE)
-				.getTankInfo(from) : null;
+		return fluidHandler == null ? null : fluidHandler.getTankInfo(from);
 	}
 }

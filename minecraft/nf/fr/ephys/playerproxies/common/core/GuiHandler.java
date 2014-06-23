@@ -4,7 +4,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import nf.fr.ephys.playerproxies.client.gui.GuiBiomeScanner;
-import nf.fr.ephys.playerproxies.client.gui.GuiUniversalInterface;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.container.ContainerBiomeScanner;
 import nf.fr.ephys.playerproxies.common.container.ContainerUniversalInterface;
@@ -17,9 +16,7 @@ public class GuiHandler implements IGuiHandler {
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		TileEntity te = world.getBlockTileEntity(x, y, z);
 
-		if (ID == PlayerProxies.GUI_UNIVERSAL_INTERFACE && te instanceof TileEntityInterface)
-			return new ContainerUniversalInterface(player, (TileEntityInterface) te);
-		else if (ID == PlayerProxies.GUI_BIOME_SCANNER && te instanceof TileEntityBiomeScanner)
+		if (ID == PlayerProxies.GUI_BIOME_SCANNER && te instanceof TileEntityBiomeScanner)
 			return new ContainerBiomeScanner(player, (TileEntityBiomeScanner) te);
 
 		return null;
@@ -29,9 +26,7 @@ public class GuiHandler implements IGuiHandler {
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		TileEntity te = world.getBlockTileEntity(x, y, z);
 
-		if(ID == PlayerProxies.GUI_UNIVERSAL_INTERFACE && te instanceof TileEntityInterface)
-			return new GuiUniversalInterface(new ContainerUniversalInterface(player, (TileEntityInterface) te));
-		else if (ID == PlayerProxies.GUI_BIOME_SCANNER && te instanceof TileEntityBiomeScanner)
+		if (ID == PlayerProxies.GUI_BIOME_SCANNER && te instanceof TileEntityBiomeScanner)
 			return new GuiBiomeScanner(new ContainerBiomeScanner(player, (TileEntityBiomeScanner) te));
 
 		return null;

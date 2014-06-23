@@ -15,6 +15,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeManager;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
+import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBiomeScanner;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
 public class ItemBiomeStorage extends Item {
@@ -37,21 +38,13 @@ public class ItemBiomeStorage extends Item {
 		setTextureName("ephys.pp:biomeStorage");
 	}
 
-	public static boolean hasBiome(ItemStack stack) {
-		return getBiome(stack) != -1;
-	}
-	
-	public static byte getBiome(ItemStack stack) {
-		return (byte) NBTHelper.getInt(stack, "biome", -1);
-	}
-	
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
-		byte biomeId = getBiome(stack);
+		NBTTagCompound nbt = NBTHelper.getNBT(stack);
 
-		if (biomeId != -1) {
-			BiomeGenBase biome = BiomeGenBase.biomeList[biomeId];
-			list.add("Signature: §5"+biome.biomeName);
+		if (nbt.hasKey("biome")) {
+			BiomeGenBase biome = BiomeGenBase.biomeList[nbt.getInteger("biome")];
+			list.add("Signature: §5" + biome.biomeName);
 		} else {
 			list.add("Place this in a biome scanner to duplicate it's signature.");
 		}

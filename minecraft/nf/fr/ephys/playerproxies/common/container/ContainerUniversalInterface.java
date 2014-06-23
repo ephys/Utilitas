@@ -29,13 +29,6 @@ public class ContainerUniversalInterface extends Container {
 		return true;
 	}
 
-	@SideOnly(Side.CLIENT)
-	public void toggleEnderMode() {
-		this.te.toggleEnderMode();
-
-		PacketHandler.sendPacketInterfaceToggle(te.xCoord, te.yCoord, te.zCoord);
-	}
-
 	public TileEntityInterface getTileEntity() {
 		return this.te;
 	}

@@ -1,8 +1,10 @@
 package nf.fr.ephys.playerproxies.common.core;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.block.BlockBiomeScanner;
@@ -15,6 +17,10 @@ import nf.fr.ephys.playerproxies.common.block.BlockParticleGenerator;
 import nf.fr.ephys.playerproxies.common.block.BlockProximitySensor;
 import nf.fr.ephys.playerproxies.common.block.BlockSpawnerLoader;
 import nf.fr.ephys.playerproxies.common.block.BlockToughwoodPlank;
+import nf.fr.ephys.playerproxies.common.block.uniterface.InterfacePlayer;
+import nf.fr.ephys.playerproxies.common.block.uniterface.UniversalInterfaceRegistry;
+import nf.fr.ephys.playerproxies.common.block.uniterface.InterfaceTileEntity;
+import nf.fr.ephys.playerproxies.common.block.uniterface.InterfaceTurtle;
 import nf.fr.ephys.playerproxies.common.enchantment.EnchantmentNoVoidFog;
 import nf.fr.ephys.playerproxies.common.item.ItemBiomeStorage;
 import nf.fr.ephys.playerproxies.common.item.ItemDebug;
@@ -34,19 +40,22 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
+import dan200.computercraft.api.turtle.ITurtleAccess;
 
 public class CommonProxy {
 	public void preInit() {
-		//LanguageRegistry.instance().addStringLocalization("itemGroup.playerProxies", "en_US", "Player Proxies");
+		UniversalInterfaceRegistry.addInterface(InterfaceTileEntity.class, TileEntity.class);
+		UniversalInterfaceRegistry.addInterface(InterfaceTurtle.class, ITurtleAccess.class);
+		UniversalInterfaceRegistry.addInterface(InterfacePlayer.class, EntityPlayer.class);
 	}
-	
+
 	public void init() {
 		registerBlocks();
 		registerItems();
 		
 		//EnchantmentNoVoidFog.register();
 	}
-	
+
 	public void postInit() {
 		registerHandlers();
 		registerCrafts();

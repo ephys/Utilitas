@@ -1,10 +1,17 @@
 package nf.fr.ephys.playerproxies.helpers;
 
+import java.util.UUID;
+
+import cpw.mods.fml.common.network.FMLNetworkHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.WorldSavedData;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.network.ForgeNetworkHandler;
 
 public class NBTHelper {
 	public static NBTTagCompound getNBT(ItemStack stack) {
@@ -34,6 +41,12 @@ public class NBTHelper {
 		
 		getNBT(stack).setInteger(name, value);
 	}
+	
+	public static void setByte(ItemStack stack, String name, byte value) {
+		if (stack == null) return;
+		
+		getNBT(stack).setByte(name, value);
+	}
 
 	public static void setString(ItemStack stack, String name, String str) {
 		if (stack == null) return;
@@ -57,6 +70,15 @@ public class NBTHelper {
 		if(clazz == null) return;
 
 		setString(nbt, name, clazz.getName());
+	}
+	
+	public static void setEntity(NBTTagCompound nbt, String name, Entity entity) {
+		NBTTagCompound entityUUID = new NBTTagCompound();
+
+		entityUUID.setLong("UUIDMost", entity.getUniqueID().getMostSignificantBits());
+		entityUUID.setLong("UUIDLeast", entity.getUniqueID().getLeastSignificantBits());
+
+		nbt.setCompoundTag(name, entityUUID);
 	}
 
 	// --------------------------------------------------------------------------
@@ -197,6 +219,21 @@ public class NBTHelper {
 		if (stack == null) return def;
 		
 		return getClass(getNBT(stack), name, def);
+	}
+	
+	public static Entity getEntity(NBTTagCompound nbt, String name, Entity def) {
+		if (!nbt.hasKey(name))
+			return def;
+		
+		NBTTagCompound entityNBT = new NBTTagCompound();
+		
+		UUID entityUUID = new UUID(entityNBT.getLong("UUIDMost"), entityNBT.getLong("UUIDLeast"));
+
+		Entity entity = EntityHelper.getEntityByUUID(entityUUID);
+		if (entity == null)
+			return def;
+
+		return entity;
 	}
 	
 	// --------------------------------------------------------------------------

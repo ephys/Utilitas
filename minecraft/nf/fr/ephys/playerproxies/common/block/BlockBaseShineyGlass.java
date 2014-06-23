@@ -27,6 +27,8 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.oredict.OreDictionary;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
 import nf.fr.ephys.playerproxies.common.item.MultitemBlock;
@@ -114,17 +116,26 @@ public class BlockBaseShineyGlass extends BlockContainer {
 		int metadata = world.getBlockMetadata(x, y, z);
 		
 		switch (metadata) {
-			case METADATA_INTERFACE:		
-				if (player.getHeldItem() == null) {
-					if (!world.isRemote)
-						((TileEntityInterface) world.getBlockTileEntity(x, y, z)).toggleLinked(player);
-		
+			case METADATA_INTERFACE:
+				if (!world.isRemote) {
+					((TileEntityInterface) world.getBlockTileEntity(x, y, z)).link(player);
+					
 					world.markBlockForUpdate(x, y, z);
-		
-					return true;
 				}
+				
+				return true;
 			default: return false;
 		}
+	}
+
+	@Override
+	public void onNeighborBlockChange(World world, int x, int y, int z, int side) {
+		TileEntity te = world.getBlockTileEntity(x, y, z);
+		
+		if (te instanceof TileEntityInterface)
+			((TileEntityInterface) te).onBlockUpdate(side);
+
+		super.onNeighborBlockChange(world, x, y, z, side);
 	}
 	
 	@Override
