@@ -1,5 +1,6 @@
 package nf.fr.ephys.playerproxies.common.tileentity;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -35,16 +36,21 @@ import nf.fr.ephys.playerproxies.common.block.uniterface.UniversalInterfaceRegis
 import nf.fr.ephys.playerproxies.common.core.PacketHandler;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
 import nf.fr.ephys.playerproxies.helpers.BlockHelper;
+import nf.fr.ephys.playerproxies.helpers.EntityHelper;
+import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
 public class TileEntityInterface extends TileEntity implements ISidedInventory, IFluidHandler {
 	private UniversalInterface uniterface = null;
+	
+	public int tick = 0;
 
 	public UniversalInterface getInterface() {
 		return uniterface;
 	}
 
 	public void onBlockUpdate(int side) {
-		this.uniterface.onBlockUpdate(side);
+		if (this.uniterface != null)
+			this.uniterface.onBlockUpdate(side);
 	}
 	
 	private IInventory getInventory() {
@@ -72,18 +78,28 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 	public void writeToNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
 
-		if (this.uniterface != null)
+		if (this.uniterface != null) {
+			NBTHelper.setClass(nbt, "handler", this.uniterface.getClass());
 			this.uniterface.writeToNBT(nbt);
+		}
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
-
-		if (this.uniterface != null)
-			this.uniterface.readFromNBT(nbt);
+		
+		Class<? extends UniversalInterface> clazz = (Class<? extends UniversalInterface>) NBTHelper.getClass(nbt, "handler");
+		
+		if (clazz != null && UniversalInterfaceRegistry.hasHandler(clazz)) {
+			try {
+				this.uniterface = clazz.getConstructor(TileEntityInterface.class).newInstance(this);
+				this.uniterface.readFromNBT(nbt);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
-	
+
 	public void unlink() {
 		this.uniterface = null;
 	}
@@ -97,12 +113,22 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 	}
 	
 	public boolean link(EntityPlayer player) {
+		if (uniterface != null) {
+			uniterface = null;
+			player.addChatMessage("Interface unlinked");
+			
+			return true;
+		}
+
 		Object toLink;
 		if (player.getHeldItem() == null) {
+			if (EntityHelper.isFakePlayer(player))
+				return false;
+			
 			toLink = player;
 		} else if (player.getHeldItem().itemID == PlayerProxies.Items.linkDevice.itemID) {
 			toLink = ItemLinker.getLinkedObject(player.getHeldItem(), worldObj);
-			
+
 			if (toLink == null) {
 				player.addChatMessage("Link wand not bound");
 				return false;
@@ -111,10 +137,12 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 			return false;
 		}
 
-		UniversalInterface handler = UniversalInterfaceRegistry.getHandler(toLink, this);
+		UniversalInterface handler = UniversalInterfaceRegistry.getHandler(toLink, this, player);
 
 		if (handler != null) {
 			this.uniterface = handler;
+			
+			player.addChatMessage("Universal interface linked to " + handler.getName());
 		} else {
 			player.addChatMessage("Could not link the universal interface to this link wand");
 		}

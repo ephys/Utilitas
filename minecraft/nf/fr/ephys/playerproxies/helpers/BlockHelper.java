@@ -16,6 +16,7 @@ public class BlockHelper {
 	private static Random random = new Random();
 	
 	public static String getDisplayName(TileEntity te) {
+		if (te == null) return "null";
 		return new ItemStack(te.getBlockType(), 1, te.getBlockMetadata()).getDisplayName();
 	}
 	

@@ -55,13 +55,31 @@ public class ItemLinker extends Item {
 
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
-		String name = NBTHelper.getString(stack, "playerName", null);
+		if (player.worldObj.isRemote) {
+			list.add("Can configure an interface.");
+			list.add("Can filter a proximity sensor.");
+			
+			NBTTagCompound nbt = NBTHelper.getNBT(stack);
+			
+			String name = null;
+			
+			if (nbt.hasKey("entity")) {
+				Entity entity = null;
+				entity = player.worldObj.getEntityByID(nbt.getInteger("entity"));
+			
+				if (entity != null) {
+					if (entity instanceof EntityPlayer)
+						name = ((EntityPlayer) entity).getDisplayName();
+					else
+						name = entity.getEntityName();
+				}
+			} else if (nbt.hasKey("tile")) {
+				int[] coords = nbt.getIntArray("tile");
+				name = "{" + coords[0] + ", " + coords[1] + ", " + coords[2] + "}";
+			}
 
-		if(name == null)
-			name = NBTHelper.getString(stack, "entityName", "none");
-
-		list.add("Can configure an interface.");
-		list.add("Can filter a proximity sensor: §5"+name);
+			list.add("§5Bound to: " + (name == null ? "none" : name));
+		}
 
 		super.addInformation(stack, player, list, par4);
 	}
@@ -100,7 +118,8 @@ public class ItemLinker extends Item {
 				Entity entity = player.worldObj.getEntityByID(nbt.getInteger("entity"));
 				
 				if (entity == null) {
-					player.addChatMessage("entity not found");
+					if (!world.isRemote)
+						player.addChatMessage("entity not found");
 				} else {
 					((TileEntityProximitySensor)te).setEntityFilter(entity, player);
 				}
@@ -110,7 +129,10 @@ public class ItemLinker extends Item {
 		} else {
 			int[] coords = BlockHelper.getCoords(te);
 			NBTHelper.setIntArray(stack, "tile", coords);
-			player.addChatMessage("Wand bound to {" + coords[0] + ", " + coords[1] + ", " + coords[2] + "}");
+			NBTHelper.getNBT(stack).removeTag("entity");
+			
+			if (!world.isRemote)
+				player.addChatMessage("Wand bound to {" + coords[0] + ", " + coords[1] + ", " + coords[2] + "}");
 
 			return true;
 		}
@@ -139,16 +161,15 @@ public class ItemLinker extends Item {
 
 	public static Object getLinkedObject(ItemStack item, World world) {
 		NBTTagCompound nbt = NBTHelper.getNBT(item);
-		
+
 		if (nbt.hasKey("entity"))
 			return world.getEntityByID(nbt.getInteger("entity"));
-		
-		
+
 		if (nbt.hasKey("tile")) {
 			int[] coords = nbt.getIntArray("tile");
-			world.getBlockTileEntity(coords[0], coords[1], coords[2]);
+			return world.getBlockTileEntity(coords[0], coords[1], coords[2]);
 		}
-		
+
 		return null;
 	}
 }

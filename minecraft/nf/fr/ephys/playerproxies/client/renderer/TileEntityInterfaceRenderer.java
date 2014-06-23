@@ -23,7 +23,6 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class TileEntityInterfaceRenderer extends TileEntitySpecialRenderer {
 	public static final RenderBlocks renderBlocksInstance = new RenderBlocks();
-	private static int tick = 0;
 
 	public static void renderBlockInterface(TileEntityInterface bi, double par1, double par3, double par5, float par7) {
 		final float scale = 0.4375F;
@@ -32,7 +31,7 @@ public class TileEntityInterfaceRenderer extends TileEntitySpecialRenderer {
 		GL11.glTranslatef(0.0F, 0.5F, 0.0F);
 		GL11.glScalef(scale, scale, scale);
 
-		bi.getInterface().renderInventory(tick, par1, par3, par5, par7);
+		bi.getInterface().renderInventory(bi.tick++, par1, par3, par5, par7);
 	}
 
 	public void renderTileEntityAt(TileEntity par1, double par2, double par4, double par6, float par8) {

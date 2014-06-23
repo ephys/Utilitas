@@ -27,10 +27,11 @@ public class InterfacePlayer extends UniversalInterface {
 	public InterfacePlayer(TileEntityInterface tileEntity) {
 		super(tileEntity);
 	}
-	
+
 	@Override
 	public void renderInventory(int tickCount, double par1, double par3, double par5, float par7) {
-		World world = Minecraft.getMinecraft().theWorld;
+		// TODO
+		/*World world = Minecraft.getMinecraft().theWorld;
 		EntityPlayer player = world.getPlayerEntityByName(userName);
 
 		if(player == null)
@@ -42,15 +43,26 @@ public class InterfacePlayer extends UniversalInterface {
 				GL11.glRotatef(tickCount++, 0.0F, 1.0F, 0.0F);
 
 			RenderManager.instance.getEntityRenderObject(player).doRender(player, 0.0D, 0.5D, 0.0D, 1.0F, par7);
-		}
+		}*/
 	} 
 
 	@Override
-	public boolean setLink(Object link) {
-		if (!(link instanceof String))
+	public boolean setLink(Object link, EntityPlayer linker) {
+		if (!(link instanceof EntityPlayer))
 			return false;
+
+		EntityPlayer player = ((EntityPlayer) link);
 		
-		this.userName = (String) link;
+		if (!player.username.equals(linker.username)) {
+			linker.addChatMessage("You cannot link to another another player's inventory");
+			return false;
+		}
+
+		this.userName = player.username;
+
+		searchPlayer();
+		onBlockUpdate(0);
+
 		return true;
 	}
 
@@ -62,6 +74,9 @@ public class InterfacePlayer extends UniversalInterface {
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		userName = NBTHelper.getString(nbt, "userName");
+		
+		searchPlayer();
+		onBlockUpdate(0);
 	}
 
 	@Override
@@ -82,7 +97,11 @@ public class InterfacePlayer extends UniversalInterface {
 		if (getTileEntity().worldObj.isRemote) return;
 
 		if (userEntity == null || userEntity.isDead)
-			userEntity = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(userName);
+			searchPlayer();
+	}
+	
+	private void searchPlayer() {
+		userEntity = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(userName);
 	}
 
 	@Override
@@ -93,5 +112,10 @@ public class InterfacePlayer extends UniversalInterface {
 	@Override
 	public IFluidHandler getFluidHandler() {
 		return null;
+	}
+
+	@Override
+	public String getName() {
+		return userEntity == null ? userName : userEntity.getDisplayName();
 	}
 }

@@ -1,5 +1,6 @@
 package nf.fr.ephys.playerproxies.common.block.uniterface;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.IFluidHandler;
@@ -25,10 +26,13 @@ public abstract class UniversalInterface {
 
 	/**
 	 * Link this handler with another object
-	 * @param link
+	 * @param link		The object to link
+	 * @param linker	The player who tried linking
 	 * @return success
 	 */
-	public abstract boolean setLink(Object link);
+	public abstract boolean setLink(Object link, EntityPlayer linker);
+	
+	public abstract String getName();
 
 	public abstract void writeToNBT(NBTTagCompound nbt);
 

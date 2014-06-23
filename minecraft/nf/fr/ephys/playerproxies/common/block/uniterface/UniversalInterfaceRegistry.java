@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
+import net.minecraft.entity.player.EntityPlayer;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
 
@@ -21,10 +22,12 @@ public class UniversalInterfaceRegistry {
 			}
 		}
 	);
-	
-	public static UniversalInterface getHandler(Object obj, TileEntityInterface te) {
-		System.out.println("searching handler for "+obj);
-		
+
+	public static boolean hasHandler(Class<? extends UniversalInterface> clazz) {
+		return map.containsValue(clazz);
+	}
+
+	public static UniversalInterface getHandler(Object obj, TileEntityInterface te, EntityPlayer linker) {
 		Set<Entry<Class<?>, Class<? extends UniversalInterface>>> set = map.entrySet();
 
 		for (Entry<Class<?>, Class<? extends UniversalInterface>> entry : set) {
@@ -36,7 +39,7 @@ public class UniversalInterfaceRegistry {
 					construct = clazz.getConstructor(TileEntityInterface.class);
 					UniversalInterface handler = (UniversalInterface) construct.newInstance(te);
 					
-					if (handler.setLink(obj))
+					if (handler.setLink(obj, linker))
 						return handler;
 				} catch (Exception e) {
 					e.printStackTrace();
