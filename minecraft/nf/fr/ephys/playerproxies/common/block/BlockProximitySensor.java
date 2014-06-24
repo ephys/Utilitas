@@ -14,6 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityProximitySensor;
 
@@ -47,18 +48,23 @@ public class BlockProximitySensor extends BlockContainer {
 		
 		setCreativeTab(PlayerProxies.creativeTab);
 	}
+
+	@Override
+	public boolean isBlockSolid(IBlockAccess par1iBlockAccess, int par2, int par3, int par4, int par5) {
+		return true;
+	}
 	
 	@Override
-	public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side) {
+	public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side) {
 		return true;
 	}
 	
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float par7, float par8, float par9) {
+		if(player.getHeldItem() != null)
+			return false;
+		
 		if(!world.isRemote) {
-			if(player.getHeldItem() != null)
-				return false;
-
 			TileEntityProximitySensor te = (TileEntityProximitySensor)world.getBlockTileEntity(x, y, z);
 			
 			te.updateRadius(side, player);
