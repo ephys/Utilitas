@@ -66,9 +66,14 @@ public class ItemBiomeStorageRenderer implements IItemRenderer {
 	@Override
 	public void renderItem(ItemRenderType type, ItemStack itemStack, Object... data) {
 		int biomeID = NBTHelper.getNBT(itemStack).getInteger("biome");
-		Icon icon = itemStack.getIconIndex();
-		
+
+		if (biomeID > 255 || biomeID < 0) return;
+
 		BiomeGenBase biome = BiomeGenBase.biomeList[biomeID];
+
+		if (biome == null) return;
+
+		Icon icon = itemStack.getIconIndex();
 		
 		// NEW COLOR HANDLER: disabled because of weird colors - TODO
 		// float scale = (biome.temperature - LOW_TEMP) / HIGH_TEMP;

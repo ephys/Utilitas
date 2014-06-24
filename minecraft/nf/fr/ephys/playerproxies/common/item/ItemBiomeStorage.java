@@ -43,8 +43,16 @@ public class ItemBiomeStorage extends Item {
 		NBTTagCompound nbt = NBTHelper.getNBT(stack);
 
 		if (nbt.hasKey("biome")) {
-			BiomeGenBase biome = BiomeGenBase.biomeList[nbt.getInteger("biome")];
-			list.add("Signature: §5" + biome.biomeName);
+			int biomeID = nbt.getInteger("biome");
+			if (biomeID < 0 || biomeID > 255)
+				list.add("CORRUPTED ITEM, PLEASE DESTROY");
+			else {
+				BiomeGenBase biome = BiomeGenBase.biomeList[biomeID];
+				if (biome == null)
+					list.add("CORRUPTED ITEM, PLEASE DESTROY");
+				else
+					list.add("Signature: §5" + biome.biomeName);
+			}
 		} else {
 			list.add("Place this in a biome scanner to duplicate it's signature.");
 		}
