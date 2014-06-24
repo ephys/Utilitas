@@ -64,7 +64,7 @@ public class BlockProximitySensor extends BlockContainer {
 		if(player.getHeldItem() != null)
 			return false;
 		
-		if(!world.isRemote) {
+		if (!world.isRemote) {
 			TileEntityProximitySensor te = (TileEntityProximitySensor)world.getBlockTileEntity(x, y, z);
 			
 			te.updateRadius(side, player);

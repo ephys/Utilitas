@@ -30,87 +30,45 @@ public class TileEntityProximitySensor extends TileEntity {
 	private String playerFilter = null;
 
 	public void setEntityFilter(Entity entity, EntityPlayer player) {
-		/*// TODO set entity (get class if not player, get username if is)
-		if(playerFilter != null && playerFilter.equals(entity)) {
-			player.addChatMessage("Entity filter already set to "+entity);
+		if (entity == null) {
+			this.entityFilter = Entity.class;
+			player.addChatMessage("Filter cleared");
+			
 			return;
-		}
-
-		player.addChatMessage("Sensor filtered to only match player "+entity);
-
-		this.playerFilter = entity;
-		this.entityFilter = null;
-		
-		this.updateTick = 25;*/
-	}
-	
-	/*public void setEntityFilter(Class<? extends Entity> clazz, EntityPlayer player, String entityName) {
-		clazz = (clazz == null) ? Entity.class : clazz;
-
-		if(this.entityFilter != null && this.entityFilter.equals(clazz)) {
-			player.addChatMessage("Entity filter already set to "+entityName);
+		} else if (entity instanceof EntityPlayer) {
+			EntityPlayer playerFilter = (EntityPlayer) entity;
+			
+			this.playerFilter = playerFilter.username;
+			this.entityFilter = null;
+			
+			player.addChatMessage("Filter set to user " + playerFilter.getDisplayName());
+			
 			return;
-		}
-
-		if(clazz == Entity.class) {
-			player.addChatMessage("Removed entity filter");
 		} else {
-			player.addChatMessage("Sensor filtered to only match: "+entityName);
+			this.playerFilter = null;
+			this.entityFilter = entity.getClass();
+			player.addChatMessage("Filter set to " + entity.getEntityName());
 		}
-		
-		this.playerFilter = null;
-		this.entityFilter = clazz;
-		
-		this.updateTick = 25;
-	}*/
+	}
 
 	public void updateRadius(int side, EntityPlayer player) {
+		int increase = player.isSneaking() ? -1 : 1;
 		switch(side) {
 			case 1:
 			case 0:
-				if(player.isSneaking()) {
-					if(RADIUS_Y == 1)
-						break;
-					
-					RADIUS_Y--;
-				} else {
-					if(RADIUS_Y == MAX_RADIUS)
-						break;
-					
-					RADIUS_Y++;
-				}
+				RADIUS_Y += increase;
 				
 				break;
 
 			case 4:
 			case 5:
-				if(player.isSneaking()) {
-					if(RADIUS_X == 1)
-						break;
-					
-					RADIUS_X--;
-				} else {
-					if(RADIUS_X == MAX_RADIUS)
-						break;
-					
-					RADIUS_X++;
-				}
+				RADIUS_X += increase;
 				
 				break;
 				
 			case 3:
 			case 2:
-				if(player.isSneaking()) {
-					if(RADIUS_Z == 1)
-						break;
-					
-					RADIUS_Z--;
-				} else {
-					if(RADIUS_Z == MAX_RADIUS)
-						break;
-					
-					RADIUS_Z++;
-				}
+				RADIUS_Z += increase;
 				
 				break;
 		}

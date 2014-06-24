@@ -114,14 +114,13 @@ public class ItemLinker extends Item {
 		if(te instanceof TileEntityProximitySensor) {
 			NBTTagCompound nbt = NBTHelper.getNBT(stack);
 			
-			if (nbt.hasKey("entity")) {
-				Entity entity = player.worldObj.getEntityByID(nbt.getInteger("entity"));
-				
-				if (entity == null) {
-					if (!world.isRemote)
-						player.addChatMessage("entity not found");
-				} else {
+			if (!world.isRemote) {
+				if (nbt.hasKey("entity")) {
+					Entity entity = player.worldObj.getEntityByID(nbt.getInteger("entity"));
+					
 					((TileEntityProximitySensor)te).setEntityFilter(entity, player);
+				} else {
+					((TileEntityProximitySensor)te).setEntityFilter(null, player);
 				}
 			}
 
