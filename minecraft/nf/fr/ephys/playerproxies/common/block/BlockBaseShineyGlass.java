@@ -119,8 +119,6 @@ public class BlockBaseShineyGlass extends BlockContainer {
 			case METADATA_INTERFACE:
 				if (!world.isRemote) {
 					((TileEntityInterface) world.getBlockTileEntity(x, y, z)).link(player);
-					
-					world.markBlockForUpdate(x, y, z);
 				}
 				
 				return true;

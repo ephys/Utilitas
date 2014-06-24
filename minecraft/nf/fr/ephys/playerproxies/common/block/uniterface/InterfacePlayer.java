@@ -37,17 +37,24 @@ public class InterfacePlayer extends UniversalInterface {
 	@Override
 	public void renderInventory(int tickCount, double par1, double par3, double par5, float par7) {
 		if (userEntity == null) return;
-		
+
 		if (isEnderChest) {
 			GL11.glRotatef(tickCount, 0.0F, 1.0F, 0.0F);
 			GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
-			
 			TileEntityInterfaceRenderer.renderBlocksInstance.renderBlockAsItem(Block.enderChest, 0, 1.0F);
 		} else {
-			// todo one day maybe https://github.com/iChun/Sync/blob/master/sync/client/model/ModelShellStorage.java
-			RenderManager.instance.renderEntity(new EntitySkeleton(Minecraft.getMinecraft().theWorld), 1.0F);
+			World world = Minecraft.getMinecraft().theWorld;
+			EntityPlayer player = world.getPlayerEntityByName(userName);
+			
+			if(player != Minecraft.getMinecraft().thePlayer) {
+				System.out.println(Minecraft.getMinecraft().thePlayer.height);
+				GL11.glTranslatef(0.0F, -1.5F, 0.0F);
+			} else
+				GL11.glRotatef(tickCount, 0.0F, 1.0F, 0.0F);
+
+			RenderManager.instance.getEntityRenderObject(player).doRender(player, 0.0D, 0.5D, 0.0D, 1.0F, par7);
 		}
-	} 
+	}
 
 	@Override
 	public boolean setLink(Object link, EntityPlayer linker) {
@@ -72,14 +79,15 @@ public class InterfacePlayer extends UniversalInterface {
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
 		nbt.setString("userName", userName);
+		nbt.setBoolean("enderChest", isEnderChest);
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		userName = NBTHelper.getString(nbt, "userName");
+		isEnderChest = NBTHelper.getBoolean(nbt, "enderChest", false);
 		
 		searchPlayer();
-		onBlockUpdate(0);
 	}
 
 	@Override
@@ -87,7 +95,7 @@ public class InterfacePlayer extends UniversalInterface {
 		TileEntityInterface tileEntity = this.getTileEntity();
 
 		int topBlock = tileEntity.worldObj.getBlockId(tileEntity.xCoord, tileEntity.yCoord + 1, tileEntity.zCoord);
-		boolean b = topBlock == Block.enderChest.blockID || OreDictionary.getOreName(topBlock).equals(oreDict);
+		boolean b = (topBlock == Block.enderChest.blockID || OreDictionary.getOreName(topBlock).equals(oreDict));
 
 		if (b ^ isEnderChest) {
 			isEnderChest = b;
@@ -123,4 +131,7 @@ public class InterfacePlayer extends UniversalInterface {
 	public String getName() {
 		return userEntity == null ? userName : userEntity.getDisplayName();
 	}
+
+	@Override
+	public void validate() {}
 }

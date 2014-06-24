@@ -13,9 +13,9 @@ import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
 import nf.fr.ephys.playerproxies.helpers.BlockHelper;
 
 public class InterfaceTileEntity extends UniversalInterface {
-	protected TileEntity blockEntity = null;
+	private TileEntity blockEntity = null;
 
-	protected int[] entityLocation = null;
+	protected int[] tileLocation = null;
 	
 	public InterfaceTileEntity(TileEntityInterface tileEntity) {
 		super(tileEntity);
@@ -47,7 +47,7 @@ public class InterfaceTileEntity extends UniversalInterface {
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
-		this.entityLocation = nbt.getIntArray("entityLocation");
+		this.tileLocation = nbt.getIntArray("entityLocation");
 	}
 
 	@Override
@@ -68,12 +68,12 @@ public class InterfaceTileEntity extends UniversalInterface {
 		if (getTileEntity().worldObj.isRemote) return;
 
 		if (blockEntity == null) {
-			if (entityLocation == null || entityLocation.length != 3) {
+			if (tileLocation == null || tileLocation.length != 3) {
 				this.getTileEntity().unlink();
 				return;
 			}
 
-			this.blockEntity = this.getTileEntity().getWorldObj().getBlockTileEntity(entityLocation[0], entityLocation[1], entityLocation[2]);
+			this.blockEntity = this.getTileEntity().getWorldObj().getBlockTileEntity(tileLocation[0], tileLocation[1], tileLocation[2]);
 		}
 
 		if (this.blockEntity.isInvalid()) {
@@ -86,4 +86,7 @@ public class InterfaceTileEntity extends UniversalInterface {
 	public String getName() {
 		return BlockHelper.getDisplayName(blockEntity);
 	}
+
+	@Override
+	public void validate() {}
 }

@@ -97,7 +97,16 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		} else {
+			this.uniterface = null;
 		}
+	}
+	
+	@Override
+	public void validate() {
+		super.validate();
+		
+		if (this.uniterface != null) this.uniterface.validate();
 	}
 
 	public void unlink() {
@@ -116,7 +125,7 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 	
 	public boolean link(EntityPlayer player) {
 		if (uniterface != null) {
-			uniterface = null;
+			unlink();
 			player.addChatMessage("Interface unlinked");
 
 			return true;
@@ -126,10 +135,15 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 		if (player.getHeldItem() == null) {
 			if (EntityHelper.isFakePlayer(player))
 				return false;
-			
+
 			toLink = player;
 		} else if (player.getHeldItem().itemID == PlayerProxies.Items.linkDevice.itemID) {
 			toLink = ItemLinker.getLinkedObject(player.getHeldItem(), worldObj);
+			
+			if (toLink == null) {
+				player.addChatMessage("Link wand not bound");
+				return false;
+			}
 			
 			if (toLink instanceof TileEntityInterface) {
 				player.addChatMessage("You're not a good person. You know that, right ?");
@@ -138,11 +152,6 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 			
 			if (toLink instanceof EntityPlayer && EntityHelper.isFakePlayer((EntityPlayer) toLink))
 				return false;
-
-			if (toLink == null) {
-				player.addChatMessage("Link wand not bound");
-				return false;
-			}
 		} else {
 			return false;
 		}
@@ -153,6 +162,8 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 			this.uniterface = handler;
 			
 			player.addChatMessage("Universal interface linked to " + handler.getName());
+			
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		} else {
 			player.addChatMessage("Could not link the universal interface to this link wand");
 		}

@@ -15,9 +15,12 @@ public class UniversalInterfaceRegistry {
 		new Comparator<Class<?>>() {
 			@Override
 			public int compare(Class<?> o1, Class<?> o2) {
+				if (!o1.isInterface() && o2.isInterface()) // place interfaces first
+					return 1;
+
 				if (o1.isAssignableFrom(o2)) // o1 is superclass
 					return 1;
-				
+
 				return -1;
 			}
 		}
@@ -39,8 +42,9 @@ public class UniversalInterfaceRegistry {
 					construct = clazz.getConstructor(TileEntityInterface.class);
 					UniversalInterface handler = (UniversalInterface) construct.newInstance(te);
 					
-					if (handler.setLink(obj, linker))
+					if (handler.setLink(obj, linker)) {
 						return handler;
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

@@ -42,27 +42,33 @@ import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import dan200.computercraft.api.turtle.ITurtleAccess;
+import dan200.computercraft.shared.turtle.blocks.ITurtleTile;
 
 public class CommonProxy {
 	public void preInit() {
-		UniversalInterfaceRegistry.addInterface(InterfaceTileEntity.class, TileEntity.class);
-		UniversalInterfaceRegistry.addInterface(InterfaceTurtle.class, ITurtleAccess.class);
-		UniversalInterfaceRegistry.addInterface(InterfacePlayer.class, EntityPlayer.class);
+
 	}
 
 	public void init() {
 		registerBlocks();
 		registerItems();
-		
+
 		//EnchantmentNoVoidFog.register();
+		NetworkRegistry.instance().registerGuiHandler(this, new GuiHandler());
 	}
 
 	public void postInit() {
 		registerHandlers();
 		registerCrafts();
-		
+
 		if (BlockHomeShield.requiresTwilightForest)
 			BlockHomeShield.register();
+
+		if (Loader.isModLoaded("ComputerCraft"))
+			UniversalInterfaceRegistry.addInterface(InterfaceTurtle.class, ITurtleTile.class);
+
+		UniversalInterfaceRegistry.addInterface(InterfaceTileEntity.class, TileEntity.class);
+		UniversalInterfaceRegistry.addInterface(InterfacePlayer.class, EntityPlayer.class);
 	}
 
 	private void registerBlocks() {
@@ -107,7 +113,6 @@ public class CommonProxy {
 	}
 
 	private void registerHandlers() {
-		NetworkRegistry.instance().registerGuiHandler(this, new GuiHandler());
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 		
 		if (Loader.isModLoaded("OpenPeripheralCore")) {

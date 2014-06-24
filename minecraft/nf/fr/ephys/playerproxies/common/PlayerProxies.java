@@ -41,7 +41,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 
 @Mod(modid = PlayerProxies.modid, name = PlayerProxies.name,
-	 version = PlayerProxies.version, dependencies="after:IC2,TwilightForest,OpenPeripheralCore" 
+	 version = PlayerProxies.version, dependencies="after:IC2,TwilightForest,OpenPeripheralCore,ComputerCraft" 
 )
 
 @NetworkMod(clientSideRequired = true,

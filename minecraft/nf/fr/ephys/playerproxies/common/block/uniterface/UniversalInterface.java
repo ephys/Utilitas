@@ -33,6 +33,8 @@ public abstract class UniversalInterface {
 	public abstract boolean setLink(Object link, EntityPlayer linker);
 	
 	public abstract String getName();
+	
+	public abstract void validate();
 
 	public abstract void writeToNBT(NBTTagCompound nbt);
 
