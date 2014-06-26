@@ -53,7 +53,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 )
 
 public class PlayerProxies extends DummyModContainer {
-	public static final String version = "1.6.4-0.3.1";
+	public static final String version = "1.6.4-0.3.2";
 	public static final String modid = "ephys.playerproxies";
 	public static final String name = "Player Proxies";
 
@@ -61,6 +61,8 @@ public class PlayerProxies extends DummyModContainer {
 
 	public static final boolean DEV_MODE = false;
 	private static boolean REQUIRES_POWER = false;
+	
+	public static boolean opEnderPearls = true;
 	
 	public static boolean requiresPower() {
 		return REQUIRES_POWER;
@@ -150,11 +152,16 @@ public class PlayerProxies extends DummyModContainer {
 		property = config.get("BlockProperties", "HomeshieldRequiresSilkTouch", BlockHomeShield.requiresSilkTouch);
 		property.comment = "True if the shield only drops if silk touched";
 		BlockHomeShield.requiresSilkTouch = property.getBoolean(BlockHomeShield.requiresSilkTouch);
-
-		property = config.get("Enchantments", "NoVoidFodID", EnchantmentNoVoidFog.ENCHANTMENT_ID);
-		EnchantmentNoVoidFog.ENCHANTMENT_ID = property.getInt(EnchantmentNoVoidFog.ENCHANTMENT_ID);
 		
-		config.save();
+		property = config.get("VanillaTweaks", "EnderPearlsAreOP", opEnderPearls);
+		property.comment = "EnderPearls don't damage users";
+		opEnderPearls = property.getBoolean(opEnderPearls);
+
+		// property = config.get("Enchantments", "NoVoidFodID", EnchantmentNoVoidFog.ENCHANTMENT_ID);
+		// EnchantmentNoVoidFog.ENCHANTMENT_ID = property.getInt(EnchantmentNoVoidFog.ENCHANTMENT_ID);
+		
+		if (config.hasChanged())
+			config.save();
 		
 		proxy.preInit();
 	}
