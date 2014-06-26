@@ -49,6 +49,8 @@ public class InterfacePlayer extends UniversalInterface {
 			World world = net.minecraft.client.Minecraft.getMinecraft().theWorld;
 			EntityPlayer player = world.getPlayerEntityByName(userName);
 			
+			if (player == null) return;
+
 			if(player != net.minecraft.client.Minecraft.getMinecraft().thePlayer) {
 				//System.out.println(net.minecraft.client.Minecraft.getMinecraft().thePlayer.height);
 				GL11.glTranslatef(0.0F, -1.5F, 0.0F);
