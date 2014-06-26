@@ -36,17 +36,19 @@ public class UniversalInterfaceRegistry {
 		for (Entry<Class<?>, Class<? extends UniversalInterface>> entry : set) {
 			if (entry.getKey().isInstance(obj)) {
 				Class<? extends UniversalInterface> clazz = entry.getValue();
-				
+
 				Constructor construct;
 				try {
 					construct = clazz.getConstructor(TileEntityInterface.class);
 					UniversalInterface handler = (UniversalInterface) construct.newInstance(te);
-					
+
 					if (handler.setLink(obj, linker)) {
 						return handler;
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
+					
+					return null;
 				}
 			}
 		}
@@ -55,10 +57,12 @@ public class UniversalInterfaceRegistry {
 	}
 
 	public static void addInterface(Class<? extends UniversalInterface> clazzInterface, Class<?> clazzTarget) {
-		if (map.containsKey(clazzTarget))
-			throw new IllegalArgumentException(clazzTarget + " already has a class handler");
-		
+		if (map.containsKey(clazzTarget)) {
+			PlayerProxies.getLogger().severe(clazzTarget + " already has a class handler. Ignoring "+clazzInterface);
+			return;
+		}
+
 		map.put(clazzTarget, clazzInterface);
-		PlayerProxies.getLogger().info("[Interface Registry] Added handler for "+clazzTarget.getName());
+		PlayerProxies.getLogger().info("[Interface Registry] Added handler ("+clazzInterface+") for "+clazzTarget.getName());
 	}
 }

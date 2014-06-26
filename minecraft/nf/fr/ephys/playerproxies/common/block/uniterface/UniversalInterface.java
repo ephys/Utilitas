@@ -1,5 +1,7 @@
 package nf.fr.ephys.playerproxies.common.block.uniterface;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
@@ -22,6 +24,7 @@ public abstract class UniversalInterface {
 	 * 
 	 * @param tickCount the amount of times this method has been called
 	 */
+	@SideOnly(Side.CLIENT)
 	public abstract void renderInventory(int tickCount, double par1, double par3, double par5, float par7);
 
 	/**
@@ -41,7 +44,7 @@ public abstract class UniversalInterface {
 	public abstract void readFromNBT(NBTTagCompound nbt);
 
 	public abstract void onBlockUpdate(int side);
-	
+
 	public abstract void onTick();
 
 	public abstract IInventory getInventory();

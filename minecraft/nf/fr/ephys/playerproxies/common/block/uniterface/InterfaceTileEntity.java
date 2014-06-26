@@ -2,13 +2,14 @@ package nf.fr.ephys.playerproxies.common.block.uniterface;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.IFluidHandler;
-import nf.fr.ephys.playerproxies.client.renderer.TileEntityInterfaceRenderer;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
 import nf.fr.ephys.playerproxies.helpers.BlockHelper;
 
@@ -22,11 +23,12 @@ public class InterfaceTileEntity extends UniversalInterface {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void renderInventory(int tickCount, double par1, double par3, double par5, float par7) {
 		GL11.glRotatef(tickCount, 0.0F, 1.0F, 0.0F);
 		GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
 
-		TileEntityInterfaceRenderer.renderBlocksInstance.renderBlockAsItem(Block.chest, 0, 1.0F);
+		nf.fr.ephys.playerproxies.client.renderer.TileEntityInterfaceRenderer.renderBlocksInstance.renderBlockAsItem(Block.chest, 0, 1.0F);
 	}
 
 	@Override

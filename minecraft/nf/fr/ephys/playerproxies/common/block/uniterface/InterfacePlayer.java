@@ -2,9 +2,11 @@ package nf.fr.ephys.playerproxies.common.block.uniterface;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -35,6 +37,7 @@ public class InterfacePlayer extends UniversalInterface {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void renderInventory(int tickCount, double par1, double par3, double par5, float par7) {
 		if (userEntity == null) return;
 
@@ -43,16 +46,16 @@ public class InterfacePlayer extends UniversalInterface {
 			GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
 			TileEntityInterfaceRenderer.renderBlocksInstance.renderBlockAsItem(Block.enderChest, 0, 1.0F);
 		} else {
-			World world = Minecraft.getMinecraft().theWorld;
+			World world = net.minecraft.client.Minecraft.getMinecraft().theWorld;
 			EntityPlayer player = world.getPlayerEntityByName(userName);
 			
-			if(player != Minecraft.getMinecraft().thePlayer) {
-				System.out.println(Minecraft.getMinecraft().thePlayer.height);
+			if(player != net.minecraft.client.Minecraft.getMinecraft().thePlayer) {
+				//System.out.println(net.minecraft.client.Minecraft.getMinecraft().thePlayer.height);
 				GL11.glTranslatef(0.0F, -1.5F, 0.0F);
 			} else
 				GL11.glRotatef(tickCount, 0.0F, 1.0F, 0.0F);
 
-			RenderManager.instance.getEntityRenderObject(player).doRender(player, 0.0D, 0.5D, 0.0D, 1.0F, par7);
+			net.minecraft.client.renderer.entity.RenderManager.instance.getEntityRenderObject(player).doRender(player, 0.0D, 0.5D, 0.0D, 1.0F, par7);
 		}
 	}
 
@@ -114,7 +117,10 @@ public class InterfacePlayer extends UniversalInterface {
 	}
 	
 	private void searchPlayer() {
-		userEntity = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(userName);
+		if (this.getTileEntity().worldObj == null || !this.getTileEntity().worldObj.isRemote)
+			userEntity = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(userName);
+		else
+			userEntity = Minecraft.getMinecraft().theWorld.getPlayerEntityByName(userName);
 	}
 
 	@Override

@@ -1,17 +1,6 @@
 package nf.fr.ephys.playerproxies.common.tileentity;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-
-import cpw.mods.fml.common.registry.LanguageRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import dan200.computercraft.api.turtle.ITurtleAccess;
-import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -19,12 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.StatCollector;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -33,9 +17,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.block.uniterface.UniversalInterface;
 import nf.fr.ephys.playerproxies.common.block.uniterface.UniversalInterfaceRegistry;
-import nf.fr.ephys.playerproxies.common.core.PacketHandler;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
-import nf.fr.ephys.playerproxies.helpers.BlockHelper;
 import nf.fr.ephys.playerproxies.helpers.EntityHelper;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
