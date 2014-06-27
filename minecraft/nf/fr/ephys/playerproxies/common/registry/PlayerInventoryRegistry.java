@@ -20,17 +20,22 @@ public class PlayerInventoryRegistry {
 		SaveHandler playerSave = (SaveHandler) MinecraftServer.getServer().getEntityWorld().getSaveHandler().getSaveHandler();
 
 		NBTTagCompound playerNBT = playerSave.getPlayerData(username);
-		
+		// store the nbt for when we save so we don't erase the data
+		// create an Inventory class that will just hold the player's inventory/enderchest and implements IInventory
 	}
 
 	public static void save(String username) {
+		// merge the Inventory/enderchest NBT with the player NBT and write to disk
 		//(SaveHandler) MinecraftServer.getServer().getEntityWorld().getSaveHandler().getSaveHandler().writePlayerData(entityplayer);
 	}
-
-	private static void save(String username, IInventory inventory, IInventory enderchest) {
+	
+	public static void unload(String username) {
 		
 	}
-	
+
+	/**
+	 * Save every inventory and unload them
+	 */
 	public static void flush() {
 		
 	}
