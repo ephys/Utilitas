@@ -1,4 +1,4 @@
-package nf.fr.ephys.playerproxies.common.block.uniterface;
+package nf.fr.ephys.playerproxies.common.registry.uniterface;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

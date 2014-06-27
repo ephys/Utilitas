@@ -1,4 +1,4 @@
-package nf.fr.ephys.playerproxies.common.block.uniterface;
+package nf.fr.ephys.playerproxies.common.registry.uniterface;
 
 import org.lwjgl.opengl.GL11;
 
@@ -51,7 +51,7 @@ public class InterfacePlayer extends UniversalInterface {
 	public void renderInventory(int tickCount, double x, double y, double z, float tickTime) {
 		GL11.glRotatef(tickCount, 0.0F, 1.0F, 0.0F);
 		GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
-		
+
 		if (isEnderChest) {
 			TileEntityInterfaceRenderer.renderBlocksInstance.renderBlockAsItem(Block.enderChest, 0, 1.0F);
 		} else {

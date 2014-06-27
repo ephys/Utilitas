@@ -1,4 +1,4 @@
-package nf.fr.ephys.playerproxies.common.block.uniterface;
+package nf.fr.ephys.playerproxies.common.registry;
 
 import java.lang.reflect.Constructor;
 import java.util.Comparator;
@@ -8,6 +8,7 @@ import java.util.TreeMap;
 
 import net.minecraft.entity.player.EntityPlayer;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
+import nf.fr.ephys.playerproxies.common.registry.uniterface.UniversalInterface;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
 
 public class UniversalInterfaceRegistry {

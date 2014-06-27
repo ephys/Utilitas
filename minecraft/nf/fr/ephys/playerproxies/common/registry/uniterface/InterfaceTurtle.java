@@ -1,4 +1,4 @@
-package nf.fr.ephys.playerproxies.common.block.uniterface;
+package nf.fr.ephys.playerproxies.common.registry.uniterface;
 
 import org.lwjgl.opengl.GL11;
 

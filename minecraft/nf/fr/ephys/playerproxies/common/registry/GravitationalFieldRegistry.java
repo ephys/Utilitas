@@ -1,4 +1,4 @@
-package nf.fr.ephys.playerproxies.common.core;
+package nf.fr.ephys.playerproxies.common.registry;
 
 import java.util.Vector;
 

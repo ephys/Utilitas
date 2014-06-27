@@ -40,6 +40,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import nf.fr.ephys.playerproxies.client.core.NicknamesRegistry;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.block.BlockHomeShield;
+import nf.fr.ephys.playerproxies.common.registry.GravitationalFieldRegistry;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityGravitationalField;
 import nf.fr.ephys.playerproxies.helpers.ParticleHelper;
 

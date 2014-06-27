@@ -15,9 +15,9 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
-import nf.fr.ephys.playerproxies.common.block.uniterface.UniversalInterface;
-import nf.fr.ephys.playerproxies.common.block.uniterface.UniversalInterfaceRegistry;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
+import nf.fr.ephys.playerproxies.common.registry.UniversalInterfaceRegistry;
+import nf.fr.ephys.playerproxies.common.registry.uniterface.UniversalInterface;
 import nf.fr.ephys.playerproxies.helpers.EntityHelper;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 

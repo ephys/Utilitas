@@ -7,7 +7,7 @@ import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
-import nf.fr.ephys.playerproxies.common.core.GravitationalFieldRegistry;
+import nf.fr.ephys.playerproxies.common.registry.GravitationalFieldRegistry;
 import nf.fr.ephys.playerproxies.util.cofh.TileEnergyHandler;
 
 public class TileEntityGravitationalField extends TileEnergyHandler {
