@@ -6,12 +6,16 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
@@ -29,35 +33,44 @@ public class InterfacePlayer extends UniversalInterface {
 	private static String oreDict = OreDictionary.getOreName(Block.enderChest.blockID);
 	
 	static {
-		oreDict = oreDict.equals("unknown") ? null : oreDict;
+		oreDict = oreDict.equalsIgnoreCase("unknown") ? null : oreDict;
 	}
 
 	public InterfacePlayer(TileEntityInterface tileEntity) {
 		super(tileEntity);
 	}
 
+	@SideOnly(Side.CLIENT)
+	public static final ModelBiped MODEL_BIPED = new ModelBiped(0.0F);
+	
+	@SideOnly(Side.CLIENT)
+	private ResourceLocation skin;
+
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void renderInventory(int tickCount, double par1, double par3, double par5, float par7) {
-		if (userEntity == null) return;
-
+	public void renderInventory(int tickCount, double x, double y, double z, float tickTime) {
+		GL11.glRotatef(tickCount, 0.0F, 1.0F, 0.0F);
+		GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
+		
 		if (isEnderChest) {
-			GL11.glRotatef(tickCount, 0.0F, 1.0F, 0.0F);
-			GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
 			TileEntityInterfaceRenderer.renderBlocksInstance.renderBlockAsItem(Block.enderChest, 0, 1.0F);
 		} else {
-			World world = net.minecraft.client.Minecraft.getMinecraft().theWorld;
-			EntityPlayer player = world.getPlayerEntityByName(userName);
-			
-			if (player == null) return;
+			RenderManager.instance.renderEngine.bindTexture(skin);
 
-			if(player != net.minecraft.client.Minecraft.getMinecraft().thePlayer) {
-				//System.out.println(net.minecraft.client.Minecraft.getMinecraft().thePlayer.height);
-				GL11.glTranslatef(0.0F, -1.5F, 0.0F);
-			} else
-				GL11.glRotatef(tickCount, 0.0F, 1.0F, 0.0F);
+			GL11.glPushMatrix();
+			GL11.glColor3f(1.0F, 1.0F, 1.0F);
+			GL11.glTranslatef(0.0F, 0.35F, 0.0F);
+			tickTime = 0.06F;
 
-			net.minecraft.client.renderer.entity.RenderManager.instance.getEntityRenderObject(player).doRender(player, 0.0D, 0.5D, 0.0D, 1.0F, par7);
+			GL11.glRotatef(180F, 1F, 0, 0);
+			MODEL_BIPED.bipedHead.render(tickTime);
+			MODEL_BIPED.bipedBody.render(tickTime);
+			MODEL_BIPED.bipedRightArm.render(tickTime);
+			MODEL_BIPED.bipedLeftArm.render(tickTime);
+			MODEL_BIPED.bipedRightLeg.render(tickTime);
+			MODEL_BIPED.bipedLeftLeg.render(tickTime);
+			MODEL_BIPED.bipedHeadwear.render(tickTime);
+			GL11.glPopMatrix();
 		}
 	}
 
@@ -121,8 +134,10 @@ public class InterfacePlayer extends UniversalInterface {
 	private void searchPlayer() {
 		if (this.getTileEntity().worldObj == null || !this.getTileEntity().worldObj.isRemote)
 			userEntity = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(userName);
-		else
-			userEntity = Minecraft.getMinecraft().theWorld.getPlayerEntityByName(userName);
+		else {
+			skin = AbstractClientPlayer.getLocationSkin(userName);
+			AbstractClientPlayer.getDownloadImageSkin(skin, userName);
+		}
 	}
 
 	@Override

@@ -25,7 +25,7 @@ public abstract class UniversalInterface {
 	 * @param tickCount the amount of times this method has been called
 	 */
 	@SideOnly(Side.CLIENT)
-	public abstract void renderInventory(int tickCount, double par1, double par3, double par5, float par7);
+	public abstract void renderInventory(int tickCount, double x, double y, double z, float tickTime);
 
 	/**
 	 * Link this handler with another object
