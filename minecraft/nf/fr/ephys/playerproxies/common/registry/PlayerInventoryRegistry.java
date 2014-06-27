@@ -5,6 +5,7 @@ import java.util.HashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.storage.IPlayerFileData;
 import net.minecraft.world.storage.ISaveHandler;
@@ -18,13 +19,14 @@ public class PlayerInventoryRegistry {
 	public static void load(String username) {
 		SaveHandler playerSave = (SaveHandler) MinecraftServer.getServer().getEntityWorld().getSaveHandler().getSaveHandler();
 
-		playerSave.getPlayerData(username);
+		NBTTagCompound playerNBT = playerSave.getPlayerData(username);
+		
 	}
 
 	public static void save(String username) {
 		//(SaveHandler) MinecraftServer.getServer().getEntityWorld().getSaveHandler().getSaveHandler().writePlayerData(entityplayer);
 	}
-	
+
 	private static void save(String username, IInventory inventory, IInventory enderchest) {
 		
 	}
@@ -36,23 +38,20 @@ public class PlayerInventoryRegistry {
 	public static IInventory getInventory(String username) {
 		IInventory inventory = inventories.get(username);
 
-		if (inventory == null) {
-			EntityPlayer player = MinecraftServer.getServer().getServerConfigurationManager(MinecraftServer.getServer()).getPlayerForUsername(username);
-			
-			if (player == null) {
-				load(username);
-				
-				return inventories.get(username);
-			}
-			
-			inventories.put(player.username, player.inventory);
-			inventories.put(player.username, player.getInventoryEnderChest());
-		}
+		if (inventory != null) return inventory;
 
-		return inventory;
+		load(username);
+
+		return inventories.get(username);
 	}
 
 	public static IInventory getEnderchest(String username) {
-		return null;
+		IInventory inventory = enderchests.get(username);
+
+		if (inventory != null) return inventory;
+
+		load(username);
+
+		return enderchests.get(username);
 	}
 }

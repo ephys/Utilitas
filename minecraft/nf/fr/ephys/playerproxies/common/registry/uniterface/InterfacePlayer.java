@@ -21,6 +21,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
 import nf.fr.ephys.playerproxies.client.renderer.TileEntityInterfaceRenderer;
 import nf.fr.ephys.playerproxies.common.core.PacketHandler;
+import nf.fr.ephys.playerproxies.common.registry.PlayerInventoryRegistry;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
@@ -142,7 +143,10 @@ public class InterfacePlayer extends UniversalInterface {
 
 	@Override
 	public IInventory getInventory() {
-		return userEntity == null ? null : isEnderChest ? userEntity.getInventoryEnderChest() : userEntity.inventory;
+		if (isEnderChest)
+			return userEntity == null ? PlayerInventoryRegistry.getEnderchest(userName) : userEntity.getInventoryEnderChest();
+		else
+			return userEntity == null ? PlayerInventoryRegistry.getInventory(userName) : userEntity.inventory;
 	}
 
 	@Override
