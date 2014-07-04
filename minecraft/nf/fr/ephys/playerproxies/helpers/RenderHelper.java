@@ -17,7 +17,9 @@ public class RenderHelper {
 	}
 
 	public static void renderItem3D(ItemStack item) {
-		for (int i = 0; i < item.getItem().getRenderPasses(item.getItemDamage()); i++) {
+		int maxRenderPasses = item.getItem().getRenderPasses(item.getItemDamage());
+		
+		for (int i = 0; i < maxRenderPasses; i++) {
 			Icon icon = item.getItem().getIcon(item, i);
 
 			if (icon == null)

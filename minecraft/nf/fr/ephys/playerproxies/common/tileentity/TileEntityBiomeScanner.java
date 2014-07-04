@@ -19,7 +19,6 @@ import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
 public class TileEntityBiomeScanner extends TileEntity implements IInventory {
-	private int biome;
 	private int storedBiome = NO_STORED_VALUE;
 	public static final int NO_STORED_VALUE = 256; // max biome length = 256 (0 - 255)
 
@@ -29,10 +28,10 @@ public class TileEntityBiomeScanner extends TileEntity implements IInventory {
 	public ItemStack card;
 
 	public BiomeGenBase getBiome() {
-		if (storedBiome == 128) {
+		if (storedBiome == NO_STORED_VALUE) {
 			return this.worldObj.getBiomeGenForCoords(xCoord, zCoord);
 		}
-		
+
 		return BiomeGenBase.biomeList[storedBiome];
 	}
 
@@ -46,10 +45,6 @@ public class TileEntityBiomeScanner extends TileEntity implements IInventory {
 		NBTTagCompound nbtTag = new NBTTagCompound();
 		this.writeToNBT(nbtTag);
 		return new Packet132TileEntityData(this.xCoord, this.yCoord, this.zCoord, 1, nbtTag);
-	}
-	
-	public void setBiome(BiomeGenBase biome) {
-		this.biome = biome.biomeID;
 	}
 
 	@Override
@@ -73,11 +68,9 @@ public class TileEntityBiomeScanner extends TileEntity implements IInventory {
 
 	@Override
 	public void updateEntity() {
-		if (this.tick++ % 20 == 0) {
-			if (progress != -1) {
-				if (progress++ == 100) {
-					this.onReckoningEnd();
-				}
+		if (progress != -1 && this.tick++ % 20 == 0) {
+			if (progress++ == 100) {
+				this.onReckoningEnd();
 			}
 		}
 
@@ -98,8 +91,7 @@ public class TileEntityBiomeScanner extends TileEntity implements IInventory {
 	 */
 	private void onReckoningEnd() {
 		this.progress = -1;
-		
-		NBTHelper.setInt(this.card, "biome", this.biome);
+		NBTHelper.setInt(this.card, "biome", this.worldObj.getBiomeGenForCoords(xCoord, zCoord).biomeID);
 	}
 
 	/**
@@ -168,9 +160,7 @@ public class TileEntityBiomeScanner extends TileEntity implements IInventory {
 
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer player) {
-		return worldObj.getBlockTileEntity(xCoord, yCoord, zCoord) == this
-				&& player.getDistanceSq(xCoord + 0.5, yCoord + 0.5,
-						zCoord + 0.5) < 64;
+		return true;
 	}
 
 	@Override
@@ -195,6 +185,9 @@ public class TileEntityBiomeScanner extends TileEntity implements IInventory {
 			} else {
 				this.startReckoning();
 			}
+		} else {
+			this.storedBiome = NO_STORED_VALUE;
+			this.progress = -1;
 		}
 		
 		super.onInventoryChanged();

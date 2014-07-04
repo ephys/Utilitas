@@ -5,7 +5,6 @@ import net.minecraft.client.model.ModelBlaze;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 import nf.fr.ephys.playerproxies.client.renderer.GhostRenderer;
-import nf.fr.ephys.playerproxies.client.renderer.ItemBiomeStorageRenderer;
 import nf.fr.ephys.playerproxies.client.renderer.TileEntityInterfaceRenderer;
 import nf.fr.ephys.playerproxies.client.renderer.TileEntityItemTickerRenderer;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
@@ -41,6 +40,5 @@ public class ClientProxy extends CommonProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityItemTicker.class, new TileEntityItemTickerRenderer());
 
 		//RenderingRegistry.registerEntityRenderingHandler(Ghost.class, new GhostRenderer());
-		MinecraftForgeClient.registerItemRenderer(PlayerProxies.Items.biomeStorage.itemID, new ItemBiomeStorageRenderer());
 	}
 }

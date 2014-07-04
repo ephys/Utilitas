@@ -1,7 +1,5 @@
 package cofh.api.energy;
 
-import nf.fr.ephys.playerproxies.util.cofh.EnergyStorage;
-
 /**
  * An energy storage is the unit of interaction with Energy inventories.
  * 

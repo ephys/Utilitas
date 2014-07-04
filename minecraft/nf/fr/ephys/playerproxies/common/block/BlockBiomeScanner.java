@@ -94,15 +94,6 @@ public class BlockBiomeScanner extends BlockContainer {
 	}
 
 	@Override
-	public void onPostBlockPlaced(World world, int x, int y, int z, int metadata) {
-		TileEntity te = world.getBlockTileEntity(x, y, z);
-
-		if (te instanceof TileEntityBiomeScanner)
-			((TileEntityBiomeScanner) te).setBiome(world.getBiomeGenForCoords(
-					x, z));
-	}
-
-	@Override
 	public int onBlockPlaced(World world, int x, int y, int z, int side,
 			float hitX, float hitY, float hitZ, int metadata) {
 		return 2;

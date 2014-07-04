@@ -1,7 +1,6 @@
 package cofh.api.energy;
 
 import net.minecraftforge.common.ForgeDirection;
-import nf.fr.ephys.playerproxies.util.cofh.TileEnergyHandler;
 
 /**
  * Implement this interface on TileEntities which should handle energy, generally storing it in one or more internal {@link IEnergyStorage} objects.
