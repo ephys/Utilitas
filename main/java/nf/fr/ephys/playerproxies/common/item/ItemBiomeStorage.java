@@ -80,6 +80,8 @@ public class ItemBiomeStorage extends Item {
 
 			if (biome != null) {
 				list.add("Signature: §5" + biome.biomeName);
+			} else {
+				list.add("Corrupted ! Destroy me :(");
 			}
 		}
 	}
