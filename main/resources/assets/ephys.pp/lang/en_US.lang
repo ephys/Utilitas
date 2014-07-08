@@ -1,4 +1,5 @@
 itemGroup.ephys.playerproxies=Player Proxies
+itemGroup.ephys.playerproxies.biomes=Player Proxies - Biomes
 
 tile.PP_ShineyGlass.0.name=Shiney Glass
 tile.PP_ShineyGlass.1.name=Universal Interface

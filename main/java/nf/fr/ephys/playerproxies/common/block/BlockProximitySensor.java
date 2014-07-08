@@ -14,7 +14,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityProximitySensor;
-import nf.fr.ephys.playerproxies.helpers.DebugHelper;
 
 public class BlockProximitySensor extends BlockContainer {
 	private IIcon iconTop;
@@ -74,14 +73,15 @@ public class BlockProximitySensor extends BlockContainer {
 
 	@Override
 	public int isProvidingStrongPower(IBlockAccess blockAccess, int x, int y, int z, int par5) {
-		return this.isProvidingWeakPower(blockAccess, x, y, z, par5);
-//		return par5 == 1 ? this.isProvidingWeakPower(blockAccess, x, y, z, par5) : 0;
+		return par5 == 1 ? this.isProvidingWeakPower(blockAccess, x, y, z, par5) : 0;
 	}
 
 	@Override
 	public int isProvidingWeakPower(IBlockAccess blockAccess, int x, int y, int z, int par5) {
 		TileEntity te = blockAccess.getTileEntity(x, y, z);
 
+		System.out.println("BlockProximitySensor.isProvidingWeakPower");
+		System.out.println(((TileEntityProximitySensor) te).isActivated());
 		return ((TileEntityProximitySensor) te).isActivated() ? 15 : 0;
 	}
 

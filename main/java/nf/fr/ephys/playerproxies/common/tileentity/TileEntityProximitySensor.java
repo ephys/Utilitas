@@ -110,6 +110,7 @@ public class TileEntityProximitySensor extends TileEntity {
 		}
 
 		if(activated ^ active) {
+			activated = active;
 	        this.worldObj.notifyBlocksOfNeighborChange(this.xCoord, this.yCoord, this.zCoord, this.getBlockType());
 		}
 	}

@@ -21,7 +21,7 @@ public class TileEntityBiomeReplicator extends TileEnergyHandler implements IInv
 
 	private int[][] bounds = null;
 
-	private int biome = TileEntityBiomeScanner.NO_STORED_VALUE;
+	private int biome = -1;
 	private ItemStack biomeHandler;
 
 	private int cursorX;
@@ -61,7 +61,7 @@ public class TileEntityBiomeReplicator extends TileEnergyHandler implements IInv
 		cursorZ = NBTHelper.getInt(nbt, "cursorZ", 0);
 		biomeHandler = NBTHelper.getItemStack(nbt, "biomeHandler", null);
 
-		biome = (biomeHandler == null ? TileEntityBiomeScanner.NO_STORED_VALUE : NBTHelper.getInt(biomeHandler, "biome", TileEntityBiomeScanner.NO_STORED_VALUE));
+		biome = (biomeHandler == null ? TileEntityBiomeScanner.NO_STORED_VALUE : biomeHandler.getItemDamage());
 
 		super.readFromNBT(nbt);
 	}
@@ -216,7 +216,9 @@ public class TileEntityBiomeReplicator extends TileEnergyHandler implements IInv
 	@Override
 	public void setInventorySlotContents(int i, ItemStack stack) {
 		this.biomeHandler = stack;
-		int biome = NBTHelper.getInt(biomeHandler, "biome", TileEntityBiomeScanner.NO_STORED_VALUE);
+
+		int biome = biomeHandler == null ? TileEntityBiomeScanner.NO_STORED_VALUE : biomeHandler.getItemDamage();
+
 		this.setBiome(biome);
 
 		if (stack != null) {
@@ -258,6 +260,6 @@ public class TileEntityBiomeReplicator extends TileEnergyHandler implements IInv
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
 		return i == 0 &&
 				itemstack.getItem().equals(PlayerProxies.Items.biomeStorage) &&
-				NBTHelper.getInt(itemstack, "biome", TileEntityBiomeScanner.NO_STORED_VALUE) != TileEntityBiomeScanner.NO_STORED_VALUE;
+				itemstack.getItemDamage() != TileEntityBiomeScanner.NO_STORED_VALUE;
 	}
 }

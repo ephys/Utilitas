@@ -61,7 +61,9 @@ public class TileEntityBiomeScanner extends TileEntity implements IInventory {
 		this.card = NBTHelper.getItemStack(nbt, "card", null);
 
 		if (this.card != null)
-			this.storedBiome = NBTHelper.getInt(this.card, "biome", NO_STORED_VALUE);
+			this.storedBiome = card.getItemDamage();
+		else
+			this.storedBiome = NO_STORED_VALUE;
 
 		super.readFromNBT(nbt);
 	}
@@ -91,7 +93,8 @@ public class TileEntityBiomeScanner extends TileEntity implements IInventory {
 	 */
 	private void onReckoningEnd() {
 		this.progress = -1;
-		NBTHelper.setInt(this.card, "biome", this.worldObj.getBiomeGenForCoords(xCoord, zCoord).biomeID);
+
+		this.card.setItemDamage(this.worldObj.getBiomeGenForCoords(xCoord, zCoord).biomeID);
 	}
 
 	/**
@@ -177,18 +180,16 @@ public class TileEntityBiomeScanner extends TileEntity implements IInventory {
 	}
 
 	public void onInventoryChanged() {
-		if (this.card != null) {
-			NBTTagCompound nbt = NBTHelper.getNBT(this.card);
-
-			if (nbt.hasKey("biome")) {
-				this.storedBiome = nbt.getInteger("biome");
-				this.progress = -1;
-			} else {
-				this.startReckoning();
-			}
-		} else {
+		if (this.card == null) {
 			this.storedBiome = NO_STORED_VALUE;
 			this.progress = -1;
+		} else {
+			this.storedBiome = this.card.getItemDamage();
+
+			if (this.storedBiome == NO_STORED_VALUE)
+				this.startReckoning();
+			else
+				this.progress = -1;
 		}
 	}
 }
