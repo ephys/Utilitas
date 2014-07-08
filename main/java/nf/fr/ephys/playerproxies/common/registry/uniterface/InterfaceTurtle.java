@@ -46,7 +46,7 @@ public class InterfaceTurtle extends UniversalInterface {
 	}
 
 	@Override
-	public void onTick() {
+	public void onTick(int tick) {
 		if (turtleAccess == null) {
 			TileEntity turtle = this.getTileEntity().getWorldObj().getTileEntity(tileLocation[0], tileLocation[1], tileLocation[2]);
 

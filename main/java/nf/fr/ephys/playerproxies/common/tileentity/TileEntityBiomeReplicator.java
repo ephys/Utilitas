@@ -8,6 +8,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
+import nf.fr.ephys.playerproxies.common.core.ConfigHandler;
 import nf.fr.ephys.playerproxies.common.network.PacketSetBiomeHandler;
 import nf.fr.ephys.playerproxies.common.network.PacketSpawnParticleHandler;
 import nf.fr.ephys.playerproxies.helpers.BlockHelper;
@@ -117,7 +118,7 @@ public class TileEntityBiomeReplicator extends TileEnergyHandler implements IInv
 			cooldown = 30;
 		}
 
-		if (!PlayerProxies.requiresPower()) {
+		if (!PlayerProxies.getConfig().requiresPower()) {
 			storage.setEnergyStored(storage.getEnergyStored() + storage.getMaxReceive());
 		}
 

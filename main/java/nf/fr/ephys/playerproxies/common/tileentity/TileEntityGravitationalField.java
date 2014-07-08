@@ -6,6 +6,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
+import nf.fr.ephys.playerproxies.common.core.ConfigHandler;
 import nf.fr.ephys.playerproxies.common.registry.GravitationalFieldRegistry;
 import nf.fr.ephys.playerproxies.util.cofh.TileEnergyHandler;
 
@@ -118,7 +119,7 @@ public class TileEntityGravitationalField extends TileEnergyHandler {
 		if (this.worldObj.isRemote) return;
 		if (isPowered) return;
 
-		if (PlayerProxies.requiresPower()) {
+		if (PlayerProxies.getConfig().requiresPower()) {
 			this.hasEnergy = this.storage.getEnergyStored() >= 100;
 
 			if (this.hasEnergy)

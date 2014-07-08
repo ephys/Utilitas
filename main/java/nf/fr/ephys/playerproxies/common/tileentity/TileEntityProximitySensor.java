@@ -19,7 +19,7 @@ public class TileEntityProximitySensor extends TileEntity {
 
 	public static int MAX_RADIUS = 15;
 
-	public boolean isActivated = false;
+	private boolean activated = false;
 
 	private int updateTick = 0;
 
@@ -37,7 +37,7 @@ public class TileEntityProximitySensor extends TileEntity {
 			EntityPlayer playerFilter = (EntityPlayer) entity;
 
 			this.playerFilter = playerFilter.getGameProfile().getId();
-			this.entityFilter = null;
+			this.entityFilter = EntityPlayer.class;
 
 			CommandHelper.sendChatMessage(player, "Filter set to user " + playerFilter.getDisplayName());
 		} else {
@@ -96,31 +96,27 @@ public class TileEntityProximitySensor extends TileEntity {
 
 			this.entityList = entityList.toArray();
 
-			active = (entityList.size() != 0);
-		} else if(this.playerFilter != null) {
-			List<EntityPlayer> entityList = this.worldObj.getEntitiesWithinAABB(EntityPlayer.class, radius);
+			if (playerFilter == null) {
+				active = (entityList.size() != 0);
+			} else {
+				for (EntityPlayer entity : (List<EntityPlayer>) entityList) {
+					if (this.playerFilter.equals(entity.getGameProfile().getId())) {
+						active = true;
 
-			this.entityList = entityList.toArray();
-
-			active = false;
-			for (EntityPlayer anEntityList : entityList) {
-				if (anEntityList.getGameProfile().getId().equals(this.playerFilter)) {
-					active = true;
-
-					break;
+						break;
+					}
 				}
 			}
 		}
 
-		if(isActivated ^ active) {
+		if(activated ^ active) {
 	        this.worldObj.notifyBlocksOfNeighborChange(this.xCoord, this.yCoord, this.zCoord, this.getBlockType());
-	        this.worldObj.notifyBlocksOfNeighborChange(this.xCoord, this.yCoord - 1, this.zCoord, this.getBlockType());
 		}
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
-		this.isActivated = NBTHelper.getBoolean(nbt, "isActivated", this.isActivated);
+		this.activated = NBTHelper.getBoolean(nbt, "activated", this.activated);
 		this.entityFilter = (Class<? extends Entity>) NBTHelper.getClass(nbt, "entityFilter", null);
 		this.playerFilter = NBTHelper.getString(nbt, "playerFilter", null);
 
@@ -136,7 +132,7 @@ public class TileEntityProximitySensor extends TileEntity {
 
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
-		nbt.setBoolean("isActivated", isActivated);
+		nbt.setBoolean("activated", activated);
 		nbt.setIntArray("size", new int[]{RADIUS_X, RADIUS_Y, RADIUS_Z});
 		NBTHelper.setString(nbt, "playerFilter", playerFilter);
 		NBTHelper.setClass(nbt, "entityFilter", entityFilter);
@@ -170,4 +166,6 @@ public class TileEntityProximitySensor extends TileEntity {
 	public Object[] getEntityList() {
 		return entityList;
 	}
+
+	public boolean isActivated() { return activated; }
 }

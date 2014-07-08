@@ -1,5 +1,6 @@
 package nf.fr.ephys.playerproxies.common.core;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -108,6 +109,7 @@ public class CommonProxy {
 
 	private void registerHandlers() {
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
+		FMLCommonHandler.instance().bus().register(PlayerProxies.getConfig());
 
 		/* if (Loader.isModLoaded("OpenPeripheralCore")) {
 			AdaptorGravitationalField.register();

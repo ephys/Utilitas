@@ -61,6 +61,8 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 	public void writeToNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
 
+		nbt.setInteger("tick", tick);
+
 		if (this.uniterface != null) {
 			NBTHelper.setClass(nbt, "handler", this.uniterface.getClass());
 			this.uniterface.writeToNBT(nbt);
@@ -71,6 +73,7 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
 
+		tick = NBTHelper.getInt(nbt, "tick", 0);
 		Class<? extends UniversalInterface> clazz = (Class<? extends UniversalInterface>) NBTHelper.getClass(nbt, "handler");
 
 		if (clazz != null && UniversalInterfaceRegistry.hasHandler(clazz)) {
@@ -103,7 +106,7 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 		super.updateEntity();
 
 		if (this.uniterface != null)
-			this.uniterface.onTick();
+			this.uniterface.onTick(tick++);
 	}
 
 	public boolean link(EntityPlayer player) {

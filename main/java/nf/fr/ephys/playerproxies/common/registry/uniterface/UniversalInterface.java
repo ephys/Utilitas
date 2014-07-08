@@ -45,7 +45,7 @@ public abstract class UniversalInterface {
 
 	public abstract void onBlockUpdate();
 
-	public abstract void onTick();
+	public abstract void onTick(int tick);
 
 	public abstract IInventory getInventory();
 

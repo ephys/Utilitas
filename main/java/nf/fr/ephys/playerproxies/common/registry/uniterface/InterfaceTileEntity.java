@@ -65,7 +65,7 @@ public class InterfaceTileEntity extends UniversalInterface {
 	}
 
 	@Override
-	public void onTick() {
+	public void onTick(int tick) {
 		if (getTileEntity().getWorldObj().isRemote) return;
 
 		if (blockEntity == null) {

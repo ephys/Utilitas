@@ -7,7 +7,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class ParticleHelper {
-	private static ArrayList<String> particles = new ArrayList<String>();
+	private static ArrayList<String> particles = new ArrayList<>();
 
 	static {
 		particles.add("hugeexplosion");
@@ -54,7 +54,7 @@ public class ParticleHelper {
 	public static String getParticleNameFromID(int id) {
 		return particles.get(id);
 	}
-	
+
 	public static int getParticleIDFromName(String name) {
 		return particles.indexOf(name);
 	}

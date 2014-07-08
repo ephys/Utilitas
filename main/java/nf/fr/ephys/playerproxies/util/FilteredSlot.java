@@ -1,13 +1,12 @@
 package nf.fr.ephys.playerproxies.util;
 
-import java.util.Vector;
-
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
+import java.util.Collections;
+import java.util.Vector;
 
 public class FilteredSlot extends Slot {
 	private Vector<Item> filter;
@@ -15,7 +14,7 @@ public class FilteredSlot extends Slot {
 	public FilteredSlot(IInventory inventory, int id, int x, int y) {
 		super(inventory, id, x, y);
 
-		this.filter = new Vector<Item>();
+		this.filter = new Vector<>();
 	}
 
 	public FilteredSlot(IInventory inventory, int id, int x, int y, Item[] filter) {
@@ -31,8 +30,7 @@ public class FilteredSlot extends Slot {
 	}
 
 	public FilteredSlot addFilteredIds(Item[] filter) {
-		for (int i = 0; i < filter.length; i++)
-			this.filter.add(filter[i]);
+		Collections.addAll(this.filter, filter);
 
 		return this;
 	}

@@ -58,22 +58,9 @@ public class BlockParticleGenerator extends Block {
 		return true;
 	}
 
-	public static int getRedstoneLevel(World world, int x, int y, int z) {
-		int maxInput = 0;
-
-		for (int i = 0; i < 6; i++) {
-			int input = world.getIndirectPowerLevelTo(x, y, z, i);
-
-			if (input > maxInput)
-				maxInput = input;
-		}
-
-		return maxInput;
-	}
-
 	@Override
 	public void randomDisplayTick(World world, int x, int y, int z, Random random) {
-		int powerHeight = getRedstoneLevel(world, x, y, z);
+		int powerHeight = Math.max(world.getBlockPowerInput(x, y, z), world.getStrongestIndirectPower(x, y, z));
 		byte particleID = (byte)world.getBlockMetadata(x, y, z);
 
 		int speed = (particleID == 1 || particleID == 8) ? 0 : 1;

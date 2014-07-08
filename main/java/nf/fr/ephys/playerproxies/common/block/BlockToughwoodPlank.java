@@ -57,6 +57,7 @@ public class BlockToughwoodPlank extends BlockContainer {
 	}
 
 	@SideOnly(Side.CLIENT)
+	@Override
 	public void getSubBlocks(Item unknown, CreativeTabs tab, List subItems) {
 		subItems.add(new ItemStack(this, 1, METADATA_BIOME_REPLICATOR));
 		subItems.add(new ItemStack(this, 1, METADATA_TOUGHWOOD));

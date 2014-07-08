@@ -79,8 +79,9 @@ public class InterfacePlayer extends UniversalInterface {
 		}
 
 		this.userEntity = player;
+		this.userName = player.getGameProfile().getName();
+		this.userUUID = player.getGameProfile().getId();
 
-		searchPlayer();
 		onBlockUpdate();
 
 		return true;
@@ -118,10 +119,10 @@ public class InterfacePlayer extends UniversalInterface {
 	}
 
 	@Override
-	public void onTick() {
+	public void onTick(int tick) {
 		if (getTileEntity().getWorldObj().isRemote) return;
 
-		if (userEntity == null || userEntity.isDead)
+		if ((userEntity == null || userEntity.isDead) && tick % 40 == 0)
 			searchPlayer();
 	}
 

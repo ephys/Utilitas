@@ -116,7 +116,7 @@ public class EventHandler {
 
 	@SubscribeEvent
 	public void enderPearlDamage(EnderTeleportEvent event) {
-		if (PlayerProxies.opEnderPearls)
+		if (PlayerProxies.getConfig().areEnderPearlsOP())
 			event.attackDamage = 0;
 	}
 

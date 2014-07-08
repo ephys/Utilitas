@@ -12,6 +12,7 @@ import org.lwjgl.opengl.GL11;
 public class TileEntityInterfaceRenderer extends TileEntitySpecialRenderer {
 	public static final RenderBlocks renderBlocksInstance = new RenderBlocks();
 
+	@Override
 	public void renderTileEntityAt(TileEntity te, double x, double y, double z, float tickTime) {
 		TileEntityInterface tile = (TileEntityInterface) te;
 
@@ -25,7 +26,7 @@ public class TileEntityInterfaceRenderer extends TileEntitySpecialRenderer {
 			final float scale = 0.4375F;
 			GL11.glScalef(scale, scale, scale);
 
-			tile.getInterface().renderInventory(tile.tick++, x, y, z, tickTime);
+			tile.getInterface().renderInventory(tile.tick, x, y, z, tickTime);
 		GL11.glPopMatrix();
 	}
 }
