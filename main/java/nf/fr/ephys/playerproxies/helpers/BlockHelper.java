@@ -118,45 +118,44 @@ public class BlockHelper {
 		for (int i = 0; i < te.getSizeInventory(); ++i) {
 			ItemStack itemstack = te.getStackInSlotOnClosing(i);
 
-			if (itemstack != null) {
-				float randX = random.nextFloat() * 0.8F + 0.1F;
-				float randY = random.nextFloat() * 0.8F + 0.1F;
-				float randZ = random.nextFloat() * 0.8F + 0.1F;
+			dropItem(itemstack, world, x, y, z);
+		}
+	}
 
-				while (itemstack.stackSize > 0) {
-					int k1 = random.nextInt(21) + 10;
+	public static void dropItem(ItemStack itemstack, World world, int x, int y, int z) {
+		if (itemstack != null) {
+			float randX = random.nextFloat() * 0.8F + 0.1F;
+			float randY = random.nextFloat() * 0.8F + 0.1F;
+			float randZ = random.nextFloat() * 0.8F + 0.1F;
 
-					if (k1 > itemstack.stackSize) {
-						k1 = itemstack.stackSize;
-					}
+			while (itemstack.stackSize > 0) {
+				int k1 = random.nextInt(21) + 10;
 
-					itemstack.stackSize -= k1;
-					EntityItem entityitem = new EntityItem(world,
-							(double) ((float) x + randX),
-							(double) ((float) y + randY),
-							(double) ((float) z + randZ),
-							new ItemStack(itemstack.getItem(), k1, itemstack.getItemDamage())
-					);
-
-					float f3 = 0.05F;
-					entityitem.motionX = (double) ((float) random
-							.nextGaussian() * f3);
-					entityitem.motionY = (double) ((float) random
-							.nextGaussian() * f3 + 0.2F);
-					entityitem.motionZ = (double) ((float) random
-							.nextGaussian() * f3);
-
-					if (itemstack.hasTagCompound()) {
-						entityitem.getEntityItem().setTagCompound(
-								(NBTTagCompound) itemstack.getTagCompound()
-										.copy());
-					}
-
-					world.spawnEntityInWorld(entityitem);
+				if (k1 > itemstack.stackSize) {
+					k1 = itemstack.stackSize;
 				}
+
+				itemstack.stackSize -= k1;
+				EntityItem entityitem = new EntityItem(world,
+						(double) ((float) x + randX),
+						(double) ((float) y + randY),
+						(double) ((float) z + randZ),
+						new ItemStack(itemstack.getItem(), k1, itemstack.getItemDamage())
+				);
+
+				float f3 = 0.05F;
+				entityitem.motionX = (double) ((float) random.nextGaussian() * f3);
+				entityitem.motionY = (double) ((float) random.nextGaussian() * f3 + 0.2F);
+				entityitem.motionZ = (double) ((float) random.nextGaussian() * f3);
+
+				if (itemstack.hasTagCompound()) {
+					entityitem.getEntityItem().setTagCompound(
+							(NBTTagCompound) itemstack.getTagCompound()
+									.copy());
+				}
+
+				world.spawnEntityInWorld(entityitem);
 			}
 		}
-
-		//world.setBlock(x, y, z, Blocks.air);
 	}
 }

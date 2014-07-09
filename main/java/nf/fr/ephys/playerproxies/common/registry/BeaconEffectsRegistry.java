@@ -3,10 +3,10 @@ package nf.fr.ephys.playerproxies.common.registry;
 import net.minecraft.item.Item;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBeaconTierII;
+import nf.fr.ephys.playerproxies.util.SimpleMap;
 
 public class BeaconEffectsRegistry {
-	public static final int TYPE_NEGATIVE = 1;
-	public static final int TYPE_POSITIVE = 2;
+	private static SimpleMap<Item[], Effect> effects = new SimpleMap<>();
 
 	/**
 	 * adds "beacon effects" to an item
@@ -25,6 +25,8 @@ public class BeaconEffectsRegistry {
 			PlayerProxies.getLogger().warn("Attempted to add a potion effect with an incorrect minimum beacon level (" + minLevel + ") to " + item.getUnlocalizedName() + ". Clipping it to " + TileEntityBeaconTierII.MAX_LEVELS);
 			minLevel = TileEntityBeaconTierII.MAX_LEVELS;
 		}
+
+		effects.put(new Item[] { item }, new Effect(minLevel, maxLevel, potionEffect));
 	}
 
 	/**
@@ -49,9 +51,25 @@ public class BeaconEffectsRegistry {
 			PlayerProxies.getLogger().warn("Attempted to add a potion effect with an incorrect minimum beacon level (" + minLevel + ") to " + items + ". Clipping it to " + TileEntityBeaconTierII.MAX_LEVELS);
 			minLevel = TileEntityBeaconTierII.MAX_LEVELS;
 		}
+
+		effects.put(new Item[] { item }, new Effect(minLevel, maxLevel, potionEffect));
 	}
 
-	public static int[] getEffects(Item[] itemList, int level, int type) {
+	public static int[] getEffects(Item[] itemList, int level) {
 		return null;
+	}
+
+	public static boolean hasItem(Item item) { return false; }
+
+	private static class Effect {
+		private int min;
+		private int max;
+		private int potionEffect;
+
+		private Effect(int min, int max, int potionEffect) {
+			this.min = min;
+			this.max = max;
+			this.potionEffect = potionEffect;
+		}
 	}
 }
