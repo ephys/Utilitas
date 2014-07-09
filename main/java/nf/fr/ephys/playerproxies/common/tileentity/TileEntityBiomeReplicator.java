@@ -27,8 +27,6 @@ public class TileEntityBiomeReplicator extends TileEnergyHandler implements IInv
 	private int cursorX;
 	private int cursorZ;
 
-	private int cooldown = 30;
-
 	public static final int REQUIRED_RF = 10000;
 
 	public TileEntityBiomeReplicator() {
@@ -107,15 +105,13 @@ public class TileEntityBiomeReplicator extends TileEnergyHandler implements IInv
 		int zTop = this.zCoord + cursorZ;
 		int zBottom = this.zCoord - cursorZ;
 
-		if (cooldown-- == 0) {
+		if (worldObj.getTotalWorldTime() % 30 == 0) {
 			for(int i = 0; i < 4; i++) {
 				PacketSpawnParticleHandler.sendPacketSpawnParticle(portalParticleID, xRight + Math.random() / 2 + 0.25, this.yCoord + i + Math.random(), zBottom + Math.random() / 2 + 0.25, 0, 0, 0, worldObj.provider.dimensionId);
 				PacketSpawnParticleHandler.sendPacketSpawnParticle(portalParticleID, xRight+Math.random() / 2 + 0.25, this.yCoord+i+Math.random(), zTop+Math.random() / 2 + 0.25, 0, 0, 0, worldObj.provider.dimensionId);
 				PacketSpawnParticleHandler.sendPacketSpawnParticle(portalParticleID, xLeft+Math.random() / 2 + 0.25, this.yCoord+i+Math.random(), zBottom+Math.random() / 2 + 0.25, 0, 0, 0, worldObj.provider.dimensionId);
 				PacketSpawnParticleHandler.sendPacketSpawnParticle(portalParticleID, xLeft+Math.random() / 2 + 0.25, this.yCoord+i+Math.random(), zTop+Math.random() / 2 + 0.25, 0, 0, 0, worldObj.provider.dimensionId);
 			}
-
-			cooldown = 30;
 		}
 
 		if (!PlayerProxies.getConfig().requiresPower()) {

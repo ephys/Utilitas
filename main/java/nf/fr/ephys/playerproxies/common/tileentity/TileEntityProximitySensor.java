@@ -21,8 +21,6 @@ public class TileEntityProximitySensor extends TileEntity {
 
 	private boolean activated = false;
 
-	private int updateTick = 0;
-
 	private Object[] entityList = new Entity[0];
 
 	private Class<? extends Entity> entityFilter = Entity.class;
@@ -74,12 +72,9 @@ public class TileEntityProximitySensor extends TileEntity {
 	public void updateEntity() {
 		super.updateEntity();
 
-		if (updateTick != 10) {
-			updateTick++;
+		if (this.worldObj.getTotalWorldTime() % 10 != 0) {
 			return;
 		}
-
-		updateTick = 0;
 
 		AxisAlignedBB radius = AxisAlignedBB.getBoundingBox(
 			xCoord - RADIUS_X,

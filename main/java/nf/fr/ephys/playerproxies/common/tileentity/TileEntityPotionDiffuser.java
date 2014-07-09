@@ -33,8 +33,6 @@ public class TileEntityPotionDiffuser extends TileEnergyHandler implements ISide
 	public static final int ENERGY_CONSUMPTION = 25;
 	public static final int INTERVAL = 10;
 
-	private int tick = INTERVAL;
-
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
 		NBTTagCompound potions = new NBTTagCompound();
@@ -119,9 +117,7 @@ public class TileEntityPotionDiffuser extends TileEnergyHandler implements ISide
 
 		storage.extractEnergy(ENERGY_CONSUMPTION, false);
 
-		if (tick-- == 0) {
-			tick = INTERVAL;
-
+		if (this.worldObj.getTotalWorldTime() % INTERVAL == 0) {
 			List<EntityLivingBase> entities = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(
 				this.xCoord - RANGE, this.yCoord - RANGE, this.zCoord - RANGE,
 				this.xCoord + RANGE, this.yCoord + RANGE, this.zCoord + RANGE

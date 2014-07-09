@@ -17,7 +17,6 @@ public class TileEntityBiomeScanner extends TileEntity implements IInventory {
 
 	private int storedBiome = NO_STORED_VALUE;
 
-	private int tick = 0;
 	private int progress = -1;
 
 	public ItemStack card;
@@ -70,7 +69,7 @@ public class TileEntityBiomeScanner extends TileEntity implements IInventory {
 
 	@Override
 	public void updateEntity() {
-		if (progress != -1 && this.tick++ % 20 == 0) {
+		if (progress != -1 && this.worldObj.getTotalWorldTime() % 20 == 0) {
 			if (progress++ == 100) {
 				this.onReckoningEnd();
 			}
