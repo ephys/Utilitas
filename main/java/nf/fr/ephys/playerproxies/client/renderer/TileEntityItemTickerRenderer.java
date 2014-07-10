@@ -1,5 +1,7 @@
 package nf.fr.ephys.playerproxies.client.renderer;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -7,6 +9,7 @@ import nf.fr.ephys.playerproxies.common.tileentity.TileEntityItemTicker;
 import nf.fr.ephys.playerproxies.helpers.RenderHelper;
 import org.lwjgl.opengl.GL11;
 
+@SideOnly(Side.CLIENT)
 public class TileEntityItemTickerRenderer extends TileEntitySpecialRenderer {
 	public static void renderTickerRenderer(TileEntityItemTicker bi, double x, double y, double z, float par7) {
 		ItemStack item = bi.getStackInSlot(0);

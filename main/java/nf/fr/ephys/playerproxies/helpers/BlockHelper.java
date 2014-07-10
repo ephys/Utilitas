@@ -1,11 +1,9 @@
 package nf.fr.ephys.playerproxies.helpers;
 
-import java.util.Random;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,6 +12,8 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+
+import java.util.Random;
 
 public class BlockHelper {
 	private static Random random = new Random();
@@ -122,7 +122,7 @@ public class BlockHelper {
 		}
 	}
 
-	public static void dropItem(ItemStack itemstack, World world, int x, int y, int z) {
+	public static void dropItem(ItemStack itemstack, World world, double x, double y, double z) {
 		if (itemstack != null) {
 			float randX = random.nextFloat() * 0.8F + 0.1F;
 			float randY = random.nextFloat() * 0.8F + 0.1F;
@@ -157,5 +157,9 @@ public class BlockHelper {
 				world.spawnEntityInWorld(entityitem);
 			}
 		}
+	}
+
+	public static void dropItem(ItemStack itemstack, EntityPlayer player) {
+		dropItem(itemstack, player.worldObj, player.posX, player.posY, player.posZ);
 	}
 }

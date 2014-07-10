@@ -1,6 +1,7 @@
 package nf.fr.ephys.playerproxies.common.registry;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBeaconTierII;
 
@@ -17,8 +18,12 @@ public class BeaconEffectsRegistry {
 	 * @param minLevel      the minimum beacon level for this effect to be available
 	 * @param maxLevel      the maximum beacon level for this effect to be available
 	 */
+	public static void addEffect(ItemStack item, int potionEffect, int minLevel, int maxLevel) {
+		addEffect(new ItemStack[] { item }, potionEffect, minLevel, maxLevel);
+	}
+
 	public static void addEffect(Item item, int potionEffect, int minLevel, int maxLevel) {
-		addEffect(new Item[] { item }, potionEffect, minLevel, maxLevel);
+		addEffect(new ItemStack[] { new ItemStack(item) }, potionEffect, minLevel, maxLevel);
 	}
 
 	/**
@@ -28,7 +33,7 @@ public class BeaconEffectsRegistry {
 	 * @param minLevel      the minimum beacon level for this effect to be available
 	 * @param maxLevel      the maximum beacon level for this effect to be available
 	 */
-	public static void addEffect(Item[] items, int potionEffect, int minLevel, int maxLevel) {
+	public static void addEffect(ItemStack[] items, int potionEffect, int minLevel, int maxLevel) {
 		if (items.length > TileEntityBeaconTierII.MAX_ITEMS) {
 			PlayerProxies.getLogger().warn("Adding to many combined items (" + items + ") to the beacon registry, a beacon cannot support more than "+TileEntityBeaconTierII.MAX_ITEMS+" items");
 			return;
@@ -47,16 +52,16 @@ public class BeaconEffectsRegistry {
 		effects.add(new Effect(minLevel, maxLevel, potionEffect, items));
 	}
 
-	public static List<Integer> getEffects(Item[] itemList, int level) {
+	public static List<Integer> getEffects(ItemStack[] itemList, int level) {
 		List<Integer> list = new ArrayList<>();
 
 		for (Effect effect : effects) {
-			if (effect.min < level || effect.max > level) continue;
+			if (level < effect.min || level > effect.max) continue;
 
-			Item[] requiredItems = effect.items;
+			ItemStack[] requiredItems = effect.items;
 
 			boolean valid = true;
-			for (Item needle : requiredItems) {
+			for (ItemStack needle : requiredItems) {
 				if (!contains(itemList, needle)) {
 					valid = false;
 					break;
@@ -69,18 +74,21 @@ public class BeaconEffectsRegistry {
 		return list;
 	}
 
-	private static boolean contains(Item[] list, Item needle) {
-		for (Item elem : list) {
-			if (needle.equals(elem)) return true;
+	private static boolean contains(ItemStack[] list, ItemStack needle) {
+		if (needle == null) return false;
+		for (ItemStack elem : list) {
+			if (elem == null) return false;
+
+			if (needle.isItemEqual(elem)) return true;
 		}
 
 		return false;
 	}
 
-	public static boolean hasItem(Item needle) {
+	public static boolean hasItem(ItemStack needle) {
 		for (Effect effect : effects) {
-			for (Item item : effect.items) {
-				if (item.equals(needle)) return true;
+			for (ItemStack item : effect.items) {
+				if (item.isItemEqual(needle)) return true;
 			}
 		}
 
@@ -91,9 +99,9 @@ public class BeaconEffectsRegistry {
 		private int min;
 		private int max;
 		private int potionEffect;
-		private Item[] items;
+		private ItemStack[] items;
 
-		private Effect(int min, int max, int potionEffect, Item[] items) {
+		private Effect(int min, int max, int potionEffect, ItemStack[] items) {
 			this.min = min;
 			this.max = max;
 			this.potionEffect = potionEffect;

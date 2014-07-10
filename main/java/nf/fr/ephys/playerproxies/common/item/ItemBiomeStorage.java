@@ -17,17 +17,17 @@ import java.util.Random;
 
 public class ItemBiomeStorage extends Item {
 	private static CreativeTabs biomesTab = new CreativeTabs(PlayerProxies.MODID + ".biomes") {
-		private ItemStack icon = new ItemStack(PlayerProxies.Items.biomeStorage, 1, MathHelper.getRandomIntegerInRange(new Random(), 0, 39));
+		//private ItemStack icon = new ItemStack(PlayerProxies.Items.biomeStorage, 1, MathHelper.getRandomIntegerInRange(new Random(), 0, 39));
 
 		@Override
 		public Item getTabIconItem() {
 			return PlayerProxies.Items.biomeStorage;
 		}
 
-		@Override
+		/*@Override
 		public ItemStack getIconItemStack() {
 			return icon;
-		}
+		}*/
 	};
 
 	public static void register() {

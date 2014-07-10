@@ -1,36 +1,101 @@
 package nf.fr.ephys.playerproxies.common.tileentity;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.stats.AchievementList;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityBeacon;
 import net.minecraft.util.AxisAlignedBB;
 import nf.fr.ephys.playerproxies.common.registry.BeaconEffectsRegistry;
+import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
+import java.awt.*;
 import java.util.List;
 
-public class TileEntityBeaconTierII extends TileEntity implements IInventory {
+public class TileEntityBeaconTierII extends TileEntityBeacon {
 	private int level = 0;
-	private boolean isTierTwo = false;
+	private int tier = 1;
 	private int totalBlocks = 0;
 	private int totalPositive = 0;
 	private int totalNegative = 0;
+
+	@SideOnly(Side.CLIENT)
+	private long lastWorldTime = 0;
+	@SideOnly(Side.CLIENT)
+	private float rotation = 0;
+	@SideOnly(Side.CLIENT)
+	private Color beaconColor = Color.white;
+	@SideOnly(Side.CLIENT)
+	public int displayTick = 0;
 
 	public static final int MAX_LEVELS = 8;
 	public static final int TIERII_LEVEL = 4;
 	public static final int MAX_ITEMS = 4;
 
-	private Item[] containedItems = new Item[MAX_ITEMS];
+	private ItemStack[] containedItems = new ItemStack[MAX_ITEMS];
+
+	@Override
+	public void readFromNBT(NBTTagCompound nbt) {
+		level = NBTHelper.getInt(nbt, "level", 0);
+		tier = NBTHelper.getInt(nbt, "tier", 1);
+		totalBlocks = NBTHelper.getInt(nbt, "totalBlocks", 0);
+		totalPositive = NBTHelper.getInt(nbt, "totalPositive", 0);
+		totalNegative = NBTHelper.getInt(nbt, "totalNegative", 0);
+
+		containedItems = new ItemStack[MAX_ITEMS];
+
+		for (int i = 0; i < containedItems.length; i++) {
+			if (!nbt.hasKey("item_"+i))
+				break;
+
+			containedItems[i] = NBTHelper.getItemStack(nbt, "item_"+i);
+		}
+
+		super.readFromNBT(nbt);
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound nbt) {
+		nbt.setInteger("level", level);
+		nbt.setInteger("tier", tier);
+		nbt.setInteger("totalBlocks", totalBlocks);
+		nbt.setInteger("totalPositive", totalPositive);
+		nbt.setInteger("totalNegative", totalNegative);
+
+		for (int i = 0; i < containedItems.length; i++) {
+			if (containedItems[i] == null) break;
+
+			NBTHelper.setWritable(nbt, "item_"+i, containedItems[i]);
+		}
+
+		super.writeToNBT(nbt);
+	}
+
+	@Override
+	public Packet getDescriptionPacket() {
+		NBTTagCompound nbtTag = new NBTTagCompound();
+		this.writeToNBT(nbtTag);
+
+		return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 1, nbtTag);
+	}
+
+	@Override
+	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
+		readFromNBT(packet.func_148857_g());
+	}
 
 	@Override
 	public void updateEntity() {
-		if (this.worldObj.getTotalWorldTime() % 200L == 0L) {
+		if (worldObj.getTotalWorldTime() % 80L == 0L) {
 			validateStructure();
 			addEffects();
 		}
@@ -39,9 +104,9 @@ public class TileEntityBeaconTierII extends TileEntity implements IInventory {
 	private void validateStructure() {
 		level = 0;
 
-		isTierTwo = this.worldObj.getBlock(xCoord, yCoord + 1, zCoord).equals(Blocks.dragon_egg);
+		boolean hasDragonEgg = this.worldObj.getBlock(xCoord, yCoord + 1, zCoord).equals(Blocks.dragon_egg);
 
-		if (isTierTwo || this.worldObj.canBlockSeeTheSky(xCoord, yCoord + 1, zCoord)) {
+		if (hasDragonEgg || this.worldObj.canBlockSeeTheSky(xCoord, yCoord + 1, zCoord)) {
 			totalNegative = totalPositive = totalBlocks = 0;
 
 			for (int i = 0; i < MAX_LEVELS; i++) {
@@ -51,7 +116,25 @@ public class TileEntityBeaconTierII extends TileEntity implements IInventory {
 				level++;
 			}
 		}
+
+		tier = 1;
+		if (hasDragonEgg) tier++;
+
+		if (level >= TIERII_LEVEL) tier++;
+
+		if (worldObj.isRemote) {
+			Color colorNeg = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(Color.white, Color.red, negativity());
+			Color colorPos = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(Color.white, Color.green, positivity());
+
+			beaconColor = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(colorNeg, colorPos, 0.5F);
+
+			if (hasDragonEgg)
+				beaconColor = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(beaconColor, Color.magenta, 0.5F);
+		}
 	}
+
+	@SideOnly(Side.CLIENT)
+	public Color getBeaconColor() { return beaconColor; }
 
 	public boolean isValidLevel(int level) {
 		for (int x = -level; x <= level; x++) {
@@ -63,7 +146,7 @@ public class TileEntityBeaconTierII extends TileEntity implements IInventory {
 				if (block.equals(Blocks.diamond_block))
 					totalPositive++;
 
-				if (block.equals(Blocks.coal_block) || !block.isBeaconBase(worldObj, this.xCoord + x, this.yCoord - level, this.zCoord + z, xCoord, yCoord, zCoord))
+				if (!block.equals(Blocks.coal_block) && !block.isBeaconBase(worldObj, this.xCoord + x, this.yCoord - level, this.zCoord + z, xCoord, yCoord, zCoord))
 					return false;
 
 				totalBlocks++;
@@ -87,9 +170,10 @@ public class TileEntityBeaconTierII extends TileEntity implements IInventory {
 			}
 		}
 
-		int[] effects = BeaconEffectsRegistry.getEffects(containedItems, level);
+		List<Integer> effects = BeaconEffectsRegistry.getEffects(containedItems, level);
+		System.out.println(effects.size()+ " "+tier);
 
-		if (effects.length != 0) {
+		if (effects.size() != 0) {
 			double range = (this.level * 15) + 10;
 
 			AxisAlignedBB area = AxisAlignedBB.getBoundingBox(this.xCoord + 1, this.yCoord + 1, this.zCoord + 1, this.xCoord, this.yCoord - level, this.zCoord).expand(range, range, range);
@@ -99,17 +183,25 @@ public class TileEntityBeaconTierII extends TileEntity implements IInventory {
 				if (shouldSkipEffect(effect)) continue;
 
 				for (Object player : players) {
-					((EntityPlayer) player).addPotionEffect(new PotionEffect(effect, isTierTwo ? 500 : 250, isTierTwo ? 0 : 1, true));
+					((EntityPlayer) player).addPotionEffect(new PotionEffect(effect, 250 * tier, tier - 1, true));
 				}
 			}
 		}
 	}
 
+	public float positivity() {
+		return (float) totalPositive / totalBlocks;
+	}
+
+	public float negativity() {
+		return (float) totalNegative / totalBlocks;
+	}
+
 	private boolean shouldSkipEffect(int effectID) {
 		if (Potion.potionTypes[effectID].isBadEffect())
-			return Math.random() < totalPositive / totalBlocks;
+			return Math.random() < positivity();
 
-		return Math.random() < totalNegative / totalBlocks;
+		return Math.random() < negativity();
 	}
 
 	@Override
@@ -119,14 +211,14 @@ public class TileEntityBeaconTierII extends TileEntity implements IInventory {
 
 	@Override
 	public ItemStack getStackInSlot(int i) {
-		return new ItemStack(containedItems[i], 1);
+		return containedItems[i];
 	}
 
 	@Override
 	public ItemStack getStackInSlotOnClosing(int i) {
 		if (containedItems[i] == null) return null;
 
-		ItemStack stack = new ItemStack(containedItems[i]);
+		ItemStack stack = containedItems[i];
 
 		setInventorySlotContents(i, null);
 
@@ -137,7 +229,12 @@ public class TileEntityBeaconTierII extends TileEntity implements IInventory {
 	public void setInventorySlotContents(int i, ItemStack itemStack) {
 		if (!isItemValidForSlot(i, itemStack)) return;
 
-		this.containedItems[i] = itemStack.getItem();
+		if (itemStack == null)
+			this.containedItems[i] = null;
+		else
+			this.containedItems[i] = itemStack;
+
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 
 	@Override
@@ -179,18 +276,46 @@ public class TileEntityBeaconTierII extends TileEntity implements IInventory {
 	public boolean isItemValidForSlot(int i, ItemStack itemStack) {
 		if (itemStack == null) return true;
 
-		for (Item item : containedItems) {
-			if (itemStack.getItem().equals(item)) return false;
+		for (ItemStack item : containedItems) {
+			if (item == null)
+				break;
+
+			if (itemStack.isItemEqual(item)) return false;
 		}
 
-		return BeaconEffectsRegistry.hasItem(itemStack.getItem());
+		return BeaconEffectsRegistry.hasItem(itemStack);
+	}
+
+	@SideOnly(Side.CLIENT)
+	public float getRotation() {
+		if (!isActive())
+			return 0.0F;
+
+		int i = (int)(worldObj.getTotalWorldTime() - lastWorldTime);
+		lastWorldTime = worldObj.getTotalWorldTime();
+
+		if (i > 1) {
+			rotation -= i / 40.0F;
+			if (rotation < 0.0F) {
+				rotation = 0.0F;
+			}
+		}
+
+		rotation += 0.025F;
+		if (rotation > 1.0F) {
+			rotation = 1.0F;
+		}
+
+		return rotation;
 	}
 
 	public int getItemSlot(ItemStack itemstack) {
-		Item item = itemstack.getItem();
+		if (itemstack == null) return -1;
 
 		for (int i = 0; i < containedItems.length; i++) {
-			if (item.equals(containedItems[i]))
+			if (containedItems[i] == null) return -1;
+
+			if (itemstack.isItemEqual(containedItems[i]))
 				return i;
 		}
 
@@ -204,5 +329,17 @@ public class TileEntityBeaconTierII extends TileEntity implements IInventory {
 		}
 
 		return containedItems.length;
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public double getMaxRenderDistanceSquared() {
+		return 65536.0D;
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public AxisAlignedBB getRenderBoundingBox() {
+		return INFINITE_EXTENT_AABB;
 	}
 }

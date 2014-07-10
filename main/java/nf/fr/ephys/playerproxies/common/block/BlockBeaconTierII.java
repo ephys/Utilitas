@@ -5,7 +5,6 @@ import net.minecraft.block.BlockBeacon;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
@@ -13,13 +12,12 @@ import net.minecraft.world.World;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.registry.BeaconEffectsRegistry;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBeaconTierII;
-import nf.fr.ephys.playerproxies.common.tileentity.TileEntityItemTicker;
 import nf.fr.ephys.playerproxies.helpers.BlockHelper;
 
 public class BlockBeaconTierII extends BlockBeacon {
 	public static void register() {
 		PlayerProxies.Blocks.betterBeacon = new BlockBeaconTierII();
-		PlayerProxies.Blocks.betterBeacon.setBlockName("PP_BetterBeacon").setCreativeTab(PlayerProxies.creativeTab);
+		PlayerProxies.Blocks.betterBeacon.setBlockName("PP_BetterBeacon").setCreativeTab(PlayerProxies.creativeTab).setBlockTextureName("beacon").setLightLevel(1F);
 
 		GameRegistry.registerBlock(PlayerProxies.Blocks.betterBeacon, PlayerProxies.Blocks.betterBeacon.getUnlocalizedName());
 		GameRegistry.registerTileEntity(TileEntityBeaconTierII.class, PlayerProxies.Blocks.betterBeacon.getUnlocalizedName());
@@ -30,17 +28,20 @@ public class BlockBeaconTierII extends BlockBeacon {
 		// level 2
 		BeaconEffectsRegistry.addEffect(Items.coal, Potion.blindness.getId(), 2, TileEntityBeaconTierII.MAX_LEVELS);
 
-		BeaconEffectsRegistry.addEffect(Items.bone, Potion.blindness.getId(), 2, TileEntityBeaconTierII.MAX_LEVELS);
-		BeaconEffectsRegistry.addEffect(Items.bone, Potion.nightVision.getId(), 2, TileEntityBeaconTierII.MAX_LEVELS);
+		BeaconEffectsRegistry.addEffect(Items.golden_carrot, Potion.blindness.getId(), 2, TileEntityBeaconTierII.MAX_LEVELS);
+		BeaconEffectsRegistry.addEffect(Items.golden_carrot, Potion.nightVision.getId(), 0, 3);
 
 		// level 3
-		BeaconEffectsRegistry.addEffect(Items.spider_eye, Potion.poison.getId(), 3, TileEntityBeaconTierII.MAX_LEVELS);
-		BeaconEffectsRegistry.addEffect(Items.spider_eye, Potion.weakness.getId(), 3, TileEntityBeaconTierII.MAX_LEVELS);
+		BeaconEffectsRegistry.addEffect(Items.spider_eye, Potion.poison.getId(), 0, TileEntityBeaconTierII.MAX_LEVELS);
+		BeaconEffectsRegistry.addEffect(Items.spider_eye, Potion.weakness.getId(), 0, TileEntityBeaconTierII.MAX_LEVELS);
 
 		BeaconEffectsRegistry.addEffect(Items.blaze_rod, Potion.fireResistance.getId(), 6, 6);
 
 		// level 4
-		BeaconEffectsRegistry.addEffect(new Item[]{ Items.sugar, Items.golden_apple }, Potion.digSpeed.getId(), 4, TileEntityBeaconTierII.MAX_LEVELS);
+		BeaconEffectsRegistry.addEffect(new ItemStack[]{ new ItemStack(Items.sugar), new ItemStack(Items.diamond_pickaxe), new ItemStack(Items.golden_apple) }, Potion.digSpeed.getId(), 4, TileEntityBeaconTierII.MAX_LEVELS);
+
+		BeaconEffectsRegistry.addEffect(new ItemStack(Items.golden_apple, 1, 1), Potion.regeneration.getId(), 4, TileEntityBeaconTierII.MAX_LEVELS);
+		BeaconEffectsRegistry.addEffect(new ItemStack(Items.golden_apple, 1, 1), Potion.weakness.getId(), 4, 4);
 
 		/*
 		 * slowness, mining fatigue, strenght, heal, instant damage, jump boost, nausea, regeneration, resistance,
@@ -67,16 +68,18 @@ public class BlockBeaconTierII extends BlockBeacon {
 			int itemCount = te.getItemCount();
 
 			if (item == null) {
-				ItemStack stack = te.getStackInSlotOnClosing(itemCount - 1);
-				BlockHelper.dropItem(stack, world, x, y, z);
+				if (itemCount > 0) {
+					ItemStack stack = te.getStackInSlotOnClosing(itemCount - 1);
+					BlockHelper.dropItem(stack, player);
+				}
 			} else {
 				int pos = te.getItemSlot(item);
 
 				if (pos != -1) {
 					ItemStack stack = te.getStackInSlotOnClosing(pos);
-					BlockHelper.dropItem(stack, world, x, y, z);
+					BlockHelper.dropItem(stack, player);
 				} else {
-					if (te.getSizeInventory() != te.getItemCount()) {
+					if (BeaconEffectsRegistry.hasItem(item) && te.getItemCount() != te.getSizeInventory()) {
 						ItemStack newStack = item.copy();
 						newStack.stackSize = 1;
 
@@ -94,7 +97,7 @@ public class BlockBeaconTierII extends BlockBeacon {
 
 	@Override
 	public void onBlockPreDestroy(World world, int x, int y, int z, int metadata) {
-		TileEntityItemTicker te = (TileEntityItemTicker) world.getTileEntity(x, y, z);
+		TileEntityBeaconTierII te = (TileEntityBeaconTierII) world.getTileEntity(x, y, z);
 
 		if (te != null)
 			BlockHelper.dropContents(te, world, x, y, z);

@@ -9,7 +9,9 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import dan200.computercraft.shared.turtle.blocks.ITurtleTile;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -68,9 +70,10 @@ public class CommonProxy {
 		BlockToughwoodPlank.register();
 		BlockItemTicker.register();
 		BlockGravitationalField.register();
+		BlockHomeShield.register();
+		BlockBeaconTierII.register();
 
-		if (!BlockHomeShield.requiresTwilightForest)
-			BlockHomeShield.register();
+		Blocks.dragon_egg.setCreativeTab(CreativeTabs.tabDecorations);
 	}
 
 	public void registerCrafts() {
