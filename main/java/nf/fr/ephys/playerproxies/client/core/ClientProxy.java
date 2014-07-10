@@ -1,7 +1,9 @@
 package nf.fr.ephys.playerproxies.client.core;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import nf.fr.ephys.playerproxies.client.renderer.BlockBeaconTierIIRenderer;
 import nf.fr.ephys.playerproxies.client.renderer.TileEntityBeaconTierIIRenderer;
 import nf.fr.ephys.playerproxies.client.renderer.TileEntityInterfaceRenderer;
 import nf.fr.ephys.playerproxies.client.renderer.TileEntityItemTickerRenderer;
@@ -23,5 +25,7 @@ public class ClientProxy extends CommonProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityItemTicker.class, new TileEntityItemTickerRenderer());
 
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBeaconTierII.class, new TileEntityBeaconTierIIRenderer());
+
+		RenderingRegistry.registerBlockHandler(BlockBeaconTierIIRenderer.renderId, new BlockBeaconTierIIRenderer());
 	}
 }

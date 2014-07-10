@@ -6,6 +6,8 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
@@ -13,12 +15,29 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
+import java.util.List;
 import java.util.Random;
 
 public class BlockHelper {
 	private static Random random = new Random();
 
 	private static final int OPPOSITE_SIDES[] = { 1, 0, 3, 2, 5, 4 };
+
+	public static int removeItemRecipe(ItemStack stack) {
+		List crafts = CraftingManager.getInstance().getRecipeList();
+
+		int nbRemoved = 0;
+		for (int i = 0; i < crafts.size(); i++) {
+			if (crafts.get(i) instanceof IRecipe) {
+				if (((IRecipe) crafts.get(i)).getRecipeOutput().isItemEqual(stack)) {
+					crafts.remove(i);
+					nbRemoved++;
+				}
+			}
+		}
+
+		return nbRemoved;
+	}
 
 	public static boolean insert(IInventory inventory, ItemStack stack) {
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {

@@ -14,7 +14,6 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
-import nf.fr.ephys.playerproxies.client.gui.GuiModConfig;
 import nf.fr.ephys.playerproxies.client.gui.GuiModConfigFactory;
 import nf.fr.ephys.playerproxies.common.block.*;
 import nf.fr.ephys.playerproxies.common.command.CommandNickname;

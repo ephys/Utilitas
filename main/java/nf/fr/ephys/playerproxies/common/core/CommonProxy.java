@@ -73,7 +73,8 @@ public class CommonProxy {
 		BlockHomeShield.register();
 		BlockBeaconTierII.register();
 
-		Blocks.dragon_egg.setCreativeTab(CreativeTabs.tabDecorations);
+		if (PlayerProxies.getConfig().addDragonEggTab())
+			Blocks.dragon_egg.setCreativeTab(CreativeTabs.tabDecorations);
 	}
 
 	public void registerCrafts() {
@@ -86,6 +87,7 @@ public class CommonProxy {
 		BlockItemTicker.registerCraft();
 		BlockGravitationalField.registerCraft();
 		BlockHomeShield.registerCraft();
+		BlockBeaconTierII.registerCraft();
 
 		ItemLinker.registerCraft();
 

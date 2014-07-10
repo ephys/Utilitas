@@ -1,28 +1,39 @@
 package nf.fr.ephys.playerproxies.common.block;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBeacon;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import nf.fr.ephys.playerproxies.client.renderer.BlockBeaconTierIIRenderer;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.registry.BeaconEffectsRegistry;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBeaconTierII;
 import nf.fr.ephys.playerproxies.helpers.BlockHelper;
-import nf.fr.ephys.playerproxies.helpers.DebugHelper;
+import nf.fr.ephys.playerproxies.util.cofh.RegistryUtils;
 
 public class BlockBeaconTierII extends BlockBeacon {
+	public static boolean overwrite = true;
+
 	public static void register() {
+		if (!overwrite) return;
+
 		PlayerProxies.Blocks.betterBeacon = new BlockBeaconTierII();
-		PlayerProxies.Blocks.betterBeacon.setBlockName("PP_BetterBeacon").setCreativeTab(PlayerProxies.creativeTab).setBlockTextureName("beacon").setLightLevel(1F);
+		PlayerProxies.Blocks.betterBeacon.setBlockName("beacon").setCreativeTab(PlayerProxies.creativeTab).setBlockTextureName("beacon").setLightLevel(1F);
 
 		GameRegistry.registerBlock(PlayerProxies.Blocks.betterBeacon, PlayerProxies.Blocks.betterBeacon.getUnlocalizedName());
 		GameRegistry.registerTileEntity(TileEntityBeaconTierII.class, PlayerProxies.Blocks.betterBeacon.getUnlocalizedName());
+
+		RegistryUtils.overwriteEntry(Block.blockRegistry, "minecraft:beacon", PlayerProxies.Blocks.betterBeacon);
 
 		// level 1 beacon
 		BeaconEffectsRegistry.addEffect(Items.sugar, Potion.moveSpeed.getId(), 1, TileEntityBeaconTierII.MAX_LEVELS);
@@ -56,6 +67,27 @@ public class BlockBeaconTierII extends BlockBeacon {
 		// level 6
 		BeaconEffectsRegistry.addEffect(Items.blaze_rod, Potion.fireResistance.getId(), 6, TileEntityBeaconTierII.MAX_LEVELS);
 		BeaconEffectsRegistry.addEffect(Items.golden_carrot, Potion.nightVision.getId(), 6, TileEntityBeaconTierII.MAX_LEVELS);
+	}
+
+	public static void registerCraft() {
+		if (!overwrite) return;
+
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.betterBeacon),
+				"ggg",
+				"gsg",
+				"ooo",
+
+				'g', new ItemStack(PlayerProxies.Blocks.baseShineyGlass, 1, 0),
+				'o', new ItemStack(Blocks.obsidian),
+				's', new ItemStack(Items.nether_star)
+		);
+
+		BlockHelper.removeItemRecipe(new ItemStack(Blocks.beacon));
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		return Blocks.beacon == other || this == other;
 	}
 
 	@Override
@@ -112,5 +144,17 @@ public class BlockBeaconTierII extends BlockBeacon {
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack itemStack) {
 		((TileEntityBeaconTierII) world.getTileEntity(x, y, z)).onBlockUpdate();
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public int getRenderType() {
+		return BlockBeaconTierIIRenderer.renderId;
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public int getRenderBlockPass() {
+		return 1;
 	}
 }

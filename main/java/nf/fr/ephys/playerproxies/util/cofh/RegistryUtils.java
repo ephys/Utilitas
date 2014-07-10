@@ -1,6 +1,7 @@
 package nf.fr.ephys.playerproxies.util.cofh;
 
 import net.minecraft.util.RegistryNamespaced;
+import nf.fr.ephys.playerproxies.common.PlayerProxies;
 
 /**
  * https://github.com/CoFH/CoFHLib/blob/master/src/main/java/cofh/util/RegistryUtils.java
@@ -8,6 +9,8 @@ import net.minecraft.util.RegistryNamespaced;
 public class RegistryUtils {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static boolean overwriteEntry(RegistryNamespaced registry, String name, Object object) {
+		PlayerProxies.getLogger().info("Trying to overwrite '"+name+"', impossible operation. Unimplemented method RegistryUtils::overwriteEntry");
+
 		/*Object oldThing = registry.getObject(name);
 		int id = registry.getIDForObject(oldThing);
 

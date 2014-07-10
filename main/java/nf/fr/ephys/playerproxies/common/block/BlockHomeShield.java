@@ -94,7 +94,7 @@ public class BlockHomeShield extends Block {
 		if (requiresTwilightForest) {
 			PlayerProxies.getLogger().info("Twilight Forest found. PP will try to overwrite the TF shield block...");
 
-			PlayerProxies.Blocks.homeShield.setBlockName(tfShield.getUnlocalizedName());
+			PlayerProxies.Blocks.homeShield.setBlockName("TwilightForest:"+tfShield.getUnlocalizedName());
 			//GameRegistry.registerBlock(PlayerProxies.Blocks.homeShield, tfShield.getUnlocalizedName());
 
 			/*Block.blocksList[twilightForestShieldID] = null;
