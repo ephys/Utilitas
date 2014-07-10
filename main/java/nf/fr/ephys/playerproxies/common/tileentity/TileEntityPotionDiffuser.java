@@ -30,7 +30,7 @@ public class TileEntityPotionDiffuser extends TileEnergyHandler implements ISide
 	public static final int SLOT_BOTTLE = 0;
 
 	public static final int RANGE = 8;
-	public static final int ENERGY_CONSUMPTION = 25;
+	public static final int ENERGY_CONSUMPTION = 10;
 	public static final int INTERVAL = 10;
 
 	@Override

@@ -1,6 +1,7 @@
 package nf.fr.ephys.playerproxies.common.block;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockBeacon;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,6 +14,7 @@ import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.registry.BeaconEffectsRegistry;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBeaconTierII;
 import nf.fr.ephys.playerproxies.helpers.BlockHelper;
+import nf.fr.ephys.playerproxies.helpers.DebugHelper;
 
 public class BlockBeaconTierII extends BlockBeacon {
 	public static void register() {
@@ -22,32 +24,38 @@ public class BlockBeaconTierII extends BlockBeacon {
 		GameRegistry.registerBlock(PlayerProxies.Blocks.betterBeacon, PlayerProxies.Blocks.betterBeacon.getUnlocalizedName());
 		GameRegistry.registerTileEntity(TileEntityBeaconTierII.class, PlayerProxies.Blocks.betterBeacon.getUnlocalizedName());
 
-		// level 0 beacon
-		BeaconEffectsRegistry.addEffect(Items.sugar, Potion.moveSpeed.getId(), 0, TileEntityBeaconTierII.MAX_LEVELS);
+		// level 1 beacon
+		BeaconEffectsRegistry.addEffect(Items.sugar, Potion.moveSpeed.getId(), 1, TileEntityBeaconTierII.MAX_LEVELS);
+		BeaconEffectsRegistry.addEffect(Items.sugar, Potion.confusion.getId(), 1, TileEntityBeaconTierII.MAX_LEVELS);
+
+		BeaconEffectsRegistry.addEffect(new ItemStack[]{ new ItemStack(Items.sugar), new ItemStack(Items.diamond_pickaxe), new ItemStack(Items.golden_apple) }, Potion.digSpeed.getId(), 1, TileEntityBeaconTierII.MAX_LEVELS);
+
+		BeaconEffectsRegistry.addEffect(new ItemStack(Items.fish, 1, 3), Potion.moveSlowdown.getId(), 1, TileEntityBeaconTierII.MAX_LEVELS);
+		BeaconEffectsRegistry.addEffect(new ItemStack(Items.fish, 1, 3), Potion.waterBreathing.getId(), 2, TileEntityBeaconTierII.MAX_LEVELS);
+
+		BeaconEffectsRegistry.addEffect(Items.spider_eye, Potion.poison.getId(), 0, TileEntityBeaconTierII.MAX_LEVELS);
+		BeaconEffectsRegistry.addEffect(Items.rotten_flesh, Potion.hunger.getId(), 3, TileEntityBeaconTierII.MAX_LEVELS);
 
 		// level 2
 		BeaconEffectsRegistry.addEffect(Items.coal, Potion.blindness.getId(), 2, TileEntityBeaconTierII.MAX_LEVELS);
 
-		BeaconEffectsRegistry.addEffect(Items.golden_carrot, Potion.blindness.getId(), 2, TileEntityBeaconTierII.MAX_LEVELS);
-		BeaconEffectsRegistry.addEffect(Items.golden_carrot, Potion.nightVision.getId(), 0, 3);
+		BeaconEffectsRegistry.addEffect(new ItemStack[] { new ItemStack(Items.carrot), new ItemStack(Items.sugar) }, Potion.jump.getId(), 3, TileEntityBeaconTierII.MAX_LEVELS);
+		BeaconEffectsRegistry.addEffect(new ItemStack[] { new ItemStack(Items.carrot), new ItemStack(Items.sugar) }, Potion.hunger.getId(), 3, TileEntityBeaconTierII.MAX_LEVELS);
 
 		// level 3
-		BeaconEffectsRegistry.addEffect(Items.spider_eye, Potion.poison.getId(), 0, TileEntityBeaconTierII.MAX_LEVELS);
-		BeaconEffectsRegistry.addEffect(Items.spider_eye, Potion.weakness.getId(), 0, TileEntityBeaconTierII.MAX_LEVELS);
-
-		BeaconEffectsRegistry.addEffect(Items.blaze_rod, Potion.fireResistance.getId(), 6, 6);
+		BeaconEffectsRegistry.addEffect(new ItemStack[]{ new ItemStack(Items.spider_eye), new ItemStack(Items.ender_eye) }, Potion.invisibility.getId(), 3, TileEntityBeaconTierII.MAX_LEVELS);
+		BeaconEffectsRegistry.addEffect(new ItemStack[] { new ItemStack(Items.diamond_chestplate), new ItemStack(Items.experience_bottle) }, Potion.resistance.getId(), 6, 6);
 
 		// level 4
-		BeaconEffectsRegistry.addEffect(new ItemStack[]{ new ItemStack(Items.sugar), new ItemStack(Items.diamond_pickaxe), new ItemStack(Items.golden_apple) }, Potion.digSpeed.getId(), 4, TileEntityBeaconTierII.MAX_LEVELS);
+		BeaconEffectsRegistry.addEffect(new ItemStack[] { new ItemStack(Items.nether_star), new ItemStack(Items.magma_cream) }, Potion.damageBoost.getId(), 2, TileEntityBeaconTierII.MAX_LEVELS);
 
-		BeaconEffectsRegistry.addEffect(new ItemStack(Items.golden_apple, 1, 1), Potion.regeneration.getId(), 4, TileEntityBeaconTierII.MAX_LEVELS);
-		BeaconEffectsRegistry.addEffect(new ItemStack(Items.golden_apple, 1, 1), Potion.weakness.getId(), 4, 4);
+		// level 5
+		BeaconEffectsRegistry.addEffect(new ItemStack(Items.golden_apple, 1, 1), Potion.regeneration.getId(), 5, TileEntityBeaconTierII.MAX_LEVELS);
+		BeaconEffectsRegistry.addEffect(new ItemStack(Items.golden_apple, 1, 1), Potion.weakness.getId(), 5, TileEntityBeaconTierII.MAX_LEVELS);
 
-		/*
-		 * slowness, mining fatigue, strenght, heal, instant damage, jump boost, nausea, regeneration, resistance,
-		 * water breathing, invisibility, blindness, night vision, hunger, withering, health boost,
-		 * absorbtion, saturation
-		 */
+		// level 6
+		BeaconEffectsRegistry.addEffect(Items.blaze_rod, Potion.fireResistance.getId(), 6, TileEntityBeaconTierII.MAX_LEVELS);
+		BeaconEffectsRegistry.addEffect(Items.golden_carrot, Potion.nightVision.getId(), 6, TileEntityBeaconTierII.MAX_LEVELS);
 	}
 
 	@Override
@@ -79,17 +87,13 @@ public class BlockBeaconTierII extends BlockBeacon {
 					ItemStack stack = te.getStackInSlotOnClosing(pos);
 					BlockHelper.dropItem(stack, player);
 				} else {
-					if (BeaconEffectsRegistry.hasItem(item) && te.getItemCount() != te.getSizeInventory()) {
-						ItemStack newStack = item.copy();
-						newStack.stackSize = 1;
+					ItemStack newStack = item.copy();
+					newStack.stackSize = 1;
 
+					if (BlockHelper.insert(te, newStack))
 						item.stackSize--;
-						te.setInventorySlotContents(te.getItemCount(), newStack);
-					}
 				}
 			}
-
-			return true;
 		}
 
 		return true;
@@ -106,5 +110,7 @@ public class BlockBeaconTierII extends BlockBeacon {
 	}
 
 	@Override
-	public void onBlockPlacedBy(World paramWorld, int paramInt1, int paramInt2, int paramInt3, EntityLivingBase paramEntityLivingBase, ItemStack paramItemStack) {}
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack itemStack) {
+		((TileEntityBeaconTierII) world.getTileEntity(x, y, z)).onBlockUpdate();
+	}
 }

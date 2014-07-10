@@ -15,6 +15,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.stats.AchievementList;
 import net.minecraft.tileentity.TileEntityBeacon;
 import net.minecraft.util.AxisAlignedBB;
+import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.registry.BeaconEffectsRegistry;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
@@ -37,11 +38,12 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 	@SideOnly(Side.CLIENT)
 	public int displayTick = 0;
 
-	public static final int MAX_LEVELS = 8;
+	public static final int MAX_LEVELS = 6;
 	public static final int TIERII_LEVEL = 4;
 	public static final int MAX_ITEMS = 4;
 
 	private ItemStack[] containedItems = new ItemStack[MAX_ITEMS];
+	private int nbItems = 0;
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
@@ -52,12 +54,14 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 		totalNegative = NBTHelper.getInt(nbt, "totalNegative", 0);
 
 		containedItems = new ItemStack[MAX_ITEMS];
+		nbItems = 0;
 
 		for (int i = 0; i < containedItems.length; i++) {
 			if (!nbt.hasKey("item_"+i))
-				break;
+				continue;
 
 			containedItems[i] = NBTHelper.getItemStack(nbt, "item_"+i);
+			nbItems++;
 		}
 
 		super.readFromNBT(nbt);
@@ -72,7 +76,7 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 		nbt.setInteger("totalNegative", totalNegative);
 
 		for (int i = 0; i < containedItems.length; i++) {
-			if (containedItems[i] == null) break;
+			if (containedItems[i] == null) continue;
 
 			NBTHelper.setWritable(nbt, "item_"+i, containedItems[i]);
 		}
@@ -101,12 +105,21 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 		}
 	}
 
+	public void onBlockUpdate() {
+		this.validateStructure();
+	}
+
+	private boolean isNearBeacon() {
+		return worldObj.getBlock(xCoord - 1, yCoord, zCoord).equals(PlayerProxies.Blocks.betterBeacon) ||
+				worldObj.getBlock(xCoord + 1, yCoord, zCoord).equals(PlayerProxies.Blocks.betterBeacon) ||
+				worldObj.getBlock(xCoord, yCoord, zCoord - 1).equals(PlayerProxies.Blocks.betterBeacon) ||
+				worldObj.getBlock(xCoord, yCoord, zCoord + 1).equals(PlayerProxies.Blocks.betterBeacon);
+	}
+
 	private void validateStructure() {
 		level = 0;
 
-		boolean hasDragonEgg = this.worldObj.getBlock(xCoord, yCoord + 1, zCoord).equals(Blocks.dragon_egg);
-
-		if (hasDragonEgg || this.worldObj.canBlockSeeTheSky(xCoord, yCoord + 1, zCoord)) {
+		if (!isNearBeacon() && this.worldObj.canBlockSeeTheSky(xCoord, yCoord + 1, zCoord)) {
 			totalNegative = totalPositive = totalBlocks = 0;
 
 			for (int i = 0; i < MAX_LEVELS; i++) {
@@ -115,22 +128,34 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 
 				level++;
 			}
-		}
 
-		tier = 1;
-		if (hasDragonEgg) tier++;
+			boolean hasDragonEgg = this.worldObj.getBlock(xCoord, yCoord + 1, zCoord).equals(Blocks.dragon_egg);
 
-		if (level >= TIERII_LEVEL) tier++;
-
-		if (worldObj.isRemote) {
-			Color colorNeg = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(Color.white, Color.red, negativity());
-			Color colorPos = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(Color.white, Color.green, positivity());
-
-			beaconColor = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(colorNeg, colorPos, 0.5F);
-
+			tier = 1;
 			if (hasDragonEgg)
-				beaconColor = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(beaconColor, Color.magenta, 0.5F);
+				tier++;
+
+			if (level >= TIERII_LEVEL)
+				tier++;
+
+			if (worldObj.isRemote) {
+				Color colorNeg = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(Color.white, Color.red, negativity());
+				Color colorPos = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(Color.white, Color.green, positivity());
+
+				beaconColor = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(colorNeg, colorPos, 0.5F);
+
+				if (hasDragonEgg)
+					beaconColor = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(beaconColor, Color.magenta, 0.5F);
+			}
 		}
+	}
+
+	public static boolean isBlockNegative(Block block) {
+		return block.equals(Blocks.coal_block);
+	}
+
+	public static boolean isBlockPositive(Block block) {
+		return block.equals(Blocks.emerald_block) || block.equals(Blocks.diamond_block);
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -140,14 +165,16 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 		for (int x = -level; x <= level; x++) {
 			for (int z = -level; z <= level; z++) {
 				Block block = this.worldObj.getBlock(this.xCoord + x, this.yCoord - level, this.zCoord + z);
-				if (block.equals(Blocks.coal_block))
-					totalNegative++;
-
-				if (block.equals(Blocks.diamond_block))
-					totalPositive++;
 
 				if (!block.equals(Blocks.coal_block) && !block.isBeaconBase(worldObj, this.xCoord + x, this.yCoord - level, this.zCoord + z, xCoord, yCoord, zCoord))
 					return false;
+
+				if (isBlockNegative(block))
+					totalNegative++;
+
+				if (isBlockPositive(block))
+					totalPositive++;
+
 
 				totalBlocks++;
 			}
@@ -171,7 +198,6 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 		}
 
 		List<Integer> effects = BeaconEffectsRegistry.getEffects(containedItems, level);
-		System.out.println(effects.size()+ " "+tier);
 
 		if (effects.size() != 0) {
 			double range = (this.level * 15) + 10;
@@ -183,7 +209,10 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 				if (shouldSkipEffect(effect)) continue;
 
 				for (Object player : players) {
-					((EntityPlayer) player).addPotionEffect(new PotionEffect(effect, 250 * tier, tier - 1, true));
+					if (Potion.potionTypes[effect].isInstant() && Math.random() < 0.1)
+						((EntityPlayer) player).addPotionEffect(new PotionEffect(effect, 1, tier - 1, true));
+					else
+						((EntityPlayer) player).addPotionEffect(new PotionEffect(effect, 250 * tier, tier - 1, true));
 				}
 			}
 		}
@@ -229,10 +258,12 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 	public void setInventorySlotContents(int i, ItemStack itemStack) {
 		if (!isItemValidForSlot(i, itemStack)) return;
 
-		if (itemStack == null)
-			this.containedItems[i] = null;
-		else
-			this.containedItems[i] = itemStack;
+		if (this.containedItems[i] != null && itemStack == null)
+			nbItems--;
+		else if (this.containedItems[i] == null && itemStack != null)
+			nbItems++;
+
+		this.containedItems[i] = itemStack;
 
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
@@ -274,16 +305,7 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemStack) {
-		if (itemStack == null) return true;
-
-		for (ItemStack item : containedItems) {
-			if (item == null)
-				break;
-
-			if (itemStack.isItemEqual(item)) return false;
-		}
-
-		return BeaconEffectsRegistry.hasItem(itemStack);
+		return itemStack == null || (containedItems[i] == null && getItemSlot(itemStack) == -1 && BeaconEffectsRegistry.hasItem(itemStack));
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -313,7 +335,7 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 		if (itemstack == null) return -1;
 
 		for (int i = 0; i < containedItems.length; i++) {
-			if (containedItems[i] == null) return -1;
+			if (containedItems[i] == null) continue;
 
 			if (itemstack.isItemEqual(containedItems[i]))
 				return i;
@@ -323,12 +345,7 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 	}
 
 	public int getItemCount() {
-		for (int i = 0; i < containedItems.length; i++) {
-			if (containedItems[i] == null)
-				return i;
-		}
-
-		return containedItems.length;
+		return nbItems;
 	}
 
 	@Override

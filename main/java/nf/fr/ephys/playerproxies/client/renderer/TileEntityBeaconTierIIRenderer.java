@@ -23,7 +23,7 @@ public class TileEntityBeaconTierIIRenderer extends TileEntitySpecialRenderer {
 		renderTileEntityAt((TileEntityBeaconTierII) tileEntity, v, v2, v3, v4);
 	}
 
-	private void renderInventory(float rotation, TileEntityBeaconTierII tile,  double x, double y, double z, float paramFloat) {
+	private void renderInventory(TileEntityBeaconTierII tile,  double x, double y, double z) {
 		GL11.glPushMatrix();
 			GL11.glTranslated(x, y, z);
 
@@ -31,6 +31,7 @@ public class TileEntityBeaconTierIIRenderer extends TileEntitySpecialRenderer {
 			GL11.glScalef(scale, scale, scale);
 
 			float radius = 0.5F;
+
 			// center the stacks
 			GL11.glTranslatef(0.5F, 2.5F, -radius);
 
@@ -40,24 +41,25 @@ public class TileEntityBeaconTierIIRenderer extends TileEntitySpecialRenderer {
 			GL11.glRotatef(tile.displayTick++, 0F, 1F, 0F);
 			GL11.glTranslatef(-0.5F, 0, -1.5F);
 
+			float angle = 360F / tile.getItemCount();
+
 			for (int i = 0; i < tile.getSizeInventory(); i++) {
 				ItemStack stack = tile.getStackInSlot(i);
 
-				if (stack == null) continue;
+				if (stack != null)
+					RenderHelper.renderItem3D(stack);
 
-				GL11.glTranslatef(0.5F, 0, 1F+radius);
-				GL11.glRotatef(90, 0F, 1F, 0F);
-				GL11.glTranslatef(-0.5F, 0, -1F-radius);
-
-				RenderHelper.renderItem3D(stack);
+				GL11.glTranslatef(0.5F, 0, 1F + radius);
+				GL11.glRotatef(angle, 0F, 1F, 0F);
+				GL11.glTranslatef(-0.5F, 0, -1F - radius);
 			}
 		GL11.glPopMatrix();
 	}
 
 	public void renderTileEntityAt(TileEntityBeaconTierII tile, double x, double y, double z, float paramFloat) {
-		float f1 = tile.getRotation();
+		renderInventory(tile, x, y, z);
 
-		renderInventory(f1, tile, x, y, z, paramFloat);
+		float f1 = tile.getRotation();
 
 		GL11.glAlphaFunc(516, 0.1F);
 		if (f1 > 0.0F)
