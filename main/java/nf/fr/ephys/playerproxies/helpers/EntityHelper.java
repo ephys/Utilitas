@@ -1,15 +1,11 @@
 package nf.fr.ephys.playerproxies.helpers;
 
-import java.util.List;
-import java.util.UUID;
-
 import com.mojang.authlib.GameProfile;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -18,6 +14,9 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import nf.fr.ephys.playerproxies.util.NetServerHandlerFake;
+
+import java.util.List;
+import java.util.UUID;
 
 public class EntityHelper {
 	public static final int ARMORSLOT_HELMET = 3;

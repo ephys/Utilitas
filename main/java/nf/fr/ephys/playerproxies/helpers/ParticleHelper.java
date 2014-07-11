@@ -1,10 +1,10 @@
 package nf.fr.ephys.playerproxies.helpers;
 
-import java.util.ArrayList;
-
-import net.minecraft.client.Minecraft;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
+
+import java.util.ArrayList;
 
 public class ParticleHelper {
 	private static ArrayList<String> particles = new ArrayList<>();

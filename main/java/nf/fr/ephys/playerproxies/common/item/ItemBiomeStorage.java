@@ -5,15 +5,11 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.biome.BiomeGenBase;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBiomeScanner;
-import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
 import java.util.List;
-import java.util.Random;
 
 public class ItemBiomeStorage extends Item {
 	private static CreativeTabs biomesTab = new CreativeTabs(PlayerProxies.MODID + ".biomes") {

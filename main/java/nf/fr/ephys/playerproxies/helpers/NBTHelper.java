@@ -1,12 +1,12 @@
 package nf.fr.ephys.playerproxies.helpers;
 
-import java.util.UUID;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.WorldSavedData;
+
+import java.util.UUID;
 
 public class NBTHelper {
 	public static NBTTagCompound getNBT(ItemStack stack) {

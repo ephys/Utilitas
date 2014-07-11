@@ -1,10 +1,10 @@
 package nf.fr.ephys.playerproxies.helpers;
 
-import java.util.Collection;
-import java.util.Map;
-
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
+
+import java.util.Collection;
+import java.util.Map;
 
 public class EnchantmentHelper {
 	public static boolean hasEnchant(ItemStack is, Enchantment enchant) {

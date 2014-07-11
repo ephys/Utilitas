@@ -1,6 +1,6 @@
 package nf.fr.ephys.playerproxies.helpers;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.List;
 
 public class MathHelper {

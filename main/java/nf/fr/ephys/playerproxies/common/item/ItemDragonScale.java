@@ -12,15 +12,20 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldProvider;
-import net.minecraft.world.WorldProviderEnd;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.helpers.CommandHelper;
-import nf.fr.ephys.playerproxies.helpers.EntityHelper;
 import nf.fr.ephys.playerproxies.helpers.MathHelper;
 
 public class ItemDragonScale extends Item {
 	public final boolean isIngot;
+	@SideOnly(Side.CLIENT)
+	private int[] red = new int[] { 255, 0, 0 };
+	@SideOnly(Side.CLIENT)
+	private int[] purple = new int[] { 70, 0, 200 };
+
+	public ItemDragonScale(boolean isIngot) {
+		this.isIngot = isIngot;
+	}
 
 	public static void register() {
 		PlayerProxies.Items.dragonScale = new ItemDragonScale(false);
@@ -43,15 +48,6 @@ public class ItemDragonScale extends Item {
 	public static void registerCraft() {
 		GameRegistry.addShapelessRecipe(new ItemStack(PlayerProxies.Items.dragonScaleIngot), PlayerProxies.Items.dragonScale, Items.iron_ingot, Items.ender_pearl);
 	}
-
-	public ItemDragonScale(boolean isIngot) {
-		this.isIngot = isIngot;
-	}
-
-	@SideOnly(Side.CLIENT)
-	private int[] red = new int[] { 255, 0, 0 };
-	@SideOnly(Side.CLIENT)
-	private int[] purple = new int[] { 70, 0, 200 };
 
 	@Override
 	@SideOnly(Side.CLIENT)
