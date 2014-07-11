@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.Random;
 
 public class BlockHelper {
-	private static Random random = new Random();
+	public static Random random = new Random();
 
 	private static final int OPPOSITE_SIDES[] = { 1, 0, 3, 2, 5, 4 };
 
@@ -29,7 +30,11 @@ public class BlockHelper {
 		int nbRemoved = 0;
 		for (int i = 0; i < crafts.size(); i++) {
 			if (crafts.get(i) instanceof IRecipe) {
-				if (((IRecipe) crafts.get(i)).getRecipeOutput().isItemEqual(stack)) {
+				ItemStack output = ((IRecipe) crafts.get(i)).getRecipeOutput();
+
+				if (output == null) continue;
+
+				if (output.isItemEqual(stack)) {
 					crafts.remove(i);
 					nbRemoved++;
 				}
@@ -57,6 +62,16 @@ public class BlockHelper {
 
 		chunk.setBiomeArray(biomes);
 		chunk.setChunkModified();
+	}
+
+	public static int getTopYCoord(World world, int x, int z) {
+		int y = 63;
+
+		while (!world.getBlock(x, 63, z).equals(Blocks.air)) {
+			y++;
+		}
+
+		return y;
 	}
 
 	public static boolean isUnbreakable(Block block, World world, int x, int y, int z) {

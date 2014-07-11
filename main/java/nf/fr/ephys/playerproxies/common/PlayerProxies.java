@@ -20,6 +20,7 @@ import nf.fr.ephys.playerproxies.common.command.CommandNickname;
 import nf.fr.ephys.playerproxies.common.core.CommonProxy;
 import nf.fr.ephys.playerproxies.common.core.ConfigHandler;
 import nf.fr.ephys.playerproxies.common.item.ItemBiomeStorage;
+import nf.fr.ephys.playerproxies.common.item.ItemDragonScale;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
 import org.apache.logging.log4j.Logger;
 
@@ -67,12 +68,16 @@ public class PlayerProxies extends DummyModContainer {
 		public static BlockGravitationalField gravitationalField;
 		public static BlockHomeShield homeShield;
 		public static BlockBeaconTierII betterBeacon;
+
+		public static BlockEnderDragonSpawner dragonSpawner;
 	}
 
 	public static class Items {
 		public static ItemLinker linkDevice;
 		public static Item linkFocus;
 		public static ItemBiomeStorage biomeStorage;
+		public static ItemDragonScale dragonScale;
+		public static ItemDragonScale dragonScaleIngot;
 	}
 
 	public static class Enchantments {}

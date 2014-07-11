@@ -21,7 +21,7 @@ public class TileEntityBiomeReplicator extends TileEnergyHandler implements IInv
 
 	private int[][] bounds = null;
 
-	private int biome = -1;
+	private int biome = TileEntityBiomeScanner.NO_STORED_VALUE;
 	private ItemStack biomeHandler;
 
 	private int cursorX;

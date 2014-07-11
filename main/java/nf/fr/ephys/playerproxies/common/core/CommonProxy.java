@@ -20,6 +20,7 @@ import net.minecraftforge.common.MinecraftForge;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.block.*;
 import nf.fr.ephys.playerproxies.common.item.ItemBiomeStorage;
+import nf.fr.ephys.playerproxies.common.item.ItemDragonScale;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
 import nf.fr.ephys.playerproxies.common.network.PacketSetBiomeHandler;
 import nf.fr.ephys.playerproxies.common.network.PacketSetNicknameHandler;
@@ -73,6 +74,8 @@ public class CommonProxy {
 		BlockHomeShield.register();
 		BlockBeaconTierII.register();
 
+		BlockEnderDragonSpawner.register();
+
 		if (PlayerProxies.getConfig().addDragonEggTab())
 			Blocks.dragon_egg.setCreativeTab(CreativeTabs.tabDecorations);
 	}
@@ -102,6 +105,8 @@ public class CommonProxy {
 	private void registerItems() {
 		ItemLinker.register();
 		ItemBiomeStorage.register();
+
+		ItemDragonScale.register();
 
 		PlayerProxies.Items.linkFocus = new Item();
 		PlayerProxies.Items.linkFocus.setUnlocalizedName("PP_LinkFocus")

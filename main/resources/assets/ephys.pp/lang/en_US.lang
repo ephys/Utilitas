@@ -18,6 +18,8 @@ tile.PP_ToughwoodPlank.1.name=Biome transmuter
 item.PP_BiomeStorage.name=Biome signature handler
 item.PP_LinkWand.name=Linking wand
 item.PP_LinkFocus.name=Link focus
+item.PP_DragonScale.name=Dragon Scale
+item.PP_DragonScaleIngot.name=DragonScale Ingot
 
 playerproxies.configgui.ctgy.vanillatweaks=Vanilla Tweaks
 playerproxies.configgui.ctgy.vanillatweaks.tooltip=Properties of what Player Proxies changes from vanilla

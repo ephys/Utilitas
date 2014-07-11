@@ -5,6 +5,7 @@ import cpw.mods.fml.client.config.GuiConfig;
 import cpw.mods.fml.client.config.GuiConfigEntries;
 import cpw.mods.fml.client.config.IConfigElement;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraftforge.client.gui.ForgeGuiFactory;
 import net.minecraftforge.common.ForgeModContainer;
 import net.minecraftforge.common.config.ConfigElement;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;

@@ -39,7 +39,7 @@ public class PacketSetBiomeHandler implements IMessageHandler<PacketSetBiomeHand
 			x = byteBuf.readInt();
 			z = byteBuf.readInt();
 
-			biome = byteBuf.readInt() + 128;
+			biome = byteBuf.readByte() + 128;
 		}
 
 		@Override
