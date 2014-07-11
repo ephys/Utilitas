@@ -115,7 +115,7 @@ public class BlockEnderDragonSpawner extends Block {
 				if (o instanceof EntityPlayer) {
 					EntityPlayer player = (EntityPlayer) o;
 
-					CommandHelper.sendChatMessage(player, "The dragon is approaching (" + stage + "/7)");
+					CommandHelper.sendChatMessage(player, "The dragon is approaching (" + stage + " / 8)");
 				}
 			}
 
