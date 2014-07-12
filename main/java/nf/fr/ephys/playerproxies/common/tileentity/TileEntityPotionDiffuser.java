@@ -13,6 +13,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
+import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 import nf.fr.ephys.playerproxies.util.cofh.TileEnergyHandler;
 
@@ -31,7 +32,7 @@ public class TileEntityPotionDiffuser extends TileEnergyHandler implements ISide
 
 	public static final int RANGE = 8;
 	public static final int ENERGY_CONSUMPTION = 10;
-	public static final int INTERVAL = 10;
+	public static final int INTERVAL = 30;
 
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
@@ -113,63 +114,71 @@ public class TileEntityPotionDiffuser extends TileEnergyHandler implements ISide
 
 	@Override
 	public void updateEntity() {
-		if (storage.getEnergyStored() < ENERGY_CONSUMPTION) return;
+		if (worldObj.getTotalWorldTime() % INTERVAL != 0) return;
 
-		storage.extractEnergy(ENERGY_CONSUMPTION, false);
+		if (PlayerProxies.getConfig().requiresPower()) {
+			if (storage.getEnergyStored() < ENERGY_CONSUMPTION) return;
 
-		if (this.worldObj.getTotalWorldTime() % INTERVAL == 0) {
-			List<EntityLivingBase> entities = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(
-				this.xCoord - RANGE, this.yCoord - RANGE, this.zCoord - RANGE,
-				this.xCoord + RANGE, this.yCoord + RANGE, this.zCoord + RANGE
-			));
+			storage.extractEnergy(ENERGY_CONSUMPTION, false);
+		}
 
-			if (this.tank.getFluidAmount() >= INTERVAL) {
-				for (EntityLivingBase entity : entities) {
-					Block block = this.tank.getFluid().getFluid().getBlock();
+		List<EntityLivingBase> entities = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(
+			this.xCoord - RANGE, this.yCoord - RANGE, this.zCoord - RANGE,
+			this.xCoord + RANGE, this.yCoord + RANGE, this.zCoord + RANGE
+		));
 
-					// TODO: add a new fluid that will remove the effects
-					if (block.getMaterial().equals(Material.water)) {
-						entity.clearActivePotions();
-					} else if (block.getMaterial().equals(Material.lava)) {
-						if (!entity.isImmuneToFire()) {
-							entity.setFire(INTERVAL);
-						}
-					} else {
-						block.onEntityCollidedWithBlock(worldObj, xCoord, yCoord, zCoord, entity);
-						block.onEntityWalking(worldObj, xCoord, yCoord, zCoord, entity);
+		if (this.tank.getFluidAmount() >= INTERVAL) {
+			for (EntityLivingBase entity : entities) {
+				Block block = this.tank.getFluid().getFluid().getBlock();
+
+				// TODO: add a new fluid that will remove the effects
+				if (block.getMaterial().equals(Material.water)) {
+					entity.clearActivePotions();
+				} else if (block.getMaterial().equals(Material.lava)) {
+					if (!entity.isImmuneToFire()) {
+						entity.setFire(INTERVAL);
 					}
+				} else {
+					block.onEntityCollidedWithBlock(worldObj, xCoord, yCoord, zCoord, entity);
+					block.onEntityWalking(worldObj, xCoord, yCoord, zCoord, entity);
 				}
-
-				this.tank.drain(INTERVAL, true);
 			}
 
-			if (this.potionEffects.isEmpty() && this.inventorySlots[SLOT_POTION] != null && this.inventorySlots[SLOT_BOTTLE] == null) {
-				ItemPotion potion = (ItemPotion) this.inventorySlots[SLOT_POTION].getItem();
+			this.tank.drain(INTERVAL, true);
+		}
 
-				this.potionEffects = potion.getEffects(this.inventorySlots[SLOT_POTION]);
+		if (this.potionEffects.isEmpty() && this.inventorySlots[SLOT_POTION] != null &&
+				(this.inventorySlots[SLOT_BOTTLE] == null ||
+						(this.inventorySlots[SLOT_BOTTLE].getItem().equals(Items.glass_bottle)) && this.inventorySlots[SLOT_BOTTLE].stackSize < 64)) {
+			ItemPotion potion = (ItemPotion) this.inventorySlots[SLOT_POTION].getItem();
 
-				this.setInventorySlotContents(SLOT_POTION, null);
+			this.potionEffects = new ArrayList(potion.getEffects(this.inventorySlots[SLOT_POTION]));
 
-				this.setInventorySlotContents(SLOT_BOTTLE, new ItemStack(Items.glass_bottle));
-			}
+			this.setInventorySlotContents(SLOT_POTION, null);
 
-			// activate potion effect
-			for (int i = 0; i < potionEffects.size(); i++) {
-				PotionEffect potionEffect = potionEffects.get(i);
+			if (this.inventorySlots[SLOT_BOTTLE] == null)
+				this.setInventorySlotContents(SLOT_BOTTLE, new ItemStack(Items.glass_bottle, 0));
 
-				int duration = Math.min(potionEffect.getDuration(), INTERVAL+5);
+			inventorySlots[SLOT_BOTTLE].stackSize++;
+		}
 
-				PotionEffect activePotion = new PotionEffect(potionEffect.getPotionID(), duration, potionEffect.getAmplifier(), true);
-				potionEffect = new PotionEffect(potionEffect.getPotionID(), potionEffect.getDuration() - duration, potionEffect.getAmplifier(), potionEffect.getIsAmbient());
+		// activate potion effect
+		for (int i = 0; i < potionEffects.size(); i++) {
+			PotionEffect potion = potionEffects.get(i);
 
-				if (potionEffect.getDuration() <= 0)
-					potionEffects.remove(i);
-				else
-					potionEffects.set(i, potionEffect);
+			int duration = Math.min(potion.getDuration(), INTERVAL + 40);
 
-				for (EntityLivingBase entity : entities) {
-					entity.addPotionEffect(activePotion);
-				}
+			PotionEffect activePotion = new PotionEffect(potion.getPotionID(), duration, potion.getAmplifier(), true);
+
+			potion = new PotionEffect(potion.getPotionID(), potion.getDuration() - INTERVAL, potion.getAmplifier(), potion.getIsAmbient());
+
+			if (potion.getDuration() <= 0)
+				potionEffects.remove(i);
+			else
+				potionEffects.set(i, potion);
+
+			for (EntityLivingBase entity : entities) {
+				entity.addPotionEffect(activePotion);
 			}
 		}
 
@@ -249,25 +258,23 @@ public class TileEntityPotionDiffuser extends TileEnergyHandler implements ISide
 
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack itemstack) {
-		switch(slot) {
-			case SLOT_BOTTLE: return itemstack == null || (itemstack.getItem().equals(Items.glass_bottle) && itemstack.stackSize <= getInventoryStackLimit());
-			case SLOT_POTION: return itemstack == null || (itemstack.getItem().equals(Items.potionitem) && itemstack.stackSize <= getInventoryStackLimit());
-			default: return false;
-		}
+		return itemstack == null ||
+				(slot == SLOT_BOTTLE && itemstack.getItem().equals(Items.glass_bottle)) ||
+				(slot == SLOT_POTION && itemstack.getItem().equals(Items.potionitem));
 	}
 
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side) {
-		return side < 2 ? new int[] { side } : new int[] {};
+		return new int[] { SLOT_BOTTLE, SLOT_POTION };
 	}
 
 	@Override
 	public boolean canInsertItem(int slot, ItemStack itemstack, int side) {
-		return side < 2 && side == slot && isItemValidForSlot(slot, itemstack);
+		return slot == SLOT_POTION && (itemstack == null || itemstack.getItem().equals(Items.potionitem));
 	}
 
 	@Override
 	public boolean canExtractItem(int slot, ItemStack itemstack, int side) {
-		return canInsertItem(slot, itemstack, side);
+		return slot == SLOT_BOTTLE && (itemstack == null || itemstack.getItem().equals(Items.glass_bottle));
 	}
 }

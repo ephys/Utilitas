@@ -68,12 +68,16 @@ public class NBTHelper {
 	}
 
 	public static void setEntity(NBTTagCompound nbt, String name, Entity entity) {
-		NBTTagCompound entityUUID = new NBTTagCompound();
+		setUUID(nbt, name, entity.getUniqueID());
+	}
 
-		entityUUID.setLong("UUIDMost", entity.getUniqueID().getMostSignificantBits());
-		entityUUID.setLong("UUIDLeast", entity.getUniqueID().getLeastSignificantBits());
+	public static void setUUID(NBTTagCompound nbt, String name, UUID uuid) {
+		NBTTagCompound uuidNBT = new NBTTagCompound();
 
-		nbt.setTag(name, entityUUID);
+		uuidNBT.setLong("UUIDMost", uuid.getMostSignificantBits());
+		uuidNBT.setLong("UUIDLeast", uuid.getLeastSignificantBits());
+
+		nbt.setTag(name, uuidNBT);
 	}
 
 	// --------------------------------------------------------------------------
@@ -217,18 +221,26 @@ public class NBTHelper {
 	}
 
 	public static Entity getEntity(NBTTagCompound nbt, String name, Entity def) {
-		if (!nbt.hasKey(name))
+		UUID entityUUID = getUUID(nbt, name, null);
+
+		if (entityUUID == null)
 			return def;
 
-		NBTTagCompound entityNBT = new NBTTagCompound();
-
-		UUID entityUUID = new UUID(entityNBT.getLong("UUIDMost"), entityNBT.getLong("UUIDLeast"));
-
 		Entity entity = EntityHelper.getEntityByUUID(entityUUID);
+
 		if (entity == null)
 			return def;
 
 		return entity;
+	}
+
+	public static UUID getUUID(NBTTagCompound nbt, String name, UUID def) {
+		if (!nbt.hasKey(name))
+			return def;
+
+		NBTTagCompound uuidNBT = nbt.getCompoundTag(name);
+
+		return new UUID(uuidNBT.getLong("UUIDMost"), uuidNBT.getLong("UUIDLeast"));
 	}
 
 	// --------------------------------------------------------------------------

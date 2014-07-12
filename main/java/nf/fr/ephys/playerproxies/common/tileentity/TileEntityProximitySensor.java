@@ -11,6 +11,7 @@ import nf.fr.ephys.playerproxies.helpers.CommandHelper;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
 import java.util.List;
+import java.util.UUID;
 
 public class TileEntityProximitySensor extends TileEntity {
 	private int RADIUS_X = 3;
@@ -24,7 +25,7 @@ public class TileEntityProximitySensor extends TileEntity {
 	private Object[] entityList = new Entity[0];
 
 	private Class<? extends Entity> entityFilter = Entity.class;
-	private String playerFilter = null;
+	private UUID playerFilter = null;
 
 	public void setEntityFilter(Entity entity, EntityPlayer player) {
 		if (entity == null) {
@@ -34,7 +35,7 @@ public class TileEntityProximitySensor extends TileEntity {
 		} else if (entity instanceof EntityPlayer) {
 			EntityPlayer playerFilter = (EntityPlayer) entity;
 
-			this.playerFilter = playerFilter.getGameProfile().getId();
+			this.playerFilter = playerFilter.getUniqueID();
 			this.entityFilter = EntityPlayer.class;
 
 			CommandHelper.sendChatMessage(player, "Filter set to user " + playerFilter.getDisplayName());
@@ -114,7 +115,7 @@ public class TileEntityProximitySensor extends TileEntity {
 	public void readFromNBT(NBTTagCompound nbt) {
 		this.activated = NBTHelper.getBoolean(nbt, "activated", this.activated);
 		this.entityFilter = (Class<? extends Entity>) NBTHelper.getClass(nbt, "entityFilter", null);
-		this.playerFilter = NBTHelper.getString(nbt, "playerFilter", null);
+		this.playerFilter = NBTHelper.getUUID(nbt, "playerFilter", null);
 
 		if(nbt.hasKey("size")) {
 			int[] size = nbt.getIntArray("size");
@@ -130,7 +131,7 @@ public class TileEntityProximitySensor extends TileEntity {
 	public void writeToNBT(NBTTagCompound nbt) {
 		nbt.setBoolean("activated", activated);
 		nbt.setIntArray("size", new int[]{RADIUS_X, RADIUS_Y, RADIUS_Z});
-		NBTHelper.setString(nbt, "playerFilter", playerFilter);
+		NBTHelper.setUUID(nbt, "playerFilter", playerFilter);
 		NBTHelper.setClass(nbt, "entityFilter", entityFilter);
 
 		super.writeToNBT(nbt);

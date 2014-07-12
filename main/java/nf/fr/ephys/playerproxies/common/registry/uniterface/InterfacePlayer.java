@@ -10,21 +10,23 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.IFluidHandler;
 import nf.fr.ephys.playerproxies.client.renderer.TileEntityInterfaceRenderer;
 import nf.fr.ephys.playerproxies.common.registry.PlayerInventoryRegistry;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
 import nf.fr.ephys.playerproxies.helpers.CommandHelper;
+import nf.fr.ephys.playerproxies.helpers.EntityHelper;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 import org.lwjgl.opengl.GL11;
+
+import java.util.UUID;
 
 public class InterfacePlayer extends UniversalInterface {
 	private boolean isEnderChest = false;
 
 	private String userName = null;
-	private String userUUID = null;
+	private UUID userUUID = null;
 	private EntityPlayer userEntity = null;
 
 	public InterfacePlayer(TileEntityInterface tileEntity) {
@@ -90,13 +92,13 @@ public class InterfacePlayer extends UniversalInterface {
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
 		nbt.setString("userName", userName);
-		nbt.setString("userUUID", userUUID);
+		NBTHelper.setUUID(nbt, "userUUID", userUUID);
 		nbt.setBoolean("enderChest", isEnderChest);
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
-		userUUID = NBTHelper.getString(nbt, "userUUID");
+		userUUID = NBTHelper.getUUID(nbt, "userUUID", null);
 		userName = NBTHelper.getString(nbt, "userName");
 
 		isEnderChest = NBTHelper.getBoolean(nbt, "enderChest", false);
@@ -122,14 +124,18 @@ public class InterfacePlayer extends UniversalInterface {
 	public void onTick(int tick) {
 		if (getTileEntity().getWorldObj().isRemote) return;
 
-		if ((userEntity == null || userEntity.isDead) && tick % 40 == 0)
+		if ((userEntity == null || userEntity.isDead) && tick % 40 == 0) {
 			searchPlayer();
+		}
 	}
 
 	private void searchPlayer() {
-		if (this.getTileEntity().getWorldObj() == null || !this.getTileEntity().getWorldObj().isRemote)
-			userEntity = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(userName);
-		else {
+		if (this.getTileEntity().getWorldObj() == null || !this.getTileEntity().getWorldObj().isRemote) {
+			userEntity = EntityHelper.getPlayerByUUID(userUUID);
+
+			if (userEntity == null)
+				userEntity = PlayerInventoryRegistry.getFakePlayer(userUUID);
+		} else {
 			skin = AbstractClientPlayer.getLocationSkin(userName);
 			AbstractClientPlayer.getDownloadImageSkin(skin, userName);
 		}
@@ -137,10 +143,12 @@ public class InterfacePlayer extends UniversalInterface {
 
 	@Override
 	public IInventory getInventory() {
-		if (isEnderChest)
+		return isEnderChest ? userEntity.getInventoryEnderChest() : userEntity.inventory;
+
+		/*if (isEnderChest)
 			return userEntity == null ? PlayerInventoryRegistry.getEnderchest(userName) : userEntity.getInventoryEnderChest();
 		else
-			return userEntity == null ? PlayerInventoryRegistry.getInventory(userName) : userEntity.inventory;
+			return userEntity == null ? PlayerInventoryRegistry.getInventory(userName) : userEntity.inventory;*/
 	}
 
 	@Override

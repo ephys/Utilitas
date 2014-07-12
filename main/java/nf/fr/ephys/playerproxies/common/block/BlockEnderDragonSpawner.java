@@ -88,7 +88,8 @@ public class BlockEnderDragonSpawner extends Block {
 						world.spawnEntityInWorld(mob);
 
 						mob.spawnExplosionParticle();
-						world.playSoundAtEntity(mob, "mob.endermen.portal", 1, 1);
+
+						mob.playSound("mob.endermen.portal", 1, 1);
 					}
 					//}
 				}
@@ -130,14 +131,13 @@ public class BlockEnderDragonSpawner extends Block {
 				}
 			}
 
-			world.playSoundEffect(x, y, z, "mob.enderdragon.growl", 50, 20);
-			world.setBlockToAir(x, y, z);
-
 			EntityDragon dragon = new EntityDragon(world);
-			dragon.setPosition(x - 16 + rand.nextInt(32), 256, z - 16 + rand.nextInt(32));
+			dragon.setPosition(x - 32 + rand.nextInt(64), 250, z - 32 + rand.nextInt(64));
 			dragon.setAttackTarget((EntityPlayer) nf.fr.ephys.playerproxies.helpers.MathHelper.getRandom(players));
 
 			world.spawnEntityInWorld(dragon);
+
+			world.setBlockToAir(x, y, z);
 		}
 	}
 

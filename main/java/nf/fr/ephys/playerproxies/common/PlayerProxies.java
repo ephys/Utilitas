@@ -14,12 +14,14 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraftforge.common.util.EnumHelper;
 import nf.fr.ephys.playerproxies.client.gui.GuiModConfigFactory;
 import nf.fr.ephys.playerproxies.common.block.*;
 import nf.fr.ephys.playerproxies.common.command.CommandNickname;
 import nf.fr.ephys.playerproxies.common.core.CommonProxy;
 import nf.fr.ephys.playerproxies.common.core.ConfigHandler;
 import nf.fr.ephys.playerproxies.common.item.ItemBiomeStorage;
+import nf.fr.ephys.playerproxies.common.item.ItemDragonPickaxe;
 import nf.fr.ephys.playerproxies.common.item.ItemDragonScale;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
 import org.apache.logging.log4j.Logger;
@@ -78,6 +80,10 @@ public class PlayerProxies extends DummyModContainer {
 		public static ItemBiomeStorage biomeStorage;
 		public static ItemDragonScale dragonScale;
 		public static ItemDragonScale dragonScaleIngot;
+
+		public static ItemDragonPickaxe dragonPickaxe;
+
+		public static Item.ToolMaterial matDragonScale = EnumHelper.addToolMaterial("DRAGONSCALE", 4, -1, 10F, 5F, 25);
 	}
 
 	public static class Enchantments {}

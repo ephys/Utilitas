@@ -1,57 +1,51 @@
 package nf.fr.ephys.playerproxies.common.registry;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.nbt.NBTTagCompound;
+import com.mojang.authlib.GameProfile;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.storage.SaveHandler;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.common.util.FakePlayerFactory;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 public class PlayerInventoryRegistry {
-	private static HashMap<String, IInventory> inventories = new HashMap<>();
-	private static HashMap<String, IInventory> enderchests = new HashMap<>();
+	private static HashMap<UUID, FakePlayer> inventories = new HashMap<>();
 
-	public static void load(String username) {
+	public static FakePlayer load(UUID uuid) {
+		FakePlayer player = FakePlayerFactory.get(MinecraftServer.getServer().worldServerForDimension(0), new GameProfile(uuid, null));
+
 		SaveHandler playerSave = (SaveHandler) MinecraftServer.getServer().getEntityWorld().getSaveHandler().getSaveHandler();
+		playerSave.readPlayerData(player);
 
-		NBTTagCompound playerNBT = playerSave.getPlayerData(username);
-		// store the nbt for when we save so we don't erase the data
-		// create an Inventory class that will just hold the player's inventory/enderchest and implements IInventory
+		inventories.put(uuid, player);
+
+		return player;
 	}
 
-	public static void save(String username) {
-		// merge the Inventory/enderchest NBT with the player NBT and write to disk
-		//(SaveHandler) MinecraftServer.getServer().getEntityWorld().getSaveHandler().getSaveHandler().writePlayerData(entityplayer);
+	public static void unload(UUID uuid) {
+		FakePlayer player = inventories.get(uuid);
+
+		SaveHandler playerSave = (SaveHandler) MinecraftServer.getServer().getEntityWorld().getSaveHandler().getSaveHandler();
+		playerSave.writePlayerData(player);
 	}
 
-	public static void unload(String username) {
+	public static EntityPlayer getFakePlayer(UUID uuid) {
+		FakePlayer player = inventories.get(uuid);
 
+		if (player == null)
+			return load(uuid);
+
+		return player;
 	}
 
-	/**
-	 * Save every inventory and unload them
-	 */
-	public static void flush() {
-
-	}
-
-	public static IInventory getInventory(String username) {
-		IInventory inventory = inventories.get(username);
-
-		if (inventory != null) return inventory;
-
-		load(username);
-
-		return inventories.get(username);
-	}
-
-	public static IInventory getEnderchest(String username) {
-		IInventory inventory = enderchests.get(username);
-
-		if (inventory != null) return inventory;
-
-		load(username);
-
-		return enderchests.get(username);
+	@SubscribeEvent
+	public void unloadPlayerNBT(EntityJoinWorldEvent event) {
+		if (!event.world.isRemote && event.entity instanceof EntityPlayer) {
+			unload(((EntityPlayer) event.entity).getGameProfile().getId());
+		}
 	}
 }

@@ -28,6 +28,8 @@ public class BlockBaseShineyGlass extends BlockBreakable implements ITileEntityP
 	protected BlockBaseShineyGlass(String texture, Material material, boolean transparent) {
 		super(texture, material, transparent);
 
+
+
 		this.isBlockContainer = true;
 	}
 

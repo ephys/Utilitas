@@ -20,11 +20,13 @@ import net.minecraftforge.common.MinecraftForge;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.block.*;
 import nf.fr.ephys.playerproxies.common.item.ItemBiomeStorage;
+import nf.fr.ephys.playerproxies.common.item.ItemDragonPickaxe;
 import nf.fr.ephys.playerproxies.common.item.ItemDragonScale;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
 import nf.fr.ephys.playerproxies.common.network.PacketSetBiomeHandler;
 import nf.fr.ephys.playerproxies.common.network.PacketSetNicknameHandler;
 import nf.fr.ephys.playerproxies.common.network.PacketSpawnParticleHandler;
+import nf.fr.ephys.playerproxies.common.registry.PlayerInventoryRegistry;
 import nf.fr.ephys.playerproxies.common.registry.UniversalInterfaceRegistry;
 import nf.fr.ephys.playerproxies.common.registry.uniterface.InterfacePlayer;
 import nf.fr.ephys.playerproxies.common.registry.uniterface.InterfaceTileEntity;
@@ -107,6 +109,7 @@ public class CommonProxy {
 		ItemBiomeStorage.register();
 
 		ItemDragonScale.register();
+		ItemDragonPickaxe.register();
 
 		PlayerProxies.Items.linkFocus = new Item();
 		PlayerProxies.Items.linkFocus.setUnlocalizedName("PP_LinkFocus")
@@ -119,6 +122,8 @@ public class CommonProxy {
 
 	private void registerHandlers() {
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
+		MinecraftForge.EVENT_BUS.register(new PlayerInventoryRegistry());
+
 		FMLCommonHandler.instance().bus().register(PlayerProxies.getConfig());
 
 		/* if (Loader.isModLoaded("OpenPeripheralCore")) {

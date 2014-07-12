@@ -18,10 +18,9 @@ import nf.fr.ephys.playerproxies.helpers.MathHelper;
 
 public class ItemDragonScale extends Item {
 	public final boolean isIngot;
-	@SideOnly(Side.CLIENT)
-	private int[] red = new int[] { 255, 0, 0 };
-	@SideOnly(Side.CLIENT)
-	private int[] purple = new int[] { 70, 0, 200 };
+
+	public static final int[] RED = new int[] { 255, 0, 0 };
+	public static final int[] PURPLE = new int[] { 70, 0, 200 };
 
 	public ItemDragonScale(boolean isIngot) {
 		this.isIngot = isIngot;
@@ -50,14 +49,13 @@ public class ItemDragonScale extends Item {
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
 	public int getColorFromItemStack(ItemStack stack, int par2) {
 		double percent = (Minecraft.getMinecraft().theWorld.getTotalWorldTime() % (Math.PI * 100)) / 100;
 		float sin = (float) Math.sin(percent);
 
-		int r = MathHelper.gradientRGB(red[0], purple[0], sin) << 16;
-		int g = MathHelper.gradientRGB(red[1], purple[1], sin) << 8;
-		int b = MathHelper.gradientRGB(red[2], purple[2], sin);
+		int r = MathHelper.gradientRGB(RED[0], PURPLE[0], sin) << 16;
+		int g = MathHelper.gradientRGB(RED[1], PURPLE[1], sin) << 8;
+		int b = MathHelper.gradientRGB(RED[2], PURPLE[2], sin);
 
 		return r + g + b;
 	}

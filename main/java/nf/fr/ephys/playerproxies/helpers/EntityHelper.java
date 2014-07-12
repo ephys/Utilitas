@@ -42,7 +42,7 @@ public class EntityHelper {
 	}
 
 	public static FakePlayer getFakePlayer(WorldServer world, String username) {
-		FakePlayer player = FakePlayerFactory.get(world, new GameProfile("41C82C87-7AfB-4024-BA57-13D2C99CAE77", username));
+		FakePlayer player = FakePlayerFactory.get(world, new GameProfile(UUID.fromString("41C82C87-7AfB-4024-BA57-13D2C99CAE77"), username));
 
 		player.playerNetServerHandler = new NetServerHandlerFake(MinecraftServer.getServer(), player);
 
@@ -97,6 +97,17 @@ public class EntityHelper {
 		for (Entity entity : entities) {
 			if (entity.getUniqueID().equals(uuid))
 				return entity;
+		}
+
+		return null;
+	}
+
+	public static EntityPlayer getPlayerByUUID(UUID uuid) {
+		List<EntityPlayer> players = MinecraftServer.getServer().getConfigurationManager().playerEntityList;
+
+		for (EntityPlayer player : players) {
+			if (player.getUniqueID().equals(uuid))
+				return player;
 		}
 
 		return null;
