@@ -131,10 +131,16 @@ public class InterfacePlayer extends UniversalInterface {
 
 	private void searchPlayer() {
 		if (this.getTileEntity().getWorldObj() == null || !this.getTileEntity().getWorldObj().isRemote) {
+			System.out.println("Could not find player "+userName+", reloading him");
 			userEntity = EntityHelper.getPlayerByUUID(userUUID);
 
-			if (userEntity == null)
+			System.out.println("Reload resulted in ");
+			System.out.println(userEntity);
+
+			if (userEntity == null) {
+				System.out.println("Creating a fake player for "+userName);
 				userEntity = PlayerInventoryRegistry.getFakePlayer(userUUID);
+			}
 		} else {
 			skin = AbstractClientPlayer.getLocationSkin(userName);
 			AbstractClientPlayer.getDownloadImageSkin(skin, userName);
@@ -143,6 +149,8 @@ public class InterfacePlayer extends UniversalInterface {
 
 	@Override
 	public IInventory getInventory() {
+		if (userEntity == null || userEntity.isDead) return null;
+
 		return isEnderChest ? userEntity.getInventoryEnderChest() : userEntity.inventory;
 
 		/*if (isEnderChest)
