@@ -1,9 +1,11 @@
 package nf.fr.ephys.playerproxies.helpers;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
@@ -13,7 +15,21 @@ import org.lwjgl.opengl.GL11;
 import java.awt.*;
 
 public class RenderHelper {
-	private static final ResourceLocation RES_ITEM_GLINT = new ResourceLocation("textures/misc/enchanted_item_glint.png");
+	public static final ResourceLocation RES_ITEM_GLINT = new ResourceLocation("textures/misc/enchanted_item_glint.png");
+
+	public static final ModelBiped MODEL_BIPED = new ModelBiped(0.0F);
+
+	public static void renderSimpleBiped(ResourceLocation skin, float tickTime) {
+		RenderManager.instance.renderEngine.bindTexture(skin);
+
+		MODEL_BIPED.bipedHead.render(tickTime);
+		MODEL_BIPED.bipedBody.render(tickTime);
+		MODEL_BIPED.bipedRightArm.render(tickTime);
+		MODEL_BIPED.bipedLeftArm.render(tickTime);
+		MODEL_BIPED.bipedRightLeg.render(tickTime);
+		MODEL_BIPED.bipedLeftLeg.render(tickTime);
+		MODEL_BIPED.bipedHeadwear.render(tickTime);
+	}
 
 	public static void loadTexturesMap() {
 		Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationItemsTexture);

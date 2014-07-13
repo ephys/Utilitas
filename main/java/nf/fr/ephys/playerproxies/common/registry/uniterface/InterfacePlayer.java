@@ -3,14 +3,10 @@ package nf.fr.ephys.playerproxies.common.registry.uniterface;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.IFluidHandler;
 import nf.fr.ephys.playerproxies.client.renderer.TileEntityInterfaceRenderer;
 import nf.fr.ephys.playerproxies.common.registry.PlayerInventoryRegistry;
@@ -34,10 +30,7 @@ public class InterfacePlayer extends UniversalInterface {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public static final ModelBiped MODEL_BIPED = new ModelBiped(0.0F);
-
-	@SideOnly(Side.CLIENT)
-	private ResourceLocation skin;
+	private net.minecraft.util.ResourceLocation skin;
 
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -48,21 +41,12 @@ public class InterfacePlayer extends UniversalInterface {
 		if (isEnderChest) {
 			TileEntityInterfaceRenderer.renderBlocksInstance.renderBlockAsItem(Blocks.ender_chest, 0, 1.0F);
 		} else {
-			RenderManager.instance.renderEngine.bindTexture(skin);
-
 			GL11.glPushMatrix();
-			GL11.glColor3f(1.0F, 1.0F, 1.0F);
-			GL11.glTranslatef(0.0F, 0.35F, 0.0F);
-			tickTime = 0.06F;
+				GL11.glColor3f(1.0F, 1.0F, 1.0F);
+				GL11.glTranslatef(0.0F, 0.35F, 0.0F);
+				GL11.glRotatef(180F, 1F, 0, 0);
 
-			GL11.glRotatef(180F, 1F, 0, 0);
-			MODEL_BIPED.bipedHead.render(tickTime);
-			MODEL_BIPED.bipedBody.render(tickTime);
-			MODEL_BIPED.bipedRightArm.render(tickTime);
-			MODEL_BIPED.bipedLeftArm.render(tickTime);
-			MODEL_BIPED.bipedRightLeg.render(tickTime);
-			MODEL_BIPED.bipedLeftLeg.render(tickTime);
-			MODEL_BIPED.bipedHeadwear.render(tickTime);
+				nf.fr.ephys.playerproxies.helpers.RenderHelper.renderSimpleBiped(skin, 0.06F);
 			GL11.glPopMatrix();
 		}
 	}
@@ -131,19 +115,14 @@ public class InterfacePlayer extends UniversalInterface {
 
 	private void searchPlayer() {
 		if (this.getTileEntity().getWorldObj() == null || !this.getTileEntity().getWorldObj().isRemote) {
-			System.out.println("Could not find player "+userName+", reloading him");
 			userEntity = EntityHelper.getPlayerByUUID(userUUID);
 
-			System.out.println("Reload resulted in ");
-			System.out.println(userEntity);
-
 			if (userEntity == null) {
-				System.out.println("Creating a fake player for "+userName);
 				userEntity = PlayerInventoryRegistry.getFakePlayer(userUUID);
 			}
 		} else {
-			skin = AbstractClientPlayer.getLocationSkin(userName);
-			AbstractClientPlayer.getDownloadImageSkin(skin, userName);
+			skin = net.minecraft.client.entity.AbstractClientPlayer.getLocationSkin(userName);
+			net.minecraft.client.entity.AbstractClientPlayer.getDownloadImageSkin(skin, userName);
 		}
 	}
 
