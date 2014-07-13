@@ -30,6 +30,7 @@ public class TileEntityProximitySensor extends TileEntity {
 	public void setEntityFilter(Entity entity, EntityPlayer player) {
 		if (entity == null) {
 			this.entityFilter = Entity.class;
+			this.playerFilter = null;
 
 			CommandHelper.sendChatMessage(player, "Filter cleared");
 		} else if (entity instanceof EntityPlayer) {
@@ -95,11 +96,15 @@ public class TileEntityProximitySensor extends TileEntity {
 			if (playerFilter == null) {
 				active = (entityList.size() != 0);
 			} else {
-				for (EntityPlayer entity : (List<EntityPlayer>) entityList) {
-					if (this.playerFilter.equals(entity.getGameProfile().getId())) {
-						active = true;
+				for (Object o : entityList) {
+					if (o instanceof EntityPlayer) {
+						EntityPlayer entity = (EntityPlayer) o;
 
-						break;
+						if (this.playerFilter.equals(entity.getGameProfile().getId())) {
+							active = true;
+
+							break;
+						}
 					}
 				}
 			}
@@ -131,8 +136,12 @@ public class TileEntityProximitySensor extends TileEntity {
 	public void writeToNBT(NBTTagCompound nbt) {
 		nbt.setBoolean("activated", activated);
 		nbt.setIntArray("size", new int[]{RADIUS_X, RADIUS_Y, RADIUS_Z});
-		NBTHelper.setUUID(nbt, "playerFilter", playerFilter);
-		NBTHelper.setClass(nbt, "entityFilter", entityFilter);
+
+		if (playerFilter != null)
+			NBTHelper.setUUID(nbt, "playerFilter", playerFilter);
+
+		if (entityFilter != null)
+			NBTHelper.setClass(nbt, "entityFilter", entityFilter);
 
 		super.writeToNBT(nbt);
 	}
