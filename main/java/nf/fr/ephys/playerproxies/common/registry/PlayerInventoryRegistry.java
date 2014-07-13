@@ -17,7 +17,7 @@ public class PlayerInventoryRegistry {
 	private static HashMap<UUID, FakePlayer> inventories = new HashMap<>();
 
 	public static FakePlayer load(UUID uuid) {
-		FakePlayer player = FakePlayerFactory.get(MinecraftServer.getServer().worldServerForDimension(0), new GameProfile(uuid, null));
+		FakePlayer player = FakePlayerFactory.get(MinecraftServer.getServer().worldServerForDimension(0), new GameProfile(uuid, "PP_FakeInventory"));
 		player.isDead = false;
 
 		SaveHandler playerSave = (SaveHandler) MinecraftServer.getServer().getEntityWorld().getSaveHandler().getSaveHandler();
