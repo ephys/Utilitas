@@ -16,14 +16,14 @@ public class BeaconEffectsRegistry {
 	 * @param item          the item adding effects to the beacon
 	 * @param potionEffect  the potion effect id
 	 * @param minLevel      the minimum beacon level for this effect to be available
-	 * @param maxLevel      the maximum beacon level for this effect to be available
+	 * @param maxTier       the maximum potion tier for this effect
 	 */
-	public static void addEffect(ItemStack item, int potionEffect, int minLevel, int maxLevel) {
-		addEffect(new ItemStack[] { item }, potionEffect, minLevel, maxLevel);
+	public static void addEffect(ItemStack item, int potionEffect, int minLevel, int maxTier) {
+		addEffect(new ItemStack[] { item }, potionEffect, minLevel, maxTier);
 	}
 
-	public static void addEffect(Item item, int potionEffect, int minLevel, int maxLevel) {
-		addEffect(new ItemStack[] { new ItemStack(item) }, potionEffect, minLevel, maxLevel);
+	public static void addEffect(Item item, int potionEffect, int minLevel, int maxTier) {
+		addEffect(new ItemStack[] { new ItemStack(item) }, potionEffect, minLevel, maxTier);
 	}
 
 	/**
@@ -31,16 +31,11 @@ public class BeaconEffectsRegistry {
 	 * @param items          the items which combined adds effects to the beacon
 	 * @param potionEffect  the potion effect id
 	 * @param minLevel      the minimum beacon level for this effect to be available
-	 * @param maxLevel      the maximum beacon level for this effect to be available
+	 * @param maxTier       the maximum potion tier for this effect
 	 */
-	public static void addEffect(ItemStack[] items, int potionEffect, int minLevel, int maxLevel) {
+	public static void addEffect(ItemStack[] items, int potionEffect, int minLevel, int maxTier) {
 		if (items.length > TileEntityBeaconTierII.MAX_ITEMS) {
 			PlayerProxies.getLogger().warn("Adding to many combined items (" + items + ") to the beacon registry, a beacon cannot support more than "+TileEntityBeaconTierII.MAX_ITEMS+" items");
-			return;
-		}
-
-		if (maxLevel < 1) {
-			PlayerProxies.getLogger().warn("Attempted to add a potion effect with an incorrect maximum beacon level (" + maxLevel + ") to " + items + ". Skipping effect (as it would never be available).");
 			return;
 		}
 
@@ -49,14 +44,14 @@ public class BeaconEffectsRegistry {
 			minLevel = TileEntityBeaconTierII.MAX_LEVELS;
 		}
 
-		effects.add(new Effect(minLevel, maxLevel, potionEffect, items));
+		effects.add(new Effect(minLevel, maxTier, potionEffect, items));
 	}
 
-	public static List<Integer> getEffects(ItemStack[] itemList, int level) {
-		List<Integer> list = new ArrayList<>();
+	public static List<Effect> getEffects(ItemStack[] itemList, int level) {
+		List<Effect> list = new ArrayList<>();
 
 		for (Effect effect : effects) {
-			if (level < effect.min || level > effect.max) continue;
+			if (level < effect.min) continue;
 
 			ItemStack[] requiredItems = effect.items;
 
@@ -68,7 +63,7 @@ public class BeaconEffectsRegistry {
 				}
 			}
 
-			if (valid) list.add(effect.potionEffect);
+			if (valid) list.add(effect);
 		}
 
 		return list;
@@ -95,17 +90,22 @@ public class BeaconEffectsRegistry {
 		return false;
 	}
 
-	private static class Effect {
+	public static class Effect {
 		private int min;
-		private int max;
+		private int maxTier;
 		private int potionEffect;
 		private ItemStack[] items;
 
-		private Effect(int min, int max, int potionEffect, ItemStack[] items) {
+		private Effect(int min, int maxTier, int potionEffect, ItemStack[] items) {
 			this.min = min;
-			this.max = max;
+			this.maxTier = maxTier;
 			this.potionEffect = potionEffect;
 			this.items = items;
 		}
+
+		public int getMaxTier() {
+			return maxTier;
+		}
+		public int getPotionEffect() { return potionEffect; }
 	}
 }

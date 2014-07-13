@@ -3,6 +3,7 @@ package nf.fr.ephys.playerproxies.common.tileentity;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -33,6 +34,7 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 	private long lastWorldTime = 0;
 	private float rotation = 0;
 	private Color beaconColor = Color.white;
+	public static final Color BAD_COLOR = new Color(140, 14, 36);
 	public int displayTick = 0;
 
 	public static final int MAX_LEVELS = 6;
@@ -44,8 +46,6 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 
 	// this is because Potion.isBadEffect() is SideOnly(Side.CLIENT) (but getLiquidColor isn't, I'm not sure I get the logic behind this)
 	public static boolean[] badPotionEffects = new boolean[Potion.potionTypes.length];
-
-	// endfix
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
@@ -144,7 +144,7 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 				//Color colorNeg = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(Color.white, Color.red, negativity());
 				//Color colorPos = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(Color.white, Color.green, positivity());
 
-				beaconColor = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(Color.white, Color.red, negativity());
+				beaconColor = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(Color.white, BAD_COLOR, negativity());
 
 				//beaconColor = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(colorNeg, colorPos, 0.5F);
 
@@ -200,22 +200,42 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 			}
 		}
 
-		List<Integer> effects = BeaconEffectsRegistry.getEffects(containedItems, level);
+		List<BeaconEffectsRegistry.Effect> effects = BeaconEffectsRegistry.getEffects(containedItems, level);
 
 		if (effects.size() != 0) {
-			double range = (this.level * 15) + 10;
+			double range = ((this.level * 15) + 10) / (1 + this.negativity());
 
 			AxisAlignedBB area = AxisAlignedBB.getBoundingBox(this.xCoord + 1, this.yCoord + 1, this.zCoord + 1, this.xCoord, this.yCoord - level, this.zCoord).expand(range, range, range);
-			List players = this.worldObj.getEntitiesWithinAABB(EntityPlayer.class, area);
+			List entities = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, area);
 
-			for (int effect : effects) {
+			for (BeaconEffectsRegistry.Effect effectObj : effects) {
+				int effect = effectObj.getPotionEffect();
 				if (shouldSkipEffect(effect)) continue;
 
-				for (Object player : players) {
-					if (Potion.potionTypes[effect].isInstant() && Math.random() < 0.1)
-						((EntityPlayer) player).addPotionEffect(new PotionEffect(effect, 1, tier - 1, true));
+				for (Object o : entities) {
+					EntityLivingBase entity = (EntityLivingBase) o;
+
+					if (entity.isEntityUndead()) {
+						if (effect == Potion.regeneration.getId())
+							effect = Potion.poison.getId();
+						else if (effect == Potion.poison.getId())
+							effect = Potion.heal.getId();
+						else if (effect == Potion.heal.getId())
+							effect = Potion.harm.getId();
+						else if (effect == Potion.harm.getId())
+							effect = Potion.heal.getId();
+					}
+
+					int tier;
+					if (effectObj.getMaxTier() < 0)
+						tier = this.tier - 1;
 					else
-						((EntityPlayer) player).addPotionEffect(new PotionEffect(effect, 250 * tier, tier - 1, true));
+						tier = Math.min(effectObj.getMaxTier(), this.tier - 1);
+
+					if (Potion.potionTypes[effect].isInstant() && Math.random() < 0.1)
+						entity.addPotionEffect(new PotionEffect(effect, 1, tier, true));
+					else
+						entity.addPotionEffect(new PotionEffect(effect, 250 * this.tier, tier, true));
 				}
 			}
 		}
