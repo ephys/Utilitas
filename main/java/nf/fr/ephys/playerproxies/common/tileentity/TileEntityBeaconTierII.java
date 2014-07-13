@@ -29,13 +29,10 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 	private int totalPositive = 0;
 	private int totalNegative = 0;
 
-	@SideOnly(Side.CLIENT)
+	// render stuff
 	private long lastWorldTime = 0;
-	@SideOnly(Side.CLIENT)
 	private float rotation = 0;
-	@SideOnly(Side.CLIENT)
 	private Color beaconColor = Color.white;
-	@SideOnly(Side.CLIENT)
 	public int displayTick = 0;
 
 	public static final int MAX_LEVELS = 6;
