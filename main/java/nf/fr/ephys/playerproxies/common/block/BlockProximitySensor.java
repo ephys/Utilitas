@@ -80,8 +80,6 @@ public class BlockProximitySensor extends BlockContainer {
 	public int isProvidingWeakPower(IBlockAccess blockAccess, int x, int y, int z, int par5) {
 		TileEntity te = blockAccess.getTileEntity(x, y, z);
 
-		System.out.println("BlockProximitySensor.isProvidingWeakPower");
-		System.out.println(((TileEntityProximitySensor) te).isActivated());
 		return ((TileEntityProximitySensor) te).isActivated() ? 15 : 0;
 	}
 
