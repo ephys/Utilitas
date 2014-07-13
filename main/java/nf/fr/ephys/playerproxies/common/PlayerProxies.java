@@ -39,7 +39,7 @@ public class PlayerProxies extends DummyModContainer {
 
 	public static final int GUI_BIOME_SCANNER = 1;
 
-	public static final boolean DEV_MODE = false;
+	public static final boolean DEV_MODE = true;
 
 	@Instance("ephys.playerproxies")
 	public static PlayerProxies instance;

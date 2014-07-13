@@ -42,6 +42,11 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 	private ItemStack[] containedItems = new ItemStack[MAX_ITEMS];
 	private int nbItems = 0;
 
+	// this is because Potion.isBadEffect() is SideOnly(Side.CLIENT) (but getLiquidColor isn't, I'm not sure I get the logic behind this)
+	public static boolean[] badPotionEffects = new boolean[Potion.potionTypes.length];
+
+	// endfix
+
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		level = NBTHelper.getInt(nbt, "level", 0);
@@ -136,10 +141,12 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 				tier++;
 
 			if (worldObj.isRemote) {
-				Color colorNeg = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(Color.white, Color.red, negativity());
-				Color colorPos = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(Color.white, Color.green, positivity());
+				//Color colorNeg = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(Color.white, Color.red, negativity());
+				//Color colorPos = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(Color.white, Color.green, positivity());
 
-				beaconColor = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(colorNeg, colorPos, 0.5F);
+				beaconColor = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(Color.white, Color.red, negativity());
+
+				//beaconColor = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(colorNeg, colorPos, 0.5F);
 
 				if (hasDragonEgg)
 					beaconColor = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(beaconColor, Color.magenta, 0.5F);
@@ -151,9 +158,9 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 		return block.equals(Blocks.coal_block);
 	}
 
-	public static boolean isBlockPositive(Block block) {
-		return block.equals(Blocks.emerald_block) || block.equals(Blocks.diamond_block);
-	}
+	//public static boolean isBlockPositive(Block block) {
+	//	return block.equals(Blocks.emerald_block) || block.equals(Blocks.diamond_block);
+	//}
 
 	@SideOnly(Side.CLIENT)
 	public Color getBeaconColor() { return beaconColor; }
@@ -168,10 +175,9 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 
 				if (isBlockNegative(block))
 					totalNegative++;
-
-				if (isBlockPositive(block))
+				else
 					totalPositive++;
-
+				//if (isBlockPositive(block))
 
 				totalBlocks++;
 			}
@@ -215,18 +221,22 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 		}
 	}
 
-	public float positivity() {
-		return (float) totalPositive / totalBlocks;
-	}
+//	public float positivity() {
+//		return (float) totalPositive / totalBlocks;
+//	}
 
 	public float negativity() {
 		return (float) totalNegative / totalBlocks;
 	}
 
 	private boolean shouldSkipEffect(int effectID) {
-		if (Potion.potionTypes[effectID].isBadEffect())
-			return Math.random() < positivity();
+		//if (Potion.potionTypes[effectID].isBadEffect())
 
+		// bad potion effects are skipped if the beacon is not negative enough
+		if (badPotionEffects[effectID])
+			return Math.random() > negativity();
+
+		// good potion effects are skipped if the beacon is too negative
 		return Math.random() < negativity();
 	}
 

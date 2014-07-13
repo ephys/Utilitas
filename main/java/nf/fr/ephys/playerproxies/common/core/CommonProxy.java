@@ -15,6 +15,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
@@ -31,6 +32,9 @@ import nf.fr.ephys.playerproxies.common.registry.UniversalInterfaceRegistry;
 import nf.fr.ephys.playerproxies.common.registry.uniterface.InterfacePlayer;
 import nf.fr.ephys.playerproxies.common.registry.uniterface.InterfaceTileEntity;
 import nf.fr.ephys.playerproxies.common.registry.uniterface.InterfaceTurtle;
+import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBeaconTierII;
+
+import java.lang.reflect.Field;
 
 public class CommonProxy {
 	public void preInit(FMLPreInitializationEvent event) {}
@@ -56,6 +60,46 @@ public class CommonProxy {
 
 		UniversalInterfaceRegistry.addInterface(InterfaceTileEntity.class, TileEntity.class);
 		UniversalInterfaceRegistry.addInterface(InterfacePlayer.class, EntityPlayer.class);
+
+		listPotionEffect();
+	}
+
+	private void listPotionEffect() {
+		Class<Potion> clazz = Potion.class;
+
+		Field isBadEffectField = null;
+
+		// and this is because I can't get "isBadEffect" as I don't know which name the obfuscated field name will be
+		for (Field field : clazz.getDeclaredFields()) {
+			if (field.getType().equals(boolean.class)) {
+				isBadEffectField = field;
+				break;
+			}
+		}
+
+		if (isBadEffectField == null) {
+			PlayerProxies.getLogger().warn("Could not find field isBadEffect in class Potion, the new beacon will not work well ! (report this thx)");
+		} else {
+			isBadEffectField.setAccessible(true);
+
+			for (int i = 0; i < Potion.potionTypes.length; i++) {
+				if (Potion.potionTypes[i] == null) {
+					continue;
+				}
+
+				try {
+					TileEntityBeaconTierII.badPotionEffects[i] = isBadEffectField.getBoolean(Potion.potionTypes[i]);
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+
+					PlayerProxies.getLogger().warn("Failed to retrieve isBadEffect, the new beacon will not work well ! (report this thx)");
+					break;
+				}
+
+				if (PlayerProxies.DEV_MODE)
+					PlayerProxies.getLogger().info("Potion "+Potion.potionTypes[i].getName()+" is " + (TileEntityBeaconTierII.badPotionEffects[i] ? "bad" : "good"));
+			}
+		}
 	}
 
 	private void registerPacket() {
