@@ -37,7 +37,9 @@ import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBeaconTierII;
 import java.lang.reflect.Field;
 
 public class CommonProxy {
-	public void preInit(FMLPreInitializationEvent event) {}
+	public void preInit(FMLPreInitializationEvent event) {
+		BlockBeaconTierII.register();
+	}
 
 	public void init(FMLInitializationEvent event) {
 		registerBlocks();
@@ -118,7 +120,6 @@ public class CommonProxy {
 		BlockItemTicker.register();
 		BlockGravitationalField.register();
 		BlockHomeShield.register();
-		BlockBeaconTierII.register();
 
 		BlockEnderDragonSpawner.register();
 

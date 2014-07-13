@@ -21,6 +21,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.helpers.EntityHelper;
+import nf.fr.ephys.playerproxies.util.cofh.RegistryUtils;
 
 import java.util.Random;
 
@@ -92,22 +93,15 @@ public class BlockHomeShield extends Block {
 		}
 
 		if (requiresTwilightForest) {
-			PlayerProxies.getLogger().info("Twilight Forest found. PP will try to overwrite the TF shield block...");
+			PlayerProxies.getLogger().info("Twilight Forest required & found. PP will try to overwrite the TF shield block...");
 
-			PlayerProxies.Blocks.homeShield.setBlockName("TwilightForest:"+tfShield.getUnlocalizedName());
-			//GameRegistry.registerBlock(PlayerProxies.Blocks.homeShield, tfShield.getUnlocalizedName());
+			PlayerProxies.Blocks.homeShield.setBlockName(tfShield.getUnlocalizedName());
 
-			/*Block.blocksList[twilightForestShieldID] = null;
-			PlayerProxies.Blocks.homeShield = new BlockHomeShield(twilightForestShieldID, Material.rock);
-
-			Item.itemsList[twilightForestShieldID] = null;
-			ItemBlock shieldItem = new ItemBlock(twilightForestShieldID - 256);*/
+			RegistryUtils.overwriteBlock("TwilightForest:" + tfShield.getUnlocalizedName(), PlayerProxies.Blocks.homeShield);
 		} else {
 			PlayerProxies.Blocks.homeShield.setBlockName("PP_HomeShield");
-			//GameRegistry.registerBlock(PlayerProxies.Blocks.homeShield, PlayerProxies.Blocks.homeShield.getUnlocalizedName());
+			GameRegistry.registerBlock(PlayerProxies.Blocks.homeShield, PlayerProxies.Blocks.homeShield.getUnlocalizedName());
 		}
-
-		GameRegistry.registerBlock(PlayerProxies.Blocks.homeShield, PlayerProxies.Blocks.homeShield.getUnlocalizedName());
 	}
 
 	public static void registerCraft() {

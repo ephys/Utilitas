@@ -2,6 +2,8 @@ package nf.fr.ephys.playerproxies.util.cofh;
 
 import com.google.common.collect.BiMap;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockBeacon;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ObjectIntIdentityMap;
@@ -10,6 +12,7 @@ import net.minecraft.util.RegistrySimple;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Map;
 
 /**
@@ -72,11 +75,11 @@ public class RegistryUtils {
 			reverse.remove(oldEntry);
 			reverse.forcePut(newEntry, name);
 
-			PlayerProxies.getLogger().info("Trying to overwrite '" + name + "' (entry " + id + " - " + oldEntry + ") with " + newEntry.toString() + ": Operation success");
+			PlayerProxies.getLogger().info("RegistryUtils::overwriteEntry: overwriting '" + name + "' with " + newEntry.toString() + ": Operation success");
 
 			return oldEntry;
 		} catch (Exception e) {
-			PlayerProxies.getLogger().error("Trying to overwrite '" + name + ": Operation failure (this is a bug !)");
+			PlayerProxies.getLogger().error("RegistryUtils::overwriteEntry: overwriting '" + name + ": Operation failure (this is a bug !)");
 			e.printStackTrace();
 
 			return null;
@@ -88,6 +91,32 @@ public class RegistryUtils {
 
 		Block oldBlock = (Block) overwriteEntry(Block.blockRegistry, name, newBlock);
 
+		if (name.startsWith("minecraft:")) {
+			Field[] blocks = Blocks.class.getDeclaredFields();
+
+			try {
+				for (Field blockField : blocks) {
+					if (blockField.get(null) == oldBlock) {
+						blockField.setAccessible(true);
+
+						Field modifiersField = Field.class.getDeclaredField("modifiers");
+						modifiersField.setAccessible(true);
+						modifiersField.setInt(blockField, blockField.getModifiers() & ~Modifier.FINAL);
+
+						blockField.set(null, newBlock);
+
+						PlayerProxies.getLogger().warn("RegistryUtils::overwriteBlock: overwrote net.minecraft.init.Blocks entry");
+
+						break;
+					}
+				}
+			} catch (Exception e) {
+				PlayerProxies.getLogger().warn("RegistryUtils::overwriteBlock: failed to overwrite net.minecraft.init.Blocks entry");
+
+				e.printStackTrace();
+			}
+		}
+
 		if (oldBlock == null) return null;
 
 		Object oldItem = Item.itemRegistry.getObject(name);
@@ -96,7 +125,7 @@ public class RegistryUtils {
 			try {
 				itemblock_block.set(oldItem, newBlock);
 			} catch (IllegalAccessException e) {
-				PlayerProxies.getLogger().info("Overwriting " + name + "'s itemblock failed. Your game is going to crash :( Report this.");
+				PlayerProxies.getLogger().info("RegistryUtils::overwriteBlock: Overwriting " + name + "'s itemblock failed. Your game is going to crash :( Report this.");
 
 				e.printStackTrace();
 			}

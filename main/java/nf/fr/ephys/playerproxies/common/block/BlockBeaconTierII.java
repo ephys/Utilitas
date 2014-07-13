@@ -32,6 +32,22 @@ public class BlockBeaconTierII extends BlockBeacon {
 		RegistryUtils.overwriteBlock("minecraft:beacon", PlayerProxies.Blocks.betterBeacon);
 
 		GameRegistry.registerTileEntity(TileEntityBeaconTierII.class, PlayerProxies.Blocks.betterBeacon.getUnlocalizedName());
+	}
+
+	public static void registerCraft() {
+		if (!overwrite) return;
+
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.betterBeacon),
+				"ggg",
+				"gsg",
+				"ooo",
+
+				'g', new ItemStack(PlayerProxies.Blocks.baseShineyGlass, 1, 0),
+				'o', new ItemStack(Blocks.obsidian),
+				's', new ItemStack(Items.nether_star)
+		);
+
+		BlockHelper.removeItemRecipe(new ItemStack(Blocks.beacon));
 
 		// level 1 beacon
 		BeaconEffectsRegistry.addEffect(new ItemStack[]{ new ItemStack(Items.sugar)/*, new ItemStack(Items.redstone)*/ }, Potion.moveSpeed.getId(), 1, -1);
@@ -57,7 +73,7 @@ public class BlockBeaconTierII extends BlockBeacon {
 		BeaconEffectsRegistry.addEffect(new ItemStack[] { new ItemStack(Items.nether_star), new ItemStack(Items.magma_cream) }, Potion.damageBoost.getId(), 4, -1);
 
 		// level 5
-		BeaconEffectsRegistry.addEffect(new ItemStack[] { new ItemStack(Items.golden_apple, 1, 1), new ItemStack(Items.ghast_tear) }, Potion.regeneration.getId(), 5, 1);
+		BeaconEffectsRegistry.addEffect(new ItemStack[] { new ItemStack(Items.golden_apple, 1, 1), new ItemStack(Items.ghast_tear) }, Potion.regeneration.getId(), 5, 0);
 		BeaconEffectsRegistry.addEffect(new ItemStack[] { new ItemStack(Items.golden_apple, 1, 1), new ItemStack(Items.ghast_tear), new ItemStack(PlayerProxies.Items.dragonScale) }, Potion.regeneration.getId(), 5, -1);
 
 		BeaconEffectsRegistry.addEffect(new ItemStack(Items.golden_apple, 1, 1), Potion.weakness.getId(), 5, -1);
@@ -65,22 +81,6 @@ public class BlockBeaconTierII extends BlockBeacon {
 		// level 6
 		BeaconEffectsRegistry.addEffect(new ItemStack[] { new ItemStack(Items.diamond_chestplate), new ItemStack(Items.experience_bottle), new ItemStack(Items.blaze_rod) }, Potion.fireResistance.getId(), 6, 0);
 		BeaconEffectsRegistry.addEffect(new ItemStack[] { new ItemStack(Items.golden_carrot), new ItemStack(Items.ender_eye) }, Potion.nightVision.getId(), 6, 0);
-	}
-
-	public static void registerCraft() {
-		if (!overwrite) return;
-
-		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.betterBeacon),
-				"ggg",
-				"gsg",
-				"ooo",
-
-				'g', new ItemStack(PlayerProxies.Blocks.baseShineyGlass, 1, 0),
-				'o', new ItemStack(Blocks.obsidian),
-				's', new ItemStack(Items.nether_star)
-		);
-
-		BlockHelper.removeItemRecipe(new ItemStack(Blocks.beacon));
 	}
 
 	@Override

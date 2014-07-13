@@ -83,7 +83,7 @@ public class PlayerProxies extends DummyModContainer {
 
 		public static ItemDragonPickaxe dragonPickaxe;
 
-		public static Item.ToolMaterial matDragonScale = EnumHelper.addToolMaterial("DRAGONSCALE", 4, -1, 10F, 5F, 25);
+		public static Item.ToolMaterial matDragonScale = EnumHelper.addToolMaterial("DRAGONSCALE", 4, 1200, 10F, 8F, 0);
 	}
 
 	public static class Enchantments {}
