@@ -120,8 +120,9 @@ public class CommonProxy {
 		BlockItemTicker.register();
 		BlockGravitationalField.register();
 		BlockHomeShield.register();
+		//BlockDragonscale.register();
 
-		BlockEnderDragonSpawner.register();
+		//BlockEnderDragonSpawner.register();
 
 		if (PlayerProxies.getConfig().addDragonEggTab())
 			Blocks.dragon_egg.setCreativeTab(CreativeTabs.tabDecorations);
@@ -138,8 +139,11 @@ public class CommonProxy {
 		BlockGravitationalField.registerCraft();
 		BlockHomeShield.registerCraft();
 		BlockBeaconTierII.registerCraft();
+		//BlockDragonscale.registerCraft();
 
-		ItemLinker.registerCraft();
+		//ItemLinker.registerCraft();
+		//ItemDragonScale.registerCraft();
+		//ItemDragonPickaxe.registerCraft();
 
 		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Items.linkFocus),
 				"ipi", "qeq", "ipi",
@@ -153,8 +157,8 @@ public class CommonProxy {
 		ItemLinker.register();
 		ItemBiomeStorage.register();
 
-		ItemDragonScale.register();
-		ItemDragonPickaxe.register();
+		//ItemDragonScale.register();
+		//ItemDragonPickaxe.register();
 
 		PlayerProxies.Items.linkFocus = new Item();
 		PlayerProxies.Items.linkFocus.setUnlocalizedName("PP_LinkFocus")

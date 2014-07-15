@@ -83,10 +83,6 @@ public class BeaconEffectsRegistry {
 	public static boolean hasItem(ItemStack needle) {
 		for (Effect effect : effects) {
 			for (ItemStack item : effect.items) {
-				System.out.println("======================");
-				System.out.println(item.getItem());
-				System.out.println(needle.getItem());
-				System.out.println("======================");
 				if (item.isItemEqual(needle)) {
 					return true;
 				}

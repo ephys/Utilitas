@@ -14,6 +14,7 @@ tile.PP_ProximitySensor.name=Proximity Sensor
 tile.PP_SpawnerLoader.name=Ghost Stabilizer
 tile.PP_ToughwoodPlank.0.name=Thoughwood plank
 tile.PP_ToughwoodPlank.1.name=Biome transmuter
+tile.PP_DragonScale.name=DragonScale Block
 
 item.PP_BiomeStorage.name=Biome signature handler
 item.PP_LinkWand.name=Linking wand

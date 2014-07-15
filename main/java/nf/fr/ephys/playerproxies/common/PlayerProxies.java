@@ -70,6 +70,7 @@ public class PlayerProxies extends DummyModContainer {
 		public static BlockGravitationalField gravitationalField;
 		public static BlockHomeShield homeShield;
 		public static BlockBeaconTierII betterBeacon;
+		public static BlockDragonscale dragonScale;
 
 		public static BlockEnderDragonSpawner dragonSpawner;
 	}

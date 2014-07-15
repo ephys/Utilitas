@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.MovingObjectPosition;
@@ -52,17 +53,18 @@ public class EntityHelper {
 	public static FakePlayer getFakePlayer(WorldServer world) {
 		FakePlayer player = FakePlayerFactory.getMinecraft(world);
 
-		player.playerNetServerHandler = new NetServerHandlerFake(MinecraftServer.getServer(), player);
+		if (player.playerNetServerHandler == null)
+			player.playerNetServerHandler = new NetServerHandlerFake(MinecraftServer.getServer(), player);
 
 		return player;
 	}
 
-	public static MovingObjectPosition rayTrace(EntityPlayer player, double range) {
-		Vec3 pos = Vec3.createVectorHelper(player.posX, player.posY + player.getEyeHeight(), player.posZ);
-		Vec3 look = player.getLookVec();
+	public static MovingObjectPosition rayTrace(Entity entity, double range) {
+		Vec3 pos = Vec3.createVectorHelper(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
+		Vec3 look = entity.getLookVec();
 		Vec3 ray = pos.addVector(look.xCoord * range, look.yCoord * range, look.zCoord * range);
 
-		return player.worldObj.rayTraceBlocks(pos, ray);
+		return entity.worldObj.rayTraceBlocks(pos, ray);
 	}
 
 	/**
@@ -84,7 +86,7 @@ public class EntityHelper {
 	}
 
 	/**
-	 * This is an eavy method, don't call it too often. Really.
+	 * This is an heavy method, don't call it too often. Really.
 	 * Finds an entity by it's UUID in a specific world (returns null if the entity does not exists or is not loaded)
 	 *
 	 * @param uuid       the entity UUID
