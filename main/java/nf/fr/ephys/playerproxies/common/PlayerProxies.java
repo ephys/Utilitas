@@ -98,7 +98,7 @@ public class PlayerProxies extends DummyModContainer {
 		meta.version = VERSION;
 		meta.authorList = Arrays.asList("ephyspotato");
 		meta.url = "https://github.com/Ephys/PlayerProxies";
-		//meta.description = "Must. Have. More. Blocks."; // that desc sucks
+		//meta.description = ""; // that desc sucks
 	}
 
 	@EventHandler

@@ -3,38 +3,29 @@ package nf.fr.ephys.playerproxies.common.tileentity;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.ItemPotion;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
-import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 import nf.fr.ephys.playerproxies.util.cofh.TileEnergyHandler;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityPotionDiffuser extends TileEnergyHandler implements ISidedInventory, IFluidHandler {
+public class TileEntityPotionDiffuser extends TileEnergyHandler implements IFluidHandler {
 	private FluidTank tank = new FluidTank(20000);
 
-	private List<PotionEffect> potionEffects = new ArrayList<>();
+	//private List<PotionEffect> potionEffects = new ArrayList<>();
 
-	private ItemStack[] inventorySlots = new ItemStack[2];
+	//private ItemStack[] inventorySlots = new ItemStack[2];
 
-	public static final int SLOT_POTION = 1;
-	public static final int SLOT_BOTTLE = 0;
+	//public static final int SLOT_POTION = 1;
+	//public static final int SLOT_BOTTLE = 0;
 
 	public static final int RANGE = 8;
 	public static final int ENERGY_CONSUMPTION = 10;
 	public static final int INTERVAL = 30;
 
-	@Override
+/*	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
 		NBTTagCompound potions = new NBTTagCompound();
 
@@ -52,15 +43,11 @@ public class TileEntityPotionDiffuser extends TileEnergyHandler implements ISide
 		NBTHelper.setWritable(nbt, "slot0", this.inventorySlots[0]);
 		NBTHelper.setWritable(nbt, "slot1", this.inventorySlots[1]);
 
-		this.storage.writeToNBT(nbt);
-
 		super.writeToNBT(nbt);
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
-		this.storage.readFromNBT(nbt);
-
 		this.inventorySlots[0] = NBTHelper.getItemStack(nbt, "slot0", null);
 		this.inventorySlots[1] = NBTHelper.getItemStack(nbt, "slot1", null);
 
@@ -77,7 +64,7 @@ public class TileEntityPotionDiffuser extends TileEnergyHandler implements ISide
 		}
 
 		super.readFromNBT(nbt);
-	}
+	} */
 
 	@Override
 	public int fill(ForgeDirection forgeDirection, FluidStack fluidStack, boolean b) {
@@ -122,12 +109,13 @@ public class TileEntityPotionDiffuser extends TileEnergyHandler implements ISide
 			storage.extractEnergy(ENERGY_CONSUMPTION, false);
 		}
 
-		List<EntityLivingBase> entities = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(
-			this.xCoord - RANGE, this.yCoord - RANGE, this.zCoord - RANGE,
-			this.xCoord + RANGE, this.yCoord + RANGE, this.zCoord + RANGE
-		));
-
 		if (this.tank.getFluidAmount() >= INTERVAL) {
+			@SuppressWarnings("unchecked")
+			List<EntityLivingBase> entities = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(
+					this.xCoord - RANGE, this.yCoord - RANGE, this.zCoord - RANGE,
+					this.xCoord + RANGE, this.yCoord + RANGE, this.zCoord + RANGE
+			));
+
 			for (EntityLivingBase entity : entities) {
 				Block block = this.tank.getFluid().getFluid().getBlock();
 
@@ -147,7 +135,7 @@ public class TileEntityPotionDiffuser extends TileEnergyHandler implements ISide
 			this.tank.drain(INTERVAL, true);
 		}
 
-		if (this.potionEffects.isEmpty() && this.inventorySlots[SLOT_POTION] != null &&
+		/* if (this.potionEffects.isEmpty() && this.inventorySlots[SLOT_POTION] != null &&
 				(this.inventorySlots[SLOT_BOTTLE] == null ||
 						(this.inventorySlots[SLOT_BOTTLE].getItem().equals(Items.glass_bottle)) && this.inventorySlots[SLOT_BOTTLE].stackSize < 64)) {
 			ItemPotion potion = (ItemPotion) this.inventorySlots[SLOT_POTION].getItem();
@@ -180,11 +168,11 @@ public class TileEntityPotionDiffuser extends TileEnergyHandler implements ISide
 			for (EntityLivingBase entity : entities) {
 				entity.addPotionEffect(activePotion);
 			}
-		}
+		} */
 
 		super.updateEntity();
 	}
-
+/*
 	@Override
 	public int getSizeInventory() {
 		return 2;
@@ -276,5 +264,5 @@ public class TileEntityPotionDiffuser extends TileEnergyHandler implements ISide
 	@Override
 	public boolean canExtractItem(int slot, ItemStack itemstack, int side) {
 		return slot == SLOT_BOTTLE && (itemstack == null || itemstack.getItem().equals(Items.glass_bottle));
-	}
+	} */
 }

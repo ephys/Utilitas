@@ -18,7 +18,6 @@ import net.minecraft.world.World;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.item.MultitemBlock;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityPotionDiffuser;
-import nf.fr.ephys.playerproxies.helpers.BlockHelper;
 
 import java.util.List;
 import java.util.Random;
@@ -110,7 +109,7 @@ public class BlockHardenedStone extends BlockContainer {
 		return new TileEntityPotionDiffuser();
 	}
 
-	@Override
+/*	@Override
 	public void onBlockPreDestroy(World world, int x, int y, int z, int metadata) {
 		if (metadata == METADATA_POTION_DIFFUSER) {
 			TileEntity te = world.getTileEntity(x, y, z);
@@ -120,5 +119,5 @@ public class BlockHardenedStone extends BlockContainer {
 		}
 
 		super.onBlockPreDestroy(world, x, y, z, metadata);
-	}
+	}*/
 }
