@@ -6,6 +6,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -157,6 +158,37 @@ public class BlockHelper {
 	public static int orientationToMetadataXZ(double rotationYaw) {
 	    int l = MathHelper.floor_double((rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 	    return l == 0 ? 2 : (l == 1 ? 5 : (l == 2 ? 3 : (l == 3 ? 4 : 0)));
+	}
+
+	public static void insertItem(IInventory inventory, ItemStack stack) {
+		insertItem(inventory, stack, -1);
+	}
+
+	public static boolean insertItem(IInventory inventory, ItemStack stack, int side) {
+		boolean isSided = inventory instanceof ISidedInventory;
+
+		int[] accessibleSlots = isSided ? ((ISidedInventory) inventory).getAccessibleSlotsFromSide(side) : null;
+		int size = isSided ? accessibleSlots.length : inventory.getSizeInventory();
+
+		for (int i = 0; i < size; i++) {
+			int slot = isSided ? accessibleSlots[i] : i;
+
+			ItemStack otherStack = inventory.getStackInSlot(slot);
+
+			if (otherStack == null || otherStack.stackSize == 0) {
+				inventory.setInventorySlotContents(slot, stack);
+
+				inventory.markDirty();
+				return true;
+			} else if (otherStack.isItemEqual(stack) && otherStack.stackSize < inventory.getInventoryStackLimit() && otherStack.stackSize < otherStack.getItem().getItemStackLimit(stack)) {
+				otherStack.stackSize++;
+
+				inventory.markDirty();
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public static void dropContents(IInventory te, World world, int x, int y, int z) {

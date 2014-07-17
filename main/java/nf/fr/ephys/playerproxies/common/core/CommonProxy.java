@@ -21,9 +21,8 @@ import net.minecraftforge.common.MinecraftForge;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.block.*;
 import nf.fr.ephys.playerproxies.common.item.ItemBiomeStorage;
-import nf.fr.ephys.playerproxies.common.item.ItemDragonPickaxe;
-import nf.fr.ephys.playerproxies.common.item.ItemDragonScale;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
+import nf.fr.ephys.playerproxies.common.item.ItemPotionDiffuser;
 import nf.fr.ephys.playerproxies.common.network.PacketSetBiomeHandler;
 import nf.fr.ephys.playerproxies.common.network.PacketSetNicknameHandler;
 import nf.fr.ephys.playerproxies.common.network.PacketSpawnParticleHandler;
@@ -121,7 +120,6 @@ public class CommonProxy {
 		BlockGravitationalField.register();
 		BlockHomeShield.register();
 		//BlockDragonscale.register();
-
 		//BlockEnderDragonSpawner.register();
 
 		if (PlayerProxies.getConfig().addDragonEggTab())
@@ -139,8 +137,9 @@ public class CommonProxy {
 		BlockGravitationalField.registerCraft();
 		BlockHomeShield.registerCraft();
 		BlockBeaconTierII.registerCraft();
-		//BlockDragonscale.registerCraft();
+		ItemPotionDiffuser.registerCraft();
 
+		//BlockDragonscale.registerCraft();
 		//ItemLinker.registerCraft();
 		//ItemDragonScale.registerCraft();
 		//ItemDragonPickaxe.registerCraft();
@@ -156,6 +155,7 @@ public class CommonProxy {
 	private void registerItems() {
 		ItemLinker.register();
 		ItemBiomeStorage.register();
+		ItemPotionDiffuser.register();
 
 		//ItemDragonScale.register();
 		//ItemDragonPickaxe.register();

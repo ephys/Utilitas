@@ -1,8 +1,8 @@
 package nf.fr.ephys.playerproxies.common.tileentity;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
@@ -112,17 +112,17 @@ public class TileEntityPotionDiffuser extends TileEnergyHandler implements IFlui
 		if (this.tank.getFluidAmount() >= INTERVAL) {
 			@SuppressWarnings("unchecked")
 			List<EntityLivingBase> entities = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(
-					this.xCoord - RANGE, this.yCoord - RANGE, this.zCoord - RANGE,
-					this.xCoord + RANGE, this.yCoord + RANGE, this.zCoord + RANGE
-			));
+				this.xCoord, this.yCoord, this.zCoord,
+				this.xCoord, this.yCoord, this.zCoord
+			).expand(RANGE, RANGE, RANGE));
 
 			for (EntityLivingBase entity : entities) {
 				Block block = this.tank.getFluid().getFluid().getBlock();
 
 				// TODO: add a new fluid that will remove the effects
-				if (block.getMaterial().equals(Material.water)) {
+				if (block.equals(Blocks.water)) {
 					entity.clearActivePotions();
-				} else if (block.getMaterial().equals(Material.lava)) {
+				} else if (block.equals(Blocks.lava)) {
 					if (!entity.isImmuneToFire()) {
 						entity.setFire(INTERVAL);
 					}

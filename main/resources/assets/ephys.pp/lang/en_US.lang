@@ -6,7 +6,7 @@ tile.PP_ShineyGlass.1.name=Universal Interface
 tile.PP_BiomeScanner.name=Biome scanner
 tile.PP_GravitationalField.name=Gravitational Field Handler
 tile.PP_HardenedStone.0.name=Hardened Stone
-tile.PP_HardenedStone.1.name=Potion Diffuser
+tile.PP_HardenedStone.1.name=Fluid diffuser
 tile.PP_HomeShield.name=Shield
 tile.PP_ParticleGenerator.name=Particle Generator
 tile.PP_ItemActivator.name=Sylladex
@@ -22,6 +22,7 @@ item.PP_LinkFocus.name=Link focus
 item.PP_DragonScale.name=Dragon scale
 item.PP_DragonScaleIngot.name=DragonScale Ingot
 item.PP_DragonPick.name=DragonScale pickaxe
+item.PP_PotionDiffuser.name=Potion diffuser
 
 playerproxies.configgui.ctgy.vanillatweaks=Vanilla Tweaks
 playerproxies.configgui.ctgy.vanillatweaks.tooltip=Properties of what Player Proxies changes from vanilla

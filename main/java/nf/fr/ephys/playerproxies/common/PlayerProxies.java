@@ -20,10 +20,7 @@ import nf.fr.ephys.playerproxies.common.block.*;
 import nf.fr.ephys.playerproxies.common.command.CommandNickname;
 import nf.fr.ephys.playerproxies.common.core.CommonProxy;
 import nf.fr.ephys.playerproxies.common.core.ConfigHandler;
-import nf.fr.ephys.playerproxies.common.item.ItemBiomeStorage;
-import nf.fr.ephys.playerproxies.common.item.ItemDragonPickaxe;
-import nf.fr.ephys.playerproxies.common.item.ItemDragonScale;
-import nf.fr.ephys.playerproxies.common.item.ItemLinker;
+import nf.fr.ephys.playerproxies.common.item.*;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Arrays;
@@ -79,11 +76,11 @@ public class PlayerProxies extends DummyModContainer {
 		public static ItemLinker linkDevice;
 		public static Item linkFocus;
 		public static ItemBiomeStorage biomeStorage;
+		public static ItemPotionDiffuser potionDiffuser;
+
 		public static ItemDragonScale dragonScale;
 		public static ItemDragonScale dragonScaleIngot;
-
 		public static ItemDragonPickaxe dragonPickaxe;
-
 		public static Item.ToolMaterial matDragonScale = EnumHelper.addToolMaterial("DRAGONSCALE", 4, 1200, 10F, 8F, 0);
 	}
 
