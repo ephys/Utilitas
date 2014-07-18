@@ -1,6 +1,7 @@
 package nf.fr.ephys.playerproxies.common.item;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.client.gui.GuiCreateWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
