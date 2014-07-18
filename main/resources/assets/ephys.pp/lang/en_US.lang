@@ -28,3 +28,5 @@ playerproxies.configgui.ctgy.vanillatweaks=Vanilla Tweaks
 playerproxies.configgui.ctgy.vanillatweaks.tooltip=Properties of what Player Proxies changes from vanilla
 playerproxies.configgui.ctgy.blockproperties=Block Properties
 playerproxies.configgui.ctgy.blockproperties.tooltip=Properties of Blocks added by Player Proxies
+
+entity.ItemFrame.name=Item Frame

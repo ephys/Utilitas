@@ -32,12 +32,6 @@ public class ItemPotionDiffuser extends Item {
 	}
 
 	public static void registerCraft() {
-	/*	GameRegistry.addRecipe(new ItemStack(PlayerProxies.Items.linkDevice),
-				" il", " si", "s  ",
-				'l', new ItemStack(PlayerProxies.Items.linkFocus),
-				'i', new ItemStack(Items.iron_ingot),
-				's', new ItemStack(Items.stick));*/
-
 		ChestGenHooks.addItem(ChestGenHooks.PYRAMID_DESERT_CHEST, new WeightedRandomChestContent(new ItemStack(PlayerProxies.Items.potionDiffuser), 1, 1, 7));
 	}
 
@@ -68,7 +62,7 @@ public class ItemPotionDiffuser extends Item {
 
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity owner, int slot, boolean isHeld) {
-		if (owner.worldObj.getTotalWorldTime() % 10 != 0 || !(owner instanceof EntityPlayer)) return;
+		if (stack.getItemDamage() == DAMAGE_INACTIVE || owner.worldObj.getTotalWorldTime() % 10 != 0 || !(owner instanceof EntityPlayer)) return;
 
 		EntityPlayer player = (EntityPlayer) owner;
 
@@ -100,7 +94,7 @@ public class ItemPotionDiffuser extends Item {
 
 			if (shouldDrink) {
 				for (PotionEffect effect : effects) {
-					player.addPotionEffect(new PotionEffect(effect));
+					player.addPotionEffect(new PotionEffect(effect.getPotionID(), effect.getDuration(), effect.getAmplifier(), true));
 				}
 
 				playerInventory.setInventorySlotContents(i, null);
