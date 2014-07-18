@@ -10,13 +10,17 @@ import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ChestGenHooks;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.helpers.BlockHelper;
 
 import java.util.List;
 
 public class ItemPotionDiffuser extends Item {
+	public static final int DAMAGE_INACTIVE = 0;
+	public static final int DAMAGE_ACTIVE = 1;
 	public static void register() {
 		PlayerProxies.Items.potionDiffuser = new ItemPotionDiffuser();
 		PlayerProxies.Items.potionDiffuser.setUnlocalizedName("PP_PotionDiffuser")
@@ -33,6 +37,33 @@ public class ItemPotionDiffuser extends Item {
 				'l', new ItemStack(PlayerProxies.Items.linkFocus),
 				'i', new ItemStack(Items.iron_ingot),
 				's', new ItemStack(Items.stick));*/
+
+		ChestGenHooks.addItem(ChestGenHooks.PYRAMID_DESERT_CHEST, new WeightedRandomChestContent(new ItemStack(PlayerProxies.Items.potionDiffuser), 1, 1, 7));
+	}
+
+	@Override
+	public void addInformation(ItemStack stack, EntityPlayer player, List data, boolean isSneaking) {
+		if (stack.getItemDamage() == DAMAGE_INACTIVE)
+			data.add("Sneak and right click to activate");
+		else
+			data.add("Sneak and right click to deactivate");
+	}
+
+	@Override
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+		if (player.isSneaking()) {
+			stack.setItemDamage(stack.getItemDamage() == DAMAGE_INACTIVE ? DAMAGE_ACTIVE : DAMAGE_INACTIVE);
+
+			if (!world.isRemote)
+				world.playSoundEffect(player.posX, player.posY, player.posZ, "random.orb", 0.8F, 1F);
+		}
+
+		return super.onItemRightClick(stack, world, player);
+	}
+
+	@Override
+	public boolean hasEffect(ItemStack stack, int pass) {
+		return stack.getItemDamage() == DAMAGE_ACTIVE;
 	}
 
 	@Override
@@ -60,7 +91,7 @@ public class ItemPotionDiffuser extends Item {
 
 			boolean shouldDrink = effects.size() > 0;
 			for (PotionEffect effect : effects) {
-				if (player.getActivePotionEffect(Potion.potionTypes[effect.getPotionID()]) != null) {
+				if (Potion.potionTypes[effect.getPotionID()].isInstant() || player.getActivePotionEffect(Potion.potionTypes[effect.getPotionID()]) != null) {
 					shouldDrink = false;
 
 					break;
