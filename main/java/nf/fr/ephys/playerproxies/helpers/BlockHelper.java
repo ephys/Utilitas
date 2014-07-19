@@ -59,10 +59,14 @@ public class BlockHelper {
 	public static void setBiome(World world, int x, int z, int biomeID) {
 		Chunk chunk = world.getChunkFromBlockCoords(x, z);
 		byte[] biomes = chunk.getBiomeArray();
-		biomes[(z & 15) << 4 | (x & 15)] = (byte) (biomeID - 128);
+
+		biomes[(z & 15) << 4 | (x & 15)] = (byte) (biomeID & 255);
 
 		chunk.setBiomeArray(biomes);
 		chunk.setChunkModified();
+
+		if (world.isRemote)
+			world.markBlockRangeForRenderUpdate(x, 0, z, x, 255, z);
 	}
 
 	public static int getTopYCoord(World world, int x, int z) {
