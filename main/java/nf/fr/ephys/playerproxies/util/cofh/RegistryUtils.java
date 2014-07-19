@@ -2,7 +2,6 @@ package nf.fr.ephys.playerproxies.util.cofh;
 
 import com.google.common.collect.BiMap;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockBeacon;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -40,7 +39,7 @@ public class RegistryUtils {
 			underlyingIntergerMap = rnFields[0];
 			field_148758_b = rnFields[1];
 
-			registryObjects = rnFields[1];
+			registryObjects = roFields[1];
 			itemblock_block = ibFields[0];
 
 			underlyingIntergerMap.setAccessible(true);

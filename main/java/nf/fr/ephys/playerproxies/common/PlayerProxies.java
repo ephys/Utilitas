@@ -28,13 +28,13 @@ import java.util.Arrays;
 	guiFactory = GuiModConfigFactory.CLASSNAME
 )
 public class PlayerProxies extends DummyModContainer {
-	public static final String VERSION = "1.7.10-1.0.0";
+	public static final String VERSION = "1.7.10-1.0.1";
 	public static final String MODID = "ephys.playerproxies";
 	public static final String NAME = "Player Proxies";
 
 	public static final int GUI_BIOME_SCANNER = 1;
 
-	public static final boolean DEV_MODE = true;
+	public static final boolean DEV_MODE = false;
 
 	@Instance("ephys.playerproxies")
 	public static PlayerProxies instance;
