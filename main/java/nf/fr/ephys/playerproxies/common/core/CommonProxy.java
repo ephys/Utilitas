@@ -38,7 +38,6 @@ import java.lang.reflect.Field;
 public class CommonProxy {
 	public void preInit(FMLPreInitializationEvent event) {
 		BlockBeaconTierII.register();
-		IMCHandler.sendMessages();
 	}
 
 	public void init(FMLInitializationEvent event) {
@@ -46,6 +45,8 @@ public class CommonProxy {
 		registerItems();
 
 		registerPacket();
+
+		IMCHandler.sendMessages();
 
 		NetworkRegistry.INSTANCE.registerGuiHandler(PlayerProxies.instance, new GuiHandler());
 	}
