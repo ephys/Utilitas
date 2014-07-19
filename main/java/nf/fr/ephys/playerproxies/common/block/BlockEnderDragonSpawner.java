@@ -15,7 +15,6 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
-import nf.fr.ephys.playerproxies.helpers.BlockHelper;
 import nf.fr.ephys.playerproxies.helpers.CommandHelper;
 
 import java.util.List;
@@ -81,7 +80,7 @@ public class BlockEnderDragonSpawner extends Block {
 						double posX = player.posX - 32 + rand.nextInt(64);
 						double posZ = player.posZ - 32 + rand.nextInt(64);
 
-						int posY = BlockHelper.getTopYCoord(world, (int) posX, (int) posZ);
+						int posY = world.getTopSolidOrLiquidBlock((int) posX, (int) posZ) + 1;
 
 						mob.setPosition(posX, posY, posZ);
 

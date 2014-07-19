@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -67,16 +66,6 @@ public class BlockHelper {
 
 		if (world.isRemote)
 			world.markBlockRangeForRenderUpdate(x, 0, z, x, 255, z);
-	}
-
-	public static int getTopYCoord(World world, int x, int z) {
-		int y = 63;
-
-		while (!world.getBlock(x, 63, z).equals(Blocks.air)) {
-			y++;
-		}
-
-		return y;
 	}
 
 	public static boolean isUnbreakable(Block block, World world, int x, int y, int z) {
