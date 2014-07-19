@@ -94,6 +94,8 @@ public class TileEntityBiomeReplicator extends TileEnergyHandler implements IInv
 
 		if (!hasBiome()) return;
 
+		if (worldObj.getTotalWorldTime() % 30 != 0) return;
+
 		int halfBounds = bounds[0].length >> 1;
 		if(cursorX >= halfBounds)
 			return;
@@ -104,43 +106,39 @@ public class TileEntityBiomeReplicator extends TileEnergyHandler implements IInv
 		int zTop = this.zCoord + cursorZ;
 		int zBottom = this.zCoord - cursorZ;
 
-		if (worldObj.getTotalWorldTime() % 30 == 0) {
-			for(int i = 0; i < 4; i++) {
-				PacketSpawnParticleHandler.sendPacketSpawnParticle(portalParticleID, xRight + Math.random() / 2 + 0.25, this.yCoord + i + Math.random(), zBottom + Math.random() / 2 + 0.25, 0, 0, 0, worldObj.provider.dimensionId);
-				PacketSpawnParticleHandler.sendPacketSpawnParticle(portalParticleID, xRight+Math.random() / 2 + 0.25, this.yCoord+i+Math.random(), zTop+Math.random() / 2 + 0.25, 0, 0, 0, worldObj.provider.dimensionId);
-				PacketSpawnParticleHandler.sendPacketSpawnParticle(portalParticleID, xLeft+Math.random() / 2 + 0.25, this.yCoord+i+Math.random(), zBottom+Math.random() / 2 + 0.25, 0, 0, 0, worldObj.provider.dimensionId);
-				PacketSpawnParticleHandler.sendPacketSpawnParticle(portalParticleID, xLeft+Math.random() / 2 + 0.25, this.yCoord+i+Math.random(), zTop+Math.random() / 2 + 0.25, 0, 0, 0, worldObj.provider.dimensionId);
-			}
+		for(int i = 0; i < 4; i++) {
+			PacketSpawnParticleHandler.sendPacketSpawnParticle(portalParticleID, xRight + Math.random() / 2 + 0.25, this.yCoord + i + Math.random(), zBottom + Math.random() / 2 + 0.25, 0, 0, 0, worldObj.provider.dimensionId);
+			PacketSpawnParticleHandler.sendPacketSpawnParticle(portalParticleID, xRight+Math.random() / 2 + 0.25, this.yCoord+i+Math.random(), zTop+Math.random() / 2 + 0.25, 0, 0, 0, worldObj.provider.dimensionId);
+			PacketSpawnParticleHandler.sendPacketSpawnParticle(portalParticleID, xLeft+Math.random() / 2 + 0.25, this.yCoord+i+Math.random(), zBottom+Math.random() / 2 + 0.25, 0, 0, 0, worldObj.provider.dimensionId);
+			PacketSpawnParticleHandler.sendPacketSpawnParticle(portalParticleID, xLeft+Math.random() / 2 + 0.25, this.yCoord+i+Math.random(), zTop+Math.random() / 2 + 0.25, 0, 0, 0, worldObj.provider.dimensionId);
 		}
 
-		if (!PlayerProxies.getConfig().requiresPower()) {
-			storage.setEnergyStored(storage.getEnergyStored() + storage.getMaxReceive());
+		if (PlayerProxies.getConfig().requiresPower()) {
+			if (storage.getEnergyStored() < REQUIRED_RF) return;
+
+			this.storage.extractEnergy(REQUIRED_RF, false);
 		}
-
-		if (storage.getEnergyStored() < REQUIRED_RF) return;
-
-		this.storage.extractEnergy(REQUIRED_RF, false);
 
 		boolean hasNextStep = false;
-		if(cursorZ < bounds[0][halfBounds+cursorX]) {
+		if (cursorZ < bounds[0][halfBounds+cursorX]) {
 			changeBiome(xLeft, zTop);
 
 			hasNextStep = true;
 		}
 
-		if(cursorZ < bounds[1][halfBounds+cursorX]) {
+		if (cursorZ < bounds[1][halfBounds+cursorX]) {
 			changeBiome(xLeft, zBottom);
 
 			hasNextStep = true;
 		}
 
-		if(cursorZ < bounds[0][halfBounds-cursorX]) {
+		if (cursorZ < bounds[0][halfBounds-cursorX]) {
 			changeBiome(xRight, zTop);
 
 			hasNextStep = true;
 		}
 
-		if(cursorZ < bounds[1][halfBounds-cursorX]) {
+		if (cursorZ < bounds[1][halfBounds-cursorX]) {
 			changeBiome(xRight, zBottom);
 
 			hasNextStep = true;

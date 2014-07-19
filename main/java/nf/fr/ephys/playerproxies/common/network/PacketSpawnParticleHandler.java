@@ -5,6 +5,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.helpers.ParticleHelper;
 
@@ -17,7 +18,7 @@ public class PacketSpawnParticleHandler implements IMessageHandler<PacketSpawnPa
 
 	@Override
 	public IMessage onMessage(PacketSpawnParticle packet, MessageContext messageContext) {
-		messageContext.getServerHandler().playerEntity.worldObj.spawnParticle(
+		Minecraft.getMinecraft().theWorld.spawnParticle(
 				ParticleHelper.getParticleNameFromID(packet.particleID),
 				packet.x,
 				packet.y,

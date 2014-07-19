@@ -4,6 +4,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.helpers.BlockHelper;
 
@@ -16,7 +17,7 @@ public class PacketSetBiomeHandler implements IMessageHandler<PacketSetBiomeHand
 
 	@Override
 	public IMessage onMessage(PacketSetBiome packet, MessageContext messageContext) {
-		BlockHelper.setBiome(messageContext.getServerHandler().playerEntity.worldObj, packet.x, packet.z, packet.biome);
+		BlockHelper.setBiome(Minecraft.getMinecraft().theWorld, packet.x, packet.z, packet.biome);
 
 		return null;
 	}
