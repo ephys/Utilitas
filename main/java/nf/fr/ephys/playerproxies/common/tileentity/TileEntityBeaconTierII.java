@@ -48,6 +48,11 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 	public static boolean[] badPotionEffects = new boolean[Potion.potionTypes.length];
 
 	@Override
+	public int getLevels() {
+		return level;
+	}
+
+	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		level = NBTHelper.getInt(nbt, "level", 0);
 		tier = NBTHelper.getInt(nbt, "tier", 1);

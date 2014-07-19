@@ -4,15 +4,11 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import net.minecraft.world.World;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 
 public class ItemDragonPickaxe extends ItemPickaxe {
@@ -24,6 +20,10 @@ public class ItemDragonPickaxe extends ItemPickaxe {
 				.setHarvestLevel("pickaxe", 4);
 
 		GameRegistry.registerItem(PlayerProxies.Items.dragonPickaxe, PlayerProxies.Items.dragonPickaxe.getUnlocalizedName());
+	}
+
+	public static void registerCraft() {
+
 	}
 
 	public ItemDragonPickaxe() {

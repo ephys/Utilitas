@@ -1,8 +1,6 @@
 package nf.fr.ephys.playerproxies.common.item;
 
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,8 +17,8 @@ import nf.fr.ephys.playerproxies.helpers.MathHelper;
 public class ItemDragonScale extends Item {
 	public final boolean isIngot;
 
-	public static final int[] RED = new int[] { 255, 0, 0 };
-	public static final int[] PURPLE = new int[] { 70, 0, 200 };
+	public static final int[] RED = new int[] { 180, 0, 0 };
+	public static final int[] PURPLE = new int[] { 60, 0, 180 };
 
 	public ItemDragonScale(boolean isIngot) {
 		this.isIngot = isIngot;
@@ -93,6 +91,4 @@ public class ItemDragonScale extends Item {
 
 		return true;
 	}
-
-
 }

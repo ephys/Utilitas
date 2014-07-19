@@ -2,8 +2,6 @@ package nf.fr.ephys.playerproxies.common.core;
 
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
@@ -58,6 +56,8 @@ public class ConfigHandler {
 
 		if (CONFIG.hasChanged())
 			CONFIG.save();
+
+		PlayerProxies.proxy.onConfigChanges(this);
 	}
 
 	@SubscribeEvent
@@ -65,7 +65,5 @@ public class ConfigHandler {
 		if (!event.modID.equals(PlayerProxies.MODID)) return;
 
 		SyncConfig();
-
-		Blocks.dragon_egg.setCreativeTab(addDragonEggTab() ? CreativeTabs.tabDecorations : null);
 	}
 }

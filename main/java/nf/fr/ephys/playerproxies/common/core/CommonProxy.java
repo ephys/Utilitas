@@ -38,6 +38,7 @@ import java.lang.reflect.Field;
 public class CommonProxy {
 	public void preInit(FMLPreInitializationEvent event) {
 		BlockBeaconTierII.register();
+		IMCHandler.sendMessages();
 	}
 
 	public void init(FMLInitializationEvent event) {
@@ -119,11 +120,9 @@ public class CommonProxy {
 		BlockItemTicker.register();
 		BlockGravitationalField.register();
 		BlockHomeShield.register();
-		//BlockDragonscale.register();
-		//BlockEnderDragonSpawner.register();
 
-		if (PlayerProxies.getConfig().addDragonEggTab())
-			Blocks.dragon_egg.setCreativeTab(CreativeTabs.tabDecorations);
+	//	BlockDragonscale.register();
+	//	BlockEnderDragonSpawner.register();
 	}
 
 	public void registerCrafts() {
@@ -137,19 +136,16 @@ public class CommonProxy {
 		BlockGravitationalField.registerCraft();
 		BlockHomeShield.registerCraft();
 		BlockBeaconTierII.registerCraft();
+
 		ItemPotionDiffuser.registerCraft();
+		ItemLinker.registerCraft();
 
-		//BlockDragonscale.registerCraft();
-		//ItemLinker.registerCraft();
-		//ItemDragonScale.registerCraft();
-		//ItemDragonPickaxe.registerCraft();
+	/*	BlockDragonscale.registerCraft();
+		ItemDragonScale.registerCraft();
+		ItemDragonHoe.registerCraft();
+		ItemDragonPickaxe.registerCraft(); */
 
-		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Items.linkFocus),
-				"ipi", "qeq", "ipi",
-				'e', new ItemStack(Items.emerald),
-				'p', new ItemStack(Items.ender_pearl),
-				'q', new ItemStack(Items.ender_eye),
-				'i', new ItemStack(Items.blaze_powder));
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Items.linkFocus), "ipi", "qeq", "ipi", 'e', new ItemStack(Items.emerald), 'p', new ItemStack(Items.ender_pearl), 'q', new ItemStack(Items.ender_eye), 'i', new ItemStack(Items.blaze_powder));
 	}
 
 	private void registerItems() {
@@ -157,8 +153,9 @@ public class CommonProxy {
 		ItemBiomeStorage.register();
 		ItemPotionDiffuser.register();
 
-		//ItemDragonScale.register();
-		//ItemDragonPickaxe.register();
+	/*	ItemDragonScale.register();
+		ItemDragonHoe.register();
+		ItemDragonPickaxe.register(); */
 
 		PlayerProxies.Items.linkFocus = new Item();
 		PlayerProxies.Items.linkFocus.setUnlocalizedName("PP_LinkFocus")
@@ -180,5 +177,9 @@ public class CommonProxy {
 			AdaptorProximitySensor.register();
 			AdaptorBiomeScanner.register();
 		} */
+	}
+
+	public void onConfigChanges(ConfigHandler configHandler) {
+		Blocks.dragon_egg.setCreativeTab(configHandler.addDragonEggTab() ? CreativeTabs.tabDecorations : null);
 	}
 }
