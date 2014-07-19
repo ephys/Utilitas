@@ -27,7 +27,6 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 	private int level = 0;
 	private int tier = 1;
 	private int totalBlocks = 0;
-	private int totalPositive = 0;
 	private int totalNegative = 0;
 
 	// render stuff
@@ -35,6 +34,7 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 	private float rotation = 0;
 	private Color beaconColor = Color.white;
 	public static final Color BAD_COLOR = new Color(140, 14, 36);
+	private static final Color COLOR_GAIABOSS = new Color(242, 0, 86);
 	public int displayTick = 0;
 
 	public static final int MAX_LEVELS = 6;
@@ -47,6 +47,10 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 	// this is because Potion.isBadEffect() is SideOnly(Side.CLIENT) (but getLiquidColor isn't, I'm not sure I get the logic behind this)
 	public static boolean[] badPotionEffects = new boolean[Potion.potionTypes.length];
 
+	// Botania special code
+	public static Class<?> doppleganger = null;
+	private boolean hasDoppleganger = false;
+
 	@Override
 	public int getLevels() {
 		return level;
@@ -57,7 +61,6 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 		level = NBTHelper.getInt(nbt, "level", 0);
 		tier = NBTHelper.getInt(nbt, "tier", 1);
 		totalBlocks = NBTHelper.getInt(nbt, "totalBlocks", 0);
-		totalPositive = NBTHelper.getInt(nbt, "totalPositive", 0);
 		totalNegative = NBTHelper.getInt(nbt, "totalNegative", 0);
 
 		containedItems = new ItemStack[MAX_ITEMS];
@@ -79,7 +82,6 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 		nbt.setInteger("level", level);
 		nbt.setInteger("tier", tier);
 		nbt.setInteger("totalBlocks", totalBlocks);
-		nbt.setInteger("totalPositive", totalPositive);
 		nbt.setInteger("totalNegative", totalNegative);
 
 		for (int i = 0; i < containedItems.length; i++) {
@@ -127,7 +129,7 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 		level = 0;
 
 		if (!isNearBeacon() && this.worldObj.canBlockSeeTheSky(xCoord, yCoord + 1, zCoord)) {
-			totalNegative = totalPositive = totalBlocks = 0;
+			totalNegative = totalBlocks = 0;
 
 			for (int i = 0; i < MAX_LEVELS; i++) {
 				if (!isValidLevel(i + 1))
@@ -145,16 +147,25 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 			if (level >= TIERII_LEVEL)
 				tier++;
 
+			hasDoppleganger = doppleganger != null && !worldObj.getEntitiesWithinAABB(doppleganger, AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord, yCoord + 1, zCoord).expand(32F, 32F, 32F)).isEmpty();
+
+			if (hasDoppleganger)
+				totalNegative = totalBlocks;
+
 			if (worldObj.isRemote) {
-				//Color colorNeg = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(Color.white, Color.red, negativity());
-				//Color colorPos = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(Color.white, Color.green, positivity());
+				if (hasDoppleganger)
+					beaconColor = COLOR_GAIABOSS;
+				else {
+					//Color colorNeg = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(Color.white, Color.red, negativity());
+					//Color colorPos = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(Color.white, Color.green, positivity());
 
-				beaconColor = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(Color.white, BAD_COLOR, negativity());
+					beaconColor = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(Color.white, BAD_COLOR, negativity());
 
-				//beaconColor = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(colorNeg, colorPos, 0.5F);
+					//beaconColor = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(colorNeg, colorPos, 0.5F);
 
-				if (hasDragonEgg)
-					beaconColor = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(beaconColor, Color.magenta, 0.5F);
+					if (hasDragonEgg)
+						beaconColor = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(beaconColor, Color.magenta, 0.5F);
+				}
 			}
 		}
 	}
@@ -180,9 +191,10 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 
 				if (isBlockNegative(block))
 					totalNegative++;
-				else
-					totalPositive++;
+
 				//if (isBlockPositive(block))
+				//	totalPositive++;
+
 
 				totalBlocks++;
 			}

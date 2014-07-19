@@ -61,6 +61,14 @@ public class CommonProxy {
 		if (Loader.isModLoaded("ComputerCraft"))
 			UniversalInterfaceRegistry.addInterface(InterfaceTurtle.class, ITurtleTile.class);
 
+		if (Loader.isModLoaded("Botania")) {
+			try {
+				TileEntityBeaconTierII.doppleganger = Class.forName("vazkii.botania.common.entity.EntityDoppleganger");
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+
 		UniversalInterfaceRegistry.addInterface(InterfaceTileEntity.class, TileEntity.class);
 		UniversalInterfaceRegistry.addInterface(InterfacePlayer.class, EntityPlayer.class);
 
@@ -99,8 +107,8 @@ public class CommonProxy {
 					break;
 				}
 
-				if (PlayerProxies.DEV_MODE)
-					PlayerProxies.getLogger().info("Potion "+Potion.potionTypes[i].getName()+" is " + (TileEntityBeaconTierII.badPotionEffects[i] ? "bad" : "good"));
+				//if (PlayerProxies.DEV_MODE)
+				PlayerProxies.getLogger().info("Potion "+Potion.potionTypes[i].getName()+" is " + (TileEntityBeaconTierII.badPotionEffects[i] ? "bad" : "good"));
 			}
 		}
 	}

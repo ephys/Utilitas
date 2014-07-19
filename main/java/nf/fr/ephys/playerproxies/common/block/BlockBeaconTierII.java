@@ -120,8 +120,13 @@ public class BlockBeaconTierII extends BlockBeacon {
 					ItemStack newStack = item.copy();
 					newStack.stackSize = 1;
 
-					if (BlockHelper.insert(te, newStack))
+					if (BlockHelper.insert(te, newStack)) {
 						item.stackSize--;
+
+						return true;
+					}
+
+					return false;
 				}
 			}
 		}
