@@ -100,6 +100,7 @@ public class PlayerProxies extends DummyModContainer {
 	public void preInit(FMLPreInitializationEvent event) {
 		logger = event.getModLog();
 		config = new ConfigHandler(event.getSuggestedConfigurationFile());
+		config.syncConfig();
 
 		proxy.preInit(event);
 	}

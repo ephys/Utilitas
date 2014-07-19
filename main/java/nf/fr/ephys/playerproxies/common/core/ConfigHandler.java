@@ -29,30 +29,28 @@ public class ConfigHandler {
 	public static final String BLOCK_PROPERTIES = "BlockProperties";
 	public static final String VANILLA_TWEAKS = "VanillaTweaks";
 
-	public void SyncConfig() {
-		Property property = CONFIG.get(BLOCK_PROPERTIES, "Homeshield Requires Twilight Forest", BlockHomeShield.requiresTwilightForest);
-		property.comment = "True: Will overwrite the TF Stronghold Shield to add a locked state [unbreakable but unlockable]. \nFalse: Will add a new Shield Block having that behavior";
+	public void syncConfig() {
+		Property property = CONFIG.get(BLOCK_PROPERTIES, "Homeshield Requires Twilight Forest", BlockHomeShield.requiresTwilightForest, "True: Will overwrite the TF Stronghold Shield to add a locked state [unbreakable but unlockable]. \nFalse: Will add a new Shield Block having that behavior");
 		property.requiresMcRestart();
 		BlockHomeShield.requiresTwilightForest = property.getBoolean(BlockHomeShield.requiresTwilightForest);
 
-		property = CONFIG.get(BLOCK_PROPERTIES, "Homeshield Requires Silk Touch", BlockHomeShield.requiresSilkTouch);
-		property.comment = "True if the shield only drops if silk touched";
+		property = CONFIG.get(BLOCK_PROPERTIES, "Homeshield Requires Silk Touch", BlockHomeShield.requiresSilkTouch, "True if the shield only drops if silk touched");
 		BlockHomeShield.requiresSilkTouch = property.getBoolean(BlockHomeShield.requiresSilkTouch);
 
 		property = CONFIG.get(BLOCK_PROPERTIES, "Requires Energy", requiresPower);
 		requiresPower = property.getBoolean(requiresPower);
 
-		property = CONFIG.get(VANILLA_TWEAKS, "Ender Pearls Are OP", opEnderPearls);
-		property.comment = "EnderPearls don't damage users";
+		property = CONFIG.get(VANILLA_TWEAKS, "Ender Pearls Are OP", opEnderPearls, "EnderPearls don't damage users");
 		opEnderPearls = property.getBoolean(opEnderPearls);
 
-		property = CONFIG.get(VANILLA_TWEAKS, "Overwrite vanilla beacon", BlockBeaconTierII.overwrite);
-		property.comment = "Replaces the vanilla Beacon block by an enhanced (probably) version of it";
+		property = CONFIG.get(VANILLA_TWEAKS, "Overwrite vanilla beacon", BlockBeaconTierII.overwrite, "Replaces the vanilla Beacon block by an enhanced (probably) version of it");
 		property.requiresMcRestart();
 		BlockBeaconTierII.overwrite = property.getBoolean(BlockBeaconTierII.overwrite);
 
 		property = CONFIG.get(VANILLA_TWEAKS, "Add dragon egg to creative", addDragonEggTab);
 		addDragonEggTab = property.getBoolean(addDragonEggTab);
+
+		CONFIG.load();
 
 		if (CONFIG.hasChanged())
 			CONFIG.save();
@@ -64,6 +62,6 @@ public class ConfigHandler {
 	public void onConfigChange(ConfigChangedEvent.OnConfigChangedEvent event) {
 		if (!event.modID.equals(PlayerProxies.MODID)) return;
 
-		SyncConfig();
+		syncConfig();
 	}
 }
