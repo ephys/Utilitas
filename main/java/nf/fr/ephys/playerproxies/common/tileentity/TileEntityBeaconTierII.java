@@ -34,7 +34,7 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 	private float rotation = 0;
 	private Color beaconColor = Color.white;
 	public static final Color BAD_COLOR = new Color(140, 14, 36);
-	private static final Color COLOR_GAIABOSS = new Color(242, 0, 86);
+	private static final Color COLOR_GAIABOSS = new Color(255, 0, 98);
 	public int displayTick = 0;
 
 	public static final int MAX_LEVELS = 6;

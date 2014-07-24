@@ -9,6 +9,7 @@ import net.minecraft.block.BlockPistonBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -126,8 +127,13 @@ public class EventHandler {
 
 	@SubscribeEvent
 	public void enderPearlDamage(EnderTeleportEvent event) {
-		if (PlayerProxies.getConfig().areEnderPearlsOP())
+		if (PlayerProxies.getConfig().areEnderPearlsOP()) {
 			event.attackDamage = 0;
+
+			event.entity.worldObj.playSoundEffect(event.entity.posX, event.entity.posY, event.entity.posZ, "mob.endermen.portal", 1F, 1F);
+
+			event.entity.worldObj.playSoundEffect(event.targetX, event.targetY, event.targetZ, "mob.endermen.portal", 1F, 1F);
+		}
 	}
 
 	@SubscribeEvent
