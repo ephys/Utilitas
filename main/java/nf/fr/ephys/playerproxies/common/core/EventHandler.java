@@ -9,6 +9,7 @@ import net.minecraft.block.BlockPistonBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -54,6 +55,14 @@ public class EventHandler {
 
 			for (int i = 0; i < nbStacks; i++) {
 				event.drops.add(new EntityItem(event.entity.worldObj, event.entity.posX, event.entity.posY, event.entity.posZ, new ItemStack(PlayerProxies.Items.dragonScale, 16)));
+			}
+		} else if (event.entity.worldObj.provider.dimensionId == 1) {
+			if (event.entity instanceof EntityEnderman) {
+				if (event.source.getEntity() instanceof EntityCreeper)
+					event.drops.add(new EntityItem(event.entity.worldObj, event.entity.posX, event.entity.posY, event.entity.posZ, new ItemStack(PlayerProxies.Items.dragonScale, MathHelper.getRandomIntegerInRange(random, 5, 19))));
+				else if (!(event.source.getEntity() instanceof EntityPlayer) && random.nextFloat() < 0.125F * event.lootingLevel) {
+					event.drops.add(new EntityItem(event.entity.worldObj, event.entity.posX, event.entity.posY, event.entity.posZ, new ItemStack(PlayerProxies.Items.dragonScale, MathHelper.getRandomIntegerInRange(random, 1, 1 + event.lootingLevel))));
+				}
 			}
 		}
 	}

@@ -25,6 +25,7 @@ item.PP_DragonPick.name=DragonScale pickaxe
 item.PP_PotionDiffuser.name=Potion diffuser
 item.PP_UnemptyingBucket.name=Omnibucket
 item.PP_UnemptyingBucket.filled.name=%s Omnibucket
+item.PP_DragonHoe.name=DragonScale Hoe
 
 playerproxies.configgui.ctgy.vanillatweaks=Vanilla Tweaks
 playerproxies.configgui.ctgy.vanillatweaks.tooltip=Properties of what Player Proxies changes from vanilla
@@ -38,6 +39,7 @@ pp_tooltip.bucket_contains=Contains: %s
 pp_tooltip.bucket_mode_fill=Fill Mode
 pp_tooltip.bucket_mode_empty=Empty Mode
 pp_tooltip.bucket_bound=Bound
+pp_tooltip.dragon_hoe=Sterilizes dirt, grass won't grow back
 
 pp_messages.bucket_bound=%s bound to %s (%s)
 pp_messages.bucket_unbound=%s unbound

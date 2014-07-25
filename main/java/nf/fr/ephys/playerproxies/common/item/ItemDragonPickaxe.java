@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
@@ -32,14 +33,10 @@ public class ItemDragonPickaxe extends ItemPickaxe {
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public int getColorFromItemStack(ItemStack stack, int pass) {
-		return pass == 0 ? DragonColorRegistry.getColor() : super.getColorFromItemStack(stack, pass);
-	}
+	public float func_150893_a(ItemStack stack, Block block) {
+		if (block == Blocks.obsidian) return 80F;
 
-	@Override
-	public EnumRarity getRarity(ItemStack par1ItemStack) {
-		return EnumRarity.uncommon;
+		return super.func_150893_a(stack, block);
 	}
 
 	@Override
@@ -48,34 +45,8 @@ public class ItemDragonPickaxe extends ItemPickaxe {
 	}
 
 	@Override
-	public float func_150893_a(ItemStack stack, Block block) {
-		//if (block.equals(Blocks.bedrock))
-			return Float.MAX_VALUE;
-
-		//return super.func_150893_a(stack, block);
-	}
-
-	@Override
-	public float getDigSpeed(ItemStack stack, Block block, int meta) {
-		//if (block.equals(Blocks.bedrock))
-			return Float.MAX_VALUE;
-
-		//return super.getDigSpeed(stack, block, meta);
-	}
-
-/*	@Override
-	public boolean onBlockStartBreak(ItemStack stack, int x, int y, int z, EntityPlayer player) {
-		World world = player.worldObj;
-		Material mat = world.getBlock(x, y, z).getMaterial();
-
-		world.setBlock(x, y, z, Blocks.air);
-
-		return false;
-	}*/
-
-	@Override
-	public boolean func_150897_b(Block block) {
-		return true; //(block.equals(Blocks.bedrock)) || super.func_150897_b(block);
+	public EnumRarity getRarity(ItemStack par1ItemStack) {
+		return EnumRarity.rare;
 	}
 
 	private IIcon[] icons = new IIcon[2];
@@ -87,12 +58,18 @@ public class ItemDragonPickaxe extends ItemPickaxe {
 	}
 
 	@Override
-	public boolean requiresMultipleRenderPasses() {
-		return true;
+	public IIcon getIcon(ItemStack stack, int renderPass) {
+		return icons[renderPass];
 	}
 
 	@Override
-	public IIcon getIcon(ItemStack stack, int renderPass) {
-		return icons[renderPass];
+	@SideOnly(Side.CLIENT)
+	public int getColorFromItemStack(ItemStack stack, int pass) {
+		return pass == 0 ? DragonColorRegistry.getColor() : super.getColorFromItemStack(stack, pass);
+	}
+
+	@Override
+	public boolean requiresMultipleRenderPasses() {
+		return true;
 	}
 }

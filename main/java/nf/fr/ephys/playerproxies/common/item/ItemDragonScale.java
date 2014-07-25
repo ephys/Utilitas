@@ -5,6 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
@@ -40,6 +41,11 @@ public class ItemDragonScale extends Item {
 
 	public static void registerCraft() {
 		GameRegistry.addShapelessRecipe(new ItemStack(PlayerProxies.Items.dragonScaleIngot), PlayerProxies.Items.dragonScale, Items.iron_ingot, Items.ender_pearl);
+	}
+
+	@Override
+	public EnumRarity getRarity(ItemStack par1ItemStack) {
+		return EnumRarity.rare;
 	}
 
 	@Override
