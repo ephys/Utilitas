@@ -5,6 +5,7 @@ import net.minecraft.util.ChatComponentText;
 
 public class CommandHelper {
 	public static void sendChatMessage(ICommandSender user, String message) {
-		user.addChatMessage(new ChatComponentText(message));
+		if (user.getEntityWorld() == null || !user.getEntityWorld().isRemote)
+			user.addChatMessage(new ChatComponentText(message));
 	}
 }

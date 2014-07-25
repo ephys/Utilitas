@@ -20,9 +20,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.block.*;
-import nf.fr.ephys.playerproxies.common.item.ItemBiomeStorage;
-import nf.fr.ephys.playerproxies.common.item.ItemLinker;
-import nf.fr.ephys.playerproxies.common.item.ItemPotionDiffuser;
+import nf.fr.ephys.playerproxies.common.item.*;
 import nf.fr.ephys.playerproxies.common.network.PacketSetBiomeHandler;
 import nf.fr.ephys.playerproxies.common.network.PacketSetNicknameHandler;
 import nf.fr.ephys.playerproxies.common.network.PacketSpawnParticleHandler;
@@ -130,8 +128,8 @@ public class CommonProxy {
 		BlockGravitationalField.register();
 		BlockHomeShield.register();
 
-	//	BlockDragonscale.register();
-	//	BlockEnderDragonSpawner.register();
+		BlockDragonscale.register();
+		BlockEnderDragonSpawner.register();
 	}
 
 	public void registerCrafts() {
@@ -145,14 +143,15 @@ public class CommonProxy {
 		BlockGravitationalField.registerCraft();
 		BlockHomeShield.registerCraft();
 		BlockBeaconTierII.registerCraft();
-
 		ItemPotionDiffuser.registerCraft();
 		ItemLinker.registerCraft();
 
-	/*	BlockDragonscale.registerCraft();
+		ItemUnemptyingBucket.registerCraft();
+
+		BlockDragonscale.registerCraft();
 		ItemDragonScale.registerCraft();
 		ItemDragonHoe.registerCraft();
-		ItemDragonPickaxe.registerCraft(); */
+		ItemDragonPickaxe.registerCraft();
 
 		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Items.linkFocus), "ipi", "qeq", "ipi", 'e', new ItemStack(Items.emerald), 'p', new ItemStack(Items.ender_pearl), 'q', new ItemStack(Items.ender_eye), 'i', new ItemStack(Items.blaze_powder));
 	}
@@ -161,10 +160,11 @@ public class CommonProxy {
 		ItemLinker.register();
 		ItemBiomeStorage.register();
 		ItemPotionDiffuser.register();
+		ItemUnemptyingBucket.register();
 
-	/*	ItemDragonScale.register();
+		ItemDragonScale.register();
 		ItemDragonHoe.register();
-		ItemDragonPickaxe.register(); */
+		ItemDragonPickaxe.register();
 
 		PlayerProxies.Items.linkFocus = new Item();
 		PlayerProxies.Items.linkFocus.setUnlocalizedName("PP_LinkFocus")

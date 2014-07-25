@@ -23,6 +23,7 @@ item.PP_DragonScale.name=Dragon scale
 item.PP_DragonScaleIngot.name=DragonScale Ingot
 item.PP_DragonPick.name=DragonScale pickaxe
 item.PP_PotionDiffuser.name=Potion diffuser
+item.PP_UnemptyingBucket.name=Unemptying Bucket
 
 playerproxies.configgui.ctgy.vanillatweaks=Vanilla Tweaks
 playerproxies.configgui.ctgy.vanillatweaks.tooltip=Properties of what Player Proxies changes from vanilla
@@ -30,3 +31,8 @@ playerproxies.configgui.ctgy.blockproperties=Block Properties
 playerproxies.configgui.ctgy.blockproperties.tooltip=Properties of Blocks added by Player Proxies
 
 entity.ItemFrame.name=Item Frame
+
+pp_tooltips.nothing=nothing
+pp_tooltips.bucket_contains=Contains: %s
+pp_tooltip.bucket_mode_fill=Fill Mode
+pp_tooltip.bucket_mode_empty=Empty Mode

@@ -76,6 +76,7 @@ public class PlayerProxies extends DummyModContainer {
 		public static ItemBiomeStorage biomeStorage;
 		public static ItemPotionDiffuser potionDiffuser;
 
+		public static ItemUnemptyingBucket unemptyingBucket;
 		public static ItemDragonScale dragonScale;
 		public static ItemDragonScale dragonScaleIngot;
 		public static ItemDragonPickaxe dragonPickaxe;

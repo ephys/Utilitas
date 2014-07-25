@@ -68,6 +68,8 @@ public class TileEntityPotionDiffuser extends TileEnergyHandler implements IFlui
 
 	@Override
 	public int fill(ForgeDirection forgeDirection, FluidStack fluidStack, boolean b) {
+		if (!fluidStack.getFluid().canBePlacedInWorld()) return 0;
+
 		return this.tank.fill(fluidStack, b);
 	}
 
@@ -86,7 +88,7 @@ public class TileEntityPotionDiffuser extends TileEnergyHandler implements IFlui
 
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid) {
-		return true;
+		return fluid.canBePlacedInWorld();
 	}
 
 	@Override
