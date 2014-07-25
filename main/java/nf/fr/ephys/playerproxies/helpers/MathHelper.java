@@ -36,4 +36,28 @@ public class MathHelper {
 
 		return o;
 	}
+
+	public static int averageColorFromAint(int[] aint) {
+		float r = 0;
+		float g = 0;
+		float b = 0;
+
+		for (int pixel : aint) {
+			/*r += (pixel >> 16 & 0xFF) / aint.length;
+			g += (pixel >> 8 & 0xFF) / aint.length;
+			b += (pixel & 0xFF) / aint.length;*/
+
+			r += (-pixel >> 16 & 0xFF) / 255.0F;
+			g += (-pixel >> 8 & 0xFF) / 255.0F;
+			b += (-pixel & 0xFF) / 255.0F;
+		}
+
+		r /= aint.length;
+		g /= aint.length;
+		b /= aint.length;
+
+		return -((int)(r * 255.0F) << 16 | (int)(g * 255.0F) << 8 | (int)(b * 255.0F));
+
+		//return (int) r << 16 + (int) g << 8 + (int) b;
+	}
 }

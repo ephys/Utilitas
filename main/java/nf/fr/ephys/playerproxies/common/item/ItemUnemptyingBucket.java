@@ -3,12 +3,14 @@ package nf.fr.ephys.playerproxies.common.item;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -17,10 +19,10 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
+import nf.fr.ephys.playerproxies.client.registry.FluidColorRegistry;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.helpers.BlockHelper;
 import nf.fr.ephys.playerproxies.helpers.CommandHelper;
-import nf.fr.ephys.playerproxies.helpers.DebugHelper;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
 import java.util.List;
@@ -47,6 +49,41 @@ public class ItemUnemptyingBucket extends Item {
 				'l', PlayerProxies.Items.linkFocus);
 	}
 
+	private IIcon[] textures;
+
+	@Override
+	public void registerIcons(IIconRegister register) {
+		textures = new IIcon[2];
+		textures[0] = register.registerIcon("bucket_empty");
+		textures[1] = register.registerIcon("ephys.pp:bucket_fluid");
+	}
+
+	@Override
+	public IIcon getIcon(ItemStack stack, int pass) {
+		return textures[pass];
+	}
+
+	@Override
+	public boolean requiresMultipleRenderPasses() {
+		return true;
+	}
+
+	@Override
+	public int getColorFromItemStack(ItemStack stack, int renderPass) {
+		switch (renderPass) {
+			case 0:
+				return PlayerProxies.Items.dragonScale.getColorFromItemStack(stack, renderPass);
+			case 1:
+				Fluid fluid = getLiquid(stack);
+				if (fluid == null)
+					break;
+
+				return FluidColorRegistry.getColorFromFluid(fluid);
+		}
+
+		return super.getColorFromItemStack(stack, renderPass);
+	}
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public void addInformation(ItemStack stack, EntityPlayer player, List data, boolean unknown) {
@@ -54,6 +91,9 @@ public class ItemUnemptyingBucket extends Item {
 
 		data.add(String.format(StatCollector.translateToLocal("pp_tooltip.bucket_contains"), fluid == null ? StatCollector.translateToLocal("pp_tooltip.nothing") : fluid.getLocalizedName()));
 		data.add("§5" + (stack.getItemDamage() == METADATA_EMPTY ? StatCollector.translateToLocal("pp_tooltip.bucket_mode_empty") : StatCollector.translateToLocal("pp_tooltip.bucket_mode_fill")));
+
+		if (NBTHelper.getNBT(stack).hasKey("fluidHandler"))
+			data.add("§5" + StatCollector.translateToLocal("pp_tooltip.bucket_bound"));
 	}
 
 	public static void setLiquid(ItemStack stack, Fluid liquid) {
@@ -73,22 +113,44 @@ public class ItemUnemptyingBucket extends Item {
 		return FluidRegistry.getFluid(nbt.getInteger("fluid"));
 	}
 
-	public static void setFluidHandler(ItemStack stack, TileEntity te, int side) {
-		if (te == null)
+	public static boolean setFluidHandler(ItemStack stack, TileEntity te, int side) {
+		if (te == null) {
 			NBTHelper.getNBT(stack).removeTag("fluidHandler");
-		else {
-			NBTTagCompound tileNBT = new NBTTagCompound();
-			tileNBT.setIntArray("coords", BlockHelper.getCoords(te));
+
+			return false;
+		} else {
+			NBTTagCompound nbt = NBTHelper.getNBT(stack);
+
+			int[] newCoords = BlockHelper.getCoords(te);
+
+			NBTTagCompound tileNBT;
+			if (nbt.hasKey("fluidHandler")) {
+				tileNBT = nbt.getCompoundTag("fluidHandler");
+
+				if (tileNBT.getInteger("worldID") == te.getWorldObj().provider.dimensionId && tileNBT.getInteger("side") == side) {
+					int[] oldCoords = tileNBT.getIntArray("coords");
+
+					if (oldCoords[0] == newCoords[0] && oldCoords[1] == newCoords[1] && oldCoords[2] == newCoords[2]) {
+						NBTHelper.getNBT(stack).removeTag("fluidHandler");
+
+						return false;
+					}
+				}
+			}
+
+			tileNBT = new NBTTagCompound();
+			tileNBT.setIntArray("coords", newCoords);
 			tileNBT.setInteger("worldID", te.getWorldObj().provider.dimensionId);
 			tileNBT.setInteger("side", side);
 
 			NBTHelper.getNBT(stack).setTag("fluidHandler", tileNBT);
+
+			return true;
 		}
 	}
 
 	@Override
 	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-		DebugHelper.sidedDebug(world, "ON ITEM USE FIRST");
 		if (player.isSneaking()) return false;
 
 		TileEntity te = world.getTileEntity(x, y, z);
@@ -121,8 +183,17 @@ public class ItemUnemptyingBucket extends Item {
 
 		if (player.isSneaking()) {
 			if (te instanceof IFluidHandler) {
-				setFluidHandler(stack, te, mop.sideHit);
-				CommandHelper.sendChatMessage(player, this.getItemStackDisplayName(stack) + " linked to " + world.getBlock(mop.blockX, mop.blockY, mop.blockZ).getLocalizedName());
+				if (setFluidHandler(stack, te, mop.sideHit)) {
+					CommandHelper.sendChatMessage(player,
+							String.format(StatCollector.translateToLocal("pp_messages.bucket_bound"),
+									this.getItemStackDisplayName(stack),
+									world.getBlock(mop.blockX, mop.blockY, mop.blockZ).getLocalizedName(),
+									CommandHelper.blockSideName(mop.sideHit)));
+				} else {
+					CommandHelper.sendChatMessage(player,
+							String.format(StatCollector.translateToLocal("pp_messages.bucket_unbound"),
+									this.getItemStackDisplayName(stack)));
+				}
 			} else {
 				switchMode(stack, player);
 			}

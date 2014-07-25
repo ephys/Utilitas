@@ -3,6 +3,9 @@ package nf.fr.ephys.playerproxies.client.core;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.SimpleReloadableResourceManager;
+import nf.fr.ephys.playerproxies.client.registry.FluidColorRegistry;
 import nf.fr.ephys.playerproxies.client.renderer.BlockBeaconTierIIRenderer;
 import nf.fr.ephys.playerproxies.client.renderer.TileEntityBeaconTierIIRenderer;
 import nf.fr.ephys.playerproxies.client.renderer.TileEntityInterfaceRenderer;
@@ -18,6 +21,8 @@ public class ClientProxy extends CommonProxy {
 		super.init(event);
 
 		registerRenderers();
+
+		((SimpleReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(new FluidColorRegistry());
 	}
 
 	public void registerRenderers() {

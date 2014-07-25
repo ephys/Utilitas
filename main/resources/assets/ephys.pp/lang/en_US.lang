@@ -32,7 +32,18 @@ playerproxies.configgui.ctgy.blockproperties.tooltip=Properties of Blocks added 
 
 entity.ItemFrame.name=Item Frame
 
-pp_tooltips.nothing=nothing
-pp_tooltips.bucket_contains=Contains: %s
+pp_tooltip.nothing=nothing
+pp_tooltip.bucket_contains=Contains: %s
 pp_tooltip.bucket_mode_fill=Fill Mode
 pp_tooltip.bucket_mode_empty=Empty Mode
+pp_tooltip.bucket_bound=Bound
+
+pp_messages.bucket_bound=%s bound to %s (%s)
+pp_messages.bucket_unbound=%s unbound
+
+side.down=Down
+side.up=Up
+side.north=North
+side.south=South
+side.west=West
+side.east=East
