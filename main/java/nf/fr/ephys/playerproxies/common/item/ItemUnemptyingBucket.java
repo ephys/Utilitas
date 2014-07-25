@@ -204,7 +204,7 @@ public class ItemUnemptyingBucket extends Item {
 					CommandHelper.sendChatMessage(player,
 							String.format(StatCollector.translateToLocal("pp_messages.bucket_bound"),
 									this.getItemStackDisplayName(stack),
-									world.getBlock(mop.blockX, mop.blockY, mop.blockZ).getLocalizedName(),
+									(new ItemStack(world.getBlock(mop.blockX, mop.blockY, mop.blockZ), 1, world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ))).getDisplayName(),
 									CommandHelper.blockSideName(mop.sideHit)));
 				} else {
 					CommandHelper.sendChatMessage(player,

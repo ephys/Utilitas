@@ -80,6 +80,7 @@ public class PlayerProxies extends DummyModContainer {
 		public static ItemDragonScale dragonScale;
 		public static ItemDragonScale dragonScaleIngot;
 		public static ItemDragonPickaxe dragonPickaxe;
+		public static ItemDragonHoe dragonHoe;
 		public static Item.ToolMaterial matDragonScale = EnumHelper.addToolMaterial("DRAGONSCALE", 4, 1200, 10F, 8F, 0);
 	}
 
