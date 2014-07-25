@@ -15,7 +15,7 @@ import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityProximitySensor;
 import nf.fr.ephys.playerproxies.helpers.BlockHelper;
-import nf.fr.ephys.playerproxies.helpers.CommandHelper;
+import nf.fr.ephys.playerproxies.helpers.ChatHelper;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
 import java.util.List;
@@ -79,11 +79,11 @@ public class ItemLinker extends Item {
 				nbt.removeTag("entity");
 				nbt.removeTag("tile");
 
-				CommandHelper.sendChatMessage(player, "Wand data cleared");
+				ChatHelper.sendChatMessage(player, "Wand data cleared");
 			} else {
 				nbt.setInteger("entity", player.getEntityId());
 
-				CommandHelper.sendChatMessage(player, "Wand bound to " + player.getDisplayName());
+				ChatHelper.sendChatMessage(player, "Wand bound to " + player.getDisplayName());
 			}
 		}
 
@@ -117,7 +117,7 @@ public class ItemLinker extends Item {
 			NBTHelper.getNBT(stack).removeTag("entity");
 
 			if (!world.isRemote)
-				CommandHelper.sendChatMessage(player, "Wand bound to {" + coords[0] + ", " + coords[1] + ", " + coords[2] + "}");
+				ChatHelper.sendChatMessage(player, "Wand bound to {" + coords[0] + ", " + coords[1] + ", " + coords[2] + "}");
 
 			return true;
 		}
@@ -137,9 +137,9 @@ public class ItemLinker extends Item {
 		NBTHelper.setInt(item, "entity", event.target.getEntityId());
 
 		if (event.target instanceof EntityPlayer)
-			CommandHelper.sendChatMessage(event.entityPlayer, "Wand bound to " + ((EntityPlayer) event.target).getDisplayName());
+			ChatHelper.sendChatMessage(event.entityPlayer, "Wand bound to " + ((EntityPlayer) event.target).getDisplayName());
 		else
-			CommandHelper.sendChatMessage(event.entityPlayer, "Wand bound to " + entityName);
+			ChatHelper.sendChatMessage(event.entityPlayer, "Wand bound to " + entityName);
 
 		event.setCanceled(true);
 	}

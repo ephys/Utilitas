@@ -12,7 +12,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import nf.fr.ephys.playerproxies.client.registry.DragonColorRegistry;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
-import nf.fr.ephys.playerproxies.helpers.CommandHelper;
+import nf.fr.ephys.playerproxies.helpers.ChatHelper;
 
 public class ItemDragonScale extends Item {
 	public final boolean isIngot;
@@ -70,7 +70,7 @@ public class ItemDragonScale extends Item {
 		Block endBlock = worldEnd.getBlock(0, 2, 0);
 
 		if (endBlock.equals(PlayerProxies.Blocks.dragonSpawner)) {
-			CommandHelper.sendChatMessage(player, "There is already a spawn in progress");
+			ChatHelper.sendChatMessage(player, "There is already a spawn in progress");
 		} else {
 			stack.stackSize--;
 
@@ -81,7 +81,7 @@ public class ItemDragonScale extends Item {
 
 			worldEnd.setBlock(0, 2, 0, PlayerProxies.Blocks.dragonSpawner);
 
-			CommandHelper.sendChatMessage(player, "An enderdragon is approaching");
+			ChatHelper.sendChatMessage(player, "An enderdragon is approaching");
 		}
 
 		return true;

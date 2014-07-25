@@ -7,7 +7,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import nf.fr.ephys.playerproxies.helpers.CommandHelper;
+import nf.fr.ephys.playerproxies.helpers.ChatHelper;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
 import java.util.List;
@@ -32,19 +32,19 @@ public class TileEntityProximitySensor extends TileEntity {
 			this.entityFilter = Entity.class;
 			this.playerFilter = null;
 
-			CommandHelper.sendChatMessage(player, "Filter cleared");
+			ChatHelper.sendChatMessage(player, "Filter cleared");
 		} else if (entity instanceof EntityPlayer) {
 			EntityPlayer playerFilter = (EntityPlayer) entity;
 
 			this.playerFilter = playerFilter.getUniqueID();
 			this.entityFilter = EntityPlayer.class;
 
-			CommandHelper.sendChatMessage(player, "Filter set to user " + playerFilter.getDisplayName());
+			ChatHelper.sendChatMessage(player, "Filter set to user " + playerFilter.getDisplayName());
 		} else {
 			this.playerFilter = null;
 			this.entityFilter = entity.getClass();
 
-			CommandHelper.sendChatMessage(player, "Filter set to " + entity.getCommandSenderName());
+			ChatHelper.sendChatMessage(player, "Filter set to " + entity.getCommandSenderName());
 		}
 	}
 
@@ -67,7 +67,7 @@ public class TileEntityProximitySensor extends TileEntity {
 				break;
 		}
 
-		CommandHelper.sendChatMessage(player, "Detection radius: " + RADIUS_X + "*" + RADIUS_Y + "*" + RADIUS_Z);
+		ChatHelper.sendChatMessage(player, "Detection radius: " + RADIUS_X + "*" + RADIUS_Y + "*" + RADIUS_Z);
 	}
 
 	@Override

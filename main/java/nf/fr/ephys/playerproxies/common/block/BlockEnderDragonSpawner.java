@@ -15,7 +15,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
-import nf.fr.ephys.playerproxies.helpers.CommandHelper;
+import nf.fr.ephys.playerproxies.helpers.ChatHelper;
 
 import java.util.List;
 import java.util.Random;
@@ -115,7 +115,7 @@ public class BlockEnderDragonSpawner extends Block {
 				if (o instanceof EntityPlayer) {
 					EntityPlayer player = (EntityPlayer) o;
 
-					CommandHelper.sendChatMessage(player, "The dragon is approaching (" + stage + " / 8)");
+					ChatHelper.sendChatMessage(player, "The dragon is approaching (" + stage + " / 8)");
 				}
 			}
 
@@ -126,7 +126,7 @@ public class BlockEnderDragonSpawner extends Block {
 				if (o instanceof EntityPlayer) {
 					EntityPlayer player = (EntityPlayer) o;
 
-					CommandHelper.sendChatMessage(player, "The dragon has arrived");
+					ChatHelper.sendChatMessage(player, "The dragon has arrived");
 				}
 			}
 

@@ -9,7 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import nf.fr.ephys.playerproxies.common.network.PacketSetNicknameHandler;
-import nf.fr.ephys.playerproxies.helpers.CommandHelper;
+import nf.fr.ephys.playerproxies.helpers.ChatHelper;
 
 import java.util.List;
 
@@ -42,7 +42,7 @@ public class CommandNickname extends CommandBase {
 
 		if (args.length == 1) {
 			if (!(sender instanceof EntityPlayer)) {
-				CommandHelper.sendChatMessage(sender, "Specify a player.");
+				ChatHelper.sendChatMessage(sender, "Specify a player.");
 				return;
 			}
 
@@ -52,20 +52,20 @@ public class CommandNickname extends CommandBase {
 			try {
 				target = getPlayer(sender, args[0]);
 			} catch(PlayerNotFoundException e) {
-				CommandHelper.sendChatMessage(sender, args[0]+" is not connected.");
+				ChatHelper.sendChatMessage(sender, args[0] + " is not connected.");
 
 				return;
 			}
 
 			nickname = args[1];
 		} else {
-			CommandHelper.sendChatMessage(sender, "Usage: /"+getCommandUsage(sender));
+			ChatHelper.sendChatMessage(sender, "Usage: /" + getCommandUsage(sender));
 
 			return;
 		}
 
 		if (!nickname.matches("^[a-zA-Z0-9_]*$")) {
-			CommandHelper.sendChatMessage(sender, "Invalid nickname: Alphanumerical characters and underscores only");
+			ChatHelper.sendChatMessage(sender, "Invalid nickname: Alphanumerical characters and underscores only");
 
 			return;
 		}

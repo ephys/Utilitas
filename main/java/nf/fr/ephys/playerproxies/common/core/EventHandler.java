@@ -31,7 +31,7 @@ import nf.fr.ephys.playerproxies.common.network.PacketSetNicknameHandler;
 import nf.fr.ephys.playerproxies.common.registry.GravitationalFieldRegistry;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityGravitationalField;
 import nf.fr.ephys.playerproxies.helpers.BlockHelper;
-import nf.fr.ephys.playerproxies.helpers.CommandHelper;
+import nf.fr.ephys.playerproxies.helpers.ChatHelper;
 
 import java.util.Random;
 
@@ -178,12 +178,12 @@ public class EventHandler {
 				event.setResult(Event.Result.DENY);
 				event.setCanceled(true);
 
-				CommandHelper.sendChatMessage(event.entityPlayer, "Placing that block here would make it impossible to remove.");
+				ChatHelper.sendChatMessage(event.entityPlayer, "Placing that block here would make it impossible to remove.");
 			}
 		} else if (BlockHelper.isUnbreakable(facingBlock, event.world, coords[0], coords[1], coords[2])) {
 			event.setResult(Event.Result.DENY);
 			event.setCanceled(true);
-			CommandHelper.sendChatMessage(event.entityPlayer, "Placing that block here would make it impossible to remove.");
+			ChatHelper.sendChatMessage(event.entityPlayer, "Placing that block here would make it impossible to remove.");
 		}
 	}
 }

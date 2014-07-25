@@ -10,6 +10,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.IFluidHandler;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
 import nf.fr.ephys.playerproxies.helpers.BlockHelper;
+import nf.fr.ephys.playerproxies.helpers.ChatHelper;
 import org.lwjgl.opengl.GL11;
 
 public class InterfaceTileEntity extends UniversalInterface {
@@ -85,7 +86,7 @@ public class InterfaceTileEntity extends UniversalInterface {
 
 	@Override
 	public String getName() {
-		return BlockHelper.getDisplayName(blockEntity);
+		return ChatHelper.getDisplayName(blockEntity);
 	}
 
 	@Override

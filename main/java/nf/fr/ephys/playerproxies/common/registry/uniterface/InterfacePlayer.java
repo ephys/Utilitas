@@ -11,7 +11,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 import nf.fr.ephys.playerproxies.client.renderer.TileEntityInterfaceRenderer;
 import nf.fr.ephys.playerproxies.common.registry.PlayerInventoryRegistry;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
-import nf.fr.ephys.playerproxies.helpers.CommandHelper;
+import nf.fr.ephys.playerproxies.helpers.ChatHelper;
 import nf.fr.ephys.playerproxies.helpers.EntityHelper;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 import org.lwjgl.opengl.GL11;
@@ -59,7 +59,7 @@ public class InterfacePlayer extends UniversalInterface {
 		EntityPlayer player = ((EntityPlayer) link);
 
 		if (!player.getGameProfile().getId().equals(linker.getGameProfile().getId())) {
-			CommandHelper.sendChatMessage(player, "You cannot link to another another player's inventory");
+			ChatHelper.sendChatMessage(player, "You cannot link to another another player's inventory");
 
 			return false;
 		}

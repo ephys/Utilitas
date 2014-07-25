@@ -18,7 +18,7 @@ import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
 import nf.fr.ephys.playerproxies.common.registry.UniversalInterfaceRegistry;
 import nf.fr.ephys.playerproxies.common.registry.uniterface.UniversalInterface;
-import nf.fr.ephys.playerproxies.helpers.CommandHelper;
+import nf.fr.ephys.playerproxies.helpers.ChatHelper;
 import nf.fr.ephys.playerproxies.helpers.EntityHelper;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
@@ -112,7 +112,7 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 	public boolean link(EntityPlayer player) {
 		if (uniterface != null) {
 			unlink();
-			CommandHelper.sendChatMessage(player, "Interface unlinked");
+			ChatHelper.sendChatMessage(player, "Interface unlinked");
 
 			return true;
 		}
@@ -127,13 +127,13 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 			toLink = ItemLinker.getLinkedObject(player.getHeldItem(), worldObj);
 
 			if (toLink == null) {
-				CommandHelper.sendChatMessage(player, "Link wand not bound");
+				ChatHelper.sendChatMessage(player, "Link wand not bound");
 
 				return false;
 			}
 
 			if (toLink instanceof TileEntityInterface) {
-				CommandHelper.sendChatMessage(player, "You're not a good person. You know that, right ?");
+				ChatHelper.sendChatMessage(player, "You're not a good person. You know that, right ?");
 
 				return false;
 			}
@@ -149,11 +149,11 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 		if (handler != null) {
 			this.uniterface = handler;
 
-			CommandHelper.sendChatMessage(player, "Universal interface linked to " + handler.getName());
+			ChatHelper.sendChatMessage(player, "Universal interface linked to " + handler.getName());
 
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		} else {
-			CommandHelper.sendChatMessage(player, "Could not link the universal interface to this link wand");
+			ChatHelper.sendChatMessage(player, "Could not link the universal interface to this link wand");
 		}
 
 		return true;

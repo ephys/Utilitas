@@ -119,11 +119,6 @@ public class BlockHelper {
 		return getAdjacentBlock(coords[0], coords[1], coords[2], side);
 	}
 
-	public static String getDisplayName(TileEntity te) {
-		if (te == null) return "null";
-		return new ItemStack(te.getBlockType(), 1, te.getBlockMetadata()).getDisplayName();
-	}
-
 	public static Vec3 relativePos(TileEntity te, Entity e) {
 		return Vec3.createVectorHelper(te.xCoord - e.posX, te.yCoord - e.posY, te.zCoord - e.posZ);
 	}

@@ -24,7 +24,7 @@ import nf.fr.ephys.playerproxies.client.registry.DragonColorRegistry;
 import nf.fr.ephys.playerproxies.client.registry.FluidColorRegistry;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.helpers.BlockHelper;
-import nf.fr.ephys.playerproxies.helpers.CommandHelper;
+import nf.fr.ephys.playerproxies.helpers.ChatHelper;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
 import java.util.List;
@@ -110,7 +110,7 @@ public class ItemUnemptyingBucket extends Item {
 
 		return String.format(
 				StatCollector.translateToLocal("item.PP_UnemptyingBucket.filled.name"),
-				fluid.getLocalizedName(new FluidStack(fluid, 1000))
+				ChatHelper.getDisplayName(fluid)
 		);
 	}
 
@@ -207,15 +207,9 @@ public class ItemUnemptyingBucket extends Item {
 		if (player.isSneaking()) {
 			if (te instanceof IFluidHandler) {
 				if (setFluidHandler(stack, te, mop.sideHit)) {
-					CommandHelper.sendChatMessage(player,
-							String.format(StatCollector.translateToLocal("pp_messages.bucket_bound"),
-									this.getItemStackDisplayName(stack),
-									(new ItemStack(world.getBlock(mop.blockX, mop.blockY, mop.blockZ), 1, world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ))).getDisplayName(),
-									CommandHelper.blockSideName(mop.sideHit)));
+					ChatHelper.sendChatMessage(player, String.format(StatCollector.translateToLocal("pp_messages.bucket_bound"), this.getItemStackDisplayName(stack), (new ItemStack(world.getBlock(mop.blockX, mop.blockY, mop.blockZ), 1, world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ))).getDisplayName(), ChatHelper.blockSideName(mop.sideHit)));
 				} else {
-					CommandHelper.sendChatMessage(player,
-							String.format(StatCollector.translateToLocal("pp_messages.bucket_unbound"),
-									this.getItemStackDisplayName(stack)));
+					ChatHelper.sendChatMessage(player, String.format(StatCollector.translateToLocal("pp_messages.bucket_unbound"), this.getItemStackDisplayName(stack)));
 				}
 			} else {
 				switchMode(stack, player);
@@ -255,17 +249,17 @@ public class ItemUnemptyingBucket extends Item {
 
 	private void switchMode(ItemStack stack, EntityPlayer player) {
 		if (stack.getItemDamage() == METADATA_FILL) {
-			CommandHelper.sendChatMessage(player, "Switching to empty mode");
+			ChatHelper.sendChatMessage(player, "Switching to empty mode");
 			stack.setItemDamage(METADATA_EMPTY);
 		} else {
-			CommandHelper.sendChatMessage(player, "Switching to fill mode");
+			ChatHelper.sendChatMessage(player, "Switching to fill mode");
 			stack.setItemDamage(METADATA_FILL);
 		}
 	}
 
 	private boolean placeFluidInWorld(EntityPlayer player, int[] coords, int side, ItemStack stack, World world, Fluid fluid) {
 		if (!fluid.canBePlacedInWorld()) {
-			CommandHelper.sendChatMessage(player, "Can't place this fluid in world. :(");
+			ChatHelper.sendChatMessage(player, "Can't place this fluid in world. :(");
 
 			return false;
 		}
