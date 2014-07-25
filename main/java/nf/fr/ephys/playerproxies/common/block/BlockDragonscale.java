@@ -6,6 +6,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemStack;
+import nf.fr.ephys.playerproxies.client.registry.DragonColorRegistry;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 
 public class BlockDragonscale extends Block {
@@ -39,6 +40,6 @@ public class BlockDragonscale extends Block {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int getBlockColor() {
-		return PlayerProxies.Items.dragonScale.getColorFromItemStack(null, 0);
+		return DragonColorRegistry.getColor();
 	}
 }

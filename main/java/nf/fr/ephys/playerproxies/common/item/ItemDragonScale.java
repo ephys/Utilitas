@@ -2,7 +2,6 @@ package nf.fr.ephys.playerproxies.common.item;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -10,15 +9,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
+import nf.fr.ephys.playerproxies.client.registry.DragonColorRegistry;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.helpers.CommandHelper;
-import nf.fr.ephys.playerproxies.helpers.MathHelper;
 
 public class ItemDragonScale extends Item {
 	public final boolean isIngot;
-
-	public static final int[] RED = new int[] { 180, 0, 0 };
-	public static final int[] PURPLE = new int[] { 60, 0, 180 };
 
 	public ItemDragonScale(boolean isIngot) {
 		this.isIngot = isIngot;
@@ -48,14 +44,7 @@ public class ItemDragonScale extends Item {
 
 	@Override
 	public int getColorFromItemStack(ItemStack stack, int par2) {
-		double percent = (Minecraft.getMinecraft().theWorld.getTotalWorldTime() % (Math.PI * 100)) / 100;
-		float sin = (float) Math.sin(percent);
-
-		int r = MathHelper.gradientRGB(RED[0], PURPLE[0], sin) << 16;
-		int g = MathHelper.gradientRGB(RED[1], PURPLE[1], sin) << 8;
-		int b = MathHelper.gradientRGB(RED[2], PURPLE[2], sin);
-
-		return r + g + b;
+		return DragonColorRegistry.getColor();
 	}
 
 	@Override

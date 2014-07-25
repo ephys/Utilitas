@@ -19,6 +19,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
+import nf.fr.ephys.playerproxies.client.registry.DragonColorRegistry;
 import nf.fr.ephys.playerproxies.client.registry.FluidColorRegistry;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.helpers.BlockHelper;
@@ -60,6 +61,9 @@ public class ItemUnemptyingBucket extends Item {
 
 	@Override
 	public IIcon getIcon(ItemStack stack, int pass) {
+		if (pass == 1 && !NBTHelper.getNBT(stack).hasKey("fluid"))
+			pass = 0;
+
 		return textures[pass];
 	}
 
@@ -72,11 +76,11 @@ public class ItemUnemptyingBucket extends Item {
 	public int getColorFromItemStack(ItemStack stack, int renderPass) {
 		switch (renderPass) {
 			case 0:
-				return PlayerProxies.Items.dragonScale.getColorFromItemStack(stack, renderPass);
+				return DragonColorRegistry.getColor();
 			case 1:
 				Fluid fluid = getLiquid(stack);
 				if (fluid == null)
-					break;
+					return DragonColorRegistry.getColor();
 
 				return FluidColorRegistry.getColorFromFluid(fluid);
 		}
@@ -89,11 +93,24 @@ public class ItemUnemptyingBucket extends Item {
 	public void addInformation(ItemStack stack, EntityPlayer player, List data, boolean unknown) {
 		Fluid fluid = getLiquid(stack);
 
-		data.add(String.format(StatCollector.translateToLocal("pp_tooltip.bucket_contains"), fluid == null ? StatCollector.translateToLocal("pp_tooltip.nothing") : fluid.getLocalizedName()));
+		//data.add(String.format(StatCollector.translateToLocal("pp_tooltip.bucket_contains"), fluid == null ? StatCollector.translateToLocal("pp_tooltip.nothing") : fluid.getLocalizedName()));
 		data.add("§5" + (stack.getItemDamage() == METADATA_EMPTY ? StatCollector.translateToLocal("pp_tooltip.bucket_mode_empty") : StatCollector.translateToLocal("pp_tooltip.bucket_mode_fill")));
 
 		if (NBTHelper.getNBT(stack).hasKey("fluidHandler"))
 			data.add("§5" + StatCollector.translateToLocal("pp_tooltip.bucket_bound"));
+	}
+
+	@Override
+	public String getItemStackDisplayName(ItemStack stack) {
+		Fluid fluid = getLiquid(stack);
+
+		if (fluid == null)
+			return super.getItemStackDisplayName(stack);
+
+		return String.format(
+				StatCollector.translateToLocal("item.PP_UnemptyingBucket.filled.name"),
+				fluid.getLocalizedName(new FluidStack(fluid, 1000))
+		);
 	}
 
 	public static void setLiquid(ItemStack stack, Fluid liquid) {

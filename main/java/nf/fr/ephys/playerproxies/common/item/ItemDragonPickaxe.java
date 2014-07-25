@@ -9,6 +9,7 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+import nf.fr.ephys.playerproxies.client.registry.DragonColorRegistry;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 
 public class ItemDragonPickaxe extends ItemPickaxe {
@@ -33,7 +34,7 @@ public class ItemDragonPickaxe extends ItemPickaxe {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int getColorFromItemStack(ItemStack stack, int pass) {
-		return pass == 0 ? PlayerProxies.Items.dragonScale.getColorFromItemStack(stack, pass) : super.getColorFromItemStack(stack, pass);
+		return pass == 0 ? DragonColorRegistry.getColor() : super.getColorFromItemStack(stack, pass);
 	}
 
 	@Override
