@@ -50,9 +50,9 @@ public class GuiModConfig extends GuiConfig {
 		@Override
 		protected GuiScreen buildChildScreen() {
 			return new GuiConfig(this.owningScreen,
-					new ConfigElement(PlayerProxies.getConfig().CONFIG.getCategory(ConfigHandler.BLOCK_PROPERTIES.toLowerCase())).getChildElements(),
+					new ConfigElement(PlayerProxies.getConfig().CONFIG.getCategory(ConfigHandler.PROPERTIES.toLowerCase())).getChildElements(),
 					this.owningScreen.modID,
-					ConfigHandler.BLOCK_PROPERTIES.toLowerCase(),
+					ConfigHandler.PROPERTIES.toLowerCase(),
 					this.configElement.requiresWorldRestart() || this.owningScreen.allRequireWorldRestart,
 					this.configElement.requiresMcRestart() || this.owningScreen.allRequireMcRestart,
 					"Block Properties");

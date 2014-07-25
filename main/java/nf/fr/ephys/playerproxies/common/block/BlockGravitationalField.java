@@ -13,11 +13,14 @@ import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityGravitationalField;
 
 public class BlockGravitationalField extends BlockContainer {
+	public static boolean enabled = true;
 	private IIcon iconBottom;
 	private IIcon iconTop;
 	private IIcon iconSide;
 
 	public static void register() {
+		if (!enabled) return;
+
 		PlayerProxies.Blocks.gravitationalField = new BlockGravitationalField();
 		PlayerProxies.Blocks.gravitationalField.setBlockName("PP_GravitationalField")
 			.setHardness(1.0F)
@@ -28,6 +31,8 @@ public class BlockGravitationalField extends BlockContainer {
 	}
 
 	public static void registerCraft() {
+		if (!enabled) return;
+
 		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.gravitationalField),
 			" l ", "gsg", " l ",
 			'l', PlayerProxies.Items.linkFocus,

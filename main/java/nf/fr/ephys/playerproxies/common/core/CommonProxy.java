@@ -5,6 +5,7 @@ import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -20,6 +21,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.block.*;
+import nf.fr.ephys.playerproxies.common.command.CommandNickname;
 import nf.fr.ephys.playerproxies.common.item.*;
 import nf.fr.ephys.playerproxies.common.network.PacketSetBiomeHandler;
 import nf.fr.ephys.playerproxies.common.network.PacketSetNicknameHandler;
@@ -128,8 +130,8 @@ public class CommonProxy {
 		BlockGravitationalField.register();
 		BlockHomeShield.register();
 
-		BlockDragonscale.register();
-		BlockEnderDragonSpawner.register();
+		//BlockDragonscale.register();
+		//BlockEnderDragonSpawner.register();
 	}
 
 	public void registerCrafts() {
@@ -148,7 +150,7 @@ public class CommonProxy {
 
 		ItemUnemptyingBucket.registerCraft();
 
-		BlockDragonscale.registerCraft();
+		//BlockDragonscale.registerCraft();
 		ItemDragonScale.registerCraft();
 		ItemDragonHoe.registerCraft();
 		ItemDragonPickaxe.registerCraft();
@@ -190,5 +192,13 @@ public class CommonProxy {
 
 	public void onConfigChanges(ConfigHandler configHandler) {
 		Blocks.dragon_egg.setCreativeTab(configHandler.addDragonEggTab() ? CreativeTabs.tabDecorations : null);
+	}
+
+	public void serverStarting(FMLServerStartingEvent event) {
+		if (CommandNickname.enabled) {
+			CommandNickname command = new CommandNickname();
+			MinecraftForge.EVENT_BUS.register(command);
+			event.registerServerCommand(command);
+		}
 	}
 }

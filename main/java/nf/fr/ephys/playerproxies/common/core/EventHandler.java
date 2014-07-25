@@ -12,22 +12,16 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import nf.fr.ephys.playerproxies.client.core.NicknamesRegistry;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.block.BlockHomeShield;
-import nf.fr.ephys.playerproxies.common.network.PacketSetNicknameHandler;
 import nf.fr.ephys.playerproxies.common.registry.GravitationalFieldRegistry;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityGravitationalField;
 import nf.fr.ephys.playerproxies.helpers.BlockHelper;
@@ -63,38 +57,6 @@ public class EventHandler {
 				else if (!(event.source.getEntity() instanceof EntityPlayer) && random.nextFloat() < 0.125F * event.lootingLevel) {
 					event.drops.add(new EntityItem(event.entity.worldObj, event.entity.posX, event.entity.posY, event.entity.posZ, new ItemStack(PlayerProxies.Items.dragonScale, MathHelper.getRandomIntegerInRange(random, 1, 1 + event.lootingLevel))));
 				}
-			}
-		}
-	}
-
-	// ========================== NICKNAME MANAGEMENT ==========================
-	@SubscribeEvent
-	public void changePlayerName(PlayerEvent.NameFormat event) {
-		NBTTagCompound nbt = event.entityPlayer.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
-
-		if (nbt.hasKey("nickname")) {
-			event.displayname = nbt.getString("nickname");
-		} else {
-			String name = NicknamesRegistry.get(event.entityPlayer.getGameProfile().getName());
-
-			if (name != null) {
-				nbt.setString("nickname", name);
-				event.displayname = name;
-			}
-		}
-	}
-
-	@SubscribeEvent
-	public void onJoin(EntityJoinWorldEvent event) {
-		if (event.entity instanceof EntityPlayerMP) {
-			if (!event.world.isRemote) { // server side
-				// send this player's nick to every other player
-				PacketSetNicknameHandler.sendNickToAll((EntityPlayerMP) event.entity);
-
-				// send this player every other player's nick
-				PacketSetNicknameHandler.sendListToPlayer((EntityPlayerMP) event.entity);
-			} else {
-				((EntityPlayer) event.entity).refreshDisplayName();
 			}
 		}
 	}

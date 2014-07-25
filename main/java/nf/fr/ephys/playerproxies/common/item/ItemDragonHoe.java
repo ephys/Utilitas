@@ -19,6 +19,8 @@ import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import java.util.List;
 
 public class ItemDragonHoe extends ItemHoe {
+	public static boolean enabled = true;
+
 	public static void register() {
 		PlayerProxies.Items.dragonHoe = new ItemDragonHoe();
 		PlayerProxies.Items.dragonHoe.setUnlocalizedName("PP_DragonHoe")
@@ -49,7 +51,7 @@ public class ItemDragonHoe extends ItemHoe {
 
 		Block block = world.getBlock(x, y, z);
 
-		if (side == 1 && (block == Blocks.grass || (block == Blocks.dirt && world.getBlockMetadata(x, y, z) != 1) || block == Blocks.mycelium)) {
+		if (side == 1 && (block == Blocks.grass || (block == Blocks.dirt && world.getBlockMetadata(x, y, z) != 1) || block == Blocks.mycelium || block == Blocks.farmland)) {
 			Block.SoundType sound = Blocks.dirt.stepSound;
 
 			world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F,

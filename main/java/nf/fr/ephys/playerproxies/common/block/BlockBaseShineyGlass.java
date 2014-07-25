@@ -22,13 +22,13 @@ import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
 import java.util.List;
 
 public class BlockBaseShineyGlass extends BlockBreakable implements ITileEntityProvider {
+	public static boolean interfaceEnabled = true;
+
 	public static final int METADATA_ETHEREAL_GLASS = 0;
 	public static final int METADATA_INTERFACE = 1;
 
 	protected BlockBaseShineyGlass(String texture, Material material, boolean transparent) {
 		super(texture, material, transparent);
-
-
 
 		this.isBlockContainer = true;
 	}
@@ -37,20 +37,26 @@ public class BlockBaseShineyGlass extends BlockBreakable implements ITileEntityP
 		PlayerProxies.Blocks.baseShineyGlass = (BlockBaseShineyGlass) (new BlockBaseShineyGlass("ephys.pp:pureGlass", Material.glass, false)).setBlockName("PP_ShineyGlass").setStepSound(Block.soundTypeGlass).setLightLevel(1.0F).setHardness(1.0F).setCreativeTab(PlayerProxies.creativeTab).setBlockTextureName("ephys.pp:pureGlass");
 
 		GameRegistry.registerBlock(PlayerProxies.Blocks.baseShineyGlass, MultitemBlock.class, PlayerProxies.Blocks.baseShineyGlass.getUnlocalizedName());
-		GameRegistry.registerTileEntity(TileEntityInterface.class, "PP_Interface");
+
+		if (interfaceEnabled)
+			GameRegistry.registerTileEntity(TileEntityInterface.class, "PP_Interface");
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
+	@SuppressWarnings("unchecked")
 	public void getSubBlocks(Item unknown, CreativeTabs tab, List subItems) {
 		subItems.add(new ItemStack(this, 1, METADATA_ETHEREAL_GLASS));
-		subItems.add(new ItemStack(this, 1, METADATA_INTERFACE));
+
+		if (interfaceEnabled)
+			subItems.add(new ItemStack(this, 1, METADATA_INTERFACE));
 	}
 
 	public static void registerCraft() {
 		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.baseShineyGlass, 12, METADATA_ETHEREAL_GLASS), "ggg", "gdg", "ggg", 'd', new ItemStack(Items.diamond), 'g', new ItemStack(Blocks.glass));
 
-		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.baseShineyGlass, 1, METADATA_INTERFACE), "dld", "geg", "dgd", 'd', new ItemStack(Items.diamond), 'l', new ItemStack(PlayerProxies.Items.linkFocus), 'g', new ItemStack(PlayerProxies.Blocks.baseShineyGlass, METADATA_ETHEREAL_GLASS), 'e', new ItemStack(Blocks.ender_chest));
+		if (interfaceEnabled)
+			GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.baseShineyGlass, 1, METADATA_INTERFACE), "dld", "geg", "dgd", 'd', new ItemStack(Items.diamond), 'l', new ItemStack(PlayerProxies.Items.linkFocus), 'g', new ItemStack(PlayerProxies.Blocks.baseShineyGlass, METADATA_ETHEREAL_GLASS), 'e', new ItemStack(Blocks.ender_chest));
 	}
 
 	@Override

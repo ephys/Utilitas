@@ -1,5 +1,6 @@
 package nf.fr.ephys.playerproxies.common.command;
 
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
@@ -8,12 +9,17 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import nf.fr.ephys.playerproxies.client.core.NicknamesRegistry;
 import nf.fr.ephys.playerproxies.common.network.PacketSetNicknameHandler;
 import nf.fr.ephys.playerproxies.helpers.ChatHelper;
 
 import java.util.List;
 
 public class CommandNickname extends CommandBase {
+	public static boolean enabled = true;
+
 	@Override
 	public String getCommandName() {
 		return "nickname";
@@ -99,5 +105,36 @@ public class CommandNickname extends CommandBase {
 	@Override
 	public boolean isUsernameIndex(String[] astring, int i) {
 		return false;
+	}
+
+	@SubscribeEvent
+	public void changePlayerName(PlayerEvent.NameFormat event) {
+		NBTTagCompound nbt = event.entityPlayer.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+
+		if (nbt.hasKey("nickname")) {
+			event.displayname = nbt.getString("nickname");
+		} else {
+			String name = NicknamesRegistry.get(event.entityPlayer.getGameProfile().getName());
+
+			if (name != null) {
+				nbt.setString("nickname", name);
+				event.displayname = name;
+			}
+		}
+	}
+
+	@SubscribeEvent
+	public void onJoin(EntityJoinWorldEvent event) {
+		if (event.entity instanceof EntityPlayerMP) {
+			if (!event.world.isRemote) { // server side
+				// send this player's nick to every other player
+				PacketSetNicknameHandler.sendNickToAll((EntityPlayerMP) event.entity);
+
+				// send this player every other player's nick
+				PacketSetNicknameHandler.sendListToPlayer((EntityPlayerMP) event.entity);
+			} else {
+				((EntityPlayer) event.entity).refreshDisplayName();
+			}
+		}
 	}
 }

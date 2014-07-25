@@ -14,7 +14,6 @@ import net.minecraft.item.Item;
 import net.minecraftforge.common.util.EnumHelper;
 import nf.fr.ephys.playerproxies.client.gui.GuiModConfigFactory;
 import nf.fr.ephys.playerproxies.common.block.*;
-import nf.fr.ephys.playerproxies.common.command.CommandNickname;
 import nf.fr.ephys.playerproxies.common.core.CommonProxy;
 import nf.fr.ephys.playerproxies.common.core.ConfigHandler;
 import nf.fr.ephys.playerproxies.common.core.IMCHandler;
@@ -119,7 +118,7 @@ public class PlayerProxies extends DummyModContainer {
 
 	@EventHandler
 	public void serverStarting(FMLServerStartingEvent event) {
-		event.registerServerCommand(new CommandNickname());
+		proxy.serverStarting(event);
 	}
 
 	@EventHandler

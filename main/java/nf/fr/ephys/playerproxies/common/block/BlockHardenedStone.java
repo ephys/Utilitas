@@ -25,6 +25,7 @@ import java.util.Random;
 public class BlockHardenedStone extends BlockContainer {
 	public static final int METADATA_HARDENED_STONE = 0;
 	public static final int METADATA_POTION_DIFFUSER = 1;
+	public static boolean diffuserEnabled = true;
 
 	private IIcon iconSide;
 	private IIcon iconTop;
@@ -38,7 +39,8 @@ public class BlockHardenedStone extends BlockContainer {
 
 		GameRegistry.registerBlock(PlayerProxies.Blocks.hardenedStone, MultitemBlock.class, PlayerProxies.Blocks.hardenedStone.getUnlocalizedName());
 
-		GameRegistry.registerTileEntity(TileEntityPotionDiffuser.class, "PP_PotionDiffuser");
+		if (diffuserEnabled)
+			GameRegistry.registerTileEntity(TileEntityPotionDiffuser.class, "PP_PotionDiffuser");
 	}
 
 	public static void registerCraft() {
@@ -56,18 +58,23 @@ public class BlockHardenedStone extends BlockContainer {
 					'o', Blocks.obsidian);
 		}
 
-		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.hardenedStone, 1, METADATA_POTION_DIFFUSER),
-				"p", "g", "d",
-				'p', Items.glass_bottle,
-				'g', PlayerProxies.Blocks.particleGenerator,
-				'd', Items.diamond);
+		if (diffuserEnabled) {
+			GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.hardenedStone, 1, METADATA_POTION_DIFFUSER),
+					"p", "g", "d",
+					'p', Items.glass_bottle,
+					'g', PlayerProxies.Blocks.particleGenerator != PlayerProxies.Blocks.particleGenerator ? Blocks.obsidian : new ItemStack(PlayerProxies.Blocks.hardenedStone, 1, METADATA_HARDENED_STONE),
+					'd', Items.diamond);
+		}
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
+	@SuppressWarnings("unchecked")
 	public void getSubBlocks(Item unknown, CreativeTabs tab, List subItems) {
 		subItems.add(new ItemStack(this, 1, METADATA_HARDENED_STONE));
-		subItems.add(new ItemStack(this, 1, METADATA_POTION_DIFFUSER));
+
+		if (diffuserEnabled)
+			subItems.add(new ItemStack(this, 1, METADATA_POTION_DIFFUSER));
 	}
 
 	@Override

@@ -21,6 +21,8 @@ import java.util.List;
 public class ItemPotionDiffuser extends Item {
 	public static final int DAMAGE_INACTIVE = 0;
 	public static final int DAMAGE_ACTIVE = 1;
+	public static boolean enabled = true;
+
 	public static void register() {
 		PlayerProxies.Items.potionDiffuser = new ItemPotionDiffuser();
 		PlayerProxies.Items.potionDiffuser.setUnlocalizedName("PP_PotionDiffuser")

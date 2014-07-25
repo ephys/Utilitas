@@ -35,6 +35,7 @@ public class BlockHomeShield extends Block {
 	public static boolean requiresSilkTouch = false;
 
 	public static Block tfShield = null;
+	public static boolean enabled = true;
 
 	private IIcon accessible;
 	private IIcon unaccessible;
@@ -66,6 +67,8 @@ public class BlockHomeShield extends Block {
 	}
 
 	public static void register() {
+		if (!enabled) return;
+
 		boolean tfExists = Loader.isModLoaded("TwilightForest");
 
 		PlayerProxies.Blocks.homeShield = new BlockHomeShield(Material.rock);
@@ -105,7 +108,7 @@ public class BlockHomeShield extends Block {
 	}
 
 	public static void registerCraft() {
-		if (requiresTwilightForest) return;
+		if (!enabled || requiresTwilightForest) return;
 
 		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.homeShield, 4),
 				"isi", "opo", "ioi",

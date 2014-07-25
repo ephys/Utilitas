@@ -16,10 +16,13 @@ import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityProximitySensor;
 
 public class BlockProximitySensor extends BlockContainer {
+	public static boolean enabled = true;
 	private IIcon iconTop;
 	private IIcon iconSide;
 
 	public static void register() {
+		if (!enabled) return;
+
 		PlayerProxies.Blocks.proximitySensor = new BlockProximitySensor(Material.iron);
 		PlayerProxies.Blocks.proximitySensor.setBlockName("PP_ProximitySensor")
 				.setHardness(2F)
@@ -31,6 +34,8 @@ public class BlockProximitySensor extends BlockContainer {
 	}
 
 	public static void registerCraft() {
+		if (!enabled) return;
+
 		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.proximitySensor),
 				"hhh", "hlh", "hrh",
 				'h', new ItemStack(PlayerProxies.Blocks.hardenedStone),

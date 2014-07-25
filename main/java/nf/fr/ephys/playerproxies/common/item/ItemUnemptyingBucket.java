@@ -32,7 +32,10 @@ import java.util.List;
 public class ItemUnemptyingBucket extends Item {
 	public static final int METADATA_FILL = 0;
 	public static final int METADATA_EMPTY = 1;
-	public static final int RANGE = 32;
+
+	public static int range = 32;
+	public static boolean crossDim = false;
+	public static boolean enabled = true;
 
 	public static void register() {
 		PlayerProxies.Items.unemptyingBucket = new ItemUnemptyingBucket();
@@ -312,9 +315,9 @@ public class ItemUnemptyingBucket extends Item {
 
 		int[] tileCoords = tileNBT.getIntArray("coords");
 
-		if (Math.abs(tileCoords[0] - player.posX) > RANGE
-				|| Math.abs(tileCoords[1] - player.posY) > RANGE
-				|| Math.abs(tileCoords[2] - player.posZ) > RANGE) return;
+		if (Math.abs(tileCoords[0] - player.posX) > range
+				|| Math.abs(tileCoords[1] - player.posY) > range
+				|| Math.abs(tileCoords[2] - player.posZ) > range) return;
 
 		TileEntity te = world.getTileEntity(tileCoords[0], tileCoords[1], tileCoords[2]);
 

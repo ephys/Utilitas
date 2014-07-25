@@ -16,11 +16,14 @@ import nf.fr.ephys.playerproxies.common.tileentity.TileEntityItemTicker;
 import nf.fr.ephys.playerproxies.helpers.BlockHelper;
 
 public class BlockItemTicker extends BlockContainer {
+	public static boolean enabled = true;
 	private IIcon iconTop;
 	private IIcon iconSide;
 	private IIcon iconBottom;
 
 	public static void register() {
+		if (!enabled) return;
+
 		PlayerProxies.Blocks.itemTicker = new BlockItemTicker(Material.iron);
 		PlayerProxies.Blocks.itemTicker.setBlockName("PP_ItemActivator")
 			.setHardness(2.5F)
@@ -32,6 +35,8 @@ public class BlockItemTicker extends BlockContainer {
 	}
 
 	public static void registerCraft() {
+		if (!enabled) return;
+
 		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.itemTicker),
 				"   ", " c ", "sss",
 				'c', new ItemStack(Items.clock),

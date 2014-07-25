@@ -16,6 +16,7 @@ import java.util.Random;
 
 public class BlockParticleGenerator extends Block {
 	public static int BLOCK_ID = 803;
+	public static boolean enabled = true;
 
 	private IIcon iconSide;
 	private IIcon iconTop;
@@ -25,6 +26,8 @@ public class BlockParticleGenerator extends Block {
 			"enchantmenttable", "flame", "lava", "splash", "reddust", "heart" };
 
 	public static void register() {
+		if (!enabled) return;
+
 		PlayerProxies.Blocks.particleGenerator = new BlockParticleGenerator(Material.iron);
 		PlayerProxies.Blocks.particleGenerator.setBlockName("PP_ParticleGenerator")
 			.setHardness(2F)
@@ -35,6 +38,8 @@ public class BlockParticleGenerator extends Block {
 	}
 
 	public static void registerCraft() {
+		if (!enabled) return;
+
 		GameRegistry.addShapelessRecipe(new ItemStack(PlayerProxies.Blocks.particleGenerator), Blocks.iron_bars, PlayerProxies.Blocks.hardenedStone);
 	}
 

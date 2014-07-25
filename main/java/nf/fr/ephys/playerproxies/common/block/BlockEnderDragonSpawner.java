@@ -21,7 +21,11 @@ import java.util.List;
 import java.util.Random;
 
 public class BlockEnderDragonSpawner extends Block {
+	public static boolean enabled = false;
+
 	public static void register() {
+		if (!enabled) return;
+
 		PlayerProxies.Blocks.dragonSpawner = new BlockEnderDragonSpawner(Blocks.mob_spawner.getMaterial());
 		PlayerProxies.Blocks.dragonSpawner.setBlockName("PP_DragonSpawner")
 				.setBlockTextureName("mob_spawner")

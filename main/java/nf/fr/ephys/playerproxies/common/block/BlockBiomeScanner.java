@@ -19,12 +19,15 @@ import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBiomeScanner;
 import nf.fr.ephys.playerproxies.helpers.BlockHelper;
 
 public class BlockBiomeScanner extends BlockContainer {
+	public static boolean enabled = true;
 	private IIcon iconTop;
 	private IIcon iconSide;
 	private IIcon iconBottom;
 	private IIcon iconScreen;
 
 	public static void register() {
+		if (!enabled) return;
+
 		PlayerProxies.Blocks.biomeScanner = new BlockBiomeScanner();
 		PlayerProxies.Blocks.biomeScanner.setBlockName("PP_BiomeScanner")
 				.setHardness(1.0F)
@@ -36,6 +39,8 @@ public class BlockBiomeScanner extends BlockContainer {
 	}
 
 	public static void registerCraft() {
+		if (!enabled) return;
+
 		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.biomeScanner), " g ", "pop", " p ", 'g', new ItemStack(Items.gold_nugget), 'o', new ItemStack(Blocks.obsidian), 'p', new ItemStack(PlayerProxies.Blocks.toughwoodPlank));
 	}
 

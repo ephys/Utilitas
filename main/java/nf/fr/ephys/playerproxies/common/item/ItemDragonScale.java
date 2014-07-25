@@ -16,6 +16,7 @@ import nf.fr.ephys.playerproxies.helpers.ChatHelper;
 
 public class ItemDragonScale extends Item {
 	public final boolean isIngot;
+	public static boolean enabled = true;
 
 	public ItemDragonScale(boolean isIngot) {
 		this.isIngot = isIngot;
@@ -56,7 +57,7 @@ public class ItemDragonScale extends Item {
 	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10) {
 		// the dragonSpawner block is bugued, for now. Don't use it
-		if (!PlayerProxies.DEV_MODE) return false;
+		if (PlayerProxies.Blocks.dragonSpawner == null) return false;
 
 		if (isIngot) return false;
 

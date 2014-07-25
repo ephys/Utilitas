@@ -24,6 +24,7 @@ import java.util.List;
 public class BlockToughwoodPlank extends BlockContainer {
 	public static final int METADATA_TOUGHWOOD = 0;
 	public static final int METADATA_BIOME_REPLICATOR = 1;
+	public static boolean transmuterEnabled = true;
 
 	private IIcon iconSideClean;
 	private IIcon iconSideReplicator;
@@ -38,29 +39,27 @@ public class BlockToughwoodPlank extends BlockContainer {
 			.setStepSound(soundTypeWood);
 
 		GameRegistry.registerBlock(PlayerProxies.Blocks.toughwoodPlank, MultitemBlock.class, PlayerProxies.Blocks.toughwoodPlank.getUnlocalizedName());
-		GameRegistry.registerTileEntity(TileEntityBiomeReplicator.class, "PP_BiomeChanger");
+
+		if (transmuterEnabled)
+			GameRegistry.registerTileEntity(TileEntityBiomeReplicator.class, "PP_BiomeChanger");
 	}
 
 	public static void registerCraft() {
-		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.toughwoodPlank, 4, METADATA_TOUGHWOOD),
-				" b ", "bwb", " b ",
-				'b', new ItemStack(Blocks.planks, 1, 2),
-				'w', new ItemStack(Blocks.log)
-		);
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.toughwoodPlank, 4, METADATA_TOUGHWOOD), " b ", "bwb", " b ", 'b', new ItemStack(Blocks.planks, 1, 2), 'w', new ItemStack(Blocks.log));
 
-		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.toughwoodPlank, 1, METADATA_BIOME_REPLICATOR),
-				" c ", "pdp", " p ",
-				'c', new ItemStack(PlayerProxies.Items.linkFocus),
-				'p', new ItemStack(PlayerProxies.Blocks.toughwoodPlank),
-				'd', new ItemStack(Blocks.diamond_block)
-		);
+		if (transmuterEnabled) {
+			GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.toughwoodPlank, 1, METADATA_BIOME_REPLICATOR), " c ", "pdp", " p ", 'c', new ItemStack(PlayerProxies.Items.linkFocus), 'p', new ItemStack(PlayerProxies.Blocks.toughwoodPlank), 'd', new ItemStack(Blocks.diamond_block));
+		}
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
+	@SuppressWarnings("unchecked")
 	public void getSubBlocks(Item unknown, CreativeTabs tab, List subItems) {
-		subItems.add(new ItemStack(this, 1, METADATA_BIOME_REPLICATOR));
 		subItems.add(new ItemStack(this, 1, METADATA_TOUGHWOOD));
+
+		if (transmuterEnabled)
+			subItems.add(new ItemStack(this, 1, METADATA_BIOME_REPLICATOR));
 	}
 
 	@Override

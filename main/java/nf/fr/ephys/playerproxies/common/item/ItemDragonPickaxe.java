@@ -14,7 +14,11 @@ import nf.fr.ephys.playerproxies.client.registry.DragonColorRegistry;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 
 public class ItemDragonPickaxe extends ItemPickaxe {
+	public static boolean enabled = true;
+
 	public static void register() {
+		if (!enabled) return;
+
 		PlayerProxies.Items.dragonPickaxe = new ItemDragonPickaxe();
 		PlayerProxies.Items.dragonPickaxe.setUnlocalizedName("PP_DragonPick")
 				.setMaxStackSize(1)
@@ -25,6 +29,8 @@ public class ItemDragonPickaxe extends ItemPickaxe {
 	}
 
 	public static void registerCraft() {
+		if (!enabled) return;
+
 
 	}
 
