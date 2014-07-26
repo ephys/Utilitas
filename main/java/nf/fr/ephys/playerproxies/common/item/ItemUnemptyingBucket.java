@@ -278,8 +278,11 @@ public class ItemUnemptyingBucket extends Item {
 		}
 
 		if (player.canPlayerEdit(coords[0], coords[1], coords[2], side, stack)) {
-			Material material = world.getBlock(coords[0], coords[1], coords[2]).getMaterial();
-			boolean flag = !material.isSolid();
+			Block block = world.getBlock(coords[0], coords[1], coords[2]);
+			Material material = block.getMaterial();
+			boolean blockSolid = !material.isSolid();
+
+			if (!block.isAir(world, coords[0], coords[1], coords[2]) && blockSolid) return false;
 
 			if (world.provider.isHellWorld && fluid == FluidRegistry.WATER) {
 				world.playSoundEffect(coords[0] + 0.5D, coords[1] + 0.5D, coords[2] + 0.5D, "random.fizz", 0.5F, 2.6F + world.rand.nextFloat() - world.rand.nextFloat() * 0.8F);
@@ -288,7 +291,7 @@ public class ItemUnemptyingBucket extends Item {
 					world.spawnParticle("largesmoke", coords[0] + Math.random(), coords[1] + Math.random(), coords[2] + Math.random(), 0.0D, 0.0D, 0.0D);
 				}
 			} else {
-				if (!world.isRemote && flag && !material.isLiquid()) {
+				if (!world.isRemote && blockSolid && !material.isLiquid()) {
 					world.func_147480_a(coords[0], coords[1], coords[2], true);
 				}
 
