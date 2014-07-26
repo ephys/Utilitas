@@ -24,6 +24,8 @@ public class ItemPotionDiffuser extends Item {
 	public static boolean enabled = true;
 
 	public static void register() {
+		if (!enabled) return;
+
 		PlayerProxies.Items.potionDiffuser = new ItemPotionDiffuser();
 		PlayerProxies.Items.potionDiffuser.setUnlocalizedName("PP_PotionDiffuser")
 				.setMaxStackSize(1)
@@ -34,10 +36,13 @@ public class ItemPotionDiffuser extends Item {
 	}
 
 	public static void registerCraft() {
+		if (!enabled) return;
+
 		ChestGenHooks.addItem(ChestGenHooks.PYRAMID_DESERT_CHEST, new WeightedRandomChestContent(new ItemStack(PlayerProxies.Items.potionDiffuser), 1, 1, 7));
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public void addInformation(ItemStack stack, EntityPlayer player, List data, boolean isSneaking) {
 		if (stack.getItemDamage() == DAMAGE_INACTIVE)
 			data.add("Sneak and right click to activate");

@@ -6,6 +6,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
@@ -31,7 +32,10 @@ public class ItemDragonPickaxe extends ItemPickaxe {
 	public static void registerCraft() {
 		if (!enabled) return;
 
-
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Items.dragonPickaxe),
+				"iii", " s ", " s ",
+				'i', new ItemStack(PlayerProxies.Items.dragonScaleIngot),
+				's', new ItemStack(Items.stick));
 	}
 
 	public ItemDragonPickaxe() {

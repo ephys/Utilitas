@@ -21,6 +21,7 @@ public class GuiModConfig extends GuiConfig {
 		List<IConfigElement> list = new ArrayList<>();
 		list.add(new DummyConfigElement.DummyCategoryElement("ppVanillaTweaks", "playerproxies.configgui.ctgy.vanillatweaks", VanillaTweaksEntry.class));
 		list.add(new DummyConfigElement.DummyCategoryElement("ppBlockProperties", "playerproxies.configgui.ctgy.blockproperties", BlockPropertiesEntry.class));
+		list.add(new DummyConfigElement.DummyCategoryElement("ppModules", "playerproxies.configgui.ctgy.modules", ModulesEntry.class));
 
 		return list;
 	}
@@ -38,7 +39,7 @@ public class GuiModConfig extends GuiConfig {
 					ConfigHandler.VANILLA_TWEAKS.toLowerCase(),
 					this.configElement.requiresWorldRestart() || this.owningScreen.allRequireWorldRestart,
 					this.configElement.requiresMcRestart() || this.owningScreen.allRequireMcRestart,
-					"Vanilla Tweaks");
+					ConfigHandler.VANILLA_TWEAKS);
 		}
 	}
 
@@ -55,7 +56,24 @@ public class GuiModConfig extends GuiConfig {
 					ConfigHandler.PROPERTIES.toLowerCase(),
 					this.configElement.requiresWorldRestart() || this.owningScreen.allRequireWorldRestart,
 					this.configElement.requiresMcRestart() || this.owningScreen.allRequireMcRestart,
-					"Block Properties");
+					ConfigHandler.PROPERTIES);
+		}
+	}
+
+	public static class ModulesEntry extends GuiConfigEntries.CategoryEntry {
+		public ModulesEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement configElement) {
+			super(owningScreen, owningEntryList, configElement);
+		}
+
+		@Override
+		protected GuiScreen buildChildScreen() {
+			return new GuiConfig(this.owningScreen,
+					new ConfigElement(PlayerProxies.getConfig().CONFIG.getCategory(ConfigHandler.MODULES.toLowerCase())).getChildElements(),
+					this.owningScreen.modID,
+					ConfigHandler.MODULES.toLowerCase(),
+					this.configElement.requiresWorldRestart() || this.owningScreen.allRequireWorldRestart,
+					this.configElement.requiresMcRestart() || this.owningScreen.allRequireMcRestart,
+					ConfigHandler.MODULES);
 		}
 	}
 }

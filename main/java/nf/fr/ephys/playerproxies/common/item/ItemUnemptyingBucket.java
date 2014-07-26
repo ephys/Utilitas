@@ -10,6 +10,7 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
@@ -38,6 +39,8 @@ public class ItemUnemptyingBucket extends Item {
 	public static boolean enabled = true;
 
 	public static void register() {
+		if (!enabled) return;
+
 		PlayerProxies.Items.unemptyingBucket = new ItemUnemptyingBucket();
 		PlayerProxies.Items.unemptyingBucket.setUnlocalizedName("PP_UnemptyingBucket")
 				.setMaxStackSize(1)
@@ -48,6 +51,8 @@ public class ItemUnemptyingBucket extends Item {
 	}
 
 	public static void registerCraft() {
+		if (!enabled) return;
+
 		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Items.unemptyingBucket),
 				"i i", " i ", " l ",
 				'i', PlayerProxies.Items.dragonScaleIngot,
@@ -95,9 +100,6 @@ public class ItemUnemptyingBucket extends Item {
 	@Override
 	@SuppressWarnings("unchecked")
 	public void addInformation(ItemStack stack, EntityPlayer player, List data, boolean unknown) {
-		Fluid fluid = getLiquid(stack);
-
-		//data.add(String.format(StatCollector.translateToLocal("pp_tooltip.bucket_contains"), fluid == null ? StatCollector.translateToLocal("pp_tooltip.nothing") : fluid.getLocalizedName()));
 		data.add("§5" + (stack.getItemDamage() == METADATA_EMPTY ? StatCollector.translateToLocal("pp_tooltip.bucket_mode_empty") : StatCollector.translateToLocal("pp_tooltip.bucket_mode_fill")));
 
 		if (NBTHelper.getNBT(stack).hasKey("fluidHandler"))
@@ -310,16 +312,17 @@ public class ItemUnemptyingBucket extends Item {
 		if (!nbt.hasKey("fluidHandler"))  return;
 		NBTTagCompound tileNBT = nbt.getCompoundTag("fluidHandler");
 
-		int tileWorld = tileNBT.getInteger("worldID");
-		if (world.provider.dimensionId != tileWorld) return;
+		int tileWorldID = tileNBT.getInteger("worldID");
+		if (!crossDim && world.provider.dimensionId != tileWorldID) return;
 
 		int[] tileCoords = tileNBT.getIntArray("coords");
 
-		if (Math.abs(tileCoords[0] - player.posX) > range
+		if (range != -1 && (Math.abs(tileCoords[0] - player.posX) > range
 				|| Math.abs(tileCoords[1] - player.posY) > range
-				|| Math.abs(tileCoords[2] - player.posZ) > range) return;
+				|| Math.abs(tileCoords[2] - player.posZ) > range)) return;
 
-		TileEntity te = world.getTileEntity(tileCoords[0], tileCoords[1], tileCoords[2]);
+		World tileWorld = MinecraftServer.getServer().worldServerForDimension(tileWorldID);
+		TileEntity te = tileWorld.getTileEntity(tileCoords[0], tileCoords[1], tileCoords[2]);
 
 		if (!(te instanceof IFluidHandler)) {
 			setFluidHandler(stack, null, 0);

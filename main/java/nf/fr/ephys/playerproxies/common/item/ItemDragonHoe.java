@@ -7,6 +7,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
@@ -22,6 +23,8 @@ public class ItemDragonHoe extends ItemHoe {
 	public static boolean enabled = true;
 
 	public static void register() {
+		if (!enabled) return;
+
 		PlayerProxies.Items.dragonHoe = new ItemDragonHoe();
 		PlayerProxies.Items.dragonHoe.setUnlocalizedName("PP_DragonHoe")
 				.setMaxStackSize(1)
@@ -31,7 +34,12 @@ public class ItemDragonHoe extends ItemHoe {
 	}
 
 	public static void registerCraft() {
+		if (!enabled) return;
 
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Items.dragonHoe),
+				"ii ", " s ", " s ",
+				'i', new ItemStack(PlayerProxies.Items.dragonScaleIngot),
+				's', new ItemStack(Items.stick));
 	}
 
 	public ItemDragonHoe() {
