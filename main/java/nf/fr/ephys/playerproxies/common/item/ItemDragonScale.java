@@ -1,7 +1,12 @@
 package nf.fr.ephys.playerproxies.common.item;
 
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
+import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.EntityCreeper;
+import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -9,20 +14,25 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import nf.fr.ephys.playerproxies.client.registry.DragonColorRegistry;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
+import nf.fr.ephys.playerproxies.common.core.EventHandler;
 import nf.fr.ephys.playerproxies.helpers.ChatHelper;
 
 public class ItemDragonScale extends Item {
 	public final boolean isIngot;
-	public static boolean enabled = true;
 
 	public ItemDragonScale(boolean isIngot) {
 		this.isIngot = isIngot;
 	}
 
 	public static void register() {
+		if (!enabled()) return;
+
 		PlayerProxies.Items.dragonScale = new ItemDragonScale(false);
 		PlayerProxies.Items.dragonScale
 				.setTextureName("ephys.pp:dragonScale")
@@ -41,7 +51,37 @@ public class ItemDragonScale extends Item {
 	}
 
 	public static void registerCraft() {
+		if (!enabled()) return;
+
 		GameRegistry.addShapelessRecipe(new ItemStack(PlayerProxies.Items.dragonScaleIngot), PlayerProxies.Items.dragonScale, Items.iron_ingot, Items.ender_pearl);
+
+		MinecraftForge.EVENT_BUS.register(PlayerProxies.Items.dragonScale);
+	}
+
+	@SubscribeEvent
+	public void onEntityDrop(LivingDropsEvent event) {
+		if (event.entity.worldObj.isRemote)
+			return;
+
+		if (event.entity instanceof EntityDragon) {
+			int nbStacks = MathHelper.getRandomIntegerInRange(EventHandler.random, 1, 8);
+
+			for (int i = 0; i < nbStacks; i++) {
+				event.drops.add(new EntityItem(event.entity.worldObj, event.entity.posX, event.entity.posY, event.entity.posZ, new ItemStack(PlayerProxies.Items.dragonScale, 16)));
+			}
+		} else if (event.entity.worldObj.provider.dimensionId == 1) {
+			if (event.entity instanceof EntityEnderman) {
+				if (event.source.getEntity() instanceof EntityCreeper)
+					event.drops.add(new EntityItem(event.entity.worldObj, event.entity.posX, event.entity.posY, event.entity.posZ, new ItemStack(PlayerProxies.Items.dragonScale, MathHelper.getRandomIntegerInRange(EventHandler.random, 5, 19))));
+				else if (!(event.source.getEntity() instanceof EntityPlayer) && EventHandler.random.nextFloat() < 0.125F * event.lootingLevel) {
+					event.drops.add(new EntityItem(event.entity.worldObj, event.entity.posX, event.entity.posY, event.entity.posZ, new ItemStack(PlayerProxies.Items.dragonScale, MathHelper.getRandomIntegerInRange(EventHandler.random, 0, 1 + event.lootingLevel))));
+				}
+			}
+		}
+	}
+
+	public static boolean enabled() {
+		return ItemDragonHoe.enabled || ItemDragonPickaxe.enabled;
 	}
 
 	@Override

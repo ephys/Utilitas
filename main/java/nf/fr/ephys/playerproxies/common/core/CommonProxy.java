@@ -41,8 +41,7 @@ public class CommonProxy {
 	}
 
 	public void init(FMLInitializationEvent event) {
-		registerBlocks();
-		registerItems();
+		register();
 
 		registerPacket();
 
@@ -119,7 +118,8 @@ public class CommonProxy {
 		PlayerProxies.getNetHandler().registerMessage(PacketSetBiomeHandler.class, PacketSetBiomeHandler.PacketSetBiome.class, 2, Side.CLIENT);
 	}
 
-	private void registerBlocks() {
+
+	private void register() {
 		BlockHardenedStone.register();
 		BlockParticleGenerator.register();
 		BlockBaseShineyGlass.register();
@@ -132,6 +132,24 @@ public class CommonProxy {
 
 		//BlockDragonscale.register();
 		//BlockEnderDragonSpawner.register();
+
+		ItemLinker.register();
+		ItemBiomeStorage.register();
+		ItemPotionDiffuser.register();
+		ItemUnemptyingBucket.register();
+
+		ItemDragonHoe.register();
+		ItemDragonPickaxe.register();
+
+		ItemDragonScale.register();
+
+		PlayerProxies.Items.linkFocus = new Item();
+		PlayerProxies.Items.linkFocus.setUnlocalizedName("PP_LinkFocus")
+				.setMaxStackSize(64)
+				.setCreativeTab(PlayerProxies.creativeTab)
+				.setTextureName("ephys.pp:linkFocus");
+
+		GameRegistry.registerItem(PlayerProxies.Items.linkFocus, PlayerProxies.Items.linkFocus.getUnlocalizedName());
 	}
 
 	public void registerCrafts() {
@@ -147,6 +165,7 @@ public class CommonProxy {
 		BlockBeaconTierII.registerCraft();
 		ItemPotionDiffuser.registerCraft();
 		ItemLinker.registerCraft();
+		ItemBiomeStorage.registerCraft();
 
 		ItemUnemptyingBucket.registerCraft();
 
@@ -156,25 +175,7 @@ public class CommonProxy {
 		ItemDragonPickaxe.registerCraft();
 
 		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Items.linkFocus), "ipi", "qeq", "ipi", 'e', new ItemStack(Items.emerald), 'p', new ItemStack(Items.ender_pearl), 'q', new ItemStack(Items.ender_eye), 'i', new ItemStack(Items.blaze_powder));
-	}
 
-	private void registerItems() {
-		ItemLinker.register();
-		ItemBiomeStorage.register();
-		ItemPotionDiffuser.register();
-		ItemUnemptyingBucket.register();
-
-		ItemDragonScale.register();
-		ItemDragonHoe.register();
-		ItemDragonPickaxe.register();
-
-		PlayerProxies.Items.linkFocus = new Item();
-		PlayerProxies.Items.linkFocus.setUnlocalizedName("PP_LinkFocus")
-				.setMaxStackSize(64)
-				.setCreativeTab(PlayerProxies.creativeTab)
-				.setTextureName("ephys.pp:linkFocus");
-
-		GameRegistry.registerItem(PlayerProxies.Items.linkFocus, PlayerProxies.Items.linkFocus.getUnlocalizedName());
 	}
 
 	private void registerHandlers() {

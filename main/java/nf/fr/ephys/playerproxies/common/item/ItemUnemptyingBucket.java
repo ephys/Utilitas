@@ -34,7 +34,7 @@ public class ItemUnemptyingBucket extends Item {
 	public static final int METADATA_FILL = 0;
 	public static final int METADATA_EMPTY = 1;
 
-	public static int range = 32;
+	public static int range = 16;
 	public static boolean crossDim = false;
 	public static boolean enabled = true;
 

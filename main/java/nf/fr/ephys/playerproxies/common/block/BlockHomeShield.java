@@ -1,6 +1,8 @@
 package nf.fr.ephys.playerproxies.common.block;
 
 import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.eventhandler.Event;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
@@ -14,12 +16,17 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
+import nf.fr.ephys.playerproxies.helpers.BlockHelper;
+import nf.fr.ephys.playerproxies.helpers.ChatHelper;
 import nf.fr.ephys.playerproxies.helpers.EntityHelper;
 import nf.fr.ephys.playerproxies.util.cofh.RegistryUtils;
 
@@ -77,7 +84,6 @@ public class BlockHomeShield extends Block {
 			.setStepSound(soundTypeMetal)
 			.setCreativeTab(PlayerProxies.creativeTab);
 
-
 		if (tfExists) {
 			try {
 				Class<?> tfBlocks = Class.forName("twilightforest.block.TFBlocks");
@@ -105,6 +111,8 @@ public class BlockHomeShield extends Block {
 			PlayerProxies.Blocks.homeShield.setBlockName("PP_HomeShield");
 			GameRegistry.registerBlock(PlayerProxies.Blocks.homeShield, PlayerProxies.Blocks.homeShield.getUnlocalizedName());
 		}
+
+		MinecraftForge.EVENT_BUS.register(PlayerProxies.Blocks.homeShield);
 	}
 
 	public static void registerCraft() {
@@ -211,5 +219,47 @@ public class BlockHomeShield extends Block {
 		}
 
 		return super.getPlayerRelativeBlockHardness(player, world, x, y, z);
+	}
+
+	@SubscribeEvent
+	public void onBlockPlaced(PlayerInteractEvent event) {
+		if (event.action != PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
+			return;
+
+		ItemStack item = event.entityPlayer.getHeldItem();
+
+		if (item == null)
+			return;
+
+		if (!item.getItem().equals(Item.getItemFromBlock(PlayerProxies.Blocks.homeShield)) && !item.getItem().equals(Item.getItemFromBlock(BlockHomeShield.tfShield)))
+			return;
+
+		int[] coords = BlockHelper.getAdjacentBlock(event.x, event.y, event.z, event.face);
+
+		int toPlaceSide = BlockPistonBase.determineOrientation(event.entityPlayer.worldObj, coords[0], coords[1], coords[2], event.entityPlayer);
+
+		if (BlockHomeShield.isUnbreakable(toPlaceSide))
+			toPlaceSide -= 6;
+
+		coords = BlockHelper.getAdjacentBlock(coords, toPlaceSide);
+
+		Block facingBlock = event.entityPlayer.worldObj.getBlock(coords[0], coords[1], coords[2]);
+
+		if (facingBlock.equals(PlayerProxies.Blocks.homeShield) || facingBlock.equals(BlockHomeShield.tfShield)) {
+			int facingBlockMetadata = event.entityPlayer.worldObj.getBlockMetadata(coords[0], coords[1], coords[2]);
+
+			int facingBlockSide = BlockHelper.getOppositeSide(toPlaceSide);
+
+			if (BlockHomeShield.isSideBreakable(facingBlockSide, facingBlockMetadata)) {
+				event.setResult(Event.Result.DENY);
+				event.setCanceled(true);
+
+				ChatHelper.sendChatMessage(event.entityPlayer, "Placing that block here would make it impossible to remove.");
+			}
+		} else if (BlockHelper.isUnbreakable(facingBlock, event.world, coords[0], coords[1], coords[2])) {
+			event.setResult(Event.Result.DENY);
+			event.setCanceled(true);
+			ChatHelper.sendChatMessage(event.entityPlayer, "Placing that block here would make it impossible to remove.");
+		}
 	}
 }

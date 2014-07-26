@@ -1,12 +1,19 @@
 package nf.fr.ephys.playerproxies.common.item;
 
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.boss.EntityWither;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
+import nf.fr.ephys.playerproxies.common.block.BlockBiomeScanner;
+import nf.fr.ephys.playerproxies.common.block.BlockToughwoodPlank;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBiomeScanner;
 
 import java.util.List;
@@ -27,6 +34,8 @@ public class ItemBiomeStorage extends Item {
 	};
 
 	public static void register() {
+		if (!ItemBiomeStorage.enabled()) return;
+
 		PlayerProxies.Items.biomeStorage = new ItemBiomeStorage();
 		PlayerProxies.Items.biomeStorage.setUnlocalizedName("PP_BiomeStorage")
 				.setMaxStackSize(1)
@@ -35,6 +44,29 @@ public class ItemBiomeStorage extends Item {
 				.setHasSubtypes(true);
 
 		GameRegistry.registerItem(PlayerProxies.Items.biomeStorage, PlayerProxies.Items.biomeStorage.getUnlocalizedName());
+	}
+
+	public static void registerCraft() {
+		if (!ItemBiomeStorage.enabled()) return;
+
+		MinecraftForge.EVENT_BUS.register(PlayerProxies.Items.biomeStorage);
+	}
+
+	@SubscribeEvent
+	public void onEntityDrop(LivingDropsEvent event) {
+		if (event.entity.worldObj.isRemote)
+			return;
+
+		if ((event.entity instanceof EntityWither
+				&& event.source.getEntity() instanceof EntityPlayer
+				&& Math.random() < 0.25D * (1 + event.lootingLevel))) {
+
+			event.drops.add(new EntityItem(event.entity.worldObj, event.entity.posX, event.entity.posY, event.entity.posZ, new ItemStack(PlayerProxies.Items.biomeStorage, 1)));
+		}
+	}
+
+	public static boolean enabled() {
+		return BlockBiomeScanner.enabled || BlockToughwoodPlank.transmuterEnabled;
 	}
 
 	@Override

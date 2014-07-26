@@ -39,46 +39,44 @@ public class ConfigHandler {
 		Property property;
 
 		// MODULES
-		ConfigCategory modules = CONFIG.getCategory(MODULES);
+		ConfigCategory modules = CONFIG.getCategory(MODULES.toLowerCase());
 		modules.setRequiresMcRestart(true);
 		modules.setComment("Set to false to disable a feature");
 
-		BlockBaseShineyGlass.interfaceEnabled = CONFIG.get(MODULES, "Universal Interface", BlockBaseShineyGlass.interfaceEnabled).getBoolean(BlockBaseShineyGlass.interfaceEnabled);
-		BlockBeaconTierII.overwrite = CONFIG.get(MODULES, "Vanilla beacon overwrite", BlockBeaconTierII.overwrite).getBoolean(BlockBeaconTierII.overwrite);
-		BlockBiomeScanner.enabled = CONFIG.get(MODULES, "Biome Scanner", BlockBiomeScanner.enabled).getBoolean(BlockBiomeScanner.enabled);
-		BlockToughwoodPlank.transmuterEnabled = CONFIG.get(MODULES, "Biome Transmuter", BlockToughwoodPlank.transmuterEnabled).getBoolean(BlockToughwoodPlank.transmuterEnabled);
+		BlockBaseShineyGlass.interfaceEnabled = CONFIG.get(MODULES, "Universal Interface", true).getBoolean(BlockBaseShineyGlass.interfaceEnabled);
+		BlockBeaconTierII.overwrite = CONFIG.get(MODULES, "Vanilla beacon overwrite", true).getBoolean(BlockBeaconTierII.overwrite);
+		BlockBiomeScanner.enabled = CONFIG.get(MODULES, "Biome Scanner", true).getBoolean(BlockBiomeScanner.enabled);
+		BlockToughwoodPlank.transmuterEnabled = CONFIG.get(MODULES, "Biome Transmuter", true).getBoolean(BlockToughwoodPlank.transmuterEnabled);
 
-		BlockGravitationalField.enabled = CONFIG.get(MODULES, "Gravitational Field Handler", BlockGravitationalField.enabled).getBoolean(BlockGravitationalField.enabled);
-		BlockHardenedStone.diffuserEnabled = CONFIG.get(MODULES, "Fluid diffuser", BlockHardenedStone.diffuserEnabled).getBoolean(BlockHardenedStone.diffuserEnabled);
-		BlockParticleGenerator.enabled = CONFIG.get(MODULES, "Particle generator", BlockParticleGenerator.enabled).getBoolean(BlockParticleGenerator.enabled);
-		BlockProximitySensor.enabled = CONFIG.get(MODULES, "Proximity Sensor", BlockProximitySensor.enabled).getBoolean(BlockProximitySensor.enabled);
+		BlockGravitationalField.enabled = CONFIG.get(MODULES, "Gravitational Field Handler", true).getBoolean(BlockGravitationalField.enabled);
+		BlockHardenedStone.diffuserEnabled = CONFIG.get(MODULES, "Fluid diffuser", true).getBoolean(BlockHardenedStone.diffuserEnabled);
+		BlockParticleGenerator.enabled = CONFIG.get(MODULES, "Particle generator", true).getBoolean(BlockParticleGenerator.enabled);
+		BlockProximitySensor.enabled = CONFIG.get(MODULES, "Proximity Sensor", true).getBoolean(BlockProximitySensor.enabled);
 
-		BlockHomeShield.enabled = CONFIG.get(MODULES, "HomeShield", BlockHomeShield.enabled).getBoolean(BlockHomeShield.enabled);
-		BlockItemTicker.enabled = CONFIG.get(MODULES, "Sylladex", BlockItemTicker.enabled).getBoolean(BlockItemTicker.enabled);
+		BlockHomeShield.enabled = CONFIG.get(MODULES, "HomeShield", true).getBoolean(BlockHomeShield.enabled);
+		BlockItemTicker.enabled = CONFIG.get(MODULES, "Sylladex", true).getBoolean(BlockItemTicker.enabled);
 
-		CommandNickname.enabled = CONFIG.get(MODULES, "nickname command", CommandNickname.enabled).getBoolean(CommandNickname.enabled);
+		CommandNickname.enabled = CONFIG.get(MODULES, "nickname command", true).getBoolean(CommandNickname.enabled);
 
-		ItemDragonPickaxe.enabled = CONFIG.get(MODULES, "DragonScale pickaxe", ItemDragonPickaxe.enabled).getBoolean(ItemDragonPickaxe.enabled);
-		ItemDragonHoe.enabled = CONFIG.get(MODULES, "DragonScale hoe", ItemDragonHoe.enabled).getBoolean(ItemDragonHoe.enabled);
-		ItemUnemptyingBucket.enabled = CONFIG.get(MODULES, "Omnibucket", ItemUnemptyingBucket.enabled).getBoolean(ItemUnemptyingBucket.enabled);
-		ItemPotionDiffuser.enabled = CONFIG.get(MODULES, "Handheld potion diffuser", ItemPotionDiffuser.enabled).getBoolean(ItemPotionDiffuser.enabled);
+		ItemDragonPickaxe.enabled = CONFIG.get(MODULES, "DragonScale pickaxe", true).getBoolean(ItemDragonPickaxe.enabled);
+		ItemDragonHoe.enabled = CONFIG.get(MODULES, "DragonScale hoe", true).getBoolean(ItemDragonHoe.enabled);
+		ItemUnemptyingBucket.enabled = CONFIG.get(MODULES, "Omnibucket", true).getBoolean(ItemUnemptyingBucket.enabled);
+		ItemPotionDiffuser.enabled = CONFIG.get(MODULES, "Handheld potion diffuser", true).getBoolean(ItemPotionDiffuser.enabled);
 
 		// PROPERTIES
-		property = CONFIG.get(PROPERTIES, "Homeshield Requires Twilight Forest", BlockHomeShield.requiresTwilightForest, "True: Will overwrite the TF Stronghold Shield to add a locked state [unbreakable but unlockable]. \nFalse: Will add a new Shield Block having that behavior");
+		property = CONFIG.get(PROPERTIES, "Homeshield Requires Twilight Forest", true, "True: Will overwrite the TF Stronghold Shield to add a locked state [unbreakable but unlockable]. \nFalse: Will add a new Shield Block having that behavior");
 		property.setRequiresMcRestart(true);
 		BlockHomeShield.requiresTwilightForest = property.getBoolean(BlockHomeShield.requiresTwilightForest);
 
-		BlockHomeShield.requiresSilkTouch = CONFIG.get(PROPERTIES, "Homeshield Requires Silk Touch", BlockHomeShield.requiresSilkTouch, "True if the shield only drops if silk touched").getBoolean(BlockHomeShield.requiresSilkTouch);
-		requiresPower = CONFIG.get(PROPERTIES, "Requires Energy", requiresPower).getBoolean(requiresPower);
+		BlockHomeShield.requiresSilkTouch = CONFIG.get(PROPERTIES, "Homeshield Requires Silk Touch", false, "True if the shield only drops if silk touched").getBoolean(BlockHomeShield.requiresSilkTouch);
+		requiresPower = CONFIG.get(PROPERTIES, "Requires Energy", false).getBoolean(requiresPower);
 
-		ItemUnemptyingBucket.range = CONFIG.get(PROPERTIES, "Omnibucket bound range", ItemUnemptyingBucket.range, "set to -1 to remove range limit").getInt(ItemUnemptyingBucket.range);
-		ItemUnemptyingBucket.crossDim = CONFIG.get(PROPERTIES, "Omnibucket bound works cross-dim", ItemUnemptyingBucket.crossDim).getBoolean(ItemUnemptyingBucket.crossDim);
+		ItemUnemptyingBucket.range = CONFIG.get(PROPERTIES, "Omnibucket bound range", 16, "set to -1 to remove range limit").getInt(ItemUnemptyingBucket.range);
+		ItemUnemptyingBucket.crossDim = CONFIG.get(PROPERTIES, "Omnibucket bound works cross-dim", false).getBoolean(ItemUnemptyingBucket.crossDim);
 
 		// VANILLA_TWEAKS
-		opEnderPearls = CONFIG.get(VANILLA_TWEAKS, "Ender Pearls Are OP", opEnderPearls, "EnderPearls don't damage users").getBoolean(opEnderPearls);
-		addDragonEggTab = CONFIG.get(VANILLA_TWEAKS, "Add dragon egg to creative", addDragonEggTab).getBoolean(addDragonEggTab);
-
-		CONFIG.load();
+		opEnderPearls = CONFIG.get(VANILLA_TWEAKS, "Ender Pearls Are OP", true, "EnderPearls don't damage users").getBoolean(opEnderPearls);
+		addDragonEggTab = CONFIG.get(VANILLA_TWEAKS, "Add dragon egg to creative", true).getBoolean(addDragonEggTab);
 
 		if (CONFIG.hasChanged())
 			CONFIG.save();
