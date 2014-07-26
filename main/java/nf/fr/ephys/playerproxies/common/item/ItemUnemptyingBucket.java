@@ -31,8 +31,8 @@ import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 import java.util.List;
 
 public class ItemUnemptyingBucket extends Item {
-	public static final int METADATA_FILL = 0;
-	public static final int METADATA_EMPTY = 1;
+	public static final int METADATA_FILL = 0; // fill THE BUCKET
+	public static final int METADATA_EMPTY = 1; // not the drum
 
 	public static int range = 16;
 	public static boolean crossDim = false;
@@ -188,7 +188,7 @@ public class ItemUnemptyingBucket extends Item {
 				attemptFill(stack, fluidHandler, ForgeDirection.getOrientation(side), fluid);
 			}
 
-			refill(stack, world, player);
+			//refill(stack, world, player);
 
 			return !world.isRemote;
 		}
@@ -233,7 +233,15 @@ public class ItemUnemptyingBucket extends Item {
 					Block block = world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
 					int l = world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
 
-					Fluid targetFluid = FluidRegistry.lookupFluidForBlock(block);
+					Fluid targetFluid;
+					// more hotfixing the broken vanilla fluid handling (fluid registry only has blocks for still water & still lava)
+					if (block == Blocks.flowing_water)
+						targetFluid = FluidRegistry.WATER;
+					else if (block == Blocks.flowing_lava)
+						targetFluid = FluidRegistry.LAVA;
+					else
+						targetFluid = FluidRegistry.lookupFluidForBlock(block);
+
 					if (l == 0 && targetFluid != null) {
 						setLiquid(stack, targetFluid);
 						world.setBlockToAir(mop.blockX, mop.blockY, mop.blockZ);
@@ -345,6 +353,9 @@ public class ItemUnemptyingBucket extends Item {
 		}
 	}
 
+	/**
+	 * Attempt to fill a FluidHandler
+	 */
 	private void attemptFill(ItemStack stack, IFluidHandler fluidHandler, ForgeDirection direction, Fluid fluid) {
 		if (fluidHandler.canFill(direction, fluid)) {
 			FluidStack fstack = new FluidStack(fluid, 1000);
@@ -357,6 +368,9 @@ public class ItemUnemptyingBucket extends Item {
 		}
 	}
 
+	/**
+	 * Attempt to drain a FluidHandler
+	 */
 	private void attemptDrain(ItemStack stack, IFluidHandler fluidHandler, ForgeDirection direction) {
 		FluidStack fstack = fluidHandler.drain(direction, 1000, false);
 		if (fstack == null || fstack.amount != 1000) return;
