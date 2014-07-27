@@ -10,6 +10,8 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import dan200.computercraft.shared.turtle.blocks.ITurtleTile;
+import net.minecraft.block.BlockCompressed;
+import net.minecraft.block.material.MapColor;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -120,7 +122,16 @@ public class CommonProxy {
 
 
 	private void register() {
-		BlockHardenedStone.register();
+		PlayerProxies.Blocks.hardenedStone = new BlockCompressed(MapColor.blackColor);
+		PlayerProxies.Blocks.hardenedStone.setBlockName("PP_HardenedStone")
+				.setHardness(2.5F)
+				.setResistance(5000.0F)
+				.setCreativeTab(PlayerProxies.creativeTab)
+				.setBlockTextureName("ephys.pp:hardenedStone");
+
+		GameRegistry.registerBlock(PlayerProxies.Blocks.hardenedStone, PlayerProxies.Blocks.hardenedStone.getUnlocalizedName());
+
+		BlockFluidDiffuser.register();
 		BlockParticleGenerator.register();
 		BlockBaseShineyGlass.register();
 		BlockProximitySensor.register();
@@ -153,7 +164,21 @@ public class CommonProxy {
 	}
 
 	public void registerCrafts() {
-		BlockHardenedStone.registerCraft();
+		if(Loader.isModLoaded("IC2")) {
+			GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.hardenedStone, 8),
+					"ioi", "oso", "ioi",
+					'i', ic2.api.item.Items.getItem("advancedAlloy"),
+					's', ic2.api.item.Items.getItem("reinforcedStone"),
+					'o', new ItemStack(Blocks.obsidian));
+		} else {
+			GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.hardenedStone, 6),
+					"ioi", "oso", "ioi",
+					'i', Items.iron_ingot,
+					's', Blocks.stone,
+					'o', Blocks.obsidian);
+		}
+
+		BlockFluidDiffuser.registerCraft();
 		BlockParticleGenerator.registerCraft();
 		BlockBaseShineyGlass.registerCraft();
 		BlockProximitySensor.registerCraft();

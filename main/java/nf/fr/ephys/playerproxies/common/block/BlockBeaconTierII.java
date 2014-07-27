@@ -152,7 +152,7 @@ public class BlockBeaconTierII extends BlockBeacon {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int getRenderType() {
-		return BlockBeaconTierIIRenderer.renderId;
+		return BlockBeaconTierIIRenderer.RENDER_ID;
 	}
 
 	@Override

@@ -183,12 +183,12 @@ public class ItemUnemptyingBucket extends Item {
 			Fluid fluid = getLiquid(stack);
 
 			if (fluid == null) {
-				attemptDrain(stack, fluidHandler, ForgeDirection.getOrientation(side));
+				attemptDrain(stack, fluidHandler, ForgeDirection.getOrientation(side), world);
 			} else {
-				attemptFill(stack, fluidHandler, ForgeDirection.getOrientation(side), fluid);
+				attemptFill(stack, fluidHandler, ForgeDirection.getOrientation(side), fluid, world);
 			}
 
-			//refill(stack, world, player);
+			refill(stack, world, player);
 
 			return !world.isRemote;
 		}
@@ -209,16 +209,22 @@ public class ItemUnemptyingBucket extends Item {
 		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, empty);
 		TileEntity te = mop == null ? null : world.getTileEntity(mop.blockX, mop.blockY, mop.blockZ);
 
-		if (player.isSneaking()) {
-			if (te instanceof IFluidHandler) {
-				if (setFluidHandler(stack, te, mop.sideHit)) {
-					ChatHelper.sendChatMessage(player, String.format(StatCollector.translateToLocal("pp_messages.bucket_bound"), this.getItemStackDisplayName(stack), (new ItemStack(world.getBlock(mop.blockX, mop.blockY, mop.blockZ), 1, world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ))).getDisplayName(), ChatHelper.blockSideName(mop.sideHit)));
-				} else {
-					ChatHelper.sendChatMessage(player, String.format(StatCollector.translateToLocal("pp_messages.bucket_unbound"), this.getItemStackDisplayName(stack)));
-				}
+		if (te instanceof IFluidHandler) {
+			if (!player.isSneaking()) return stack;
+
+			if (setFluidHandler(stack, te, mop.sideHit)) {
+				ChatHelper.sendChatMessage(player, String.format(StatCollector.translateToLocal("pp_messages.bucket_bound"), this.getItemStackDisplayName(stack), (new ItemStack(world.getBlock(mop.blockX, mop.blockY, mop.blockZ), 1, world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ))).getDisplayName(), ChatHelper.blockSideName(mop.sideHit)));
 			} else {
-				switchMode(stack, player);
+				ChatHelper.sendChatMessage(player, String.format(StatCollector.translateToLocal("pp_messages.bucket_unbound"), this.getItemStackDisplayName(stack)));
 			}
+
+			refill(stack, world, player);
+
+			return stack;
+		}
+
+		if (player.isSneaking()) {
+			switchMode(stack, player);
 
 			refill(stack, world, player);
 
@@ -280,9 +286,8 @@ public class ItemUnemptyingBucket extends Item {
 		if (player.canPlayerEdit(coords[0], coords[1], coords[2], side, stack)) {
 			Block block = world.getBlock(coords[0], coords[1], coords[2]);
 			Material material = block.getMaterial();
-			boolean blockSolid = !material.isSolid();
 
-			if (!block.isAir(world, coords[0], coords[1], coords[2]) && blockSolid) return false;
+			if (material.isSolid()) return false;
 
 			if (world.provider.isHellWorld && fluid == FluidRegistry.WATER) {
 				world.playSoundEffect(coords[0] + 0.5D, coords[1] + 0.5D, coords[2] + 0.5D, "random.fizz", 0.5F, 2.6F + world.rand.nextFloat() - world.rand.nextFloat() * 0.8F);
@@ -291,18 +296,18 @@ public class ItemUnemptyingBucket extends Item {
 					world.spawnParticle("largesmoke", coords[0] + Math.random(), coords[1] + Math.random(), coords[2] + Math.random(), 0.0D, 0.0D, 0.0D);
 				}
 			} else {
-				if (!world.isRemote && blockSolid && !material.isLiquid()) {
+				if (!world.isRemote && !material.isLiquid()) {
 					world.func_147480_a(coords[0], coords[1], coords[2], true);
 				}
 
-				Block block = fluid.getBlock();
+				Block fluidblock = fluid.getBlock();
 
-				if (block == Blocks.water)
-					block = Blocks.flowing_water;
-				else if (block == Blocks.lava)
-					block = Blocks.flowing_lava;
+				if (fluidblock == Blocks.water)
+					fluidblock = Blocks.flowing_water;
+				else if (fluidblock == Blocks.lava)
+					fluidblock = Blocks.flowing_lava;
 
-				world.setBlock(coords[0], coords[1], coords[2], block, 0, 3);
+				world.setBlock(coords[0], coords[1], coords[2], fluidblock, 0, 3);
 			}
 
 			return true;
@@ -348,25 +353,26 @@ public class ItemUnemptyingBucket extends Item {
 		ForgeDirection direction = ForgeDirection.getOrientation(side);
 		switch (metadata) {
 			case METADATA_EMPTY:
-				attemptFill(stack, fluidHandler, direction, fluid);
+				attemptFill(stack, fluidHandler, direction, fluid, world);
 				break;
 
 			case METADATA_FILL:
-				attemptDrain(stack, fluidHandler, direction);
+				attemptDrain(stack, fluidHandler, direction, world);
 		}
 	}
 
 	/**
 	 * Attempt to fill a FluidHandler
 	 */
-	private void attemptFill(ItemStack stack, IFluidHandler fluidHandler, ForgeDirection direction, Fluid fluid) {
+	private void attemptFill(ItemStack stack, IFluidHandler fluidHandler, ForgeDirection direction, Fluid fluid, World world) {
 		if (fluidHandler.canFill(direction, fluid)) {
 			FluidStack fstack = new FluidStack(fluid, 1000);
 			int filled = fluidHandler.fill(direction, fstack, false);
 
 			if (filled != 1000) return;
 
-			fluidHandler.fill(direction, fstack, true);
+			if (!world.isRemote)
+				fluidHandler.fill(direction, fstack, true);
 			setLiquid(stack, null);
 		}
 	}
@@ -374,12 +380,13 @@ public class ItemUnemptyingBucket extends Item {
 	/**
 	 * Attempt to drain a FluidHandler
 	 */
-	private void attemptDrain(ItemStack stack, IFluidHandler fluidHandler, ForgeDirection direction) {
+	private void attemptDrain(ItemStack stack, IFluidHandler fluidHandler, ForgeDirection direction, World world) {
 		FluidStack fstack = fluidHandler.drain(direction, 1000, false);
 		if (fstack == null || fstack.amount != 1000) return;
 
-		FluidStack newFluid = fluidHandler.drain(direction, 1000, true);
+		setLiquid(stack, fstack.getFluid());
 
-		setLiquid(stack, newFluid.getFluid());
+		if (!world.isRemote)
+			fluidHandler.drain(direction, 1000, true);
 	}
 }

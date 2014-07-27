@@ -6,7 +6,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.block.BlockBaseShineyGlass;
-import nf.fr.ephys.playerproxies.common.block.BlockHardenedStone;
 import nf.fr.ephys.playerproxies.common.block.BlockToughwoodPlank;
 import nf.fr.ephys.playerproxies.common.registry.BeaconEffectsRegistry;
 import nf.fr.ephys.playerproxies.common.registry.UniversalInterfaceRegistry;
@@ -19,7 +18,7 @@ import java.util.ArrayList;
 public class IMCHandler {
 	public static void sendMessages() {
 		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(PlayerProxies.Blocks.baseShineyGlass, 1, BlockBaseShineyGlass.METADATA_ETHEREAL_GLASS));
-		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(PlayerProxies.Blocks.hardenedStone, 1, BlockHardenedStone.METADATA_HARDENED_STONE));
+		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(PlayerProxies.Blocks.hardenedStone));
 		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(PlayerProxies.Blocks.toughwoodPlank, 1, BlockToughwoodPlank.METADATA_TOUGHWOOD));
 	}
 

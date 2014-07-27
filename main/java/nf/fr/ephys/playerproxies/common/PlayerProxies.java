@@ -9,6 +9,7 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.util.EnumHelper;
@@ -27,7 +28,7 @@ import java.util.Arrays;
 	guiFactory = GuiModConfigFactory.CLASSNAME
 )
 public class PlayerProxies extends DummyModContainer {
-	public static final String VERSION = "1.7.10-1.0.1";
+	public static final String VERSION = "1.7.10-1.1.0";
 	public static final String MODID = "ephys.playerproxies";
 	public static final String NAME = "Player Proxies";
 
@@ -54,7 +55,8 @@ public class PlayerProxies extends DummyModContainer {
 	};
 
 	public static class Blocks {
-		public static BlockHardenedStone hardenedStone;
+		public static Block hardenedStone;
+		public static BlockFluidDiffuser fluidDiffuser;
 		public static BlockParticleGenerator particleGenerator;
 		public static BlockBaseShineyGlass baseShineyGlass;
 		public static BlockProximitySensor proximitySensor;

@@ -6,10 +6,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
 import nf.fr.ephys.playerproxies.client.registry.FluidColorRegistry;
-import nf.fr.ephys.playerproxies.client.renderer.BlockBeaconTierIIRenderer;
-import nf.fr.ephys.playerproxies.client.renderer.TileEntityBeaconTierIIRenderer;
-import nf.fr.ephys.playerproxies.client.renderer.TileEntityInterfaceRenderer;
-import nf.fr.ephys.playerproxies.client.renderer.TileEntityItemTickerRenderer;
+import nf.fr.ephys.playerproxies.client.renderer.*;
 import nf.fr.ephys.playerproxies.common.core.CommonProxy;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBeaconTierII;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
@@ -31,6 +28,7 @@ public class ClientProxy extends CommonProxy {
 
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBeaconTierII.class, new TileEntityBeaconTierIIRenderer());
 
-		RenderingRegistry.registerBlockHandler(BlockBeaconTierIIRenderer.renderId, new BlockBeaconTierIIRenderer());
+		RenderingRegistry.registerBlockHandler(BlockBeaconTierIIRenderer.RENDER_ID, new BlockBeaconTierIIRenderer());
+		RenderingRegistry.registerBlockHandler(BlockFluidDiffuserRenderer.RENDER_ID, new BlockFluidDiffuserRenderer());
 	}
 }

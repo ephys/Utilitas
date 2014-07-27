@@ -2,7 +2,7 @@
   "modid": "ephys.playerproxies",
   "name": "Player Proxies",
   "description": "",
-  "version": "1.7.10-1.0.1",
+  "version": "1.7.10-1.1.0",
   "mcversion": "1.7.10",
   "url": "github.com/Ephys/PlayerProxies/",
   "updateUrl": "https://github.com/Ephys/PlayerProxies/releases",

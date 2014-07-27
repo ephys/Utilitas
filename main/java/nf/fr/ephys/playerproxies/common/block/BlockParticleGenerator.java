@@ -18,8 +18,7 @@ public class BlockParticleGenerator extends Block {
 	public static int BLOCK_ID = 803;
 	public static boolean enabled = true;
 
-	private IIcon iconSide;
-	private IIcon iconTop;
+	private IIcon[] textures;
 
 	private static String[] particleList = new String[] { "depthsuspend", "smoke",
 			"mobSpell", "spell", "instantSpell", "note", "portal",
@@ -49,13 +48,19 @@ public class BlockParticleGenerator extends Block {
 
 	@Override
 	public IIcon getIcon(int side, int metadata) {
-		return side == 1 ? iconTop : iconSide;
+		return textures[side];
 	}
 
 	@Override
-	public void registerBlockIcons(IIconRegister par1IconRegister) {
-		this.iconTop = par1IconRegister.registerIcon("ephys.pp:particleGenerator");
-		this.iconSide = par1IconRegister.registerIcon("ephys.pp:hardenedStone");
+	public void registerBlockIcons(IIconRegister register) {
+		textures = new IIcon[6];
+
+		textures[0] = register.registerIcon("ephys.pp:particle_generator_bottom");
+		textures[1] = register.registerIcon("ephys.pp:particle_generator_top");
+		textures[2] = register.registerIcon("ephys.pp:particle_generator_north");
+		textures[3] = register.registerIcon("ephys.pp:particle_generator_south");
+		textures[4] = register.registerIcon("ephys.pp:particle_generator_west");
+		textures[5] = register.registerIcon("ephys.pp:particle_generator_east");
 	}
 
 	@Override

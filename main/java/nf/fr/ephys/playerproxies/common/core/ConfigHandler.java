@@ -49,7 +49,7 @@ public class ConfigHandler {
 		BlockToughwoodPlank.transmuterEnabled = CONFIG.get(MODULES, "Biome Transmuter", true).getBoolean(BlockToughwoodPlank.transmuterEnabled);
 
 		BlockGravitationalField.enabled = CONFIG.get(MODULES, "Gravitational Field Handler", true).getBoolean(BlockGravitationalField.enabled);
-		BlockHardenedStone.diffuserEnabled = CONFIG.get(MODULES, "Fluid diffuser", true).getBoolean(BlockHardenedStone.diffuserEnabled);
+		BlockFluidDiffuser.enabled = CONFIG.get(MODULES, "Fluid diffuser", true).getBoolean(BlockFluidDiffuser.enabled);
 		BlockParticleGenerator.enabled = CONFIG.get(MODULES, "Particle generator", true).getBoolean(BlockParticleGenerator.enabled);
 		BlockProximitySensor.enabled = CONFIG.get(MODULES, "Proximity Sensor", true).getBoolean(BlockProximitySensor.enabled);
 

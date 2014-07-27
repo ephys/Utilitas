@@ -14,7 +14,7 @@ import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class BlockBeaconTierIIRenderer implements ISimpleBlockRenderingHandler {
-	public static final int renderId = RenderingRegistry.getNextAvailableRenderId();
+	public static final int RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelId, RenderBlocks renderer) {
@@ -90,6 +90,6 @@ public class BlockBeaconTierIIRenderer implements ISimpleBlockRenderingHandler {
 
 	@Override
 	public int getRenderId() {
-		return renderId;
+		return RENDER_ID;
 	}
 }
