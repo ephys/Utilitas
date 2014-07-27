@@ -12,10 +12,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
+import nf.fr.ephys.playerproxies.common.item.ItemBlockTooltipped;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityItemTicker;
 import nf.fr.ephys.playerproxies.helpers.BlockHelper;
 
-public class BlockItemTicker extends BlockContainer {
+import java.util.List;
+
+public class BlockItemTicker extends BlockContainer implements IToolTipped {
 	public static boolean enabled = true;
 	private IIcon iconTop;
 	private IIcon iconSide;
@@ -30,7 +33,7 @@ public class BlockItemTicker extends BlockContainer {
 			.setCreativeTab(PlayerProxies.creativeTab)
 			.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.8F, 1.0F);
 
-		GameRegistry.registerBlock(PlayerProxies.Blocks.itemTicker, PlayerProxies.Blocks.itemTicker.getUnlocalizedName());
+		GameRegistry.registerBlock(PlayerProxies.Blocks.itemTicker, ItemBlockTooltipped.class, PlayerProxies.Blocks.itemTicker.getUnlocalizedName());
 		GameRegistry.registerTileEntity(TileEntityItemTicker.class, PlayerProxies.Blocks.itemTicker.getUnlocalizedName());
 	}
 
@@ -105,5 +108,10 @@ public class BlockItemTicker extends BlockContainer {
 			BlockHelper.dropContents(te, world, x, y, z);
 
 		super.onBlockPreDestroy(world, x, y, z, metadata);
+	}
+
+	@Override
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> data, boolean debug) {
+		data.add("Just like your own inventory, except not at all.");
 	}
 }

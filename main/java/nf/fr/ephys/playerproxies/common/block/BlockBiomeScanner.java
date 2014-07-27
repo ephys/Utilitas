@@ -85,11 +85,7 @@ public class BlockBiomeScanner extends BlockContainer {
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z,
-			EntityPlayer player, int par6, float par7, float par8, float par9) {
-		if (player.isSneaking())
-			return false;
-
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9) {
 		player.openGui(PlayerProxies.instance, PlayerProxies.GUI_BIOME_SCANNER,
 				world, x, y, z);
 

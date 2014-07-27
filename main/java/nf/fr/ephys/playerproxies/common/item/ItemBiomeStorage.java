@@ -70,6 +70,7 @@ public class ItemBiomeStorage extends Item {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public void getSubItems(Item item, CreativeTabs tab, List subtypes) {
 		ItemStack is = new ItemStack(item, 1, TileEntityBiomeScanner.NO_STORED_VALUE);
 		subtypes.add(is);
@@ -98,6 +99,7 @@ public class ItemBiomeStorage extends Item {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
 		int biomeID = stack.getItemDamage();
 

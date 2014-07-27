@@ -44,7 +44,8 @@ public class ItemLinker extends Item {
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
+	@SuppressWarnings("unchecked")
+	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean debug) {
 		list.add("Can configure an interface.");
 		list.add("Can filter a proximity sensor.");
 

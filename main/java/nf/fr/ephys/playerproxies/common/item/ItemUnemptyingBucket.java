@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
@@ -99,11 +100,11 @@ public class ItemUnemptyingBucket extends Item {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public void addInformation(ItemStack stack, EntityPlayer player, List data, boolean unknown) {
-		data.add("§5" + (stack.getItemDamage() == METADATA_EMPTY ? StatCollector.translateToLocal("pp_tooltip.bucket_mode_empty") : StatCollector.translateToLocal("pp_tooltip.bucket_mode_fill")));
+	public void addInformation(ItemStack stack, EntityPlayer player, List data, boolean debug) {
+		data.add(EnumChatFormatting.DARK_PURPLE + (stack.getItemDamage() == METADATA_EMPTY ? StatCollector.translateToLocal("pp_tooltip.bucket_mode_empty") : StatCollector.translateToLocal("pp_tooltip.bucket_mode_fill")));
 
 		if (NBTHelper.getNBT(stack).hasKey("fluidHandler"))
-			data.add("§5" + StatCollector.translateToLocal("pp_tooltip.bucket_bound"));
+			data.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("pp_tooltip.bucket_bound"));
 	}
 
 	@Override

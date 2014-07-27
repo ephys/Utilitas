@@ -32,6 +32,7 @@ public class PlayerProxies extends DummyModContainer {
 	public static final String MODID = "ephys.playerproxies";
 	public static final String NAME = "Player Proxies";
 
+	public static final int GUI_FLUID_HOPPER = 0;
 	public static final int GUI_BIOME_SCANNER = 1;
 
 	public static final boolean DEV_MODE = false;
@@ -67,6 +68,7 @@ public class PlayerProxies extends DummyModContainer {
 		public static BlockHomeShield homeShield;
 		public static BlockBeaconTierII betterBeacon;
 		public static BlockDragonscale dragonScale;
+		public static BlockFluidHopper fluidHopper;
 
 		public static BlockEnderDragonSpawner dragonSpawner;
 	}

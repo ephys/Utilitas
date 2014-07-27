@@ -122,10 +122,10 @@ public class TileEntityPotionDiffuser extends TileEnergyHandler implements IFlui
 					if (!entity.isImmuneToFire()) {
 						entity.setFire(INTERVAL);
 					}
-				} else {
-					block.onEntityCollidedWithBlock(worldObj, xCoord, yCoord, zCoord, entity);
-					block.onEntityWalking(worldObj, xCoord, yCoord, zCoord, entity);
 				}
+
+				block.onEntityCollidedWithBlock(worldObj, xCoord, yCoord, zCoord, entity);
+				block.onEntityWalking(worldObj, xCoord, yCoord, zCoord, entity);
 			}
 
 			this.tank.drain(INTERVAL, true);
@@ -135,6 +135,7 @@ public class TileEntityPotionDiffuser extends TileEnergyHandler implements IFlui
 	}
 
 	private void sendUpdate() {
+		markDirty();
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 

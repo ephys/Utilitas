@@ -35,7 +35,13 @@ public class ChatHelper {
 	}
 
 	public static String getDisplayName(Fluid fluid) {
-		String name = fluid.getLocalizedName(new FluidStack(fluid, 1000));
+		return getDisplayName(new FluidStack(fluid, 1000));
+	}
+
+	public static String getDisplayName(FluidStack fluidStack) {
+		Fluid fluid = fluidStack.getFluid();
+
+		String name = fluid.getLocalizedName(fluidStack);
 
 		if (fluid.canBePlacedInWorld() && name.equals(fluid.getUnlocalizedName())) {
 			return getDisplayName(fluid.getBlock());

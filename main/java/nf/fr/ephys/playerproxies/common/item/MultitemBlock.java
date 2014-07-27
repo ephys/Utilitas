@@ -1,10 +1,9 @@
 package nf.fr.ephys.playerproxies.common.item;
 
 import net.minecraft.block.Block;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
-public class MultitemBlock extends ItemBlock {
+public class MultitemBlock extends ItemBlockTooltipped {
 	public MultitemBlock(Block block) {
 		super(block);
 

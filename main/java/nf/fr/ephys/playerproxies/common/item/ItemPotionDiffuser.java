@@ -43,7 +43,7 @@ public class ItemPotionDiffuser extends Item {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public void addInformation(ItemStack stack, EntityPlayer player, List data, boolean isSneaking) {
+	public void addInformation(ItemStack stack, EntityPlayer player, List data, boolean debug) {
 		if (stack.getItemDamage() == DAMAGE_INACTIVE)
 			data.add("Sneak and right click to activate");
 		else

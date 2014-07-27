@@ -3,18 +3,19 @@ itemGroup.ephys.playerproxies.biomes=Player Proxies - Biomes
 
 tile.PP_ShineyGlass.0.name=Shiney Glass
 tile.PP_ShineyGlass.1.name=Universal Interface
-tile.PP_BiomeScanner.name=Biome scanner
+tile.PP_BiomeScanner.name=Biome Scanner
 tile.PP_GravitationalField.name=Gravitational Field Handler
 tile.PP_HardenedStone.name=Hardened Stone
-tile.PP_FluidDiffuser.name=Fluid diffuser
+tile.PP_FluidDiffuser.name=Fluid Diffuser
 tile.PP_HomeShield.name=Shield
 tile.PP_ParticleGenerator.name=Particle Generator
 tile.PP_ItemActivator.name=Sylladex
 tile.PP_ProximitySensor.name=Proximity Sensor
 tile.PP_SpawnerLoader.name=Ghost Stabilizer
-tile.PP_ToughwoodPlank.0.name=Thoughwood plank
-tile.PP_ToughwoodPlank.1.name=Biome transmuter
+tile.PP_ToughwoodPlank.0.name=Thoughwood Plank
+tile.PP_ToughwoodPlank.1.name=Biome Transmuter
 tile.PP_DragonScale.name=DragonScale Block
+tile.PP_FluidHopper.name=Fluid Hopper
 
 item.PP_BiomeStorage.name=Biome signature handler
 item.PP_LinkWand.name=Linking wand
