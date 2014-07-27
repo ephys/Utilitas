@@ -1,24 +1,133 @@
 package nf.fr.ephys.playerproxies.common.tileentity;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockHopper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.*;
+import nf.fr.ephys.playerproxies.helpers.BlockHelper;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
 public class TileEntityFluidHopper extends TileEntity implements IFluidHandler {
 	private FluidStack[] fluidStacks = new FluidStack[5];
-	public static final int MAX_STACK_SIZE = 5000;
+	public static final int MAX_STACK_SIZE = 2500;
 	public static final int RATE = 1000;
 
-	private void writeFluidsToNBT(NBTTagCompound nbt) {
+	private int cooldown = 0;
+
+	@Override
+	public void updateEntity() {
+		if (this.worldObj == null || this.worldObj.isRemote) return;
+
+		if (!BlockHopper.func_149917_c(this.getBlockMetadata())) return;
+
+		if (cooldown != 0) {
+			cooldown--;
+
+			return;
+		}
+
+		cooldown = 20;
+
+		attemptDrain();
+		attemptFill();
+	}
+
+	private boolean attemptFill() {
+		int orientation = BlockHopper.getDirectionFromMetadata(this.getBlockMetadata());
+
+		int coords[] = BlockHelper.getAdjacentBlock(xCoord, yCoord, zCoord, orientation);
+
+		TileEntity te = worldObj.getTileEntity(coords[0], coords[1], coords[2]);
+
+		if (te instanceof IFluidHandler) {
+			IFluidHandler target = (IFluidHandler) te;
+
+			for (int i = 0; i < fluidStacks.length; i++) {
+				FluidStack fluidStack = fluidStacks[i];
+				ForgeDirection direction = ForgeDirection.getOrientation(orientation);
+
+				if (fluidStack == null || !target.canFill(direction, fluidStack.getFluid())) continue;
+
+				FluidStack clone = fluidStack.copy();
+				clone.amount = Math.min(RATE, clone.amount);
+
+				int filled = target.fill(direction, clone, true);
+
+				if (filled > 0) {
+					fluidStack.amount -= filled;
+
+					if (fluidStack.amount <= 0)
+						fluidStacks[i] = null;
+
+					sendUpdate();
+
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	private boolean attemptDrain() {
+		TileEntity te = worldObj.getTileEntity(xCoord, yCoord + 1, zCoord);
+
+		if (te instanceof IFluidHandler) {
+			IFluidHandler source = (IFluidHandler) te;
+
+			FluidStack drain = source.drain(ForgeDirection.DOWN, RATE, false);
+
+			if (drain == null) return false;
+
+			int filled = this.fill(ForgeDirection.UP, drain, true);
+
+			source.drain(ForgeDirection.DOWN, filled, true);
+
+			return true;
+		}
+
+		return attemptBlockSuckUp();
+	}
+
+	private boolean attemptBlockSuckUp() {
+		Block block = worldObj.getBlock(xCoord, yCoord + 1, zCoord);
+
+		Fluid fluid = BlockHelper.getFluidForBlock(block);
+
+		if (fluid == null) return false;
+
+		boolean isWater = fluid == FluidRegistry.WATER;
+		int metadata = worldObj.getBlockMetadata(xCoord, yCoord + 1, zCoord);
+
+		if (isWater) {
+			FluidStack stack = new FluidStack(fluid, 1000 / (metadata + 1));
+
+			System.out.println("water level " + metadata + " -> " + stack.amount);
+
+			fill(ForgeDirection.UP, stack, true);
+		} else if(metadata == 0) {
+			FluidStack stack = new FluidStack(fluid, 1000);
+
+			int filled = fill(ForgeDirection.UP, stack, false);
+
+			if (filled != 1000) return false;
+
+			fill(ForgeDirection.UP, stack, true);
+
+			worldObj.setBlockToAir(xCoord, yCoord + 1, zCoord);
+		}
+
+		return true;
+	}
+
+	private void writeFluidsToNBT(NBTTagCompound nbt, boolean writeIfEmpty) {
 		NBTTagCompound fluidStackNBT = new NBTTagCompound();
 
 		int nbSet = 0;
@@ -33,8 +142,9 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler {
 			}
 		}
 
-		if (nbSet != 0)
+		if (nbSet != 0 || writeIfEmpty) {
 			nbt.setTag("fluidStacks", fluidStackNBT);
+		}
 	}
 
 	private void readFluidsFromNBT(NBTTagCompound nbt) {
@@ -48,8 +158,6 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler {
 					fluidStacks[i] = null;
 				}
 			}
-		} else {
-			fluidStacks = new FluidStack[fluidStacks.length];
 		}
 	}
 
@@ -58,7 +166,7 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler {
 	}
 
 	public void setFluidsToStack(ItemStack stack) {
-		writeFluidsToNBT(NBTHelper.getNBT(stack));
+		writeFluidsToNBT(NBTHelper.getNBT(stack), false);
 	}
 
 	@Override
@@ -69,7 +177,7 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler {
 	@Override
 	public Packet getDescriptionPacket() {
 		NBTTagCompound nbt = new NBTTagCompound();
-		this.writeFluidsToNBT(nbt);
+		this.writeFluidsToNBT(nbt, true);
 
 		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, nbt);
 	}
@@ -78,7 +186,7 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler {
 	public void writeToNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
 
-		writeFluidsToNBT(nbt);
+		writeFluidsToNBT(nbt, false);
 	}
 
 	@Override
@@ -90,10 +198,6 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler {
 
 	public int getComparatorInput() {
 		return 0;
-	}
-
-	public FluidStack[] getFluidStacks() {
-		return fluidStacks;
 	}
 
 	private int getSlotForFluid(FluidStack fluid) {
@@ -206,5 +310,14 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler {
 	private void sendUpdate() {
 		markDirty();
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+	}
+
+	@Override
+	public boolean shouldRefresh(Block oldBlock, Block newBlock, int oldMeta, int newMeta, World world, int x, int y, int z) {
+		return oldBlock != newBlock;
+	}
+
+	public void onBlockUpdate(int tileX, int tileY, int tileZ) {
+		attemptBlockSuckUp();
 	}
 }

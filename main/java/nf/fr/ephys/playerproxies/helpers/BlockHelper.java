@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -15,6 +16,8 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 
 import java.util.List;
 import java.util.Random;
@@ -226,5 +229,27 @@ public class BlockHelper {
 
 	public static void dropItem(ItemStack itemstack, EntityPlayer player) {
 		dropItem(itemstack, player.worldObj, player.posX, player.posY, player.posZ);
+	}
+
+	public static Fluid getFluidForBlock(Block block) {
+		// more hotfixing the broken vanilla fluid handling (fluid registry only has blocks for still water & still lava)
+		if (block == Blocks.flowing_water)
+			return FluidRegistry.WATER;
+
+		if (block == Blocks.flowing_lava)
+			return FluidRegistry.LAVA;
+
+		return FluidRegistry.lookupFluidForBlock(block);
+	}
+
+	public static Block getBlockForFluid(Fluid fluid) {
+		Block fluidBlock = fluid.getBlock();
+
+		if (fluidBlock == Blocks.water)
+			fluidBlock = Blocks.flowing_water;
+		else if (fluidBlock == Blocks.lava)
+			fluidBlock = Blocks.flowing_lava;
+
+		return fluidBlock;
 	}
 }

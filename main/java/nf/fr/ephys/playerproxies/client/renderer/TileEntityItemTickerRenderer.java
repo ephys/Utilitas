@@ -27,7 +27,7 @@ public class TileEntityItemTickerRenderer extends TileEntitySpecialRenderer {
 			GL11.glRotatef(90F, 1F, 0F, 0F);
 			GL11.glRotatef(30F, 0F, 0F, 1F);
 
-			RenderHelper.loadTexturesMap();
+			RenderHelper.loadItemMap();
 			RenderHelper.renderItem3D(item);
 		GL11.glPopMatrix();
 	}

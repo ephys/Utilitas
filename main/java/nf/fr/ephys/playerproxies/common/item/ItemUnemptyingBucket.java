@@ -5,7 +5,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -240,24 +239,19 @@ public class ItemUnemptyingBucket extends Item {
 					Block block = world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
 					int l = world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
 
-					Fluid targetFluid;
-					// more hotfixing the broken vanilla fluid handling (fluid registry only has blocks for still water & still lava)
-					if (block == Blocks.flowing_water)
-						targetFluid = FluidRegistry.WATER;
-					else if (block == Blocks.flowing_lava)
-						targetFluid = FluidRegistry.LAVA;
-					else
-						targetFluid = FluidRegistry.lookupFluidForBlock(block);
+					Fluid targetFluid = BlockHelper.getFluidForBlock(block);
 
 					if (l == 0 && targetFluid != null) {
-						setLiquid(stack, targetFluid);
+						if (!player.capabilities.isCreativeMode)
+							setLiquid(stack, targetFluid);
+
 						world.setBlockToAir(mop.blockX, mop.blockY, mop.blockZ);
 					}
 				}
 			} else {
 				int[] coords = BlockHelper.getAdjacentBlock(mop.blockX, mop.blockY, mop.blockZ, mop.sideHit);
 
-				if (placeFluidInWorld(player, coords, mop.sideHit, stack, world, fluid))
+				if (placeFluidInWorld(player, coords, mop.sideHit, stack, world, fluid) && !player.capabilities.isCreativeMode)
 					setLiquid(stack, null);
 			}
 		}
@@ -301,14 +295,7 @@ public class ItemUnemptyingBucket extends Item {
 					world.func_147480_a(coords[0], coords[1], coords[2], true);
 				}
 
-				Block fluidblock = fluid.getBlock();
-
-				if (fluidblock == Blocks.water)
-					fluidblock = Blocks.flowing_water;
-				else if (fluidblock == Blocks.lava)
-					fluidblock = Blocks.flowing_lava;
-
-				world.setBlock(coords[0], coords[1], coords[2], fluidblock, 0, 3);
+				world.setBlock(coords[0], coords[1], coords[2], BlockHelper.getBlockForFluid(fluid), 0, 3);
 			}
 
 			return true;

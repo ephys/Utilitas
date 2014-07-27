@@ -8,6 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.helpers.MathHelper;
+import nf.fr.ephys.playerproxies.helpers.RenderHelper;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -22,10 +23,7 @@ public class FluidColorRegistry implements IResourceManagerReloadListener {
 	public static int getColorFromFluid(Fluid fluid) {
 		if (resourceManager == null) return 0xFFFFFF;
 
-		IIcon icon = fluid.getIcon();
-		if (icon == null && fluid.canBePlacedInWorld()) {
-			icon = fluid.getBlock().getIcon(0, 0);
-		}
+		IIcon icon = RenderHelper.getFluidTexture(fluid);
 
 		if (colorCache.containsKey(icon))
 			return colorCache.get(icon);

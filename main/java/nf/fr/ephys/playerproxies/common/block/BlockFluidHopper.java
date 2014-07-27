@@ -41,7 +41,10 @@ public class BlockFluidHopper extends BlockHopper implements IToolTipped {
 
 		PlayerProxies.Blocks.fluidHopper = new BlockFluidHopper();
 		PlayerProxies.Blocks.fluidHopper.setBlockName("PP_FluidHopper")
-				.setCreativeTab(PlayerProxies.creativeTab);
+				.setCreativeTab(PlayerProxies.creativeTab)
+				.setHardness(3.0F)
+				.setResistance(8.0F)
+				.setStepSound(soundTypeWood);
 
 		GameRegistry.registerBlock(PlayerProxies.Blocks.fluidHopper, ItemBlockTooltipped.class, PlayerProxies.Blocks.fluidHopper.getUnlocalizedName());
 
@@ -97,29 +100,41 @@ public class BlockFluidHopper extends BlockHopper implements IToolTipped {
 	}
 
 	private void updateRedstoneState(World world, int x, int y, int z) {
-		int l = world.getBlockMetadata(x, y, z);
-		int i1 = getDirectionFromMetadata(l);
-		boolean flag = !world.isBlockIndirectlyGettingPowered(x, y, z);
-		boolean flag1 = func_149917_c(l);
+		int metadata = world.getBlockMetadata(x, y, z);
+		int direction = getDirectionFromMetadata(metadata);
+		boolean isPowered = !world.isBlockIndirectlyGettingPowered(x, y, z);
+		boolean wasPowered = func_149917_c(metadata);
 
-		if (flag != flag1) {
-			world.setBlockMetadataWithNotify(x, y, z, i1 | (flag ? 0 : 8), 4);
+		if (isPowered ^ wasPowered) {
+			world.setBlockMetadataWithNotify(x, y, z, direction | (isPowered ? 0 : 8), 4 + 2);
 		}
 	}
 
 	@Override
-	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
-		ArrayList<ItemStack> stacks = new ArrayList<>(1);
+	public void onNeighborChange(IBlockAccess world, int x, int y, int z, int tileX, int tileY, int tileZ) {
+		TileEntityFluidHopper tile = (TileEntityFluidHopper) world.getTileEntity(x, y, z);
 
-		stacks.add(getCustomItemStack(world, x, y, z));
+		if (tile != null) tile.onBlockUpdate(tileX, tileY, tileZ);
+	}
+
+	@Override
+	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
+		ItemStack stack = getCustomItemStack(world, x, y, z);
+
+		if (stack == null) return new ArrayList<>(0);
+
+		ArrayList<ItemStack> stacks = new ArrayList<>(1);
+		stacks.add(stack);
 
 		return stacks;
 	}
 
 	private ItemStack getCustomItemStack(World world, int x, int y, int z) {
-		ItemStack hopper = new ItemStack(PlayerProxies.Blocks.fluidHopper);
-
 		TileEntityFluidHopper te = (TileEntityFluidHopper) world.getTileEntity(x, y, z);
+
+		if (te == null) return null;
+
+		ItemStack hopper = new ItemStack(PlayerProxies.Blocks.fluidHopper);
 		te.setFluidsToStack(hopper);
 
 		return hopper;
@@ -168,6 +183,16 @@ public class BlockFluidHopper extends BlockHopper implements IToolTipped {
 		textureSide = register.registerIcon("ephys.pp:fluidhopper_outside");
 		textureTop = register.registerIcon("ephys.pp:fluidhopper_top");
 		textureInside = register.registerIcon("ephys.pp:fluidhopper_inside");
+	}
+
+	@Override
+	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest) {
+		if (player != null && !player.capabilities.isCreativeMode) {
+			ItemStack stack = getCustomItemStack(world, x, y, z);
+			dropBlockAsItem(world, x, y, z, stack);
+		}
+
+		return super.removedByPlayer(world, player, x, y, z, willHarvest);
 	}
 
 	@Override

@@ -35,7 +35,7 @@ public class TileEntityBeaconTierIIRenderer extends TileEntitySpecialRenderer {
 			// center the stacks
 			GL11.glTranslatef(0.5F, 2.5F, -radius);
 
-			RenderHelper.loadTexturesMap();
+			RenderHelper.loadItemMap();
 
 			GL11.glTranslatef(0.5F, 0, 1.5F);
 			GL11.glRotatef(tile.displayTick++, 0F, 1F, 0F);

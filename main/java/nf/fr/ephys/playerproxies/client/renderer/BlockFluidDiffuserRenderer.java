@@ -9,6 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import nf.fr.ephys.playerproxies.client.registry.FluidColorRegistry;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityPotionDiffuser;
@@ -30,9 +31,11 @@ public class BlockFluidDiffuserRenderer implements ISimpleBlockRenderingHandler 
 
 		if (!(te instanceof TileEntityPotionDiffuser)) return false;
 
-		Fluid fluid = ((TileEntityPotionDiffuser) te).getFluid();
+		FluidStack fluidStack = ((TileEntityPotionDiffuser) te).getFluid();
 
-		if (fluid != null) {
+		if (fluidStack != null && fluidStack.getFluid() != null) {
+			Fluid fluid = fluidStack.getFluid();
+
 			int color = FluidColorRegistry.getColorFromFluid(fluid);
 
 			float r = (color >> 16 & 0xFF) / 255.0F;
@@ -51,11 +54,7 @@ public class BlockFluidDiffuserRenderer implements ISimpleBlockRenderingHandler 
 
 			tessellator.setColorOpaque_F(1F, 1F, 1F);
 
-			IIcon fluidIcon = fluid.getIcon();
-
-			if(fluidIcon == null && fluid.canBePlacedInWorld()) {
-				fluidIcon = fluid.getBlock().getIcon(0, 0);
-			}
+			IIcon fluidIcon = RenderHelper.getFluidTexture(fluidStack);
 
 			if (fluidIcon != null) {
 				renderer.renderFaceYPos(block, x, y, z, fluidIcon);

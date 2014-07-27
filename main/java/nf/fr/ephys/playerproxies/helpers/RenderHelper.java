@@ -12,6 +12,8 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -33,8 +35,12 @@ public class RenderHelper {
 		MODEL_BIPED.bipedHeadwear.render(tickTime);
 	}
 
-	public static void loadTexturesMap() {
+	public static void loadItemMap() {
 		Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationItemsTexture);
+	}
+
+	public static void loadBlockMap() {
+		Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
 	}
 
 	public static void renderItem3D(ItemStack item) {
@@ -81,7 +87,7 @@ public class RenderHelper {
 				GL11.glEnable(2896);
 				GL11.glDepthFunc(515);
 
-				loadTexturesMap();
+				loadItemMap();
 			}
 		}
 
@@ -123,5 +129,23 @@ public class RenderHelper {
 		tessellator.draw();
 
 		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+	}
+
+	public static IIcon getFluidTexture(FluidStack fluid) {
+		IIcon icon = fluid.getFluid().getIcon(fluid);
+
+		if (icon == null && fluid.getFluid().canBePlacedInWorld())
+			return fluid.getFluid().getBlock().getIcon(0, 0);
+
+		return icon;
+	}
+
+	public static IIcon getFluidTexture(Fluid fluid) {
+		IIcon icon = fluid.getIcon();
+
+		if (icon == null && fluid.canBePlacedInWorld())
+			return fluid.getBlock().getIcon(0, 0);
+
+		return icon;
 	}
 }

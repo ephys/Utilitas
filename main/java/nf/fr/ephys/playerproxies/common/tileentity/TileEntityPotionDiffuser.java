@@ -139,7 +139,7 @@ public class TileEntityPotionDiffuser extends TileEnergyHandler implements IFlui
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 
-	public Fluid getFluid() {
-		return tank.getFluid() == null ? null : tank.getFluid().getFluid();
+	public FluidStack getFluid() {
+		return tank.getFluid();
 	}
 }
