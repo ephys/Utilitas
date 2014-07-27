@@ -12,7 +12,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
-import nf.fr.ephys.playerproxies.helpers.DebugHelper;
 import nf.fr.ephys.playerproxies.util.cofh.TileEnergyHandler;
 
 import java.util.List;
@@ -57,12 +56,9 @@ public class TileEntityPotionDiffuser extends TileEnergyHandler implements IFlui
 	public int fill(ForgeDirection forgeDirection, FluidStack fluidStack, boolean b) {
 		if (!fluidStack.getFluid().canBePlacedInWorld()) return 0;
 
-		boolean empty = this.tank.getFluidAmount() <= 0;
-
 		int amnt = this.tank.fill(fluidStack, b);
 
-		if (empty && amnt != 0)
-			sendUpdate();
+		sendUpdate();
 
 		return amnt;
 	}
@@ -77,13 +73,9 @@ public class TileEntityPotionDiffuser extends TileEnergyHandler implements IFlui
 
 	@Override
 	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
-		boolean filled = this.tank.getFluidAmount() > 0;
-
 		FluidStack stack = this.tank.drain(maxDrain, doDrain);
 
-		if (this.tank.getFluidAmount() <= 0 && filled) {
-			sendUpdate();
-		}
+		sendUpdate();
 
 		return stack;
 	}
@@ -106,11 +98,6 @@ public class TileEntityPotionDiffuser extends TileEnergyHandler implements IFlui
 	@Override
 	public void updateEntity() {
 		if (worldObj.getTotalWorldTime() % INTERVAL != 0) return;
-
-		if (tank.getFluid() != null && tank.getFluid().getFluid() != null)
-			DebugHelper.sidedDebug(worldObj, tank.getFluid().getFluid().getName() + ": " + tank.getFluidAmount());
-		else
-			DebugHelper.sidedDebug(worldObj, "tank is empty");
 
 		if (PlayerProxies.getConfig().requiresPower()) {
 			if (storage.getEnergyStored() < ENERGY_CONSUMPTION) return;
@@ -142,9 +129,6 @@ public class TileEntityPotionDiffuser extends TileEnergyHandler implements IFlui
 			}
 
 			this.tank.drain(INTERVAL, true);
-
-			if (this.tank.getFluidAmount() <= 0)
-				sendUpdate();
 		}
 
 		super.updateEntity();
