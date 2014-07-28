@@ -404,11 +404,34 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 
 	@Override
 	public int fill(ItemStack container, FluidStack resource, boolean doFill) {
-		return 0;
+		FluidStack currentFluid = getFluid(container);
+
+		if (currentFluid != null) return 0;
+
+		if (resource.amount < 1000) return 0;
+
+		if (doFill) {
+			FluidStack newFluid = resource.copy();
+			newFluid.amount = 1000;
+
+			setFluid(container, newFluid);
+		}
+
+		return 1000;
 	}
 
 	@Override
 	public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain) {
-		return null;
+		FluidStack currentFluid = getFluid(container);
+
+		if (currentFluid == null) return null;
+
+		if (maxDrain < 1000) return null;
+
+		if (doDrain) {
+			setFluid(container, null);
+		}
+
+		return currentFluid.copy();
 	}
 }

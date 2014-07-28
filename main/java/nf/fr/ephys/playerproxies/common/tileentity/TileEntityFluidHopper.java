@@ -27,11 +27,14 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 
 	@Override
 	public void updateEntity() {
-		if (this.worldObj == null) return;
+		if (this.worldObj == null)
+			return;
 
-		if (this.worldObj.isRemote) return;
+		if (this.worldObj.isRemote)
+			return;
 
-		if (!BlockHopper.func_149917_c(this.getBlockMetadata())) return;
+		if (!BlockHopper.func_149917_c(this.getBlockMetadata()))
+			return;
 
 		if (cooldown != 0) {
 			cooldown--;
@@ -62,7 +65,8 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 				FluidStack fluidStack = fluidStacks[i];
 				ForgeDirection direction = ForgeDirection.getOrientation(orientation);
 
-				if (fluidStack == null || !target.canFill(direction, fluidStack.getFluid())) continue;
+				if (fluidStack == null || !target.canFill(direction, fluidStack.getFluid()))
+					continue;
 
 				FluidStack clone = fluidStack.copy();
 				clone.amount = Math.min(RATE, clone.amount);
@@ -93,7 +97,8 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 
 			FluidStack drain = source.drain(ForgeDirection.DOWN, RATE, false);
 
-			if (drain == null) return false;
+			if (drain == null)
+				return false;
 
 			int filled = this.fill(ForgeDirection.UP, drain, true);
 
@@ -110,7 +115,8 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 
 		Fluid fluid = BlockHelper.getFluidForBlock(block);
 
-		if (fluid == null) return false;
+		if (fluid == null)
+			return false;
 
 		boolean isWater = fluid == FluidRegistry.WATER;
 		int metadata = worldObj.getBlockMetadata(xCoord, yCoord + 1, zCoord);
@@ -119,12 +125,13 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 			FluidStack stack = new FluidStack(fluid, 1000 / (metadata + 1));
 
 			fill(ForgeDirection.UP, stack, true);
-		} else if(metadata == 0) {
+		} else if (metadata == 0) {
 			FluidStack stack = new FluidStack(fluid, 1000);
 
 			int filled = fill(ForgeDirection.UP, stack, false);
 
-			if (filled != 1000) return false;
+			if (filled != 1000)
+				return false;
 
 			fill(ForgeDirection.UP, stack, true);
 
@@ -137,36 +144,65 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 	private void fillBucket(int slot) {
 		ItemStack input = bucketStacks[slot];
 
-		if (input == null) return;
+		if (input == null)
+			return;
 
 		if (input.getItem() instanceof IFluidContainerItem) {
 			IFluidContainerItem fluidContainer = (IFluidContainerItem) input.getItem();
-//todo
-		}
+			ItemStack output = input.copy();
 
-		if (FluidContainerRegistry.isFilledContainer(input)) {
+			FluidStack itemFluidContents = fluidContainer.drain(output, fluidContainer.getCapacity(output), false);
+
+			if (itemFluidContents != null) {
+				// drain
+				if (fill(ForgeDirection.UNKNOWN, itemFluidContents, false) != itemFluidContents.amount)
+					return;
+
+				fluidContainer.drain(output, fluidContainer.getCapacity(output), true);
+
+				if (!insertToOutput(output))
+					return;
+
+				fill(ForgeDirection.UNKNOWN, itemFluidContents, true);
+			} else {
+				// fill
+				FluidStack localFluid = fluidStacks[slot];
+
+				int filled = fluidContainer.fill(output, localFluid, true);
+
+				if (!insertToOutput(output))
+					return;
+
+				localFluid.amount -= filled;
+
+				if (localFluid.amount <= 0)
+					fluidStacks[slot] = null;
+			}
+		} else if (FluidContainerRegistry.isFilledContainer(input)) {
 			// empty container
-
 			FluidStack outputFluid = FluidContainerRegistry.getFluidForFilledItem(input);
 			ItemStack outputStack = input.getItem().getContainerItem(input);
 
 			int filled = fill(ForgeDirection.UNKNOWN, outputFluid, false);
 
-			if (filled != outputFluid.amount) return;
+			if (filled != outputFluid.amount)
+				return;
 
-			if (outputStack != null && !insertToOutput(outputStack)) return;
+			if (outputStack != null && !insertToOutput(outputStack))
+				return;
 
 			fill(ForgeDirection.UNKNOWN, outputFluid, true);
 		} else {
-			// fill container
-
+			// drain container
 			FluidStack stack = fluidStacks[slot];
 
-			if (stack == null || stack.amount < FluidContainerRegistry.BUCKET_VOLUME) return;
+			if (stack == null || stack.amount < FluidContainerRegistry.BUCKET_VOLUME)
+				return;
 
 			ItemStack output = FluidContainerRegistry.fillFluidContainer(stack, input);
 
-			if (output == null || !insertToOutput(output)) return;
+			if (output == null || !insertToOutput(output))
+				return;
 
 			stack.amount -= 1000;
 
@@ -286,7 +322,8 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 
 	private int getFirstFilledSlot() {
 		for (int i = 0; i < fluidStacks.length; i++) {
-			if (fluidStacks[i] != null) return i;
+			if (fluidStacks[i] != null)
+				return i;
 		}
 
 		return -1;
@@ -321,7 +358,8 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
 		int slot = getSlotForFluid(resource);
 
-		if (slot == -1 || fluidStacks[slot] == null) return null;
+		if (slot == -1 || fluidStacks[slot] == null)
+			return null;
 
 		return drain(slot, resource.amount, doDrain);
 	}
@@ -330,7 +368,8 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
 		int slot = getFirstFilledSlot();
 
-		if (slot == -1) return null;
+		if (slot == -1)
+			return null;
 
 		return drain(slot, maxDrain, doDrain);
 	}
@@ -367,7 +406,8 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 		FluidTankInfo[] tanks = new FluidTankInfo[fluidStacks.length];
 
 		for (int i = 0; i < fluidStacks.length; i++) {
-			if (fluidStacks[i] == null) continue;
+			if (fluidStacks[i] == null)
+				continue;
 
 			tanks[i] = new FluidTankInfo(fluidStacks[i], MAX_STACK_SIZE);
 		}
@@ -403,7 +443,8 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 	public ItemStack decrStackSize(int slot, int nbItems) {
 		ItemStack stack = bucketStacks[slot];
 
-		if (stack == null) return null;
+		if (stack == null)
+			return null;
 
 		nbItems = Math.min(nbItems, stack.stackSize);
 
