@@ -30,8 +30,8 @@ public class GuiFluidTankInfo extends Gui {
 		this.direction = direction;
 	}
 
-	public void draw(FluidTankInfo tank) {
-		drawRect(xLeft - 1, yTop - 1, xLeft + 16 + 1, yTop + 16 + 1, 0xFF212121);
+	public void draw(FluidTankInfo tank, int backgroundColor) {
+		drawRect(xLeft - 1, yTop - 1, xLeft + 16 + 1, yTop + 16 + 1, backgroundColor);
 
 		GL11.glColor4f(1, 1, 1, 1);
 
@@ -41,6 +41,8 @@ public class GuiFluidTankInfo extends Gui {
 			IIcon fluidIcon = RenderHelper.getFluidTexture(tank.fluid);
 
 			drawTexturedModelRectFromIcon(xLeft, yTop, fluidIcon, 16, 16);
+		} else {
+			drawRect(xLeft, yTop, xLeft + 16, yTop + 16, 0xFF999999);
 		}
 	}
 }

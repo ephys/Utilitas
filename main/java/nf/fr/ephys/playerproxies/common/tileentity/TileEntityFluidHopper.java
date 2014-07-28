@@ -18,7 +18,7 @@ import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
 public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, IInventory {
 	private FluidStack[] fluidStacks = new FluidStack[5];
-	private ItemStack[] bucketStacks = new ItemStack[fluidStacks.length];
+	private ItemStack[] bucketStacks = new ItemStack[fluidStacks.length + 1];
 
 	public static final int MAX_STACK_SIZE = 2500;
 	public static final int RATE = 1000;
@@ -393,7 +393,7 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 	public void closeInventory() {}
 
 	@Override
-	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
-		return false;
+	public boolean isItemValidForSlot(int slot, ItemStack stack) {
+		return stack == null || FluidContainerRegistry.isContainer(stack);
 	}
 }

@@ -46,6 +46,7 @@ pp_tooltip.dragon_hoe=Sterilizes dirt, grass won't grow back
 
 pp_messages.bucket_bound=%s bound to %s (%s)
 pp_messages.bucket_unbound=%s unbound
+pp_messages.empty=Empty
 
 side.down=Down
 side.up=Up

@@ -8,16 +8,16 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBiomeScanner;
-import nf.fr.ephys.playerproxies.util.FilteredSlot;
+import nf.fr.ephys.playerproxies.util.SlotFiltered;
 
 public class ContainerBiomeScanner extends Container {
 	private TileEntityBiomeScanner te;
-	private FilteredSlot cardSlot;
+	private SlotFiltered cardSlot;
 
 	public ContainerBiomeScanner(EntityPlayer player, TileEntityBiomeScanner te) {
 		this.te = te;
 
-		this.cardSlot = new FilteredSlot(te, 0, 226, 25, new Item[] { PlayerProxies.Items.biomeStorage });
+		this.cardSlot = new SlotFiltered(te, 0, 226, 25, new Item[] { PlayerProxies.Items.biomeStorage });
 
 		addSlotToContainer(this.cardSlot);
 

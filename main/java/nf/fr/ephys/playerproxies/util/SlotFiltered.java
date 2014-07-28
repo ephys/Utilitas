@@ -8,34 +8,34 @@ import net.minecraft.item.ItemStack;
 import java.util.Collections;
 import java.util.Vector;
 
-public class FilteredSlot extends Slot {
+public class SlotFiltered extends Slot {
 	private Vector<Item> filter;
 
-	public FilteredSlot(IInventory inventory, int id, int x, int y) {
+	public SlotFiltered(IInventory inventory, int id, int x, int y) {
 		super(inventory, id, x, y);
 
 		this.filter = new Vector<>();
 	}
 
-	public FilteredSlot(IInventory inventory, int id, int x, int y, Item[] filter) {
+	public SlotFiltered(IInventory inventory, int id, int x, int y, Item[] filter) {
 		this(inventory, id, x, y);
 
 		addFilteredIds(filter);
 	}
 
-	public FilteredSlot(IInventory inventory, int id, int x, int y, Vector<Item> filter) {
+	public SlotFiltered(IInventory inventory, int id, int x, int y, Vector<Item> filter) {
 		super(inventory, id, x, y);
 
 		this.filter = filter;
 	}
 
-	public FilteredSlot addFilteredIds(Item[] filter) {
+	public SlotFiltered addFilteredIds(Item[] filter) {
 		Collections.addAll(this.filter, filter);
 
 		return this;
 	}
 
-	public FilteredSlot addFilteredIds(Item filter) {
+	public SlotFiltered addFilteredIds(Item filter) {
 		this.filter.add(filter);
 
 		return this;
