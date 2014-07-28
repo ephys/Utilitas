@@ -30,6 +30,7 @@ public class InterfaceJukebox extends UniversalInterface {
 		GL11.glRotatef(tickCount, 0.0F, 1.0F, 0.0F);
 		GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
 
+		nf.fr.ephys.playerproxies.helpers.RenderHelper.loadBlockMap();
 		nf.fr.ephys.playerproxies.client.renderer.TileEntityInterfaceRenderer.renderBlocksInstance.renderBlockAsItem(Blocks.jukebox, 0, 1.0F);
 	}
 
@@ -103,6 +104,7 @@ public class InterfaceJukebox extends UniversalInterface {
 
 	public static class JukeBoxProxy implements IInventory {
 		private BlockJukebox.TileEntityJukebox jukebox;
+		private long insertTime = Integer.MIN_VALUE;
 
 		@Override
 		public int getSizeInventory() {
@@ -120,9 +122,12 @@ public class InterfaceJukebox extends UniversalInterface {
 		public ItemStack decrStackSize(int slot, int amount) {
 			if (slot != 0 || amount < 1) return null;
 
+			// this is some hotfix to prevent the music from /not/ stopping when inserting/extracting too quickly
+			if (jukebox.getWorldObj().getTotalWorldTime() - 3 < insertTime) return null;
+
 			ItemStack previousStack = jukebox.func_145856_a();
 
-			jukebox.func_145857_a(null);
+			setInventorySlotContents(0, null);
 
 			return previousStack;
 		}
@@ -140,9 +145,13 @@ public class InterfaceJukebox extends UniversalInterface {
 			if (stack == null) {
 				jukebox.getWorldObj().playAuxSFX(1005, jukebox.xCoord, jukebox.yCoord, jukebox.zCoord, 0);
 				jukebox.getWorldObj().playRecord(null, jukebox.xCoord, jukebox.yCoord, jukebox.zCoord);
+
+				jukebox.getWorldObj().setBlockMetadataWithNotify(jukebox.xCoord, jukebox.yCoord, jukebox.zCoord, 0, 2);
 			} else {
 				((BlockJukebox)Blocks.jukebox).func_149926_b(jukebox.getWorldObj(), jukebox.xCoord, jukebox.yCoord, jukebox.zCoord, stack);
 				jukebox.getWorldObj().playAuxSFXAtEntity(null, 1005, jukebox.xCoord, jukebox.yCoord, jukebox.zCoord, Item.getIdFromItem(stack.getItem()));
+
+				insertTime = jukebox.getWorldObj().getTotalWorldTime();
 			}
 		}
 
