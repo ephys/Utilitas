@@ -17,10 +17,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.*;
 import nf.fr.ephys.playerproxies.client.registry.DragonColorRegistry;
 import nf.fr.ephys.playerproxies.client.registry.FluidColorRegistry;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
@@ -30,7 +27,7 @@ import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
 import java.util.List;
 
-public class ItemUnemptyingBucket extends Item {
+public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 	public static final int METADATA_FILL = 0; // fill THE BUCKET
 	public static final int METADATA_EMPTY = 1; // not the drum
 
@@ -87,7 +84,7 @@ public class ItemUnemptyingBucket extends Item {
 			case 0:
 				return DragonColorRegistry.getColor();
 			case 1:
-				Fluid fluid = getLiquid(stack);
+				FluidStack fluid = getFluid(stack);
 				if (fluid == null)
 					return DragonColorRegistry.getColor();
 
@@ -108,7 +105,7 @@ public class ItemUnemptyingBucket extends Item {
 
 	@Override
 	public String getItemStackDisplayName(ItemStack stack) {
-		Fluid fluid = getLiquid(stack);
+		FluidStack fluid = getFluid(stack);
 
 		if (fluid == null)
 			return super.getItemStackDisplayName(stack);
@@ -119,21 +116,17 @@ public class ItemUnemptyingBucket extends Item {
 		);
 	}
 
-	public static void setLiquid(ItemStack stack, Fluid liquid) {
+	public static void setFluid(ItemStack stack, FluidStack liquid) {
 		NBTTagCompound nbt = NBTHelper.getNBT(stack);
 
 		if (liquid == null)
-			nbt.removeTag("fluid");
-		else
-			nbt.setInteger("fluid", FluidRegistry.getFluidID(liquid.getName()));
-	}
+			nbt.removeTag("fluidStack");
+		else {
+			NBTTagCompound fluidNBT = new NBTTagCompound();
+			liquid.writeToNBT(fluidNBT);
 
-	public static Fluid getLiquid(ItemStack stack) {
-		NBTTagCompound nbt = NBTHelper.getNBT(stack);
-
-		if (!nbt.hasKey("fluid")) return null;
-
-		return FluidRegistry.getFluid(nbt.getInteger("fluid"));
+			nbt.setTag("fluidStack", fluidNBT);
+		}
 	}
 
 	public static boolean setFluidHandler(ItemStack stack, TileEntity te, int side) {
@@ -180,7 +173,7 @@ public class ItemUnemptyingBucket extends Item {
 		if (te instanceof IFluidHandler) {
 			IFluidHandler fluidHandler = (IFluidHandler) te;
 
-			Fluid fluid = getLiquid(stack);
+			FluidStack fluid = getFluid(stack);
 
 			if (fluid == null) {
 				attemptDrain(stack, fluidHandler, ForgeDirection.getOrientation(side), world);
@@ -203,7 +196,7 @@ public class ItemUnemptyingBucket extends Item {
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-		Fluid fluid = getLiquid(stack);
+		FluidStack fluid = getFluid(stack);
 		boolean empty = fluid == null;
 
 		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, empty);
@@ -236,14 +229,22 @@ public class ItemUnemptyingBucket extends Item {
 		if (world.canMineBlock(player, mop.blockX, mop.blockY, mop.blockZ)) {
 			if (empty) {
 				if (player.canPlayerEdit(mop.blockX, mop.blockY, mop.blockZ, mop.sideHit, stack)) {
+					if (world.getTileEntity(mop.blockX, mop.blockY, mop.blockZ) != null) {
+						// todo: send EventOmnibucketPickupNBT
+						ChatHelper.sendChatMessage(player, "That fluid is too complex, this bucket can't handle it.");
+
+						return stack;
+					}
+
 					Block block = world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
 					int l = world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
 
 					Fluid targetFluid = BlockHelper.getFluidForBlock(block);
 
 					if (l == 0 && targetFluid != null) {
-						if (!player.capabilities.isCreativeMode)
-							setLiquid(stack, targetFluid);
+						if (!player.capabilities.isCreativeMode) {
+							setFluid(stack, new FluidStack(targetFluid, 1000));
+						}
 
 						world.setBlockToAir(mop.blockX, mop.blockY, mop.blockZ);
 					}
@@ -252,7 +253,7 @@ public class ItemUnemptyingBucket extends Item {
 				int[] coords = BlockHelper.getAdjacentBlock(mop.blockX, mop.blockY, mop.blockZ, mop.sideHit);
 
 				if (placeFluidInWorld(player, coords, mop.sideHit, stack, world, fluid) && !player.capabilities.isCreativeMode)
-					setLiquid(stack, null);
+					setFluid(stack, null);
 			}
 		}
 
@@ -271,9 +272,16 @@ public class ItemUnemptyingBucket extends Item {
 		}
 	}
 
-	private boolean placeFluidInWorld(EntityPlayer player, int[] coords, int side, ItemStack stack, World world, Fluid fluid) {
-		if (!fluid.canBePlacedInWorld()) {
-			ChatHelper.sendChatMessage(player, "Can't place this fluid in world. :(");
+	private boolean placeFluidInWorld(EntityPlayer player, int[] coords, int side, ItemStack stack, World world, FluidStack fluid) {
+		if (!fluid.getFluid().canBePlacedInWorld()) {
+			ChatHelper.sendChatMessage(player, "This fluid is too shy to leave his bucket");
+
+			return false;
+		}
+
+		if (fluid.tag != null) {
+			// todo: send EventOmnibucketPlaceNBT
+			ChatHelper.sendChatMessage(player, "That fluid is too complex, this bucket can't handle it.");
 
 			return false;
 		}
@@ -284,7 +292,7 @@ public class ItemUnemptyingBucket extends Item {
 
 			if (material.isSolid()) return false;
 
-			if (world.provider.isHellWorld && fluid == FluidRegistry.WATER) {
+			if (world.provider.isHellWorld && fluid.getFluid() == FluidRegistry.WATER) {
 				world.playSoundEffect(coords[0] + 0.5D, coords[1] + 0.5D, coords[2] + 0.5D, "random.fizz", 0.5F, 2.6F + world.rand.nextFloat() - world.rand.nextFloat() * 0.8F);
 
 				for (int l = 0; l < 8; ++l) {
@@ -295,7 +303,7 @@ public class ItemUnemptyingBucket extends Item {
 					world.func_147480_a(coords[0], coords[1], coords[2], true);
 				}
 
-				world.setBlock(coords[0], coords[1], coords[2], BlockHelper.getBlockForFluid(fluid), 0, 3);
+				world.setBlock(coords[0], coords[1], coords[2], BlockHelper.getBlockForFluid(fluid.getFluid()), 0, 3);
 			}
 
 			return true;
@@ -305,7 +313,7 @@ public class ItemUnemptyingBucket extends Item {
 	}
 
 	private void refill(ItemStack stack, World world, EntityPlayer player) {
-		Fluid fluid = getLiquid(stack);
+		FluidStack fluid = getFluid(stack);
 
 		int metadata = stack.getItemDamage();
 		if (metadata == METADATA_EMPTY && fluid == null) return;
@@ -352,16 +360,15 @@ public class ItemUnemptyingBucket extends Item {
 	/**
 	 * Attempt to fill a FluidHandler
 	 */
-	private void attemptFill(ItemStack stack, IFluidHandler fluidHandler, ForgeDirection direction, Fluid fluid, World world) {
-		if (fluidHandler.canFill(direction, fluid)) {
-			FluidStack fstack = new FluidStack(fluid, 1000);
-			int filled = fluidHandler.fill(direction, fstack, false);
+	private void attemptFill(ItemStack stack, IFluidHandler fluidHandler, ForgeDirection direction, FluidStack fluid, World world) {
+		if (fluidHandler.canFill(direction, fluid.getFluid())) {
+			int filled = fluidHandler.fill(direction, fluid, false);
 
-			if (filled != 1000) return;
+			if (filled != fluid.amount) return;
 
 			if (!world.isRemote)
-				fluidHandler.fill(direction, fstack, true);
-			setLiquid(stack, null);
+				fluidHandler.fill(direction, fluid, true);
+			setFluid(stack, null);
 		}
 	}
 
@@ -372,9 +379,36 @@ public class ItemUnemptyingBucket extends Item {
 		FluidStack fstack = fluidHandler.drain(direction, 1000, false);
 		if (fstack == null || fstack.amount != 1000) return;
 
-		setLiquid(stack, fstack.getFluid());
+		setFluid(stack, fstack);
 
 		if (!world.isRemote)
 			fluidHandler.drain(direction, 1000, true);
+	}
+
+	@Override
+	public FluidStack getFluid(ItemStack container) {
+		NBTTagCompound nbt = NBTHelper.getNBT(container);
+
+		// backward compatibility with stupid implementation ;-;
+		if (nbt.hasKey("fluid")) return new FluidStack(FluidRegistry.getFluid(nbt.getInteger("fluid")), 1000);
+
+		if (nbt.hasKey("fluidStack")) return FluidStack.loadFluidStackFromNBT(nbt.getCompoundTag("fluidStack"));
+
+		return null;
+	}
+
+	@Override
+	public int getCapacity(ItemStack container) {
+		return 1000;
+	}
+
+	@Override
+	public int fill(ItemStack container, FluidStack resource, boolean doFill) {
+		return 0;
+	}
+
+	@Override
+	public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain) {
+		return null;
 	}
 }

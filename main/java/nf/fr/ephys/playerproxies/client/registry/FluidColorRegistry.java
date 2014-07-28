@@ -6,6 +6,7 @@ import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.helpers.MathHelper;
 import nf.fr.ephys.playerproxies.helpers.RenderHelper;
@@ -20,10 +21,17 @@ public class FluidColorRegistry implements IResourceManagerReloadListener {
 	private static IResourceManager resourceManager;
 	private static HashMap<IIcon, Integer> colorCache = new HashMap<>();
 
-	public static int getColorFromFluid(Fluid fluid) {
-		if (resourceManager == null) return 0xFFFFFF;
+	public static int getColorFromFluid(FluidStack fluid) {
+		return getColorFromIcon(RenderHelper.getFluidTexture(fluid));
+	}
 
-		IIcon icon = RenderHelper.getFluidTexture(fluid);
+	public static int getColorFromFluid(Fluid fluid) {
+		return getColorFromIcon(RenderHelper.getFluidTexture(fluid));
+	}
+
+	public static int getColorFromIcon(IIcon icon) {
+		if (icon == null || resourceManager == null)
+			return 0xFFFFFF;
 
 		if (colorCache.containsKey(icon))
 			return colorCache.get(icon);
@@ -33,7 +41,7 @@ public class FluidColorRegistry implements IResourceManagerReloadListener {
 			InputStream is = getIconRess(icon).getInputStream();
 			bi = ImageIO.read(is);
 		} catch (IOException e) {
-			PlayerProxies.getLogger().warn("Failled to fetch color for fluid " + fluid.getName());
+			PlayerProxies.getLogger().warn("Failled to fetch color for icon " + icon.getIconName());
 			e.printStackTrace();
 
 			colorCache.put(icon, 0);

@@ -139,6 +139,11 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 
 		if (input == null) return;
 
+		if (input.getItem() instanceof IFluidContainerItem) {
+			IFluidContainerItem fluidContainer = (IFluidContainerItem) input.getItem();
+//todo
+		}
+
 		if (FluidContainerRegistry.isFilledContainer(input)) {
 			// empty container
 
@@ -466,6 +471,6 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
-		return slot < bucketStacks.length - 1 && (stack == null || FluidContainerRegistry.isContainer(stack));
+		return slot < bucketStacks.length - 1 && (stack == null || FluidContainerRegistry.isContainer(stack) || stack.getItem() instanceof IFluidContainerItem);
 	}
 }
