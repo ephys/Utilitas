@@ -10,6 +10,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -22,6 +23,7 @@ import net.minecraftforge.fluids.FluidStack;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.item.ItemBlockTooltipped;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityFluidHopper;
+import nf.fr.ephys.playerproxies.helpers.BlockHelper;
 import nf.fr.ephys.playerproxies.helpers.ChatHelper;
 import nf.fr.ephys.playerproxies.helpers.InputHelper;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
@@ -197,6 +199,7 @@ public class BlockFluidHopper extends BlockHopper implements IToolTipped {
 
 	@Override
 	public void breakBlock(World world, int x, int y, int z, Block block, int metadata) {
+		BlockHelper.dropContents((IInventory) world.getTileEntity(x, y, z), world, x, y, z);
 		world.removeTileEntity(x, y, z);
 	}
 

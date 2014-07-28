@@ -94,7 +94,7 @@ public class InterfaceJukebox extends UniversalInterface {
 
 	@Override
 	public IInventory getInventory() {
-		return jukeboxProxy;
+		return jukeboxProxy.jukebox == null ? null : jukeboxProxy;
 	}
 
 	@Override

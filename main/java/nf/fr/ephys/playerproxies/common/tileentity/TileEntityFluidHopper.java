@@ -27,7 +27,9 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 
 	@Override
 	public void updateEntity() {
-		if (this.worldObj == null || this.worldObj.isRemote) return;
+		if (this.worldObj == null) return;
+
+		if (this.worldObj.isRemote) return;
 
 		if (!BlockHopper.func_149917_c(this.getBlockMetadata())) return;
 
@@ -38,6 +40,9 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 		}
 
 		cooldown = 20;
+
+		for (int i = 0; i < bucketStacks.length - 1; i++)
+			fillBucket(i);
 
 		attemptDrain();
 		attemptFill();
@@ -124,6 +129,62 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 			fill(ForgeDirection.UP, stack, true);
 
 			worldObj.setBlockToAir(xCoord, yCoord + 1, zCoord);
+		}
+
+		return true;
+	}
+
+	private void fillBucket(int slot) {
+		ItemStack input = bucketStacks[slot];
+
+		if (input == null) return;
+
+		if (FluidContainerRegistry.isFilledContainer(input)) {
+			// empty container
+
+			FluidStack outputFluid = FluidContainerRegistry.getFluidForFilledItem(input);
+			ItemStack outputStack = input.getItem().getContainerItem(input);
+
+			int filled = fill(ForgeDirection.UNKNOWN, outputFluid, false);
+
+			if (filled != outputFluid.amount) return;
+
+			if (outputStack != null && !insertToOutput(outputStack)) return;
+
+			fill(ForgeDirection.UNKNOWN, outputFluid, true);
+		} else {
+			// fill container
+
+			FluidStack stack = fluidStacks[slot];
+
+			if (stack == null || stack.amount < FluidContainerRegistry.BUCKET_VOLUME) return;
+
+			ItemStack output = FluidContainerRegistry.fillFluidContainer(stack, input);
+
+			if (output == null || !insertToOutput(output)) return;
+
+			stack.amount -= 1000;
+
+			if (stack.amount <= 0)
+				fluidStacks[slot] = null;
+		}
+
+		decrStackSize(slot, 1);
+	}
+
+	private boolean insertToOutput(ItemStack output) {
+		ItemStack outputSlot = bucketStacks[bucketStacks.length - 1];
+
+		if (outputSlot != null) {
+			if (!ItemStack.areItemStacksEqual(outputSlot, output))
+				return false;
+
+			if (outputSlot.stackSize + 1 >= outputSlot.getMaxStackSize())
+				return false;
+
+			outputSlot.stackSize++;
+		} else {
+			bucketStacks[bucketStacks.length - 1] = output;
 		}
 
 		return true;
@@ -338,11 +399,19 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 		ItemStack stack = bucketStacks[slot];
 
 		if (stack == null) return null;
-		bucketStacks[slot] = null;
+
+		nbItems = Math.min(nbItems, stack.stackSize);
+
+		ItemStack clone = stack.copy();
+		clone.stackSize = nbItems;
+
+		bucketStacks[slot].stackSize -= nbItems;
+		if (bucketStacks[slot].stackSize <= 0)
+			bucketStacks[slot] = null;
 
 		sendUpdate();
 
-		return stack;
+		return clone;
 	}
 
 	@Override
@@ -363,6 +432,9 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 
 		bucketStacks[slot] = stack;
 
+		if (slot < bucketStacks.length - 1)
+			fillBucket(slot);
+
 		sendUpdate();
 	}
 
@@ -378,7 +450,7 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 
 	@Override
 	public int getInventoryStackLimit() {
-		return 1;
+		return 64;
 	}
 
 	@Override
@@ -394,6 +466,6 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
-		return stack == null || FluidContainerRegistry.isContainer(stack);
+		return slot < bucketStacks.length - 1 && (stack == null || FluidContainerRegistry.isContainer(stack));
 	}
 }

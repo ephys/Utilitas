@@ -42,6 +42,8 @@ import java.lang.reflect.Field;
 public class CommonProxy {
 	public void preInit(FMLPreInitializationEvent event) {
 		BlockBeaconTierII.register();
+
+		Items.potionitem.setContainerItem(Items.glass_bottle);
 	}
 
 	public void init(FMLInitializationEvent event) {

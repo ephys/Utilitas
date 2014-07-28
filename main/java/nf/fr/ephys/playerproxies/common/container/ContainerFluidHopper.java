@@ -7,6 +7,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidTankInfo;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityFluidHopper;
 import nf.fr.ephys.playerproxies.util.SlotFiltered;
@@ -43,6 +44,8 @@ public class ContainerFluidHopper extends Container {
 		if (slot == null || !slot.getHasStack()) return null;
 
 		ItemStack originStack = slot.getStack();
+
+		if (!FluidContainerRegistry.isContainer(originStack)) return null;
 
 		// we're in the tile, send to player
 		if (originSlotID < tileSlotCount) {
