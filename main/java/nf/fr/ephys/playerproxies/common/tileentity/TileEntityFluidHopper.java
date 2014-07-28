@@ -2,6 +2,8 @@ package nf.fr.ephys.playerproxies.common.tileentity;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHopper;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -14,8 +16,10 @@ import net.minecraftforge.fluids.*;
 import nf.fr.ephys.playerproxies.helpers.BlockHelper;
 import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
-public class TileEntityFluidHopper extends TileEntity implements IFluidHandler {
+public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, IInventory {
 	private FluidStack[] fluidStacks = new FluidStack[5];
+	private ItemStack[] bucketStacks = new ItemStack[fluidStacks.length];
+
 	public static final int MAX_STACK_SIZE = 2500;
 	public static final int RATE = 1000;
 
@@ -108,8 +112,6 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler {
 
 		if (isWater) {
 			FluidStack stack = new FluidStack(fluid, 1000 / (metadata + 1));
-
-			System.out.println("water level " + metadata + " -> " + stack.amount);
 
 			fill(ForgeDirection.UP, stack, true);
 		} else if(metadata == 0) {
@@ -319,5 +321,79 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler {
 
 	public void onBlockUpdate(int tileX, int tileY, int tileZ) {
 		attemptBlockSuckUp();
+	}
+
+	@Override
+	public int getSizeInventory() {
+		return bucketStacks.length;
+	}
+
+	@Override
+	public ItemStack getStackInSlot(int slot) {
+		return bucketStacks[slot];
+	}
+
+	@Override
+	public ItemStack decrStackSize(int slot, int nbItems) {
+		ItemStack stack = bucketStacks[slot];
+
+		if (stack == null) return null;
+		bucketStacks[slot] = null;
+
+		sendUpdate();
+
+		return stack;
+	}
+
+	@Override
+	public ItemStack getStackInSlotOnClosing(int slot) {
+		ItemStack stack = getStackInSlot(slot);
+
+		if (stack != null) {
+			setInventorySlotContents(slot, null);
+		}
+
+		return stack;
+	}
+
+	@Override
+	public void setInventorySlotContents(int slot, ItemStack stack) {
+		if (stack != null && stack.stackSize > getInventoryStackLimit())
+			stack.stackSize = getInventoryStackLimit();
+
+		bucketStacks[slot] = stack;
+
+		sendUpdate();
+	}
+
+	@Override
+	public String getInventoryName() {
+		return null;
+	}
+
+	@Override
+	public boolean hasCustomInventoryName() {
+		return false;
+	}
+
+	@Override
+	public int getInventoryStackLimit() {
+		return 1;
+	}
+
+	@Override
+	public boolean isUseableByPlayer(EntityPlayer player) {
+		return true;
+	}
+
+	@Override
+	public void openInventory() {}
+
+	@Override
+	public void closeInventory() {}
+
+	@Override
+	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
+		return false;
 	}
 }

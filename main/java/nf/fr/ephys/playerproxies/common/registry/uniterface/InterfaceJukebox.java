@@ -1,0 +1,185 @@
+package nf.fr.ephys.playerproxies.common.registry.uniterface;
+
+import net.minecraft.block.BlockJukebox;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemRecord;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fluids.IFluidHandler;
+import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
+import nf.fr.ephys.playerproxies.helpers.BlockHelper;
+import nf.fr.ephys.playerproxies.helpers.ChatHelper;
+import org.lwjgl.opengl.GL11;
+
+public class InterfaceJukebox extends UniversalInterface {
+	private JukeBoxProxy jukeboxProxy;
+	private int[] tileLocation;
+
+	public InterfaceJukebox(TileEntityInterface tileEntity) {
+		super(tileEntity);
+
+		jukeboxProxy = new JukeBoxProxy();
+	}
+
+	@Override
+	public void renderInventory(int tickCount, double x, double y, double z, float tickTime) {
+		GL11.glRotatef(tickCount, 0.0F, 1.0F, 0.0F);
+		GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
+
+		nf.fr.ephys.playerproxies.client.renderer.TileEntityInterfaceRenderer.renderBlocksInstance.renderBlockAsItem(Blocks.jukebox, 0, 1.0F);
+	}
+
+	@Override
+	public boolean setLink(Object link, EntityPlayer linker) {
+		if (link instanceof BlockJukebox.TileEntityJukebox) {
+			jukeboxProxy.jukebox = (BlockJukebox.TileEntityJukebox) link;
+
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public String getName() {
+		return ChatHelper.getDisplayName(Blocks.jukebox);
+	}
+
+	@Override
+	public void validate() {}
+
+	@Override
+	public void writeToNBT(NBTTagCompound nbt) {
+		nbt.setIntArray("entityLocation", BlockHelper.getCoords(jukeboxProxy.jukebox));
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound nbt) {
+		tileLocation = nbt.getIntArray("entityLocation");
+	}
+
+	@Override
+	public void onBlockUpdate() {}
+
+	@Override
+	public void onTick(int tick) {
+		if (getTileEntity().getWorldObj().isRemote) return;
+
+		if (jukeboxProxy.jukebox == null) {
+			if (tileLocation == null || tileLocation.length != 3) {
+				this.getTileEntity().unlink();
+				return;
+			}
+
+			TileEntity te = this.getTileEntity().getWorldObj().getTileEntity(tileLocation[0], tileLocation[1], tileLocation[2]);
+
+			if (te instanceof BlockJukebox.TileEntityJukebox)
+				jukeboxProxy.jukebox = (BlockJukebox.TileEntityJukebox) te;
+			else {
+				this.getTileEntity().unlink();
+				return;
+			}
+		}
+
+		if (jukeboxProxy.jukebox.isInvalid()) {
+			jukeboxProxy.jukebox = null;
+			this.getTileEntity().unlink();
+		}
+	}
+
+	@Override
+	public IInventory getInventory() {
+		return jukeboxProxy;
+	}
+
+	@Override
+	public IFluidHandler getFluidHandler() {
+		return null;
+	}
+
+	public static class JukeBoxProxy implements IInventory {
+		private BlockJukebox.TileEntityJukebox jukebox;
+
+		@Override
+		public int getSizeInventory() {
+			return 1;
+		}
+
+		@Override
+		public ItemStack getStackInSlot(int slot) {
+			if (slot != 0) return null;
+
+			return jukebox.func_145856_a();
+		}
+
+		@Override
+		public ItemStack decrStackSize(int slot, int amount) {
+			if (slot != 0 || amount < 1) return null;
+
+			ItemStack previousStack = jukebox.func_145856_a();
+
+			jukebox.func_145857_a(null);
+
+			return previousStack;
+		}
+
+		@Override
+		public ItemStack getStackInSlotOnClosing(int slot) {
+			return decrStackSize(slot, 1);
+		}
+
+		@Override
+		public void setInventorySlotContents(int slot, ItemStack stack) {
+			if (isItemValidForSlot(slot, stack))
+				jukebox.func_145857_a(stack);
+
+			if (stack == null) {
+				jukebox.getWorldObj().playAuxSFX(1005, jukebox.xCoord, jukebox.yCoord, jukebox.zCoord, 0);
+				jukebox.getWorldObj().playRecord(null, jukebox.xCoord, jukebox.yCoord, jukebox.zCoord);
+			} else {
+				((BlockJukebox)Blocks.jukebox).func_149926_b(jukebox.getWorldObj(), jukebox.xCoord, jukebox.yCoord, jukebox.zCoord, stack);
+				jukebox.getWorldObj().playAuxSFXAtEntity(null, 1005, jukebox.xCoord, jukebox.yCoord, jukebox.zCoord, Item.getIdFromItem(stack.getItem()));
+			}
+		}
+
+		@Override
+		public boolean isItemValidForSlot(int slot, ItemStack stack) {
+			return slot == 0 && (stack == null || stack.getItem() instanceof ItemRecord);
+		}
+
+		@Override
+		public int getInventoryStackLimit() {
+			return 1;
+		}
+
+		@Override
+		public String getInventoryName() {
+			return null;
+		}
+
+		@Override
+		public boolean hasCustomInventoryName() {
+			return false;
+		}
+
+		@Override
+		public void markDirty() {
+			jukebox.markDirty();
+		}
+
+		@Override
+		public boolean isUseableByPlayer(EntityPlayer entityPlayer) {
+			return true;
+		}
+
+		@Override
+		public void openInventory() {}
+
+		@Override
+		public void closeInventory() {}
+	}
+}

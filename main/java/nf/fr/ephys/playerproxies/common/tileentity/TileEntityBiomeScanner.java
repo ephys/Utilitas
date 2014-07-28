@@ -138,11 +138,10 @@ public class TileEntityBiomeScanner extends TileEntity implements IInventory {
 
 	@Override
 	public void setInventorySlotContents(int i, ItemStack stack) {
-		this.card = stack;
-
-		if (stack != null && stack.stackSize > getInventoryStackLimit()) {
+		if (stack != null && stack.stackSize > getInventoryStackLimit())
 			stack.stackSize = getInventoryStackLimit();
-		}
+
+		this.card = stack;
 
 		onInventoryChanged();
 	}

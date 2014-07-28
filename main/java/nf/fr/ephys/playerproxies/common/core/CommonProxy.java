@@ -11,6 +11,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import dan200.computercraft.shared.turtle.blocks.ITurtleTile;
 import net.minecraft.block.BlockCompressed;
+import net.minecraft.block.BlockJukebox;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,6 +31,7 @@ import nf.fr.ephys.playerproxies.common.network.PacketSetNicknameHandler;
 import nf.fr.ephys.playerproxies.common.network.PacketSpawnParticleHandler;
 import nf.fr.ephys.playerproxies.common.registry.PlayerInventoryRegistry;
 import nf.fr.ephys.playerproxies.common.registry.UniversalInterfaceRegistry;
+import nf.fr.ephys.playerproxies.common.registry.uniterface.InterfaceJukebox;
 import nf.fr.ephys.playerproxies.common.registry.uniterface.InterfacePlayer;
 import nf.fr.ephys.playerproxies.common.registry.uniterface.InterfaceTileEntity;
 import nf.fr.ephys.playerproxies.common.registry.uniterface.InterfaceTurtle;
@@ -72,6 +74,7 @@ public class CommonProxy {
 
 		UniversalInterfaceRegistry.addInterface(InterfaceTileEntity.class, TileEntity.class);
 		UniversalInterfaceRegistry.addInterface(InterfacePlayer.class, EntityPlayer.class);
+		UniversalInterfaceRegistry.addInterface(InterfaceJukebox.class, BlockJukebox.TileEntityJukebox.class);
 
 		listPotionEffect();
 	}

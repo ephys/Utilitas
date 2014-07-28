@@ -55,6 +55,7 @@ public class ConfigHandler {
 
 		BlockHomeShield.enabled = CONFIG.get(MODULES, "HomeShield", true).getBoolean(BlockHomeShield.enabled);
 		BlockItemTicker.enabled = CONFIG.get(MODULES, "Sylladex", true).getBoolean(BlockItemTicker.enabled);
+		BlockFluidHopper.enabled = CONFIG.get(MODULES, "Fluid Hopper", true).getBoolean(BlockFluidHopper.enabled);
 
 		CommandNickname.enabled = CONFIG.get(MODULES, "nickname command", true).getBoolean(CommandNickname.enabled);
 
