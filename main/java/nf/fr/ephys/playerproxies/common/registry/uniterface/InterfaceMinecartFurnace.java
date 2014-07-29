@@ -1,6 +1,6 @@
 package nf.fr.ephys.playerproxies.common.registry.uniterface;
 
-import net.minecraft.entity.item.EntityMinecartContainer;
+import net.minecraft.entity.item.EntityMinecartFurnace;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
@@ -13,11 +13,11 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.UUID;
 
-public class InterfaceMinecart extends UniversalInterface {
-	private EntityMinecartContainer minecart;
+public class InterfaceMinecartFurnace extends UniversalInterface {
+	private EntityMinecartFurnace minecart;
 	private UUID uuid;
 
-	public InterfaceMinecart(TileEntityInterface tileEntity) {
+	public InterfaceMinecartFurnace(TileEntityInterface tileEntity) {
 		super(tileEntity);
 	}
 
@@ -34,8 +34,8 @@ public class InterfaceMinecart extends UniversalInterface {
 
 	@Override
 	public boolean setLink(Object link, EntityPlayer linker) {
-		if (link instanceof EntityMinecartContainer) {
-			minecart = (EntityMinecartContainer) link;
+		if (link instanceof EntityMinecartFurnace) {
+			minecart = (EntityMinecartFurnace) link;
 
 			return true;
 		}
@@ -61,7 +61,7 @@ public class InterfaceMinecart extends UniversalInterface {
 	@Override
 	public void onTick(int tick) {
 		if (minecart == null && uuid != null) {
-			minecart = (EntityMinecartContainer) EntityHelper.getEntityByUUID(uuid);
+			minecart = (EntityMinecartFurnace) EntityHelper.getEntityByUUID(uuid);
 		}
 
 		if (minecart == null || minecart.isDead)
@@ -70,7 +70,8 @@ public class InterfaceMinecart extends UniversalInterface {
 
 	@Override
 	public IInventory getInventory() {
-		return minecart;
+		// todo but needs ASM to expose the fuel level >_>
+		return null;
 	}
 
 	@Override

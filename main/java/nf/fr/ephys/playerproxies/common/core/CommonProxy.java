@@ -15,6 +15,7 @@ import net.minecraft.block.BlockJukebox;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityMinecartContainer;
+import net.minecraft.entity.item.EntityMinecartFurnace;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -76,6 +77,7 @@ public class CommonProxy {
 		UniversalInterfaceRegistry.addInterface(InterfacePlayer.class, EntityPlayer.class);
 		UniversalInterfaceRegistry.addInterface(InterfaceJukebox.class, BlockJukebox.TileEntityJukebox.class);
 		UniversalInterfaceRegistry.addInterface(InterfaceMinecart.class, EntityMinecartContainer.class);
+		UniversalInterfaceRegistry.addInterface(InterfaceMinecartFurnace.class, EntityMinecartFurnace.class);
 
 		listPotionEffect();
 	}

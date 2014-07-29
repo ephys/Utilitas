@@ -35,8 +35,6 @@ playerproxies.configgui.ctgy.blockproperties.tooltip=Properties of Blocks added 
 playerproxies.configgui.ctgy.modules=Modules
 playerproxies.configgui.ctgy.modules.tooltip=Disable most of the parts of the mod
 
-entity.ItemFrame.name=Item Frame
-
 pp_tooltip.nothing=nothing
 pp_tooltip.bucket_contains=Contains: %s
 pp_tooltip.bucket_mode_fill=Fill Mode
@@ -54,3 +52,9 @@ side.north=North
 side.south=South
 side.west=West
 side.east=East
+
+#minecraft fixes
+entity.ItemFrame.name=Item Frame
+entity.MinecartHopper.name=Minecart with Hopper
+entity.MinecartChest.name=Minecart with Chest
+entity.MinecartFurnace.name=Minecart with Furnace
