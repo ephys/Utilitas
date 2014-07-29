@@ -87,8 +87,6 @@ public class PlayerProxies extends DummyModContainer {
 		public static Item.ToolMaterial matDragonScale = EnumHelper.addToolMaterial("DRAGONSCALE", 4, 1300, 10F, 8F, 0);
 	}
 
-	public static class Enchantments {}
-
 	public PlayerProxies() {
 		super(new ModMetadata());
 

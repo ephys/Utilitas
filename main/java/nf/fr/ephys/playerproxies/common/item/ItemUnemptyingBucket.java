@@ -231,8 +231,10 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 		if (world.canMineBlock(player, mop.blockX, mop.blockY, mop.blockZ)) {
 			if (empty) {
 				FluidStack placedFluid = FluidHelper.playerPickupFluid(player, world, new int[] {mop.blockX, mop.blockY, mop.blockZ}, mop.sideHit, stack);
-				if (placedFluid != null)
+				if (placedFluid != null) {
 					setFluid(stack, placedFluid);
+					world.setBlockToAir(mop.blockX, mop.blockY, mop.blockZ);
+				}
 			} else {
 				int[] coords = BlockHelper.getAdjacentBlock(mop.blockX, mop.blockY, mop.blockZ, mop.sideHit);
 

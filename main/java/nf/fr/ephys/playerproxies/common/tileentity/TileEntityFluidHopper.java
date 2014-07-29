@@ -112,31 +112,25 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 	}
 
 	private boolean attemptBlockSuckUp() {
-		if (worldObj.getTileEntity(xCoord, yCoord + 1, zCoord) != null) return false;
+		FluidStack fluidStack = FluidHelper.getFluidFromWorld(worldObj, new int[] { xCoord, yCoord + 1, zCoord });
 
-		Block block = worldObj.getBlock(xCoord, yCoord + 1, zCoord);
-
-		Fluid fluid = FluidHelper.getFluidForBlock(block);
-
-		if (fluid == null)
+		if (fluidStack == null)
 			return false;
 
-		boolean isWater = fluid == FluidRegistry.WATER;
+		boolean isWater = fluidStack.getFluid() == FluidRegistry.WATER;
 		int metadata = worldObj.getBlockMetadata(xCoord, yCoord + 1, zCoord);
 
 		if (isWater) {
-			FluidStack stack = new FluidStack(fluid, 1000 / (metadata + 1));
+			FluidStack stack = new FluidStack(fluidStack, 1000 / (metadata + 1));
 
 			fill(ForgeDirection.UP, stack, true);
 		} else if (metadata == 0) {
-			FluidStack stack = new FluidStack(fluid, 1000);
-
-			int filled = fill(ForgeDirection.UP, stack, false);
+			int filled = fill(ForgeDirection.UP, fluidStack, false);
 
 			if (filled != 1000)
 				return false;
 
-			fill(ForgeDirection.UP, stack, true);
+			fill(ForgeDirection.UP, fluidStack, true);
 
 			worldObj.setBlockToAir(xCoord, yCoord + 1, zCoord);
 		}
