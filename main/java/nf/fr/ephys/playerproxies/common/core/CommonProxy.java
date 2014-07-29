@@ -21,7 +21,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
@@ -35,8 +34,6 @@ import nf.fr.ephys.playerproxies.common.registry.PlayerInventoryRegistry;
 import nf.fr.ephys.playerproxies.common.registry.UniversalInterfaceRegistry;
 import nf.fr.ephys.playerproxies.common.registry.uniterface.*;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBeaconTierII;
-
-import java.lang.reflect.Field;
 
 public class CommonProxy {
 	public void preInit(FMLPreInitializationEvent event) {
@@ -79,10 +76,10 @@ public class CommonProxy {
 		UniversalInterfaceRegistry.addInterface(InterfaceMinecart.class, EntityMinecartContainer.class);
 		UniversalInterfaceRegistry.addInterface(InterfaceMinecartFurnace.class, EntityMinecartFurnace.class);
 
-		listPotionEffect();
+		//listPotionEffect();
 	}
 
-	private void listPotionEffect() {
+	/*private void listPotionEffect() {
 		Class<Potion> clazz = Potion.class;
 
 		Field isBadEffectField = null;
@@ -118,7 +115,7 @@ public class CommonProxy {
 				PlayerProxies.getLogger().info("Potion "+Potion.potionTypes[i].getName()+" is " + (TileEntityBeaconTierII.badPotionEffects[i] ? "bad" : "good"));
 			}
 		}
-	}
+	}*/
 
 	public void registerPacket() {
 		PlayerProxies.getNetHandler().registerMessage(PacketSetNicknameHandler.class, PacketSetNicknameHandler.PacketSetNickname.class, 0, Side.CLIENT);

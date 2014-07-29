@@ -1,8 +1,6 @@
 package nf.fr.ephys.playerproxies.common.item;
 
 import cpw.mods.fml.common.registry.GameRegistry;
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
@@ -17,7 +15,10 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.IFluidHandler;
 import nf.fr.ephys.cookiecore.helpers.BlockHelper;
 import nf.fr.ephys.cookiecore.helpers.ChatHelper;
 import nf.fr.ephys.cookiecore.helpers.FluidHelper;
@@ -229,31 +230,13 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 
 		if (world.canMineBlock(player, mop.blockX, mop.blockY, mop.blockZ)) {
 			if (empty) {
-				if (player.canPlayerEdit(mop.blockX, mop.blockY, mop.blockZ, mop.sideHit, stack)) {
-					if (world.getTileEntity(mop.blockX, mop.blockY, mop.blockZ) != null) {
-						// todo: send EventOmnibucketPickupNBT
-						ChatHelper.sendChatMessage(player, "That fluid is too complex, this bucket can't handle it.");
-
-						return stack;
-					}
-
-					Block block = world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
-					int l = world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
-
-					Fluid targetFluid = FluidHelper.getFluidForBlock(block);
-
-					if (l == 0 && targetFluid != null) {
-						if (!player.capabilities.isCreativeMode) {
-							setFluid(stack, new FluidStack(targetFluid, 1000));
-						}
-
-						world.setBlockToAir(mop.blockX, mop.blockY, mop.blockZ);
-					}
-				}
+				FluidStack placedFluid = FluidHelper.playerPickupFluid(player, world, new int[] {mop.blockX, mop.blockY, mop.blockZ}, mop.sideHit, stack);
+				if (placedFluid != null)
+					setFluid(stack, placedFluid);
 			} else {
 				int[] coords = BlockHelper.getAdjacentBlock(mop.blockX, mop.blockY, mop.blockZ, mop.sideHit);
 
-				if (placeFluidInWorld(player, coords, mop.sideHit, stack, world, fluid) && !player.capabilities.isCreativeMode)
+				if (FluidHelper.playerPlaceFluid(player, coords, mop.sideHit, stack, world, fluid))
 					setFluid(stack, null);
 			}
 		}
@@ -271,46 +254,6 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 			ChatHelper.sendChatMessage(player, "Switching to fill mode");
 			stack.setItemDamage(METADATA_FILL);
 		}
-	}
-
-	private boolean placeFluidInWorld(EntityPlayer player, int[] coords, int side, ItemStack stack, World world, FluidStack fluid) {
-		if (!fluid.getFluid().canBePlacedInWorld()) {
-			ChatHelper.sendChatMessage(player, "This fluid is too shy to leave his bucket");
-
-			return false;
-		}
-
-		if (fluid.tag != null) {
-			// todo: send EventOmnibucketPlaceNBT
-			ChatHelper.sendChatMessage(player, "That fluid is too complex, this bucket can't handle it.");
-
-			return false;
-		}
-
-		if (player.canPlayerEdit(coords[0], coords[1], coords[2], side, stack)) {
-			Block block = world.getBlock(coords[0], coords[1], coords[2]);
-			Material material = block.getMaterial();
-
-			if (material.isSolid()) return false;
-
-			if (world.provider.isHellWorld && fluid.getFluid() == FluidRegistry.WATER) {
-				world.playSoundEffect(coords[0] + 0.5D, coords[1] + 0.5D, coords[2] + 0.5D, "random.fizz", 0.5F, 2.6F + world.rand.nextFloat() - world.rand.nextFloat() * 0.8F);
-
-				for (int l = 0; l < 8; ++l) {
-					world.spawnParticle("largesmoke", coords[0] + Math.random(), coords[1] + Math.random(), coords[2] + Math.random(), 0.0D, 0.0D, 0.0D);
-				}
-			} else {
-				if (!world.isRemote && !material.isLiquid()) {
-					world.func_147480_a(coords[0], coords[1], coords[2], true);
-				}
-
-				world.setBlock(coords[0], coords[1], coords[2], FluidHelper.getBlockForFluid(fluid.getFluid()), 0, 3);
-			}
-
-			return true;
-		}
-
-		return false;
 	}
 
 	private void refill(ItemStack stack, World world, EntityPlayer player) {

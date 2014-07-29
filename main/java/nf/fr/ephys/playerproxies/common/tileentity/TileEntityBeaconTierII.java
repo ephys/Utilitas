@@ -46,9 +46,9 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 	private int nbItems = 0;
 
 	// this is because Potion.isBadEffect() is SideOnly(Side.CLIENT) (but getLiquidColor isn't, I'm not sure I get the logic behind this)
-	public static boolean[] badPotionEffects = new boolean[Potion.potionTypes.length];
+	//public static boolean[] badPotionEffects = new boolean[Potion.potionTypes.length];
 
-	// Botania special code
+	// Botania special code)
 	public static Class<?> doppleganger = null;
 
 	@Override
@@ -270,7 +270,7 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 		//if (Potion.potionTypes[effectID].isBadEffect())
 
 		// bad potion effects are skipped if the beacon is not negative enough
-		if (badPotionEffects[effectID])
+		if (Potion.potionTypes[effectID].isBadEffect)
 			return Math.random() > negativity();
 
 		// good potion effects are skipped if the beacon is too negative
