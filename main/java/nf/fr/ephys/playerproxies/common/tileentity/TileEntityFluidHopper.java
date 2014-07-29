@@ -111,6 +111,8 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 	}
 
 	private boolean attemptBlockSuckUp() {
+		if (worldObj.getTileEntity(xCoord, yCoord + 1, zCoord) != null) return false;
+
 		Block block = worldObj.getBlock(xCoord, yCoord + 1, zCoord);
 
 		Fluid fluid = BlockHelper.getFluidForBlock(block);
@@ -167,6 +169,8 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 			} else {
 				// fill
 				FluidStack localFluid = fluidStacks[slot];
+
+				if (localFluid == null) return;
 
 				int filled = fluidContainer.fill(output, localFluid, true);
 
@@ -336,22 +340,47 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 		if (slot == -1)
 			return 0;
 
-		FluidStack stack = fluidStacks[slot];
+		int[] filledPerSlot = new int[fluidStacks.length];
+		int filledTotal = 0;
 
-		int emptySpace = stack == null ? MAX_STACK_SIZE : MAX_STACK_SIZE - stack.amount;
+		// start by the slot containing the fluid
+		int toFill = Math.min(fluidStacks[slot] == null ? MAX_STACK_SIZE : MAX_STACK_SIZE - fluidStacks[slot].amount, resource.amount);
+		filledPerSlot[slot] = toFill;
+		filledTotal += toFill;
 
-		int filled = Math.min(Math.min(resource.amount, RATE), emptySpace);
+		// then check the other slots
+		for (int i = 0; i < fluidStacks.length && filledTotal < resource.amount; i++) {
+			if (i == slot) continue;
+
+			int availableSpace;
+			if (fluidStacks[i] != null) {
+				if (!fluidStacks[i].isFluidEqual(resource)) continue;
+
+				availableSpace = MAX_STACK_SIZE - fluidStacks[i].amount;
+			} else {
+				availableSpace = MAX_STACK_SIZE;
+			}
+
+			toFill = Math.min(resource.amount - filledTotal, availableSpace);
+
+			filledPerSlot[i] = toFill;
+			filledTotal += toFill;
+		}
 
 		if (doFill) {
-			if (stack == null)
-				fluidStacks[slot] = new FluidStack(resource.getFluid().getID(), filled, resource.tag);
-			else
-				stack.amount += filled;
+			for (int i = 0; i < fluidStacks.length; i++) {
+				if (filledPerSlot[i] == 0) continue;
+
+				if (fluidStacks[i] == null)
+					fluidStacks[i] = new FluidStack(resource.getFluid().getID(), filledPerSlot[i], resource.tag);
+				else
+					fluidStacks[i].amount += filledPerSlot[i];
+			}
 
 			sendUpdate();
 		}
 
-		return filled;
+		return filledTotal;
 	}
 
 	@Override

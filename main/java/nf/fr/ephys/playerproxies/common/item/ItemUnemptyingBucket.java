@@ -67,7 +67,7 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 
 	@Override
 	public IIcon getIcon(ItemStack stack, int pass) {
-		if (pass == 1 && !NBTHelper.getNBT(stack).hasKey("fluid"))
+		if (pass == 1 && !hasFluid(stack))
 			pass = 0;
 
 		return textures[pass];
@@ -385,6 +385,12 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 			fluidHandler.drain(direction, 1000, true);
 	}
 
+	public boolean hasFluid(ItemStack container) {
+		NBTTagCompound nbt = NBTHelper.getNBT(container);
+
+		return nbt.hasKey("fluidStack") || nbt.hasKey("fluid");
+	}
+
 	@Override
 	public FluidStack getFluid(ItemStack container) {
 		NBTTagCompound nbt = NBTHelper.getNBT(container);
@@ -404,6 +410,8 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 
 	@Override
 	public int fill(ItemStack container, FluidStack resource, boolean doFill) {
+		if (resource == null) return 0;
+		
 		FluidStack currentFluid = getFluid(container);
 
 		if (currentFluid != null) return 0;
