@@ -47,7 +47,7 @@ Java 1.7
 
 Requires CookieLib in libs
 VM option: -Dfml.coreMods.load=nf.fr.ephys.cookiecore.common.CookieCoreASM
-Then ./gradlew setupDecompWorkspace <idea/eclipse> --refresh-dependencies
+Then ./gradlew setupDecompWorkspace --refresh-dependencies
 
 
 [WTFPL]:http://www.wtfpl.net/

@@ -10,6 +10,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.IFluidHandler;
 import nf.fr.ephys.cookiecore.helpers.BlockHelper;
 import nf.fr.ephys.cookiecore.helpers.ChatHelper;
+import nf.fr.ephys.cookiecore.helpers.RenderHelper;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
 import org.lwjgl.opengl.GL11;
 
@@ -28,7 +29,7 @@ public class  InterfaceTileEntity extends UniversalInterface {
 		GL11.glRotatef(tickCount, 0.0F, 1.0F, 0.0F);
 		GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
 
-		//RenderHelper.loadBlockMap();
+		RenderHelper.loadBlockMap();
 		//Block block = blockEntity == null ? Blocks.chest : blockEntity.getBlockType();
 		// todo: there is a lot of problems with rendering the thingy as an item, need to sort that out
 		nf.fr.ephys.playerproxies.client.renderer.TileEntityInterfaceRenderer.renderBlocksInstance.renderBlockAsItem(Blocks.chest, 0, 1.0F);
