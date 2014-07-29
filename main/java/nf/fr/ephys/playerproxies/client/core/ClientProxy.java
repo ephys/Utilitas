@@ -5,6 +5,7 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
+import net.minecraft.world.World;
 import nf.fr.ephys.playerproxies.client.registry.FluidColorRegistry;
 import nf.fr.ephys.playerproxies.client.renderer.*;
 import nf.fr.ephys.playerproxies.common.core.CommonProxy;
@@ -30,5 +31,14 @@ public class ClientProxy extends CommonProxy {
 
 		RenderingRegistry.registerBlockHandler(BlockBeaconTierIIRenderer.RENDER_ID, new BlockBeaconTierIIRenderer());
 		RenderingRegistry.registerBlockHandler(BlockFluidDiffuserRenderer.RENDER_ID, new BlockFluidDiffuserRenderer());
+	}
+
+	@Override
+	public void registerPacket() {
+		super.registerPacket();
+	}
+
+	public static World getClientWorld() {
+		return Minecraft.getMinecraft().theWorld;
 	}
 }

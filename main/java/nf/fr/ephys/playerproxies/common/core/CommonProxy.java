@@ -14,6 +14,7 @@ import net.minecraft.block.BlockCompressed;
 import net.minecraft.block.BlockJukebox;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.item.EntityMinecartContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -31,10 +32,7 @@ import nf.fr.ephys.playerproxies.common.network.PacketSetNicknameHandler;
 import nf.fr.ephys.playerproxies.common.network.PacketSpawnParticleHandler;
 import nf.fr.ephys.playerproxies.common.registry.PlayerInventoryRegistry;
 import nf.fr.ephys.playerproxies.common.registry.UniversalInterfaceRegistry;
-import nf.fr.ephys.playerproxies.common.registry.uniterface.InterfaceJukebox;
-import nf.fr.ephys.playerproxies.common.registry.uniterface.InterfacePlayer;
-import nf.fr.ephys.playerproxies.common.registry.uniterface.InterfaceTileEntity;
-import nf.fr.ephys.playerproxies.common.registry.uniterface.InterfaceTurtle;
+import nf.fr.ephys.playerproxies.common.registry.uniterface.*;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBeaconTierII;
 
 import java.lang.reflect.Field;
@@ -77,6 +75,7 @@ public class CommonProxy {
 		UniversalInterfaceRegistry.addInterface(InterfaceTileEntity.class, TileEntity.class);
 		UniversalInterfaceRegistry.addInterface(InterfacePlayer.class, EntityPlayer.class);
 		UniversalInterfaceRegistry.addInterface(InterfaceJukebox.class, BlockJukebox.TileEntityJukebox.class);
+		UniversalInterfaceRegistry.addInterface(InterfaceMinecart.class, EntityMinecartContainer.class);
 
 		listPotionEffect();
 	}
@@ -119,12 +118,11 @@ public class CommonProxy {
 		}
 	}
 
-	private void registerPacket() {
+	public void registerPacket() {
 		PlayerProxies.getNetHandler().registerMessage(PacketSetNicknameHandler.class, PacketSetNicknameHandler.PacketSetNickname.class, 0, Side.CLIENT);
 		PlayerProxies.getNetHandler().registerMessage(PacketSpawnParticleHandler.class, PacketSpawnParticleHandler.PacketSpawnParticle.class, 1, Side.CLIENT);
 		PlayerProxies.getNetHandler().registerMessage(PacketSetBiomeHandler.class, PacketSetBiomeHandler.PacketSetBiome.class, 2, Side.CLIENT);
 	}
-
 
 	private void register() {
 		PlayerProxies.Blocks.hardenedStone = new BlockCompressed(MapColor.blackColor);

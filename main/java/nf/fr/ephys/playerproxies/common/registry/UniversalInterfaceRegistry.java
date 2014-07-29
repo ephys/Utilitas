@@ -48,8 +48,6 @@ public class UniversalInterfaceRegistry {
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
-
-					return null;
 				}
 			}
 		}

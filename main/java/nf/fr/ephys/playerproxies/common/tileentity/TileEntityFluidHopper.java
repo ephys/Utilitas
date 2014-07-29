@@ -269,6 +269,33 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 		}
 	}
 
+	private void writeInventoryToNBT(NBTTagCompound nbt) {
+		NBTTagCompound stacksNBT = new NBTTagCompound();
+		for (int i = 0; i < bucketStacks.length; i++) {
+			if (bucketStacks[i] == null) continue;
+
+			NBTTagCompound stackNBT = new NBTTagCompound();
+			bucketStacks[i].writeToNBT(stackNBT);
+
+			stackNBT.setTag(Integer.toString(i), stackNBT);
+		}
+
+		nbt.setTag("inventory", stacksNBT);
+	}
+
+	private void readInventoryFromNBT(NBTTagCompound nbt) {
+		if (nbt.hasKey("inventory")) {
+			NBTTagCompound stacksNBT = nbt.getCompoundTag("inventory");
+
+			for (int i = 0; i < bucketStacks.length; i++) {
+				if (stacksNBT.hasKey(Integer.toString(i)))
+					bucketStacks[i] = ItemStack.loadItemStackFromNBT(stacksNBT.getCompoundTag(Integer.toString(i)));
+				else
+					bucketStacks[i] = null;
+			}
+		}
+	}
+
 	public void getFluidsFromStack(ItemStack stack) {
 		readFluidsFromNBT(NBTHelper.getNBT(stack));
 	}
@@ -280,12 +307,14 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 	@Override
 	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
 		readFluidsFromNBT(pkt.func_148857_g());
+		readInventoryFromNBT(pkt.func_148857_g());
 	}
 
 	@Override
 	public Packet getDescriptionPacket() {
 		NBTTagCompound nbt = new NBTTagCompound();
 		this.writeFluidsToNBT(nbt, true);
+		this.writeInventoryToNBT(nbt);
 
 		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, nbt);
 	}
@@ -295,6 +324,7 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 		super.writeToNBT(nbt);
 
 		writeFluidsToNBT(nbt, false);
+		writeInventoryToNBT(nbt);
 	}
 
 	@Override
@@ -302,6 +332,7 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 		super.readFromNBT(nbt);
 
 		readFluidsFromNBT(nbt);
+		writeInventoryToNBT(nbt);
 	}
 
 	public int getComparatorInput() {
