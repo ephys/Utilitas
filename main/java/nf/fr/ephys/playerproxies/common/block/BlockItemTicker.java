@@ -11,10 +11,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+import nf.fr.ephys.cookiecore.helpers.InventoryHelper;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.item.ItemBlockTooltipped;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityItemTicker;
-import nf.fr.ephys.playerproxies.helpers.BlockHelper;
 
 import java.util.List;
 
@@ -90,7 +90,7 @@ public class BlockItemTicker extends BlockContainer implements IToolTipped {
 
 		if (te != null) {
 			if (te.hasStackInSlot(0))
-				BlockHelper.dropContents(te, world, x, y, z);
+				InventoryHelper.dropContents(te, world, x, y, z);
 			else if (te.isItemValidForSlot(0, player.getHeldItem())) {
 				te.setInventorySlotContents(0, player.getHeldItem().copy());
 				player.getHeldItem().stackSize--;
@@ -105,7 +105,7 @@ public class BlockItemTicker extends BlockContainer implements IToolTipped {
 		TileEntityItemTicker te = (TileEntityItemTicker) world.getTileEntity(x, y, z);
 
 		if (te != null)
-			BlockHelper.dropContents(te, world, x, y, z);
+			InventoryHelper.dropContents(te, world, x, y, z);
 
 		super.onBlockPreDestroy(world, x, y, z, metadata);
 	}

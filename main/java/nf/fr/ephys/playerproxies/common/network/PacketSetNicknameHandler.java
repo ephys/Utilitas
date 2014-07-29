@@ -9,9 +9,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
+import nf.fr.ephys.cookiecore.util.SimpleMap;
 import nf.fr.ephys.playerproxies.client.core.NicknamesRegistry;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
-import nf.fr.ephys.playerproxies.util.SimpleMap;
 
 import java.util.Map;
 
@@ -39,8 +39,6 @@ public class PacketSetNicknameHandler implements IMessageHandler<PacketSetNickna
 
 	public static class PacketSetNickname implements IMessage {
 		private SimpleMap<String, String> nicknames = new SimpleMap<>();
-
-		public PacketSetNickname() {}
 
 		public PacketSetNickname(EntityPlayer player) {
 			if (player == null) {

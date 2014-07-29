@@ -7,9 +7,9 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import nf.fr.ephys.cookiecore.helpers.MathHelper;
+import nf.fr.ephys.cookiecore.helpers.RenderHelper;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
-import nf.fr.ephys.playerproxies.helpers.MathHelper;
-import nf.fr.ephys.playerproxies.helpers.RenderHelper;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

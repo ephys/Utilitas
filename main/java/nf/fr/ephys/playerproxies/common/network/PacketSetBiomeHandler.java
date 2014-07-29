@@ -4,9 +4,9 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
+import nf.fr.ephys.cookiecore.helpers.BlockHelper;
 import nf.fr.ephys.playerproxies.client.core.ClientProxy;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
-import nf.fr.ephys.playerproxies.helpers.BlockHelper;
 
 public class PacketSetBiomeHandler implements IMessageHandler<PacketSetBiomeHandler.PacketSetBiome, IMessage> {
 	public static void setClientBiome(int x, int z, int biome, int dimention) {

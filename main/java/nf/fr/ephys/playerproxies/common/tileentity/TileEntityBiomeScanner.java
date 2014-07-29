@@ -9,8 +9,8 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.biome.BiomeGenBase;
+import nf.fr.ephys.cookiecore.helpers.NBTHelper;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
-import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
 public class TileEntityBiomeScanner extends TileEntity implements IInventory {
 	public static final int NO_STORED_VALUE = 256; // max biome length = 256 (0 - 255)

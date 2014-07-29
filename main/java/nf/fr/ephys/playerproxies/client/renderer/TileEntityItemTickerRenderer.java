@@ -5,8 +5,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import nf.fr.ephys.cookiecore.helpers.RenderHelper;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityItemTicker;
-import nf.fr.ephys.playerproxies.helpers.RenderHelper;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)

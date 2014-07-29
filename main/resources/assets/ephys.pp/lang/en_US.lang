@@ -52,9 +52,3 @@ side.north=North
 side.south=South
 side.west=West
 side.east=East
-
-#minecraft fixes
-entity.ItemFrame.name=Item Frame
-entity.MinecartHopper.name=Minecart with Hopper
-entity.MinecartChest.name=Minecart with Chest
-entity.MinecartFurnace.name=Minecart with Furnace

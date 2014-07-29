@@ -14,10 +14,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+import nf.fr.ephys.cookiecore.helpers.InventoryHelper;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.item.MultitemBlock;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBiomeReplicator;
-import nf.fr.ephys.playerproxies.helpers.BlockHelper;
 
 import java.util.List;
 
@@ -110,7 +110,7 @@ public class BlockToughwoodPlank extends BlockContainer {
 		TileEntityBiomeReplicator te = (TileEntityBiomeReplicator) world.getTileEntity(x, y, z);
 
 		if (te.hasBiome()) {
-			BlockHelper.dropContents(te, world, x, y, z);
+			InventoryHelper.dropContents(te, world, x, y, z);
 		}
 
 		if (player.getHeldItem() != null && te.isItemValidForSlot(0, player.getHeldItem())) {
@@ -127,7 +127,7 @@ public class BlockToughwoodPlank extends BlockContainer {
 			TileEntityBiomeReplicator te = (TileEntityBiomeReplicator) world.getTileEntity(x, y, z);
 
 			if (te != null)
-				BlockHelper.dropContents(te, world, x, y, z);
+				InventoryHelper.dropContents(te, world, x, y, z);
 		}
 
 		super.onBlockPreDestroy(world, x, y, z, metadata);

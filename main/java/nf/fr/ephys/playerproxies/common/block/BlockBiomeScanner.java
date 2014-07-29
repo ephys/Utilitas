@@ -14,9 +14,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+import nf.fr.ephys.cookiecore.helpers.BlockHelper;
+import nf.fr.ephys.cookiecore.helpers.InventoryHelper;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBiomeScanner;
-import nf.fr.ephys.playerproxies.helpers.BlockHelper;
 
 public class BlockBiomeScanner extends BlockContainer {
 	public static boolean enabled = true;
@@ -97,7 +98,7 @@ public class BlockBiomeScanner extends BlockContainer {
 		IInventory te = (IInventory) world.getTileEntity(x, y, z);
 
 		if (te != null)
-			BlockHelper.dropContents(te, world, x, y, z);
+			InventoryHelper.dropContents(te, world, x, y, z);
 
 		super.breakBlock(world, x, y, z, oldBlock, oldMetadata);
 	}

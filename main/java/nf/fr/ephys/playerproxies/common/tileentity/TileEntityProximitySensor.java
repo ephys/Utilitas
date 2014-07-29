@@ -7,8 +7,8 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import nf.fr.ephys.playerproxies.helpers.ChatHelper;
-import nf.fr.ephys.playerproxies.helpers.NBTHelper;
+import nf.fr.ephys.cookiecore.helpers.ChatHelper;
+import nf.fr.ephys.cookiecore.helpers.NBTHelper;
 
 import java.util.List;
 import java.util.UUID;

@@ -24,11 +24,11 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import nf.fr.ephys.cookiecore.helpers.BlockHelper;
+import nf.fr.ephys.cookiecore.helpers.ChatHelper;
+import nf.fr.ephys.cookiecore.helpers.EntityHelper;
+import nf.fr.ephys.cookiecore.helpers.RegistryHelper;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
-import nf.fr.ephys.playerproxies.helpers.BlockHelper;
-import nf.fr.ephys.playerproxies.helpers.ChatHelper;
-import nf.fr.ephys.playerproxies.helpers.EntityHelper;
-import nf.fr.ephys.playerproxies.util.cofh.RegistryUtils;
 
 import java.util.Random;
 
@@ -106,7 +106,7 @@ public class BlockHomeShield extends Block {
 
 			PlayerProxies.Blocks.homeShield.setBlockName(tfShield.getUnlocalizedName());
 
-			RegistryUtils.overwriteBlock("TwilightForest:" + tfShield.getUnlocalizedName(), PlayerProxies.Blocks.homeShield);
+			RegistryHelper.overwriteBlock("TwilightForest:" + tfShield.getUnlocalizedName(), PlayerProxies.Blocks.homeShield);
 		} else {
 			PlayerProxies.Blocks.homeShield.setBlockName("PP_HomeShield");
 			GameRegistry.registerBlock(PlayerProxies.Blocks.homeShield, PlayerProxies.Blocks.homeShield.getUnlocalizedName());

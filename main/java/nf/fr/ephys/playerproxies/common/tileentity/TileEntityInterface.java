@@ -14,13 +14,13 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
+import nf.fr.ephys.cookiecore.helpers.ChatHelper;
+import nf.fr.ephys.cookiecore.helpers.EntityHelper;
+import nf.fr.ephys.cookiecore.helpers.NBTHelper;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
 import nf.fr.ephys.playerproxies.common.registry.UniversalInterfaceRegistry;
 import nf.fr.ephys.playerproxies.common.registry.uniterface.UniversalInterface;
-import nf.fr.ephys.playerproxies.helpers.ChatHelper;
-import nf.fr.ephys.playerproxies.helpers.EntityHelper;
-import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
 public class TileEntityInterface extends TileEntity implements ISidedInventory, IFluidHandler {
 	private UniversalInterface uniterface = null;
@@ -70,6 +70,7 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
 

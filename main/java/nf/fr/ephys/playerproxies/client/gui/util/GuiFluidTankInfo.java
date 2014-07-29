@@ -3,7 +3,7 @@ package nf.fr.ephys.playerproxies.client.gui.util;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.fluids.FluidTankInfo;
-import nf.fr.ephys.playerproxies.helpers.RenderHelper;
+import nf.fr.ephys.cookiecore.helpers.RenderHelper;
 import org.lwjgl.opengl.GL11;
 
 public class GuiFluidTankInfo extends Gui {

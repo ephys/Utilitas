@@ -1,7 +1,7 @@
 package nf.fr.ephys.playerproxies.client.registry;
 
 import net.minecraft.client.Minecraft;
-import nf.fr.ephys.playerproxies.helpers.MathHelper;
+import nf.fr.ephys.cookiecore.helpers.MathHelper;
 
 public class DragonColorRegistry {
 	private static final float PRECISION = 50F;

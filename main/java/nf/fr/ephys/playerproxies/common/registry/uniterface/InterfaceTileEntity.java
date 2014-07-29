@@ -8,9 +8,9 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.IFluidHandler;
+import nf.fr.ephys.cookiecore.helpers.BlockHelper;
+import nf.fr.ephys.cookiecore.helpers.ChatHelper;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
-import nf.fr.ephys.playerproxies.helpers.BlockHelper;
-import nf.fr.ephys.playerproxies.helpers.ChatHelper;
 import org.lwjgl.opengl.GL11;
 
 public class  InterfaceTileEntity extends UniversalInterface {

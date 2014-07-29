@@ -16,9 +16,10 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.stats.AchievementList;
 import net.minecraft.tileentity.TileEntityBeacon;
 import net.minecraft.util.AxisAlignedBB;
+import nf.fr.ephys.cookiecore.helpers.MathHelper;
+import nf.fr.ephys.cookiecore.helpers.NBTHelper;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.registry.BeaconEffectsRegistry;
-import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
 import java.awt.*;
 import java.util.List;
@@ -49,7 +50,6 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 
 	// Botania special code
 	public static Class<?> doppleganger = null;
-	private boolean hasDoppleganger = false;
 
 	@Override
 	public int getLevels() {
@@ -147,7 +147,7 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 			if (level >= TIERII_LEVEL)
 				tier++;
 
-			hasDoppleganger = doppleganger != null && !worldObj.getEntitiesWithinAABB(doppleganger, AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord, yCoord + 1, zCoord).expand(32F, 32F, 32F)).isEmpty();
+			boolean hasDoppleganger = doppleganger != null && !worldObj.getEntitiesWithinAABB(doppleganger, AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord, yCoord + 1, zCoord).expand(32F, 32F, 32F)).isEmpty();
 
 			if (hasDoppleganger)
 				totalNegative = totalBlocks;
@@ -159,12 +159,12 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 					//Color colorNeg = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(Color.white, Color.red, negativity());
 					//Color colorPos = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(Color.white, Color.green, positivity());
 
-					beaconColor = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(Color.white, BAD_COLOR, negativity());
+					beaconColor = MathHelper.gradient(Color.white, BAD_COLOR, negativity());
 
 					//beaconColor = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(colorNeg, colorPos, 0.5F);
 
 					if (hasDragonEgg)
-						beaconColor = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(beaconColor, Color.magenta, 0.5F);
+						beaconColor = MathHelper.gradient(beaconColor, Color.magenta, 0.5F);
 				}
 			}
 		}

@@ -11,8 +11,8 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
-import nf.fr.ephys.playerproxies.helpers.EntityHelper;
-import nf.fr.ephys.playerproxies.helpers.NBTHelper;
+import nf.fr.ephys.cookiecore.helpers.EntityHelper;
+import nf.fr.ephys.cookiecore.helpers.NBTHelper;
 
 public class TileEntityItemTicker extends TileEntity implements IInventory {
 	private ItemStack item;

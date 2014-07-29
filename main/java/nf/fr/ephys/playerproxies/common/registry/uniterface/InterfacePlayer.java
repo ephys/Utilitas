@@ -8,12 +8,13 @@ import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.IFluidHandler;
+import nf.fr.ephys.cookiecore.helpers.ChatHelper;
+import nf.fr.ephys.cookiecore.helpers.EntityHelper;
+import nf.fr.ephys.cookiecore.helpers.NBTHelper;
+import nf.fr.ephys.cookiecore.helpers.RenderHelper;
 import nf.fr.ephys.playerproxies.client.renderer.TileEntityInterfaceRenderer;
 import nf.fr.ephys.playerproxies.common.registry.PlayerInventoryRegistry;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
-import nf.fr.ephys.playerproxies.helpers.ChatHelper;
-import nf.fr.ephys.playerproxies.helpers.EntityHelper;
-import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 import org.lwjgl.opengl.GL11;
 
 import java.util.UUID;
@@ -46,7 +47,7 @@ public class InterfacePlayer extends UniversalInterface {
 				GL11.glTranslatef(0.0F, 0.35F, 0.0F);
 				GL11.glRotatef(180F, 1F, 0, 0);
 
-				nf.fr.ephys.playerproxies.helpers.RenderHelper.renderSimpleBiped(skin, 0.06F);
+				RenderHelper.renderSimpleBiped(skin, 0.06F);
 			GL11.glPopMatrix();
 		}
 	}

@@ -13,8 +13,8 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ChestGenHooks;
+import nf.fr.ephys.cookiecore.helpers.InventoryHelper;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
-import nf.fr.ephys.playerproxies.helpers.BlockHelper;
 
 import java.util.List;
 
@@ -105,7 +105,7 @@ public class ItemPotionDiffuser extends Item {
 				}
 
 				playerInventory.setInventorySlotContents(i, null);
-				BlockHelper.insertItem(playerInventory, new ItemStack(Items.glass_bottle));
+				InventoryHelper.insertItem(playerInventory, new ItemStack(Items.glass_bottle));
 			}
 		}
 	}

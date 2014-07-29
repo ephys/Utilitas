@@ -10,9 +10,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
+import nf.fr.ephys.cookiecore.util.SlotFiltered;
+import nf.fr.ephys.cookiecore.util.SlotIInventory;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityFluidHopper;
-import nf.fr.ephys.playerproxies.util.SlotFiltered;
-import nf.fr.ephys.playerproxies.util.SlotIInventory;
 
 import java.util.Vector;
 

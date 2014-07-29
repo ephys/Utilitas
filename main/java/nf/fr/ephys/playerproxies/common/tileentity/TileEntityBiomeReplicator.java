@@ -7,12 +7,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import nf.fr.ephys.cookiecore.helpers.BlockHelper;
+import nf.fr.ephys.cookiecore.helpers.NBTHelper;
+import nf.fr.ephys.cookiecore.helpers.ParticleHelper;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.network.PacketSetBiomeHandler;
 import nf.fr.ephys.playerproxies.common.network.PacketSpawnParticleHandler;
-import nf.fr.ephys.playerproxies.helpers.BlockHelper;
-import nf.fr.ephys.playerproxies.helpers.NBTHelper;
-import nf.fr.ephys.playerproxies.helpers.ParticleHelper;
 import nf.fr.ephys.playerproxies.util.cofh.TileEnergyHandler;
 
 public class TileEntityBiomeReplicator extends TileEnergyHandler implements IInventory {

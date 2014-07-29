@@ -10,10 +10,10 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import nf.fr.ephys.cookiecore.helpers.RenderHelper;
 import nf.fr.ephys.playerproxies.client.registry.FluidColorRegistry;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityPotionDiffuser;
-import nf.fr.ephys.playerproxies.helpers.RenderHelper;
 
 public class BlockFluidDiffuserRenderer implements ISimpleBlockRenderingHandler {
 	public static int RENDER_ID = RenderingRegistry.getNextAvailableRenderId();

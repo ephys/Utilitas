@@ -13,8 +13,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
-import nf.fr.ephys.playerproxies.helpers.BlockHelper;
-import nf.fr.ephys.playerproxies.helpers.NBTHelper;
+import nf.fr.ephys.cookiecore.helpers.BlockHelper;
+import nf.fr.ephys.cookiecore.helpers.FluidHelper;
+import nf.fr.ephys.cookiecore.helpers.NBTHelper;
 
 public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, IInventory {
 	private FluidStack[] fluidStacks = new FluidStack[5];
@@ -115,7 +116,7 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 
 		Block block = worldObj.getBlock(xCoord, yCoord + 1, zCoord);
 
-		Fluid fluid = BlockHelper.getFluidForBlock(block);
+		Fluid fluid = FluidHelper.getFluidForBlock(block);
 
 		if (fluid == null)
 			return false;

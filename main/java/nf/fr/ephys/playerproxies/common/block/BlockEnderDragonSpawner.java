@@ -14,8 +14,9 @@ import net.minecraft.init.Blocks;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
+import nf.fr.ephys.cookiecore.helpers.ChatHelper;
+import nf.fr.ephys.cookiecore.helpers.MathHelper;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
-import nf.fr.ephys.playerproxies.helpers.ChatHelper;
 
 import java.util.List;
 import java.util.Random;
@@ -106,7 +107,7 @@ public class BlockEnderDragonSpawner extends Block {
 
 						mob.getEntityAttribute(SharedMonsterAttributes.followRange).setBaseValue(50D);
 
-						EntityLiving target = (EntityLiving) nf.fr.ephys.playerproxies.helpers.MathHelper.getRandom(world.getLoadedEntityList());
+						EntityLiving target = (EntityLiving) MathHelper.getRandom(world.getLoadedEntityList());
 						mob.setAttackTarget(target);
 						mob.setTarget(target);
 					}
@@ -136,7 +137,7 @@ public class BlockEnderDragonSpawner extends Block {
 
 			EntityDragon dragon = new EntityDragon(world);
 			dragon.setPosition(x - 32 + rand.nextInt(64), 250, z - 32 + rand.nextInt(64));
-			dragon.setAttackTarget((EntityPlayer) nf.fr.ephys.playerproxies.helpers.MathHelper.getRandom(players));
+			dragon.setAttackTarget((EntityPlayer) nf.fr.ephys.cookiecore.helpers.MathHelper.getRandom(players));
 
 			world.spawnEntityInWorld(dragon);
 

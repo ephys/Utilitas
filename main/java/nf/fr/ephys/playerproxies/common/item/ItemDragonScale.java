@@ -18,10 +18,10 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import nf.fr.ephys.cookiecore.helpers.ChatHelper;
 import nf.fr.ephys.playerproxies.client.registry.DragonColorRegistry;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.core.EventHandler;
-import nf.fr.ephys.playerproxies.helpers.ChatHelper;
 
 public class ItemDragonScale extends Item {
 	public final boolean isIngot;

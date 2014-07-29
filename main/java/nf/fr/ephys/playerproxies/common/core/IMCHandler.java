@@ -4,6 +4,7 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
+import nf.fr.ephys.cookiecore.helpers.NBTHelper;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.block.BlockBaseShineyGlass;
 import nf.fr.ephys.playerproxies.common.block.BlockToughwoodPlank;
@@ -11,7 +12,6 @@ import nf.fr.ephys.playerproxies.common.registry.BeaconEffectsRegistry;
 import nf.fr.ephys.playerproxies.common.registry.UniversalInterfaceRegistry;
 import nf.fr.ephys.playerproxies.common.registry.uniterface.UniversalInterface;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBeaconTierII;
-import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
 import java.util.ArrayList;
 
@@ -22,6 +22,7 @@ public class IMCHandler {
 		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(PlayerProxies.Blocks.toughwoodPlank, 1, BlockToughwoodPlank.METADATA_TOUGHWOOD));
 	}
 
+	@SuppressWarnings("unchecked")
 	public static boolean handle(FMLInterModComms.IMCMessage message) {
 		if (message.key.equalsIgnoreCase("add-beacon-recipe")) {
 			if (!message.isNBTMessage()) {

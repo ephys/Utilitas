@@ -4,9 +4,9 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidTankInfo;
+import nf.fr.ephys.cookiecore.helpers.ChatHelper;
 import nf.fr.ephys.playerproxies.client.gui.util.GuiFluidTankInfo;
 import nf.fr.ephys.playerproxies.common.container.ContainerFluidHopper;
-import nf.fr.ephys.playerproxies.helpers.ChatHelper;
 import org.lwjgl.opengl.GL11;
 
 public class GuiFluidHopper extends GuiContainer {

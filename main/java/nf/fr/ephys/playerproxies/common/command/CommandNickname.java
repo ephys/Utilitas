@@ -11,9 +11,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import nf.fr.ephys.cookiecore.helpers.ChatHelper;
 import nf.fr.ephys.playerproxies.client.core.NicknamesRegistry;
 import nf.fr.ephys.playerproxies.common.network.PacketSetNicknameHandler;
-import nf.fr.ephys.playerproxies.helpers.ChatHelper;
 
 import java.util.List;
 

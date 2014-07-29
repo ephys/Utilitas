@@ -18,12 +18,13 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
+import nf.fr.ephys.cookiecore.helpers.BlockHelper;
+import nf.fr.ephys.cookiecore.helpers.ChatHelper;
+import nf.fr.ephys.cookiecore.helpers.FluidHelper;
+import nf.fr.ephys.cookiecore.helpers.NBTHelper;
 import nf.fr.ephys.playerproxies.client.registry.DragonColorRegistry;
 import nf.fr.ephys.playerproxies.client.registry.FluidColorRegistry;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
-import nf.fr.ephys.playerproxies.helpers.BlockHelper;
-import nf.fr.ephys.playerproxies.helpers.ChatHelper;
-import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 
 import java.util.List;
 
@@ -239,7 +240,7 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 					Block block = world.getBlock(mop.blockX, mop.blockY, mop.blockZ);
 					int l = world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
 
-					Fluid targetFluid = BlockHelper.getFluidForBlock(block);
+					Fluid targetFluid = FluidHelper.getFluidForBlock(block);
 
 					if (l == 0 && targetFluid != null) {
 						if (!player.capabilities.isCreativeMode) {
@@ -303,7 +304,7 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 					world.func_147480_a(coords[0], coords[1], coords[2], true);
 				}
 
-				world.setBlock(coords[0], coords[1], coords[2], BlockHelper.getBlockForFluid(fluid.getFluid()), 0, 3);
+				world.setBlock(coords[0], coords[1], coords[2], FluidHelper.getBlockForFluid(fluid.getFluid()), 0, 3);
 			}
 
 			return true;
@@ -411,7 +412,7 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 	@Override
 	public int fill(ItemStack container, FluidStack resource, boolean doFill) {
 		if (resource == null) return 0;
-		
+
 		FluidStack currentFluid = getFluid(container);
 
 		if (currentFluid != null) return 0;

@@ -12,12 +12,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import nf.fr.ephys.cookiecore.helpers.InventoryHelper;
+import nf.fr.ephys.cookiecore.helpers.RegistryHelper;
 import nf.fr.ephys.playerproxies.client.renderer.BlockBeaconTierIIRenderer;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.registry.BeaconEffectsRegistry;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBeaconTierII;
-import nf.fr.ephys.playerproxies.helpers.BlockHelper;
-import nf.fr.ephys.playerproxies.util.cofh.RegistryUtils;
 
 public class BlockBeaconTierII extends BlockBeacon {
 	public static boolean overwrite = true;
@@ -29,7 +29,7 @@ public class BlockBeaconTierII extends BlockBeacon {
 		PlayerProxies.Blocks.betterBeacon.setBlockName("beacon").setCreativeTab(PlayerProxies.creativeTab).setBlockTextureName("beacon").setLightLevel(1F);
 
 		//GameRegistry.registerBlock(PlayerProxies.Blocks.betterBeacon, PlayerProxies.Blocks.betterBeacon.getUnlocalizedName());
-		RegistryUtils.overwriteBlock("minecraft:beacon", PlayerProxies.Blocks.betterBeacon);
+		RegistryHelper.overwriteBlock("minecraft:beacon", PlayerProxies.Blocks.betterBeacon);
 
 		GameRegistry.registerTileEntity(TileEntityBeaconTierII.class, PlayerProxies.Blocks.betterBeacon.getUnlocalizedName());
 	}
@@ -47,7 +47,7 @@ public class BlockBeaconTierII extends BlockBeacon {
 				's', new ItemStack(Items.nether_star)
 		);
 
-		BlockHelper.removeItemRecipe(new ItemStack(Blocks.beacon));
+		RegistryHelper.removeItemRecipe(new ItemStack(Blocks.beacon));
 
 		// level 1 beacon
 		BeaconEffectsRegistry.addEffect(new ItemStack[]{ new ItemStack(Items.sugar)/*, new ItemStack(Items.redstone)*/ }, Potion.moveSpeed.getId(), 1, -1);
@@ -108,19 +108,19 @@ public class BlockBeaconTierII extends BlockBeacon {
 			if (item == null) {
 				if (itemCount > 0) {
 					ItemStack stack = te.getStackInSlotOnClosing(itemCount - 1);
-					BlockHelper.dropItem(stack, player);
+					InventoryHelper.dropItem(stack, player);
 				}
 			} else {
 				int pos = te.getItemSlot(item);
 
 				if (pos != -1) {
 					ItemStack stack = te.getStackInSlotOnClosing(pos);
-					BlockHelper.dropItem(stack, player);
+					InventoryHelper.dropItem(stack, player);
 				} else {
 					ItemStack newStack = item.copy();
 					newStack.stackSize = 1;
 
-					if (BlockHelper.insert(te, newStack)) {
+					if (InventoryHelper.insertItem(te, newStack, 0)) {
 						item.stackSize--;
 
 						return true;
@@ -139,7 +139,7 @@ public class BlockBeaconTierII extends BlockBeacon {
 		TileEntityBeaconTierII te = (TileEntityBeaconTierII) world.getTileEntity(x, y, z);
 
 		if (te != null)
-			BlockHelper.dropContents(te, world, x, y, z);
+			InventoryHelper.dropContents(te, world, x, y, z);
 
 		super.onBlockPreDestroy(world, x, y, z, metadata);
 	}

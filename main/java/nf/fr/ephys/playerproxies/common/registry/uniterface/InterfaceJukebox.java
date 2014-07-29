@@ -10,9 +10,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.IFluidHandler;
+import nf.fr.ephys.cookiecore.helpers.BlockHelper;
+import nf.fr.ephys.cookiecore.helpers.ChatHelper;
+import nf.fr.ephys.cookiecore.helpers.RenderHelper;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
-import nf.fr.ephys.playerproxies.helpers.BlockHelper;
-import nf.fr.ephys.playerproxies.helpers.ChatHelper;
 import org.lwjgl.opengl.GL11;
 
 public class InterfaceJukebox extends UniversalInterface {
@@ -30,7 +31,7 @@ public class InterfaceJukebox extends UniversalInterface {
 		GL11.glRotatef(tickCount, 0.0F, 1.0F, 0.0F);
 		GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
 
-		nf.fr.ephys.playerproxies.helpers.RenderHelper.loadBlockMap();
+		RenderHelper.loadBlockMap();
 		nf.fr.ephys.playerproxies.client.renderer.TileEntityInterfaceRenderer.renderBlocksInstance.renderBlockAsItem(Blocks.jukebox, 0, 1.0F);
 	}
 

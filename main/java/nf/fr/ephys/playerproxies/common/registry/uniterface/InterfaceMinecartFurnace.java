@@ -6,9 +6,9 @@ import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.IFluidHandler;
+import nf.fr.ephys.cookiecore.helpers.EntityHelper;
+import nf.fr.ephys.cookiecore.helpers.NBTHelper;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
-import nf.fr.ephys.playerproxies.helpers.EntityHelper;
-import nf.fr.ephys.playerproxies.helpers.NBTHelper;
 import org.lwjgl.opengl.GL11;
 
 import java.util.UUID;

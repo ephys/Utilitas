@@ -8,8 +8,8 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import nf.fr.ephys.cookiecore.helpers.RenderHelper;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBeaconTierII;
-import nf.fr.ephys.playerproxies.helpers.RenderHelper;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
