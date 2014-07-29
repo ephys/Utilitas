@@ -40,6 +40,8 @@ public class PacketSetNicknameHandler implements IMessageHandler<PacketSetNickna
 	public static class PacketSetNickname implements IMessage {
 		private SimpleMap<String, String> nicknames = new SimpleMap<>();
 
+		public PacketSetNickname() {}
+
 		public PacketSetNickname(EntityPlayer player) {
 			if (player == null) {
 				for (Object entity : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {

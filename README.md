@@ -42,4 +42,12 @@ License
 --
 [WTFPL], but I won't do any support for modified versions of the mod
 
+###Setting up the workspace
+Java 1.7
+
+Requires CookieLib in libs
+VM option: -Dfml.coreMods.load=nf.fr.ephys.cookiecore.common.CookieCoreASM
+Then ./gradlew setupDecompWorkspace <idea/eclipse> --refresh-dependencies
+
+
 [WTFPL]:http://www.wtfpl.net/

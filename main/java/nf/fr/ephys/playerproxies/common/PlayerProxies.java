@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Arrays;
 
 @Mod(modid = PlayerProxies.MODID, name = PlayerProxies.NAME,
-	version = PlayerProxies.VERSION, dependencies="after:IC2,TwilightForest",
+	version = PlayerProxies.VERSION, dependencies="after:IC2,TwilightForest;required-after:cookiecore",
 	guiFactory = GuiModConfigFactory.CLASSNAME
 )
 public class PlayerProxies extends DummyModContainer {
