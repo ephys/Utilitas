@@ -45,10 +45,7 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 	private ItemStack[] containedItems = new ItemStack[MAX_ITEMS];
 	private int nbItems = 0;
 
-	// this is because Potion.isBadEffect() is SideOnly(Side.CLIENT) (but getLiquidColor isn't, I'm not sure I get the logic behind this)
-	//public static boolean[] badPotionEffects = new boolean[Potion.potionTypes.length];
-
-	// Botania special code)
+	// Botania special code o/
 	public static Class<?> doppleganger = null;
 
 	@Override
@@ -226,17 +223,18 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 			List entities = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, area);
 
 			for (BeaconEffectsRegistry.Effect effectObj : effects) {
-				int effect = effectObj.getPotionEffect();
-				if (shouldSkipEffect(effect)) continue;
+				int currentEffect = effectObj.getPotionEffect();
+				if (shouldSkipEffect(currentEffect)) continue;
 
 				for (Object o : entities) {
 					EntityLivingBase entity = (EntityLivingBase) o;
 
+					int effect = currentEffect;
 					if (entity.isEntityUndead()) {
 						if (effect == Potion.regeneration.getId())
 							effect = Potion.poison.getId();
 						else if (effect == Potion.poison.getId())
-							effect = Potion.heal.getId();
+							effect = Potion.regeneration.getId();
 						else if (effect == Potion.heal.getId())
 							effect = Potion.harm.getId();
 						else if (effect == Potion.harm.getId())

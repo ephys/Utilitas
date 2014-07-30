@@ -16,8 +16,10 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import nf.fr.ephys.cookiecore.helpers.ChatHelper;
 import nf.fr.ephys.cookiecore.helpers.EntityHelper;
+import nf.fr.ephys.cookiecore.helpers.InventoryHelper;
 import nf.fr.ephys.cookiecore.helpers.NBTHelper;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
+import nf.fr.ephys.playerproxies.common.block.BlockBeaconTierII;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
 import nf.fr.ephys.playerproxies.common.registry.UniversalInterfaceRegistry;
 import nf.fr.ephys.playerproxies.common.registry.uniterface.UniversalInterface;
@@ -246,7 +248,7 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 		IInventory linkedInventory = this.getInventory();
 
 		return (linkedInventory instanceof ISidedInventory) ? ((ISidedInventory) linkedInventory).getAccessibleSlotsFromSide(var1) :
-				linkedInventory != null ? getUnSidedInventorySlots(linkedInventory) : new int[0];
+				linkedInventory != null ? InventoryHelper.getUnSidedInventorySlots(linkedInventory) : new int[0];
 	}
 
 	@Override
@@ -263,16 +265,6 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 
 		return (linkedInventory instanceof ISidedInventory) ? ((ISidedInventory) linkedInventory)
 				.canExtractItem(i, itemstack, j) : linkedInventory != null;
-	}
-
-	public static int[] getUnSidedInventorySlots(IInventory inventory) {
-		int[] slots = new int[inventory.getSizeInventory()];
-
-		for (int i = 0; i < slots.length; i++) {
-			slots[i] = i;
-		}
-
-		return slots;
 	}
 
 	// ================================================================================

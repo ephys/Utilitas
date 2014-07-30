@@ -138,11 +138,11 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 		return true;
 	}
 
-	private void fillBucket(int slot) {
+	private boolean fillBucket(int slot) {
 		ItemStack input = bucketStacks[slot];
 
 		if (input == null)
-			return;
+			return false;
 
 		if (input.getItem() instanceof IFluidContainerItem) {
 			IFluidContainerItem fluidContainer = (IFluidContainerItem) input.getItem();
@@ -153,24 +153,24 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 			if (itemFluidContents != null) {
 				// drain
 				if (fill(ForgeDirection.UNKNOWN, itemFluidContents, false) != itemFluidContents.amount)
-					return;
+					return false;
 
 				fluidContainer.drain(output, fluidContainer.getCapacity(output), true);
 
 				if (!insertToOutput(output))
-					return;
+					return false;
 
 				fill(ForgeDirection.UNKNOWN, itemFluidContents, true);
 			} else {
 				// fill
 				FluidStack localFluid = fluidStacks[slot];
 
-				if (localFluid == null) return;
+				if (localFluid == null) return false;
 
 				int filled = fluidContainer.fill(output, localFluid, true);
 
 				if (!insertToOutput(output))
-					return;
+					return false;
 
 				localFluid.amount -= filled;
 
@@ -185,10 +185,10 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 			int filled = fill(ForgeDirection.UNKNOWN, outputFluid, false);
 
 			if (filled != outputFluid.amount)
-				return;
+				return false;
 
 			if (outputStack != null && !insertToOutput(outputStack))
-				return;
+				return false;
 
 			fill(ForgeDirection.UNKNOWN, outputFluid, true);
 		} else {
@@ -196,12 +196,12 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 			FluidStack stack = fluidStacks[slot];
 
 			if (stack == null || stack.amount < FluidContainerRegistry.BUCKET_VOLUME)
-				return;
+				return false;
 
 			ItemStack output = FluidContainerRegistry.fillFluidContainer(stack, input);
 
 			if (output == null || !insertToOutput(output))
-				return;
+				return false;
 
 			stack.amount -= 1000;
 
@@ -210,6 +210,8 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 		}
 
 		decrStackSize(slot, 1);
+
+		return true;
 	}
 
 	private boolean insertToOutput(ItemStack output) {
@@ -267,12 +269,13 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 	private void writeInventoryToNBT(NBTTagCompound nbt) {
 		NBTTagCompound stacksNBT = new NBTTagCompound();
 		for (int i = 0; i < bucketStacks.length; i++) {
-			if (bucketStacks[i] == null) continue;
+			if (bucketStacks[i] == null)
+				continue;
 
 			NBTTagCompound stackNBT = new NBTTagCompound();
 			bucketStacks[i].writeToNBT(stackNBT);
 
-			stackNBT.setTag(Integer.toString(i), stackNBT);
+			stacksNBT.setTag(Integer.toString(i), stackNBT);
 		}
 
 		nbt.setTag("inventory", stacksNBT);
@@ -283,10 +286,11 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 			NBTTagCompound stacksNBT = nbt.getCompoundTag("inventory");
 
 			for (int i = 0; i < bucketStacks.length; i++) {
-				if (stacksNBT.hasKey(Integer.toString(i)))
+				if (stacksNBT.hasKey(Integer.toString(i))) {
 					bucketStacks[i] = ItemStack.loadItemStackFromNBT(stacksNBT.getCompoundTag(Integer.toString(i)));
-				else
+				} else {
 					bucketStacks[i] = null;
+				}
 			}
 		}
 	}
@@ -327,7 +331,7 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 		super.readFromNBT(nbt);
 
 		readFluidsFromNBT(nbt);
-		writeInventoryToNBT(nbt);
+		readInventoryFromNBT(nbt);
 	}
 
 	public int getComparatorInput() {
@@ -535,8 +539,6 @@ public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, 
 
 		if (slot < bucketStacks.length - 1)
 			fillBucket(slot);
-
-		sendUpdate();
 	}
 
 	@Override
