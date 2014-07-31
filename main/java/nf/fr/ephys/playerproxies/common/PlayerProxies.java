@@ -24,11 +24,11 @@ import org.apache.logging.log4j.Logger;
 import java.util.Arrays;
 
 @Mod(modid = PlayerProxies.MODID, name = PlayerProxies.NAME,
-	version = PlayerProxies.VERSION, dependencies="after:IC2,TwilightForest;required-after:cookiecore",
+	version = PlayerProxies.VERSION, dependencies="after:IC2,TwilightForest;required-after:cookiecore@[1.0.0,);required-after:Forge@[10.13.0.1189,)",
 	guiFactory = GuiModConfigFactory.CLASSNAME
 )
 public class PlayerProxies extends DummyModContainer {
-	public static final String VERSION = "1.7.10-1.1.0";
+	public static final String VERSION = "1.7.10-1.1.1";
 	public static final String MODID = "ephys.playerproxies";
 	public static final String NAME = "Player Proxies";
 
