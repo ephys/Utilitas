@@ -34,7 +34,7 @@ public class InterfaceMinecartFurnace extends UniversalInterface {
 		GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
 
 		RenderHelper.loadBlockMap();
-		nf.fr.ephys.playerproxies.client.renderer.TileEntityInterfaceRenderer.renderBlocksInstance.renderBlockAsItem(minecart.func_145817_o(), 0, 1.0F);
+		nf.fr.ephys.playerproxies.client.renderer.TileEntityInterfaceRenderer.renderBlocksInstance.renderBlockAsItem(Blocks.furnace, 0, 1.0F);
 	}
 
 	@Override

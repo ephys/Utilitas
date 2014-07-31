@@ -39,6 +39,8 @@ public class BlockBeaconTierII extends BlockBeacon {
 	public static void registerCraft() {
 		if (!overwrite) return;
 
+		RegistryHelper.removeItemRecipe(new ItemStack(Blocks.beacon));
+
 		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.betterBeacon),
 				"ggg",
 				"gsg",
@@ -48,8 +50,6 @@ public class BlockBeaconTierII extends BlockBeacon {
 				'o', new ItemStack(Blocks.obsidian),
 				's', new ItemStack(Items.nether_star)
 		);
-
-		RegistryHelper.removeItemRecipe(new ItemStack(Blocks.beacon));
 
 		// level 1 beacon
 		BeaconEffectsRegistry.addEffect(new ItemStack[]{ new ItemStack(Items.sugar)/*, new ItemStack(Items.redstone)*/ }, Potion.moveSpeed.getId(), 1, -1);

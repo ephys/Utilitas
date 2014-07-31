@@ -16,6 +16,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import nf.fr.ephys.playerproxies.client.registry.DragonColorRegistry;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
+import nf.fr.ephys.playerproxies.common.registry.CauldronCraftsRegistry;
 
 import java.util.List;
 
@@ -35,6 +36,11 @@ public class ItemDragonHoe extends ItemHoe {
 
 	public static void registerCraft() {
 		if (!enabled) return;
+
+	/*	CauldronCraftsRegistry.addRecipe(new ItemStack[] {
+				new ItemStack(Items.stick, 2),
+				new ItemStack(PlayerProxies.Items.dragonScaleIngot, 2)
+		}, new ItemStack[] { new ItemStack(PlayerProxies.Items.dragonHoe) });*/
 
 		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Items.dragonHoe),
 				"ii ", " s ", " s ",

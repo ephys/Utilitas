@@ -116,6 +116,7 @@ public class CommonProxy {
 		ItemDragonPickaxe.register();
 
 		ItemDragonScale.register();
+		//ItemDragonWand.register();
 
 		PlayerProxies.Items.linkFocus = new Item();
 		PlayerProxies.Items.linkFocus.setUnlocalizedName("PP_LinkFocus")
@@ -163,6 +164,7 @@ public class CommonProxy {
 		ItemDragonScale.registerCraft();
 		ItemDragonHoe.registerCraft();
 		ItemDragonPickaxe.registerCraft();
+		//ItemDragonWand.registerCraft();
 
 		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Items.linkFocus), "ipi", "qeq", "ipi", 'e', new ItemStack(Items.emerald), 'p', new ItemStack(Items.ender_pearl), 'q', new ItemStack(Items.ender_eye), 'i', new ItemStack(Items.blaze_powder));
 

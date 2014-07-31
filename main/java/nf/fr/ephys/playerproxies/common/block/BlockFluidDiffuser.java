@@ -83,7 +83,7 @@ public class BlockFluidDiffuser extends BlockContainer {
 	public static void registerCraft() {
 		if (!enabled) return;
 
-		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.hardenedStone),
+		GameRegistry.addRecipe(new ItemStack(PlayerProxies.Blocks.fluidDiffuser),
 				"p", "g", "d",
 				'p', Items.glass_bottle,
 				'g', PlayerProxies.Blocks.particleGenerator != PlayerProxies.Blocks.particleGenerator ? Blocks.obsidian : PlayerProxies.Blocks.hardenedStone,
