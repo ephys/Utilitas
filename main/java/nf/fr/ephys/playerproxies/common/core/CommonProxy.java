@@ -14,6 +14,7 @@ import net.minecraft.block.BlockCompressed;
 import net.minecraft.block.BlockJukebox;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.item.EntityMinecartContainer;
 import net.minecraft.entity.item.EntityMinecartFurnace;
 import net.minecraft.entity.player.EntityPlayer;
@@ -75,6 +76,7 @@ public class CommonProxy {
 		UniversalInterfaceRegistry.addInterface(InterfaceJukebox.class, BlockJukebox.TileEntityJukebox.class);
 		UniversalInterfaceRegistry.addInterface(InterfaceMinecart.class, EntityMinecartContainer.class);
 		UniversalInterfaceRegistry.addInterface(InterfaceMinecartFurnace.class, EntityMinecartFurnace.class);
+		UniversalInterfaceRegistry.addInterface(InterfaceItemframe.class, EntityItemFrame.class);
 	}
 
 	public void registerPacket() {
