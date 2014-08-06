@@ -142,12 +142,12 @@ public class InterfacePlayer extends UniversalInterface {
 
 	@Override
 	public boolean isNextTo(int xCoord, int yCoord, int zCoord) {
-		return false;
+		return isEnderChest;
 	}
 
 	@Override
 	public int getDim() {
-		return userEntity == null ? 0 : userEntity.worldObj.provider.dimensionId;
+		return userEntity == null ? 0 : isEnderChest ? userEntity.worldObj.provider.dimensionId + 1 : userEntity.worldObj.provider.dimensionId;
 	}
 
 	@Override
