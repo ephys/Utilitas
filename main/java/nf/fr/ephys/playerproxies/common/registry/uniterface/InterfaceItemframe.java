@@ -43,15 +43,12 @@ public class InterfaceItemframe extends UniversalInterface {
 	}
 
 	@Override
-	public void validate() {
-
-	}
+	public void validate() {}
 
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
 		NBTHelper.setEntity(nbt, "itemframe", itemFrame);
 	}
-
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {

@@ -20,12 +20,18 @@ import nf.fr.ephys.cookiecore.helpers.InventoryHelper;
 import nf.fr.ephys.cookiecore.helpers.NBTHelper;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.block.BlockBeaconTierII;
+import nf.fr.ephys.playerproxies.common.item.IInterfaceUpgrade;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
 import nf.fr.ephys.playerproxies.common.registry.UniversalInterfaceRegistry;
 import nf.fr.ephys.playerproxies.common.registry.uniterface.UniversalInterface;
 
 public class TileEntityInterface extends TileEntity implements ISidedInventory, IFluidHandler {
 	private UniversalInterface uniterface = null;
+	private ItemStack[] upgrades = new ItemStack[5];
+
+	private boolean isFluidHandler = false;
+	private boolean isWireless = false;
+	private boolean worksCrossDim = false;
 
 	public int tick = 0;
 
@@ -43,7 +49,9 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 	}
 
 	private IFluidHandler getFluidHandler() {
-		return uniterface == null ? null : uniterface.getFluidHandler();
+		if (!isFluidHandler || uniterface == null) return null;
+
+		return uniterface.getFluidHandler();
 	}
 
 	@Override
@@ -110,6 +118,54 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 
 		if (this.uniterface != null)
 			this.uniterface.onTick(tick++);
+	}
+
+	public boolean addUpgrade(ItemStack heldItem, EntityPlayer player) {
+		if (heldItem == null || !(heldItem.getItem() instanceof IInterfaceUpgrade)) return false;
+
+		IInterfaceUpgrade upgrade = (IInterfaceUpgrade) heldItem.getItem();
+
+		int upgradeSlot = hasUpgrade(heldItem);
+		if (upgradeSlot != -1) {
+			ItemStack stack = upgrades[upgradeSlot];
+			upgrades[upgradeSlot] = null;
+
+			upgrade.onRemove(this, player, stack);
+
+			InventoryHelper.dropItem(stack, player);
+		} else {
+			upgradeSlot = getEmptySlot();
+
+			if (upgradeSlot == -1) return false;
+
+			if (!upgrade.onInsert(this, player, heldItem)) return false;
+
+			ItemStack stack = heldItem.copy();
+			stack.stackSize = 1;
+			heldItem.stackSize--;
+
+			if (heldItem.stackSize <= 0)
+				player.setCurrentItemOrArmor(0, null);
+		}
+
+		return true;
+	}
+
+	public int hasUpgrade(ItemStack upgrade) {
+		for (int i = 0; i < upgrades.length; i++) {
+			if (upgrades[i] != null && upgrades[i].isItemEqual(upgrade))
+				return i;
+		}
+
+		return -1;
+	}
+
+	private int getEmptySlot() {
+		for (int i = 0; i < upgrades.length; i++) {
+			if (upgrades[i] == null) return i;
+		}
+
+		return -1;
 	}
 
 	public boolean link(EntityPlayer player) {
@@ -311,5 +367,29 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 		IFluidHandler fluidHandler = this.getFluidHandler();
 
 		return fluidHandler == null ? null : fluidHandler.getTankInfo(from);
+	}
+
+	public void canHandleFluids(boolean b) {
+		isFluidHandler = b;
+	}
+
+	public void worksCrossDim(boolean b) {
+		worksCrossDim = b;
+	}
+
+	public void setWireless(boolean b) {
+		isWireless = b;
+	}
+
+	public boolean worksCrossDim() {
+		return false;
+	}
+
+	public boolean isWireless() {
+		return isWireless;
+	}
+
+	public boolean isFluidHandler() {
+		return isFluidHandler;
 	}
 }

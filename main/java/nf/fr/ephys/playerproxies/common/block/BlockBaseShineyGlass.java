@@ -71,7 +71,10 @@ public class BlockBaseShineyGlass extends BlockBreakable implements ITileEntityP
 		switch (metadata) {
 			case METADATA_INTERFACE:
 				if (!world.isRemote) {
-					((TileEntityInterface) world.getTileEntity(x, y, z)).link(player);
+					if (player.getHeldItem() == null)
+						((TileEntityInterface) world.getTileEntity(x, y, z)).link(player);
+					else
+						((TileEntityInterface) world.getTileEntity(x, y, z)).addUpgrade(player.getHeldItem(), player);
 				}
 
 				return true;
