@@ -50,4 +50,19 @@ public abstract class UniversalInterface {
 	public abstract IInventory getInventory();
 
 	public abstract IFluidHandler getFluidHandler();
+
+	/**
+	 * Gets the distance between coords and the linked object
+	 *
+	 * @param xCoord the x coord of the first point
+	 * @param yCoord the y coord of the first point
+	 * @param zCoord the z coord of the first point
+	 * @return the distance or -1 if unlinked
+	 */
+	public abstract int getDistance(int xCoord, int yCoord, int zCoord);
+
+	/**
+	 * @return the dimention id of the object, 0 if the object is null
+	 */
+	public abstract int getDim();
 }

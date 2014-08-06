@@ -27,6 +27,10 @@ item.PP_PotionDiffuser.name=Potion diffuser
 item.PP_UnemptyingBucket.name=Omnibucket
 item.PP_UnemptyingBucket.filled.name=%s Omnibucket
 item.PP_DragonHoe.name=DragonScale Hoe
+item.PP_InterfaceUpgrade=Uniterface Upgrade
+item.PP_InterfaceUpgrade.wireless=Uniterface Upgrade: Wireless
+item.PP_InterfaceUpgrade.crossdim=Uniterface Upgrade: Cross-Dim
+item.PP_InterfaceUpgrade.fluidhandler=Uniterface Upgrade: Fluid Handling
 
 playerproxies.configgui.ctgy.vanillatweaks=Vanilla Tweaks
 playerproxies.configgui.ctgy.vanillatweaks.tooltip=Properties of what Player Proxies changes from vanilla

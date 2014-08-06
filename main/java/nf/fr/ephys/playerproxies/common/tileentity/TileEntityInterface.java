@@ -19,7 +19,6 @@ import nf.fr.ephys.cookiecore.helpers.EntityHelper;
 import nf.fr.ephys.cookiecore.helpers.InventoryHelper;
 import nf.fr.ephys.cookiecore.helpers.NBTHelper;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
-import nf.fr.ephys.playerproxies.common.block.BlockBeaconTierII;
 import nf.fr.ephys.playerproxies.common.item.IInterfaceUpgrade;
 import nf.fr.ephys.playerproxies.common.item.ItemLinker;
 import nf.fr.ephys.playerproxies.common.registry.UniversalInterfaceRegistry;
@@ -45,13 +44,27 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 	}
 
 	private IInventory getInventory() {
-		return uniterface == null ? null : uniterface.getInventory();
+		return isInRange() ? uniterface.getInventory() : null;
 	}
 
 	private IFluidHandler getFluidHandler() {
-		if (!isFluidHandler || uniterface == null) return null;
+		if (!isFluidHandler || !isInRange()) return null;
 
 		return uniterface.getFluidHandler();
+	}
+
+	public boolean isInRange() {
+		if (uniterface == null) return false;
+
+		if (!worksCrossDim() && uniterface.getDim() != worldObj.provider.dimensionId) {
+			return false;
+		}
+
+		if (!isWireless() && uniterface.getDistance(xCoord, yCoord, zCoord) != 1) {
+			return false;
+		}
+
+		return true;
 	}
 
 	@Override
@@ -142,6 +155,8 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 
 			ItemStack stack = heldItem.copy();
 			stack.stackSize = 1;
+			upgrades[upgradeSlot] = stack;
+
 			heldItem.stackSize--;
 
 			if (heldItem.stackSize <= 0)
@@ -369,11 +384,11 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 		return fluidHandler == null ? null : fluidHandler.getTankInfo(from);
 	}
 
-	public void canHandleFluids(boolean b) {
+	public void setIsFluidHandler(boolean b) {
 		isFluidHandler = b;
 	}
 
-	public void worksCrossDim(boolean b) {
+	public void setWorksCrossDim(boolean b) {
 		worksCrossDim = b;
 	}
 
@@ -382,7 +397,7 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 	}
 
 	public boolean worksCrossDim() {
-		return false;
+		return worksCrossDim;
 	}
 
 	public boolean isWireless() {
