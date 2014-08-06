@@ -1,15 +1,17 @@
 package nf.fr.ephys.playerproxies.common.registry.uniterface;
 
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.IFluidHandler;
 import nf.fr.ephys.cookiecore.helpers.EntityHelper;
 import nf.fr.ephys.cookiecore.helpers.NBTHelper;
+import nf.fr.ephys.cookiecore.helpers.RenderHelper;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
+import org.lwjgl.opengl.GL11;
 
 import java.util.UUID;
 
@@ -24,7 +26,13 @@ public class InterfaceItemframe extends UniversalInterface {
 
 	@Override
 	public void renderInventory(int tickCount, double x, double y, double z, float tickTime) {
+		GL11.glRotatef(tickCount, 0.0F, 1.0F, 0.0F);
+		GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
 
+		RenderHelper.loadBlockMap();
+		//Block block = blockEntity == null ? Blocks.chest : blockEntity.getBlockType();
+		// todo: there is a lot of problems with rendering the thingy as an item, need to sort that out
+		nf.fr.ephys.playerproxies.client.renderer.TileEntityInterfaceRenderer.renderBlocksInstance.renderBlockAsItem(Blocks.chest, 0, 1.0F);
 	}
 
 	@Override
@@ -76,12 +84,29 @@ public class InterfaceItemframe extends UniversalInterface {
 
 	@Override
 	public IInventory getInventory() {
-		return proxy;
+		return itemFrame == null ? null : proxy;
 	}
 
 	@Override
 	public IFluidHandler getFluidHandler() {
 		return null;
+	}
+
+	private float[] relativeX = new float[] { -0.5F, 0.0625F, -0.5F, -1.0625F };
+	private float[] relativeZ = new float[] { -1.0625F, -0.5F, 0.0625F, -0.5F };
+
+	@Override
+	public boolean isNextTo(int xCoord, int yCoord, int zCoord) {
+		if (itemFrame == null) return false;
+
+		if (Math.abs(yCoord - itemFrame.posY) != 0.5F) return false;
+
+		return xCoord - itemFrame.posX == relativeX[itemFrame.hangingDirection] && zCoord - itemFrame.posZ == relativeZ[itemFrame.hangingDirection];
+	}
+
+	@Override
+	public int getDim() {
+		return itemFrame == null ? 0 : itemFrame.worldObj.provider.dimensionId;
 	}
 
 	public class ItemFrameProxy implements IInventory {

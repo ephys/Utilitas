@@ -26,7 +26,7 @@ import nf.fr.ephys.playerproxies.common.registry.uniterface.UniversalInterface;
 
 public class TileEntityInterface extends TileEntity implements ISidedInventory, IFluidHandler {
 	private UniversalInterface uniterface = null;
-	private ItemStack[] upgrades = new ItemStack[5];
+	public ItemStack[] upgrades = new ItemStack[5];
 
 	private boolean isFluidHandler = false;
 	private boolean isWireless = false;
@@ -44,11 +44,16 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 	}
 
 	private IInventory getInventory() {
-		return isInRange() ? uniterface.getInventory() : null;
+		if (!isInRange()) {
+			return null;
+		}
+
+		return uniterface.getInventory();
 	}
 
 	private IFluidHandler getFluidHandler() {
-		if (!isFluidHandler || !isInRange()) return null;
+		if (!isFluidHandler() || !isInRange())
+			return null;
 
 		return uniterface.getFluidHandler();
 	}
@@ -60,7 +65,7 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 			return false;
 		}
 
-		if (!isWireless() && uniterface.getDistance(xCoord, yCoord, zCoord) != 1) {
+		if (!isWireless() && !uniterface.isNextTo(xCoord, yCoord, zCoord)) {
 			return false;
 		}
 
@@ -86,6 +91,19 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 
 		nbt.setInteger("tick", tick);
 
+		nbt.setBoolean("isFluidHandler", isFluidHandler);
+		nbt.setBoolean("isWireless", isWireless);
+		nbt.setBoolean("worksCrossDim", worksCrossDim);
+
+		for (int i = 0; i < upgrades.length; i++) {
+			if (upgrades[i] == null) continue;
+
+			NBTTagCompound upgradeNBT = new NBTTagCompound();
+			upgrades[i].writeToNBT(upgradeNBT);
+
+			nbt.setTag("upgrade_" + i, upgradeNBT);
+		}
+
 		if (this.uniterface != null) {
 			NBTHelper.setClass(nbt, "handler", this.uniterface.getClass());
 			this.uniterface.writeToNBT(nbt);
@@ -98,6 +116,18 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 		super.readFromNBT(nbt);
 
 		tick = NBTHelper.getInt(nbt, "tick", 0);
+
+		isFluidHandler = NBTHelper.getBoolean(nbt, "isFluidHandler", isFluidHandler);
+		isWireless = NBTHelper.getBoolean(nbt, "isWireless", isWireless);
+		worksCrossDim = NBTHelper.getBoolean(nbt, "worksCrossDim", worksCrossDim);
+
+		for (int i = 0; i < upgrades.length; i++) {
+			if (nbt.hasKey("upgrade_" + i))
+				upgrades[i] = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("upgrade_" + i));
+			else
+				upgrades[i] = null;
+		}
+
 		Class<? extends UniversalInterface> clazz = (Class<? extends UniversalInterface>) NBTHelper.getClass(nbt, "handler");
 
 		if (clazz != null && UniversalInterfaceRegistry.hasHandler(clazz)) {
@@ -162,6 +192,8 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 			if (heldItem.stackSize <= 0)
 				player.setCurrentItemOrArmor(0, null);
 		}
+
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 
 		return true;
 	}

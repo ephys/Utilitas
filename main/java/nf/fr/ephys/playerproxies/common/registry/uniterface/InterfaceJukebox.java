@@ -8,7 +8,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemRecord;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidHandler;
 import nf.fr.ephys.cookiecore.helpers.BlockHelper;
 import nf.fr.ephys.cookiecore.helpers.ChatHelper;
@@ -19,6 +21,7 @@ import org.lwjgl.opengl.GL11;
 public class InterfaceJukebox extends UniversalInterface {
 	private JukeBoxProxy jukeboxProxy;
 	private int[] tileLocation;
+	private int tileWorld;
 
 	public InterfaceJukebox(TileEntityInterface tileEntity) {
 		super(tileEntity);
@@ -57,11 +60,13 @@ public class InterfaceJukebox extends UniversalInterface {
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
 		nbt.setIntArray("entityLocation", BlockHelper.getCoords(jukeboxProxy.jukebox));
+		nbt.setInteger("entityDim", jukeboxProxy.jukebox.getWorldObj().provider.dimensionId);
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		tileLocation = nbt.getIntArray("entityLocation");
+		tileWorld = nbt.getInteger("entityDim");
 	}
 
 	@Override
@@ -77,7 +82,8 @@ public class InterfaceJukebox extends UniversalInterface {
 				return;
 			}
 
-			TileEntity te = this.getTileEntity().getWorldObj().getTileEntity(tileLocation[0], tileLocation[1], tileLocation[2]);
+			World world = MinecraftServer.getServer().worldServerForDimension(tileWorld);
+			TileEntity te = world.getTileEntity(tileLocation[0], tileLocation[1], tileLocation[2]);
 
 			if (te instanceof BlockJukebox.TileEntityJukebox)
 				jukeboxProxy.jukebox = (BlockJukebox.TileEntityJukebox) te;
@@ -101,6 +107,19 @@ public class InterfaceJukebox extends UniversalInterface {
 	@Override
 	public IFluidHandler getFluidHandler() {
 		return null;
+	}
+
+	@Override
+	public boolean isNextTo(int xCoord, int yCoord, int zCoord) {
+		return jukeboxProxy.jukebox != null &&
+				Math.abs(xCoord - jukeboxProxy.jukebox.xCoord)
+						+ Math.abs(yCoord - jukeboxProxy.jukebox.yCoord)
+						+ Math.abs(zCoord - jukeboxProxy.jukebox.zCoord) == 1;
+	}
+
+	@Override
+	public int getDim() {
+		return jukeboxProxy.jukebox == null ? 0 : jukeboxProxy.jukebox.getWorldObj().provider.dimensionId;
 	}
 
 	public static class JukeBoxProxy implements IInventory {

@@ -8,16 +8,21 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidHandler;
+import nf.fr.ephys.cookiecore.helpers.ChatHelper;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
 import org.lwjgl.opengl.GL11;
 
 public class InterfaceTurtle extends UniversalInterface {
 	private TileEntity tileEntity = null;
 	private ITurtleAccess turtleAccess = null;
+
 	private int[] tileLocation;
+	private int tileWorld;
 
 	public InterfaceTurtle(TileEntityInterface tileEntity) {
 		super(tileEntity);
@@ -26,6 +31,20 @@ public class InterfaceTurtle extends UniversalInterface {
 	@Override
 	public IFluidHandler getFluidHandler() {
 		return null;
+	}
+
+
+	@Override
+	public boolean isNextTo(int xCoord, int yCoord, int zCoord) {
+		return tileEntity != null &&
+				Math.abs(xCoord - tileEntity.xCoord)
+						+ Math.abs(yCoord - tileEntity.yCoord)
+						+ Math.abs(zCoord - tileEntity.zCoord) == 1;
+	}
+
+	@Override
+	public int getDim() {
+		return 0;
 	}
 
 	@Override
@@ -38,7 +57,6 @@ public class InterfaceTurtle extends UniversalInterface {
 		if (link instanceof ITurtleTile) {
 			this.turtleAccess = ((ITurtleTile) link).getAccess();
 
-
 			return true;
 		}
 
@@ -48,7 +66,8 @@ public class InterfaceTurtle extends UniversalInterface {
 	@Override
 	public void onTick(int tick) {
 		if (turtleAccess == null) {
-			TileEntity turtle = this.getTileEntity().getWorldObj().getTileEntity(tileLocation[0], tileLocation[1], tileLocation[2]);
+			World world = MinecraftServer.getServer().worldServerForDimension(tileWorld);
+			TileEntity turtle = world.getTileEntity(tileLocation[0], tileLocation[1], tileLocation[2]);
 
 			if (turtle instanceof ITurtleTile) {
 				this.turtleAccess = ((ITurtleTile) turtle).getAccess();
@@ -84,7 +103,8 @@ public class InterfaceTurtle extends UniversalInterface {
 
 	@Override
 	public String getName() {
-		return "turtle";
+		ChunkCoordinates turtlePos = turtleAccess.getPosition();
+		return ChatHelper.getDisplayName(turtleAccess.getWorld().getTileEntity(turtlePos.posX, turtlePos.posY, turtlePos.posZ));
 	}
 
 	@Override
@@ -93,11 +113,13 @@ public class InterfaceTurtle extends UniversalInterface {
 
 		int[] posArray = {pos.posX, pos.posY, pos.posZ};
 		nbt.setIntArray("position", posArray);
+		nbt.setInteger("world", tileWorld);
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		this.tileLocation = nbt.getIntArray("position");
+		tileWorld = nbt.getInteger("world");
 	}
 
 	@Override

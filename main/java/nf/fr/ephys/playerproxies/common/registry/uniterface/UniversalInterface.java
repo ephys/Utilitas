@@ -52,14 +52,13 @@ public abstract class UniversalInterface {
 	public abstract IFluidHandler getFluidHandler();
 
 	/**
-	 * Gets the distance between coords and the linked object
-	 *
 	 * @param xCoord the x coord of the first point
 	 * @param yCoord the y coord of the first point
 	 * @param zCoord the z coord of the first point
-	 * @return the distance or -1 if unlinked
+	 *
+	 * @return the linked object is right next to the coords passed as a parameter
 	 */
-	public abstract int getDistance(int xCoord, int yCoord, int zCoord);
+	public abstract boolean isNextTo(int xCoord, int yCoord, int zCoord);
 
 	/**
 	 * @return the dimention id of the object, 0 if the object is null

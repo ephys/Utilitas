@@ -32,8 +32,10 @@ public class ItemInterfaceUpgrade extends Item implements IInterfaceUpgrade {
 	}
 
 	@Override
-	public void registerIcons(IIconRegister p_94581_1_) {
-		super.registerIcons(p_94581_1_);
+	public void registerIcons(IIconRegister register) {
+		textures[CROSSDIM] = register.registerIcon("ephys.pp:uniterface_upgrade_crossdim");
+		textures[WIRELESS] = register.registerIcon("ephys.pp:uniterface_upgrade_wireless");
+		textures[FLUIDHANDLER] = register.registerIcon("ephys.pp:uniterface_upgrade_fluidhandler");
 	}
 
 	@Override

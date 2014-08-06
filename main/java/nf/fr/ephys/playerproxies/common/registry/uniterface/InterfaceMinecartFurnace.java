@@ -84,6 +84,16 @@ public class InterfaceMinecartFurnace extends UniversalInterface {
 	}
 
 	@Override
+	public boolean isNextTo(int xCoord, int yCoord, int zCoord) {
+		return false;
+	}
+
+	@Override
+	public int getDim() {
+		return minecart == null ? 0 : minecart.worldObj.provider.dimensionId;
+	}
+
+	@Override
 	public void onBlockUpdate() {}
 
 	@Override

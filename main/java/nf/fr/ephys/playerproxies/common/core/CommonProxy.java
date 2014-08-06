@@ -109,6 +109,7 @@ public class CommonProxy {
 		//BlockDragonscale.register();
 		//BlockEnderDragonSpawner.register();
 
+		ItemInterfaceUpgrade.register();
 		ItemLinker.register();
 		ItemBiomeStorage.register();
 		ItemPotionDiffuser.register();
@@ -156,6 +157,7 @@ public class CommonProxy {
 		BlockBeaconTierII.registerCraft();
 		BlockFluidHopper.registerCraft();
 
+		ItemInterfaceUpgrade.registerCraft();
 		ItemPotionDiffuser.registerCraft();
 		ItemLinker.registerCraft();
 		ItemBiomeStorage.registerCraft();

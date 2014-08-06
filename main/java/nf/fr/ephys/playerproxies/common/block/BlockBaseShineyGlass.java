@@ -15,6 +15,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import nf.fr.ephys.cookiecore.helpers.InventoryHelper;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.item.MultitemBlock;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
@@ -71,7 +72,7 @@ public class BlockBaseShineyGlass extends BlockBreakable implements ITileEntityP
 		switch (metadata) {
 			case METADATA_INTERFACE:
 				if (!world.isRemote) {
-					if (player.getHeldItem() == null)
+					if (player.getHeldItem() == null || player.getHeldItem().getItem().equals(PlayerProxies.Items.linkDevice))
 						((TileEntityInterface) world.getTileEntity(x, y, z)).link(player);
 					else
 						((TileEntityInterface) world.getTileEntity(x, y, z)).addUpgrade(player.getHeldItem(), player);
@@ -110,9 +111,15 @@ public class BlockBaseShineyGlass extends BlockBreakable implements ITileEntityP
 	}
 
 	@Override
-	public void breakBlock(World paramWorld, int paramInt1, int paramInt2, int paramInt3, Block paramBlock, int paramInt4) {
-		super.breakBlock(paramWorld, paramInt1, paramInt2, paramInt3, paramBlock, paramInt4);
-		paramWorld.removeTileEntity(paramInt1, paramInt2, paramInt3);
+	public void onBlockPreDestroy(World world, int x, int y, int z, int p_149725_5_) {
+		super.onBlockPreDestroy(world, x, y, z, p_149725_5_);
+
+		TileEntityInterface te = (TileEntityInterface) world.getTileEntity(x, y, z);
+
+		for (int i = 0; i < te.upgrades.length; i++) {
+			if (te.upgrades[i] != null)
+				InventoryHelper.dropItem(te.upgrades[i], world, x, y, z);
+		}
 	}
 
 	@Override

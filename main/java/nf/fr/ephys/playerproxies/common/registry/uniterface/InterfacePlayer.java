@@ -133,16 +133,21 @@ public class InterfacePlayer extends UniversalInterface {
 		if (userEntity == null || userEntity.isDead) return null;
 
 		return isEnderChest ? userEntity.getInventoryEnderChest() : userEntity.inventory;
-
-		/*if (isEnderChest)
-			return userEntity == null ? PlayerInventoryRegistry.getEnderchest(userName) : userEntity.getInventoryEnderChest();
-		else
-			return userEntity == null ? PlayerInventoryRegistry.getInventory(userName) : userEntity.inventory;*/
 	}
 
 	@Override
 	public IFluidHandler getFluidHandler() {
 		return null;
+	}
+
+	@Override
+	public boolean isNextTo(int xCoord, int yCoord, int zCoord) {
+		return false;
+	}
+
+	@Override
+	public int getDim() {
+		return userEntity == null ? 0 : userEntity.worldObj.provider.dimensionId;
 	}
 
 	@Override

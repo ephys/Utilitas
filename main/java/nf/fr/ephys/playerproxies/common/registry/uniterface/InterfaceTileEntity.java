@@ -6,7 +6,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidHandler;
 import nf.fr.ephys.cookiecore.helpers.BlockHelper;
 import nf.fr.ephys.cookiecore.helpers.ChatHelper;
@@ -17,7 +19,8 @@ import org.lwjgl.opengl.GL11;
 public class  InterfaceTileEntity extends UniversalInterface {
 	private TileEntity blockEntity = null;
 
-	protected int[] tileLocation = null;
+	private int[] tileLocation = null;
+	private int tileWorld;
 
 	public InterfaceTileEntity(TileEntityInterface tileEntity) {
 		super(tileEntity);
@@ -49,11 +52,13 @@ public class  InterfaceTileEntity extends UniversalInterface {
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
 		nbt.setIntArray("entityLocation", BlockHelper.getCoords(blockEntity));
+		nbt.setInteger("entityWorld", blockEntity.getWorldObj().provider.dimensionId);
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		this.tileLocation = nbt.getIntArray("entityLocation");
+		this.tileWorld = nbt.getInteger("entityWorld");
 	}
 
 	@Override
@@ -70,6 +75,19 @@ public class  InterfaceTileEntity extends UniversalInterface {
 	}
 
 	@Override
+	public boolean isNextTo(int xCoord, int yCoord, int zCoord) {
+		return blockEntity != null &&
+				Math.abs(xCoord - blockEntity.xCoord)
+						+ Math.abs(yCoord - blockEntity.yCoord)
+						+ Math.abs(zCoord - blockEntity.zCoord) == 1;
+	}
+
+	@Override
+	public int getDim() {
+		return blockEntity == null ? 0 : blockEntity.getWorldObj().provider.dimensionId;
+	}
+
+	@Override
 	public void onTick(int tick) {
 		if (blockEntity == null) {
 			if (tileLocation == null || tileLocation.length != 3) {
@@ -77,11 +95,11 @@ public class  InterfaceTileEntity extends UniversalInterface {
 				return;
 			}
 
-			this.blockEntity = this.getTileEntity().getWorldObj().getTileEntity(tileLocation[0], tileLocation[1], tileLocation[2]);
+			World world = MinecraftServer.getServer().worldServerForDimension(tileWorld);
+			this.blockEntity = world.getTileEntity(tileLocation[0], tileLocation[1], tileLocation[2]);
 		}
 
 		if (this.blockEntity.isInvalid()) {
-			this.blockEntity = null;
 			this.getTileEntity().unlink();
 		}
 	}

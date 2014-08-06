@@ -2,7 +2,6 @@ package nf.fr.ephys.playerproxies.common.registry.uniterface;
 
 import net.minecraft.entity.item.EntityMinecartContainer;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.IFluidHandler;
@@ -78,6 +77,16 @@ public class InterfaceMinecart extends UniversalInterface {
 	@Override
 	public IFluidHandler getFluidHandler() {
 		return null;
+	}
+
+	@Override
+	public boolean isNextTo(int xCoord, int yCoord, int zCoord) {
+		return false;
+	}
+
+	@Override
+	public int getDim() {
+		return minecart == null ? 0 : minecart.worldObj.provider.dimensionId;
 	}
 
 	@Override
