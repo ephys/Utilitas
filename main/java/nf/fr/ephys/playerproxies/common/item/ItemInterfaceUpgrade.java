@@ -4,11 +4,13 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
+import nf.fr.ephys.playerproxies.common.block.BlockBaseShineyGlass;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
 
 import java.util.List;
@@ -21,7 +23,7 @@ public class ItemInterfaceUpgrade extends Item implements IInterfaceUpgrade {
 	public static final int FLUIDHANDLER = 2;
 
 	public static void register() {
-		if (!ItemBiomeStorage.enabled()) return;
+		if (!BlockBaseShineyGlass.interfaceEnabled) return;
 
 		PlayerProxies.Items.interfaceUpgrade = new ItemInterfaceUpgrade();
 		PlayerProxies.Items.interfaceUpgrade.setUnlocalizedName("PP_InterfaceUpgrade")
@@ -29,6 +31,34 @@ public class ItemInterfaceUpgrade extends Item implements IInterfaceUpgrade {
 				.setHasSubtypes(true);
 
 		GameRegistry.registerItem(PlayerProxies.Items.interfaceUpgrade, PlayerProxies.Items.interfaceUpgrade.getUnlocalizedName());
+	}
+
+	public static void registerCraft() {
+		if (!BlockBaseShineyGlass.interfaceEnabled) return;
+
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(PlayerProxies.Items.interfaceUpgrade, 1, CROSSDIM),
+				"ppp",
+				"dnd",
+				"ppp",
+				'p', Items.paper,
+				'n', PlayerProxies.Items.dragonScale,
+				'd', "dyeBlue"));
+
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(PlayerProxies.Items.interfaceUpgrade, 1, WIRELESS),
+				"ppp",
+				"dnd",
+				"ppp",
+				'p', Items.paper,
+				'n', Items.nether_star,
+				'd', "dyeOrange"));
+
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(PlayerProxies.Items.interfaceUpgrade, 1, FLUIDHANDLER),
+				"ppp",
+				"dnd",
+				"ppp",
+				'p', Items.paper,
+				'n', Items.bucket,
+				'd', "dyeCyan"));
 	}
 
 	@Override
@@ -54,12 +84,6 @@ public class ItemInterfaceUpgrade extends Item implements IInterfaceUpgrade {
 		}
 
 		return name;
-	}
-
-	public static void registerCraft() {
-		if (!ItemBiomeStorage.enabled()) return;
-
-		MinecraftForge.EVENT_BUS.register(PlayerProxies.Items.biomeStorage);
 	}
 
 	@Override
