@@ -51,7 +51,7 @@ public class PlayerProxies extends DummyModContainer {
 	public static final CreativeTabs creativeTab = new CreativeTabs(MODID) {
 		@Override
 		public Item getTabIconItem() {
-			return Item.getItemFromBlock(Blocks.proximitySensor);
+			return Item.getItemFromBlock(Blocks.baseShineyGlass);
 		}
 	};
 
