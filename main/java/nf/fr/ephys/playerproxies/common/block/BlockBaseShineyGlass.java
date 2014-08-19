@@ -111,10 +111,14 @@ public class BlockBaseShineyGlass extends BlockBreakable implements ITileEntityP
 	}
 
 	@Override
-	public void onBlockPreDestroy(World world, int x, int y, int z, int p_149725_5_) {
-		super.onBlockPreDestroy(world, x, y, z, p_149725_5_);
+	public void onBlockPreDestroy(World world, int x, int y, int z, int metadata) {
+		super.onBlockPreDestroy(world, x, y, z, metadata);
+
+		if (metadata == METADATA_ETHEREAL_GLASS) return;
 
 		TileEntityInterface te = (TileEntityInterface) world.getTileEntity(x, y, z);
+
+		if (te == null || te.upgrades == null) return;
 
 		for (int i = 0; i < te.upgrades.length; i++) {
 			if (te.upgrades[i] != null)
