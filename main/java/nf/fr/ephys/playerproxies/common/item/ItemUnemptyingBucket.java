@@ -412,16 +412,11 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 		int toDrain = Math.min(maxDrain, currentFluid.amount);
 
 		if (doDrain) {
-			System.out.println("==== DRAINING =====");
-			System.out.println("to drain: " + toDrain);
 			currentFluid.amount -= toDrain;
-			System.out.println("remains: " + currentFluid.amount);
 
 			setFluid(container, currentFluid);
 
 			refill(container, null, 0, 0, 0, currentFluid);
-
-			System.out.println("==== DONE ====");
 		}
 
 		currentFluid.amount = toDrain;
