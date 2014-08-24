@@ -15,7 +15,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
@@ -182,9 +181,7 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 
 			FluidStack fluid = getFluid(stack);
 
-			if (fluid == null) {
-				attemptDrain(stack, fluidHandler, ForgeDirection.getOrientation(side), world);
-			} else {
+			if (!attemptDrain(stack, fluidHandler, ForgeDirection.getOrientation(side), fluid, world)) {
 				attemptFill(stack, fluidHandler, ForgeDirection.getOrientation(side), fluid, world);
 			}
 
@@ -231,6 +228,8 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 			return stack;
 		}
 
+		if (!empty && fluid.amount < 1000) return stack;
+
 		if (mop == null || mop.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK) return stack;
 
 		if (world.canMineBlock(player, mop.blockX, mop.blockY, mop.blockZ)) {
@@ -263,34 +262,40 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 		}
 	}
 
-	private void refill(ItemStack stack, World world, double x, double y, double z) {
-		FluidStack fluid = getFluid(stack);
+	private boolean refill(ItemStack stack, World world, double x, double y, double z) {
+		return refill(stack, world, x, y, z, getFluid(stack));
+	}
 
-		int metadata = stack.getItemDamage();
-		if (metadata == METADATA_EMPTY && fluid == null) return;
-		if (metadata == METADATA_FILL && fluid != null) return;
+	private boolean refill(ItemStack stack, World world, double x, double y, double z, FluidStack currentFluid) {
+		int mode = stack.getItemDamage();
+		if (mode == METADATA_EMPTY && currentFluid == null) return false;
+		if (mode == METADATA_FILL && currentFluid != null && currentFluid.amount == 1000) return false;
 
 		NBTTagCompound nbt = NBTHelper.getNBT(stack);
 
-		if (!nbt.hasKey("fluidHandler"))  return;
+		if (!nbt.hasKey("fluidHandler")) return false;
 		NBTTagCompound tileNBT = nbt.getCompoundTag("fluidHandler");
 
 		int tileWorldID = tileNBT.getInteger("worldID");
-		if (!crossDim && world.provider.dimensionId != tileWorldID) return;
-
 		int[] tileCoords = tileNBT.getIntArray("coords");
 
-		if (range != -1 && (Math.abs(tileCoords[0] - x) > range
-				|| Math.abs(tileCoords[1] - y) > range
-				|| Math.abs(tileCoords[2] - z) > range)) return;
+		if (world != null) {
+			if (!crossDim && world.provider.dimensionId != tileWorldID)
+				return false;
+
+			if (range != -1 && (Math.abs(tileCoords[0] - x) > range || Math.abs(tileCoords[1] - y) > range || Math.abs(tileCoords[2] - z) > range))
+				return false;
+		}
 
 		World tileWorld = MinecraftServer.getServer().worldServerForDimension(tileWorldID);
+		if (world == null) world = tileWorld;
+
 		TileEntity te = tileWorld.getTileEntity(tileCoords[0], tileCoords[1], tileCoords[2]);
 
 		if (!(te instanceof IFluidHandler)) {
 			setFluidHandler(stack, null, 0);
 
-			return;
+			return false;
 		}
 
 		IFluidHandler fluidHandler = (IFluidHandler) te;
@@ -298,70 +303,69 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 		int side = tileNBT.getInteger("side");
 
 		ForgeDirection direction = ForgeDirection.getOrientation(side);
-		switch (metadata) {
+		switch (mode) {
 			case METADATA_EMPTY:
-				attemptFill(stack, fluidHandler, direction, fluid, world);
-				break;
+				return attemptFill(stack, fluidHandler, direction, currentFluid, world);
 
 			case METADATA_FILL:
-				attemptDrain(stack, fluidHandler, direction, world);
+				return attemptDrain(stack, fluidHandler, direction, currentFluid, world);
 		}
+
+		return false;
 	}
 
 	/**
 	 * Attempt to fill a FluidHandler
 	 */
-	private void attemptFill(ItemStack stack, IFluidHandler fluidHandler, ForgeDirection direction, FluidStack fluid, World world) {
-		if (world.isRemote) return;
+	private boolean attemptFill(ItemStack stack, IFluidHandler fluidHandler, ForgeDirection direction, FluidStack fluid, World world) {
+		if (fluid == null) return false;
 
-		if (fluidHandler.canFill(direction, fluid.getFluid())) {
-			int filled = fluidHandler.fill(direction, fluid, true);
+		if (!fluidHandler.canFill(direction, fluid.getFluid())) return false;
 
-			fluid.amount -= filled;
+		int filled = fluidHandler.fill(direction, fluid, !world.isRemote);
 
-			setFluid(stack, fluid);
-		}
+		fluid.amount -= filled;
+
+		setFluid(stack, fluid);
+
+		return filled != 0;
 	}
 
 	/**
 	 * Attempt to drain a FluidHandler
 	 */
-	private void attemptDrain(ItemStack stack, IFluidHandler fluidHandler, ForgeDirection direction, World world) {
-		if (world.isRemote) return;
-
-		FluidStack currentFluid = getFluid(stack);
-
+	private boolean attemptDrain(ItemStack stack, IFluidHandler fluidHandler, ForgeDirection direction, FluidStack currentFluid, World world) {
 		FluidStack drained;
-		if (currentFluid == null)
-			currentFluid = fluidHandler.drain(direction, 1000, true);
+		if (currentFluid == null) {
+			currentFluid = fluidHandler.drain(direction, 1000, !world.isRemote);
 
-			if (currentFluid == null) return;
-		else {
+			if (currentFluid == null || currentFluid.amount == 0)
+				return false;
+		} else {
 			FluidStack toDrain = currentFluid.copy();
 			toDrain.amount = 1000 - currentFluid.amount;
 
-			drained = fluidHandler.drain(direction, toDrain, true);
+			drained = fluidHandler.drain(direction, toDrain, !world.isRemote);
 
-			if (drained == null) return;
+			if (drained == null || drained.amount == 0) return false;
 
 			currentFluid.amount += drained.amount;
 		}
 
 		setFluid(stack, currentFluid);
+
+		return true;
 	}
 
 	public boolean hasFluid(ItemStack container) {
 		NBTTagCompound nbt = NBTHelper.getNBT(container);
 
-		return nbt.hasKey("fluidStack") || nbt.hasKey("fluid");
+		return nbt.hasKey("fluidStack");
 	}
 
 	@Override
 	public FluidStack getFluid(ItemStack container) {
 		NBTTagCompound nbt = NBTHelper.getNBT(container);
-
-		// backward compatibility with stupid implementation ;-;
-		if (nbt.hasKey("fluid")) return new FluidStack(FluidRegistry.getFluid(nbt.getInteger("fluid")), 1000);
 
 		if (nbt.hasKey("fluidStack")) return FluidStack.loadFluidStackFromNBT(nbt.getCompoundTag("fluidStack"));
 
@@ -392,6 +396,8 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 			}
 
 			setFluid(container, currentFluid);
+
+			refill(container, null, 0, 0, 0);
 		}
 
 		return toFill;
@@ -405,11 +411,20 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 
 		int toDrain = Math.min(maxDrain, currentFluid.amount);
 
-		currentFluid.amount -= toDrain;
-
 		if (doDrain) {
+			System.out.println("==== DRAINING =====");
+			System.out.println("to drain: " + toDrain);
+			currentFluid.amount -= toDrain;
+			System.out.println("remains: " + currentFluid.amount);
+
 			setFluid(container, currentFluid);
+
+			refill(container, null, 0, 0, 0, currentFluid);
+
+			System.out.println("==== DONE ====");
 		}
+
+		currentFluid.amount = toDrain;
 
 		return currentFluid;
 	}
