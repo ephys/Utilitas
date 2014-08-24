@@ -101,7 +101,12 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 	public void addInformation(ItemStack stack, EntityPlayer player, List data, boolean debug) {
 		data.add(EnumChatFormatting.DARK_PURPLE + (stack.getItemDamage() == METADATA_EMPTY ? StatCollector.translateToLocal("pp_tooltip.bucket_mode_empty") : StatCollector.translateToLocal("pp_tooltip.bucket_mode_fill")));
 
-		if (NBTHelper.getNBT(stack).hasKey("fluidHandler"))
+		NBTTagCompound nbt = NBTHelper.getNBT(stack);
+		if (nbt.hasKey("fluidStack")) {
+			data.add(nbt.getCompoundTag("fluidStack").getInteger("Amount") + "mB");
+		}
+
+		if (nbt.hasKey("fluidHandler"))
 			data.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("pp_tooltip.bucket_bound"));
 	}
 
@@ -121,7 +126,7 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 	public static void setFluid(ItemStack stack, FluidStack liquid) {
 		NBTTagCompound nbt = NBTHelper.getNBT(stack);
 
-		if (liquid == null)
+		if (liquid == null || liquid.amount == 0)
 			nbt.removeTag("fluidStack");
 		else {
 			NBTTagCompound fluidNBT = new NBTTagCompound();
@@ -183,7 +188,7 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 				attemptFill(stack, fluidHandler, ForgeDirection.getOrientation(side), fluid, world);
 			}
 
-			refill(stack, world, player);
+			refill(stack, world, player.posX, player.posY, player.posZ);
 
 			return !world.isRemote;
 		}
@@ -213,7 +218,7 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 				ChatHelper.sendChatMessage(player, String.format(StatCollector.translateToLocal("pp_messages.bucket_unbound"), this.getItemStackDisplayName(stack)));
 			}
 
-			refill(stack, world, player);
+			refill(stack, world, player.posX, player.posY, player.posZ);
 
 			return stack;
 		}
@@ -221,7 +226,7 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 		if (player.isSneaking()) {
 			switchMode(stack, player);
 
-			refill(stack, world, player);
+			refill(stack, world, player.posX, player.posY, player.posZ);
 
 			return stack;
 		}
@@ -243,7 +248,7 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 			}
 		}
 
-		refill(stack, world, player);
+		refill(stack, world, player.posX, player.posY, player.posZ);
 
 		return stack;
 	}
@@ -258,7 +263,7 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 		}
 	}
 
-	private void refill(ItemStack stack, World world, EntityPlayer player) {
+	private void refill(ItemStack stack, World world, double x, double y, double z) {
 		FluidStack fluid = getFluid(stack);
 
 		int metadata = stack.getItemDamage();
@@ -275,9 +280,9 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 
 		int[] tileCoords = tileNBT.getIntArray("coords");
 
-		if (range != -1 && (Math.abs(tileCoords[0] - player.posX) > range
-				|| Math.abs(tileCoords[1] - player.posY) > range
-				|| Math.abs(tileCoords[2] - player.posZ) > range)) return;
+		if (range != -1 && (Math.abs(tileCoords[0] - x) > range
+				|| Math.abs(tileCoords[1] - y) > range
+				|| Math.abs(tileCoords[2] - z) > range)) return;
 
 		World tileWorld = MinecraftServer.getServer().worldServerForDimension(tileWorldID);
 		TileEntity te = tileWorld.getTileEntity(tileCoords[0], tileCoords[1], tileCoords[2]);
@@ -307,14 +312,14 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 	 * Attempt to fill a FluidHandler
 	 */
 	private void attemptFill(ItemStack stack, IFluidHandler fluidHandler, ForgeDirection direction, FluidStack fluid, World world) {
+		if (world.isRemote) return;
+
 		if (fluidHandler.canFill(direction, fluid.getFluid())) {
-			int filled = fluidHandler.fill(direction, fluid, false);
+			int filled = fluidHandler.fill(direction, fluid, true);
 
-			if (filled != fluid.amount) return;
+			fluid.amount -= filled;
 
-			if (!world.isRemote)
-				fluidHandler.fill(direction, fluid, true);
-			setFluid(stack, null);
+			setFluid(stack, fluid);
 		}
 	}
 
@@ -322,13 +327,27 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 	 * Attempt to drain a FluidHandler
 	 */
 	private void attemptDrain(ItemStack stack, IFluidHandler fluidHandler, ForgeDirection direction, World world) {
-		FluidStack fstack = fluidHandler.drain(direction, 1000, false);
-		if (fstack == null || fstack.amount != 1000) return;
+		if (world.isRemote) return;
 
-		setFluid(stack, fstack);
+		FluidStack currentFluid = getFluid(stack);
 
-		if (!world.isRemote)
-			fluidHandler.drain(direction, 1000, true);
+		FluidStack drained;
+		if (currentFluid == null)
+			currentFluid = fluidHandler.drain(direction, 1000, true);
+
+			if (currentFluid == null) return;
+		else {
+			FluidStack toDrain = currentFluid.copy();
+			toDrain.amount = 1000 - currentFluid.amount;
+
+			drained = fluidHandler.drain(direction, toDrain, true);
+
+			if (drained == null) return;
+
+			currentFluid.amount += drained.amount;
+		}
+
+		setFluid(stack, currentFluid);
 	}
 
 	public boolean hasFluid(ItemStack container) {
@@ -360,18 +379,22 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 
 		FluidStack currentFluid = getFluid(container);
 
-		if (currentFluid != null) return 0;
+		if (currentFluid != null && !resource.isFluidEqual(currentFluid)) return 0;
 
-		if (resource.amount < 1000) return 0;
+		int toFill = Math.min(resource.amount, currentFluid == null ? 1000 : (1000 - currentFluid.amount));
 
 		if (doFill) {
-			FluidStack newFluid = resource.copy();
-			newFluid.amount = 1000;
+			if (currentFluid == null) {
+				currentFluid = resource.copy();
+				currentFluid.amount = toFill;
+			} else {
+				currentFluid.amount += toFill;
+			}
 
-			setFluid(container, newFluid);
+			setFluid(container, currentFluid);
 		}
 
-		return 1000;
+		return toFill;
 	}
 
 	@Override
@@ -380,12 +403,14 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 
 		if (currentFluid == null) return null;
 
-		if (maxDrain < 1000) return null;
+		int toDrain = Math.min(maxDrain, currentFluid.amount);
+
+		currentFluid.amount -= toDrain;
 
 		if (doDrain) {
-			setFluid(container, null);
+			setFluid(container, currentFluid);
 		}
 
-		return currentFluid.copy();
+		return currentFluid;
 	}
 }

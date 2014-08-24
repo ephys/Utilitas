@@ -5,10 +5,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**
- * Reference implementation of {@link IEnergyHandler}. Use/extend this or implement your own.
- * 
+ * Reference implementation of {@link cofh.api.energy.IEnergyHandler}. Use/extend this or implement your own.
+ *
  * @author King Lemming
- * 
+ *
  */
 public class TileEnergyHandler extends TileEntity implements IEnergyHandler {
 
