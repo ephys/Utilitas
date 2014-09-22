@@ -28,7 +28,7 @@ import java.util.Arrays;
 	guiFactory = GuiModConfigFactory.CLASSNAME
 )
 public class PlayerProxies extends DummyModContainer {
-	public static final String VERSION = "1.7.10-1.1.3";
+	public static final String VERSION = "1.7.10-1.1.4";
 	public static final String MODID = "ephys.playerproxies";
 	public static final String NAME = "Player Proxies";
 

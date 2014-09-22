@@ -67,6 +67,7 @@ public class CommonProxy {
 			try {
 				TileEntityBeaconTierII.doppleganger = Class.forName("vazkii.botania.common.entity.EntityDoppleganger");
 			} catch (ClassNotFoundException e) {
+				System.out.println("Could not find botania's doppleganger.");
 				e.printStackTrace();
 			}
 		}
@@ -177,6 +178,7 @@ public class CommonProxy {
 	private void registerHandlers() {
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 		MinecraftForge.EVENT_BUS.register(new PlayerInventoryRegistry());
+		MinecraftForge.EVENT_BUS.register(new CommandNickname.Events());
 
 		FMLCommonHandler.instance().bus().register(PlayerProxies.getConfig());
 
@@ -194,7 +196,6 @@ public class CommonProxy {
 	public void serverStarting(FMLServerStartingEvent event) {
 		if (CommandNickname.enabled) {
 			CommandNickname command = new CommandNickname();
-			MinecraftForge.EVENT_BUS.register(command);
 			event.registerServerCommand(command);
 		}
 	}

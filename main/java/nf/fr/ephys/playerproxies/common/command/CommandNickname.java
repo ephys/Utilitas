@@ -107,33 +107,35 @@ public class CommandNickname extends CommandBase {
 		return false;
 	}
 
-	@SubscribeEvent
-	public void changePlayerName(PlayerEvent.NameFormat event) {
-		NBTTagCompound nbt = event.entityPlayer.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+	public static class Events {
+		@SubscribeEvent
+		public void changePlayerName(PlayerEvent.NameFormat event) {
+			if (!event.entity.worldObj.isRemote) {
+				NBTTagCompound nbt = event.entityPlayer.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
 
-		if (nbt.hasKey("nickname")) {
-			event.displayname = nbt.getString("nickname");
-		} else {
-			String name = NicknamesRegistry.get(event.entityPlayer.getGameProfile().getName());
+				if (nbt.hasKey("nickname")) {
+					event.displayname = nbt.getString("nickname");
+				}
+			} else {
+				// clients have the list stored in a registry, as entities are volatile.
+				String name = NicknamesRegistry.get(event.entityPlayer.getUniqueID());
 
-			if (name != null) {
-				nbt.setString("nickname", name);
-				event.displayname = name;
+				if (name != null) {
+					event.displayname = name;
+				}
 			}
 		}
-	}
 
-	@SubscribeEvent
-	public void onJoin(EntityJoinWorldEvent event) {
-		if (event.entity instanceof EntityPlayerMP) {
-			if (!event.world.isRemote) { // server side
-				// send this player's nick to every other player
-				PacketSetNicknameHandler.sendNickToAll((EntityPlayerMP) event.entity);
+		@SubscribeEvent
+		public void onJoin(EntityJoinWorldEvent event) {
+			if (event.entity instanceof EntityPlayerMP) {
+				if (!event.world.isRemote) { // server side
+					// send this player's nick to every other player
+					PacketSetNicknameHandler.sendNickToAll((EntityPlayerMP) event.entity);
 
-				// send this player every other player's nick
-				PacketSetNicknameHandler.sendListToPlayer((EntityPlayerMP) event.entity);
-			} else {
-				((EntityPlayer) event.entity).refreshDisplayName();
+					// send this player every other player's nick
+					PacketSetNicknameHandler.sendListToPlayer((EntityPlayerMP) event.entity);
+				}
 			}
 		}
 	}

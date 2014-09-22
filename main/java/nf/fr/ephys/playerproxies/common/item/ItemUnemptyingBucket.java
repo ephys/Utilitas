@@ -3,6 +3,7 @@ package nf.fr.ephys.playerproxies.common.item;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -185,7 +186,9 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 				attemptFill(stack, fluidHandler, ForgeDirection.getOrientation(side), fluid, world);
 			}
 
-			refill(stack, world, player.posX, player.posY, player.posZ);
+			if (!world.isRemote) {
+				refill(stack, world, player.posX, player.posY, player.posZ, (EntityPlayerMP) player);
+			}
 
 			return !world.isRemote;
 		}
@@ -215,7 +218,8 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 				ChatHelper.sendChatMessage(player, String.format(StatCollector.translateToLocal("pp_messages.bucket_unbound"), this.getItemStackDisplayName(stack)));
 			}
 
-			refill(stack, world, player.posX, player.posY, player.posZ);
+			if (!world.isRemote)
+				refill(stack, world, player.posX, player.posY, player.posZ, (EntityPlayerMP) player);
 
 			return stack;
 		}
@@ -223,7 +227,8 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 		if (player.isSneaking()) {
 			switchMode(stack, player);
 
-			refill(stack, world, player.posX, player.posY, player.posZ);
+			if (!world.isRemote)
+				refill(stack, world, player.posX, player.posY, player.posZ, (EntityPlayerMP) player);
 
 			return stack;
 		}
@@ -247,7 +252,8 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 			}
 		}
 
-		refill(stack, world, player.posX, player.posY, player.posZ);
+		if (!world.isRemote)
+			refill(stack, world, player.posX, player.posY, player.posZ, (EntityPlayerMP) player);
 
 		return stack;
 	}
@@ -262,11 +268,11 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 		}
 	}
 
-	private boolean refill(ItemStack stack, World world, double x, double y, double z) {
-		return refill(stack, world, x, y, z, getFluid(stack));
+	private boolean refill(ItemStack stack, World world, double x, double y, double z, EntityPlayerMP player) {
+		return refill(stack, world, x, y, z, getFluid(stack), player);
 	}
 
-	private boolean refill(ItemStack stack, World world, double x, double y, double z, FluidStack currentFluid) {
+	private boolean refill(ItemStack stack, World world, double x, double y, double z, FluidStack currentFluid, EntityPlayerMP itemOwner) {
 		int mode = stack.getItemDamage();
 		if (mode == METADATA_EMPTY && currentFluid == null) return false;
 		if (mode == METADATA_FILL && currentFluid != null && currentFluid.amount == 1000) return false;
@@ -303,15 +309,21 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 		int side = tileNBT.getInteger("side");
 
 		ForgeDirection direction = ForgeDirection.getOrientation(side);
+
+		boolean success = false;
 		switch (mode) {
 			case METADATA_EMPTY:
-				return attemptFill(stack, fluidHandler, direction, currentFluid, world);
+				success = attemptFill(stack, fluidHandler, direction, currentFluid, world);
+				break;
 
 			case METADATA_FILL:
-				return attemptDrain(stack, fluidHandler, direction, currentFluid, world);
+				success = attemptDrain(stack, fluidHandler, direction, currentFluid, world);
 		}
 
-		return false;
+		if (itemOwner != null)
+			itemOwner.mcServer.getConfigurationManager().syncPlayerInventory(itemOwner);
+
+		return success;
 	}
 
 	/**
@@ -397,7 +409,7 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 
 			setFluid(container, currentFluid);
 
-			refill(container, null, 0, 0, 0);
+			refill(container, null, 0, 0, 0, null);
 		}
 
 		return toFill;
@@ -416,7 +428,7 @@ public class ItemUnemptyingBucket extends Item implements IFluidContainerItem {
 
 			setFluid(container, currentFluid);
 
-			refill(container, null, 0, 0, 0, currentFluid);
+			refill(container, null, 0, 0, 0, currentFluid, null);
 		}
 
 		currentFluid.amount = toDrain;

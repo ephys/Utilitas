@@ -35,15 +35,18 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 	private float rotation = 0;
 	private Color beaconColor = Color.white;
 	public static final Color BAD_COLOR = new Color(140, 14, 36);
-	private static final Color COLOR_GAIABOSS = new Color(255, 0, 98);
+	public static final Color COLOR_GAIABOSS = new Color(255, 0, 98);
+	public static final Color COLOR_ENDSIEGE = new Color(21, 21, 21);
+
 	public int displayTick = 0;
 
 	public static final int MAX_LEVELS = 6;
 	public static final int TIERII_LEVEL = 4;
 	public static final int MAX_ITEMS = 4;
 
-	private ItemStack[] containedItems = new ItemStack[MAX_ITEMS];
 	private int nbItems = 0;
+	private ItemStack[] containedItems = new ItemStack[MAX_ITEMS];
+	private List<BeaconEffectsRegistry.Effect> currentEffects;
 
 	// Botania special code o/
 	public static Class<?> doppleganger = null;
@@ -116,10 +119,10 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 	}
 
 	private boolean isNearBeacon() {
-		return worldObj.getBlock(xCoord - 1, yCoord, zCoord).equals(PlayerProxies.Blocks.betterBeacon) ||
-				worldObj.getBlock(xCoord + 1, yCoord, zCoord).equals(PlayerProxies.Blocks.betterBeacon) ||
-				worldObj.getBlock(xCoord, yCoord, zCoord - 1).equals(PlayerProxies.Blocks.betterBeacon) ||
-				worldObj.getBlock(xCoord, yCoord, zCoord + 1).equals(PlayerProxies.Blocks.betterBeacon);
+		return PlayerProxies.Blocks.betterBeacon.equals(worldObj.getBlock(xCoord - 1, yCoord, zCoord)) ||
+				PlayerProxies.Blocks.betterBeacon.equals(worldObj.getBlock(xCoord + 1, yCoord, zCoord)) ||
+				PlayerProxies.Blocks.betterBeacon.equals(worldObj.getBlock(xCoord, yCoord, zCoord - 1)) ||
+				PlayerProxies.Blocks.betterBeacon.equals(worldObj.getBlock(xCoord, yCoord, zCoord + 1));
 	}
 
 	private void validateStructure() {
@@ -150,15 +153,10 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 				totalNegative = totalBlocks;
 
 			if (worldObj.isRemote) {
-				if (hasDoppleganger)
+				if (hasDoppleganger) {
 					beaconColor = COLOR_GAIABOSS;
-				else {
-					//Color colorNeg = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(Color.white, Color.red, negativity());
-					//Color colorPos = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(Color.white, Color.green, positivity());
-
+				} else {
 					beaconColor = MathHelper.gradient(Color.white, BAD_COLOR, negativity());
-
-					//beaconColor = nf.fr.ephys.playerproxies.helpers.MathHelper.gradient(colorNeg, colorPos, 0.5F);
 
 					if (hasDragonEgg)
 						beaconColor = MathHelper.gradient(beaconColor, Color.magenta, 0.5F);
@@ -170,10 +168,6 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 	public static boolean isBlockNegative(Block block) {
 		return block.equals(Blocks.coal_block);
 	}
-
-	//public static boolean isBlockPositive(Block block) {
-	//	return block.equals(Blocks.emerald_block) || block.equals(Blocks.diamond_block);
-	//}
 
 	@SideOnly(Side.CLIENT)
 	public Color getBeaconColor() { return beaconColor; }
@@ -188,10 +182,6 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 
 				if (isBlockNegative(block))
 					totalNegative++;
-
-				//if (isBlockPositive(block))
-				//	totalPositive++;
-
 
 				totalBlocks++;
 			}
@@ -214,15 +204,16 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 			}
 		}
 
-		List<BeaconEffectsRegistry.Effect> effects = BeaconEffectsRegistry.getEffects(containedItems, level);
+		if (currentEffects == null)
+			currentEffects =  BeaconEffectsRegistry.getEffects(containedItems, level);
 
-		if (effects.size() != 0) {
+		if (currentEffects.size() != 0) {
 			double range = ((this.level * 15) + 10) / (1 + this.negativity());
 
 			AxisAlignedBB area = AxisAlignedBB.getBoundingBox(this.xCoord + 1, this.yCoord + 1, this.zCoord + 1, this.xCoord, this.yCoord - level, this.zCoord).expand(range, range, range);
 			List entities = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, area);
 
-			for (BeaconEffectsRegistry.Effect effectObj : effects) {
+			for (BeaconEffectsRegistry.Effect effectObj : currentEffects) {
 				int currentEffect = effectObj.getPotionEffect();
 				if (shouldSkipEffect(currentEffect)) continue;
 
@@ -256,22 +247,14 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 		}
 	}
 
-//	public float positivity() {
-//		return (float) totalPositive / totalBlocks;
-//	}
-
 	public float negativity() {
 		return (float) totalNegative / totalBlocks;
 	}
 
 	private boolean shouldSkipEffect(int effectID) {
-		//if (Potion.potionTypes[effectID].isBadEffect())
-
-		// bad potion effects are skipped if the beacon is not negative enough
 		if (Potion.potionTypes[effectID].isBadEffect)
 			return Math.random() > negativity();
 
-		// good potion effects are skipped if the beacon is too negative
 		return Math.random() < negativity();
 	}
 
@@ -306,6 +289,15 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 			nbItems++;
 
 		this.containedItems[i] = itemStack;
+
+		this.currentEffects = null;
+
+		markDirty();
+	}
+
+	@Override
+	public void markDirty() {
+		super.markDirty();
 
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
@@ -384,6 +376,16 @@ public class TileEntityBeaconTierII extends TileEntityBeacon {
 		}
 
 		return -1;
+	}
+
+	@Override
+	public int getSecondaryEffect() {
+		return currentEffects.size() > 1 ? currentEffects.get(1).getPotionEffect() : 0;
+	}
+
+	@Override
+	public int getPrimaryEffect() {
+		return currentEffects.size() > 0 ? currentEffects.get(0).getPotionEffect() : 0;
 	}
 
 	public int getItemCount() {

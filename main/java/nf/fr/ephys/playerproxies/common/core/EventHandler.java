@@ -17,20 +17,6 @@ public class EventHandler {
 	public static final Random random = new Random();
 
 	@SubscribeEvent
-	@SideOnly(Side.CLIENT)
-	public void renderParticles(RenderPlayerEvent.Post event) {
-		EntityPlayer player = event.entityPlayer;
-		if (!player.onGround && !player.worldObj.isDaytime() && player.getGameProfile().getName().equals("GC_Darma"))
-			player.worldObj.spawnParticle("portal",
-					player.posX + (random.nextDouble() - 0.5D) * (double) player.width,
-					player.posY + random.nextDouble() * (double) player.height - 0.25D,
-					player.posZ + (random.nextDouble() - 0.5D) * (double) player.width,
-					(random.nextDouble() - 0.5D) * 2.0D,
-					- random.nextDouble(),
-					(random.nextDouble() - 0.5D) * 2.0D);
-	}
-
-	@SubscribeEvent
 	public void onLivingUpdate(LivingUpdateEvent event) {
 		if (!(event.entityLiving instanceof EntityPlayer))
 			return;

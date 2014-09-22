@@ -14,23 +14,27 @@ import nf.fr.ephys.playerproxies.client.core.NicknamesRegistry;
 import nf.fr.ephys.playerproxies.common.PlayerProxies;
 
 import java.util.Map;
+import java.util.UUID;
 
 public class PacketSetNicknameHandler implements IMessageHandler<PacketSetNicknameHandler.PacketSetNickname, IMessage> {
 	public static void sendListToPlayer(EntityPlayerMP player) {
 		PacketSetNickname packet = new PacketSetNickname(null);
 
-		PlayerProxies.getNetHandler().sendTo(packet, player);
+		if (packet.nicknames.size() != 0)
+			PlayerProxies.getNetHandler().sendTo(packet, player);
 	}
 
 	public static void sendNickToAll(EntityPlayerMP player) {
 		PacketSetNickname packet = new PacketSetNickname(player);
 
-		PlayerProxies.getNetHandler().sendToAll(packet);
+
+		if (packet.nicknames.size() != 0)
+			PlayerProxies.getNetHandler().sendToAll(packet);
 	}
 
 	@Override
 	public IMessage onMessage(PacketSetNickname packet, MessageContext messageContext) {
-		for (Map.Entry<String, String> nickname : packet.nicknames.entrySet()) {
+		for (Map.Entry<UUID, String> nickname : packet.nicknames.entrySet()) {
 			NicknamesRegistry.set(nickname.getKey(), nickname.getValue());
 		}
 
@@ -38,7 +42,7 @@ public class PacketSetNicknameHandler implements IMessageHandler<PacketSetNickna
 	}
 
 	public static class PacketSetNickname implements IMessage {
-		private SimpleMap<String, String> nicknames = new SimpleMap<>();
+		private SimpleMap<UUID, String> nicknames = new SimpleMap<>();
 
 		public PacketSetNickname() {}
 
@@ -49,14 +53,14 @@ public class PacketSetNicknameHandler implements IMessageHandler<PacketSetNickna
 					NBTTagCompound nbt = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
 
 					if (nbt.hasKey("nickname")) {
-						nicknames.put(player.getGameProfile().getName(), nbt.getString("nickname"));
+						nicknames.put(player.getGameProfile().getId(), nbt.getString("nickname"));
 					}
 				}
 			} else {
 				NBTTagCompound nbt = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
 
 				if (nbt.hasKey("nickname")) {
-					nicknames.put(player.getGameProfile().getName(), nbt.getString("nickname"));
+					nicknames.put(player.getGameProfile().getId(), nbt.getString("nickname"));
 				}
 			}
 		}
@@ -66,7 +70,8 @@ public class PacketSetNicknameHandler implements IMessageHandler<PacketSetNickna
 			int size = byteBuf.readInt();
 
 			for (int i = 0; i < size; i++) {
-				nicknames.put(ByteBufUtils.readUTF8String(byteBuf), ByteBufUtils.readUTF8String(byteBuf));
+				UUID uuid = new UUID(byteBuf.readLong(), byteBuf.readLong());
+				nicknames.put(uuid, ByteBufUtils.readUTF8String(byteBuf));
 			}
 		}
 
@@ -74,8 +79,11 @@ public class PacketSetNicknameHandler implements IMessageHandler<PacketSetNickna
 		public void toBytes(ByteBuf byteBuf) {
 			byteBuf.writeInt(nicknames.size());
 
-			for (Map.Entry<String, String> nickname : nicknames.entrySet()) {
-				ByteBufUtils.writeUTF8String(byteBuf, nickname.getKey());
+			for (Map.Entry<UUID, String> nickname : nicknames.entrySet()) {
+				UUID uuid = nickname.getKey();
+
+				byteBuf.writeLong(uuid.getMostSignificantBits());
+				byteBuf.writeLong(uuid.getLeastSignificantBits());
 				ByteBufUtils.writeUTF8String(byteBuf, nickname.getValue());
 			}
 		}

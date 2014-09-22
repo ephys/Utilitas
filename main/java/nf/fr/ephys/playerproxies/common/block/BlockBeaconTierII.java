@@ -8,8 +8,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
@@ -52,7 +50,7 @@ public class BlockBeaconTierII extends BlockBeacon {
 		);
 
 		// level 1 beacon
-		BeaconEffectsRegistry.addEffect(new ItemStack[]{ new ItemStack(Items.sugar)/*, new ItemStack(Items.redstone)*/ }, Potion.moveSpeed.getId(), 1, -1);
+		BeaconEffectsRegistry.addEffect(new ItemStack[]{ new ItemStack(Items.sugar), new ItemStack(Items.redstone) }, Potion.moveSpeed.getId(), 1, -1);
 		BeaconEffectsRegistry.addEffect(new ItemStack[]{ new ItemStack(Items.sugar), new ItemStack(Items.diamond_pickaxe), new ItemStack(Items.golden_apple) }, Potion.digSpeed.getId(), 1, -1);
 
 		BeaconEffectsRegistry.addEffect(new ItemStack[]{ new ItemStack(Items.fish, 1, 0), new ItemStack(Items.fish, 1, 1), new ItemStack(Items.fish, 1, 2), new ItemStack(Items.fish, 1, 3) }, Potion.moveSlowdown.getId(), 1, -1);
