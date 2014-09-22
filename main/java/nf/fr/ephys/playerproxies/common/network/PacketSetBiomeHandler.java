@@ -12,7 +12,7 @@ public class PacketSetBiomeHandler implements IMessageHandler<PacketSetBiomeHand
 	public static void setClientBiome(int x, int z, int biome, int dimention) {
 		PacketSetBiome packet = new PacketSetBiome(x, z, biome);
 
-		PlayerProxies.getNetHandler().sendToDimension(packet, dimention);
+		PlayerProxies.NET_HANDLER.sendToDimension(packet, dimention);
 	}
 
 	@Override

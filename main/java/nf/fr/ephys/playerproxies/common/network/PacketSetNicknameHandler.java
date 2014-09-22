@@ -21,15 +21,14 @@ public class PacketSetNicknameHandler implements IMessageHandler<PacketSetNickna
 		PacketSetNickname packet = new PacketSetNickname(null);
 
 		if (packet.nicknames.size() != 0)
-			PlayerProxies.getNetHandler().sendTo(packet, player);
+			PlayerProxies.NET_HANDLER.sendTo(packet, player);
 	}
 
 	public static void sendNickToAll(EntityPlayerMP player) {
 		PacketSetNickname packet = new PacketSetNickname(player);
 
-
 		if (packet.nicknames.size() != 0)
-			PlayerProxies.getNetHandler().sendToAll(packet);
+			PlayerProxies.NET_HANDLER.sendToAll(packet);
 	}
 
 	@Override

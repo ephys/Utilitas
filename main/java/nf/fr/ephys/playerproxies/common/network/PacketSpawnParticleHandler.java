@@ -13,7 +13,7 @@ public class PacketSpawnParticleHandler implements IMessageHandler<PacketSpawnPa
 	public static void sendPacketSpawnParticle(int particleID, double x, double y, double z, double velX, double velY, double velZ, int dimention) {
 		PacketSpawnParticle packet = new PacketSpawnParticle(particleID, x, y, z, velX, velY, velZ);
 
-		PlayerProxies.getNetHandler().sendToAllAround(packet, new NetworkRegistry.TargetPoint(dimention, x, y, z, 32));
+		PlayerProxies.NET_HANDLER.sendToAllAround(packet, new NetworkRegistry.TargetPoint(dimention, x, y, z, 32));
 	}
 
 	@Override

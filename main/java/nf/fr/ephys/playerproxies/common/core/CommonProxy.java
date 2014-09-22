@@ -81,9 +81,9 @@ public class CommonProxy {
 	}
 
 	public void registerPacket() {
-		PlayerProxies.getNetHandler().registerMessage(PacketSetNicknameHandler.class, PacketSetNicknameHandler.PacketSetNickname.class, 0, Side.CLIENT);
-		PlayerProxies.getNetHandler().registerMessage(PacketSpawnParticleHandler.class, PacketSpawnParticleHandler.PacketSpawnParticle.class, 1, Side.CLIENT);
-		PlayerProxies.getNetHandler().registerMessage(PacketSetBiomeHandler.class, PacketSetBiomeHandler.PacketSetBiome.class, 2, Side.CLIENT);
+		PlayerProxies.NET_HANDLER.registerMessage(PacketSetNicknameHandler.class, PacketSetNicknameHandler.PacketSetNickname.class, 0, Side.CLIENT);
+		PlayerProxies.NET_HANDLER.registerMessage(PacketSpawnParticleHandler.class, PacketSpawnParticleHandler.PacketSpawnParticle.class, 1, Side.CLIENT);
+		PlayerProxies.NET_HANDLER.registerMessage(PacketSetBiomeHandler.class, PacketSetBiomeHandler.PacketSetBiome.class, 2, Side.CLIENT);
 	}
 
 	private void register() {

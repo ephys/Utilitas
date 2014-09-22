@@ -46,7 +46,7 @@ public class PlayerProxies extends DummyModContainer {
 
 	private Logger logger;
 	private ConfigHandler config;
-	private SimpleNetworkWrapper netHandler = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
+	public static final SimpleNetworkWrapper NET_HANDLER = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
 
 	public static final CreativeTabs creativeTab = new CreativeTabs(MODID) {
 		@Override
@@ -135,10 +135,6 @@ public class PlayerProxies extends DummyModContainer {
 
 	public static Logger getLogger() {
 		return instance.logger;
-	}
-
-	public static SimpleNetworkWrapper getNetHandler() {
-		return instance.netHandler;
 	}
 
 	public static ConfigHandler getConfig() { return instance.config; }

@@ -1,17 +1,22 @@
 package nf.fr.ephys.playerproxies.common.block;
 
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import javafx.scene.effect.Reflection;
 import net.minecraft.block.BlockBeacon;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityBeacon;
 import net.minecraft.world.World;
+import nf.fr.ephys.cookiecore.helpers.ChatHelper;
 import nf.fr.ephys.cookiecore.helpers.InventoryHelper;
 import nf.fr.ephys.cookiecore.helpers.RegistryHelper;
 import nf.fr.ephys.playerproxies.client.renderer.BlockBeaconTierIIRenderer;
@@ -19,7 +24,68 @@ import nf.fr.ephys.playerproxies.common.PlayerProxies;
 import nf.fr.ephys.playerproxies.common.registry.BeaconEffectsRegistry;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityBeaconTierII;
 
+import java.lang.reflect.Method;
+import java.util.Iterator;
+import java.util.List;
+
 public class BlockBeaconTierII extends BlockBeacon {
+	// Extra Utils ugly stupid hotfix
+	// https://github.com/rwtema/extrautilities/issues/301
+	/*public static class ExUHandler {
+		private static ExUHandler instance;
+		private static boolean isLoaded;
+		private Item xuDivisionSigil;
+		private Class<?> xuSiegeClass;
+		private List<String> xuSiegeParticipants;
+
+		public boolean isLoaded() {
+			return isLoaded;
+		}
+
+		public ExUHandler() {
+			isLoaded = true;
+			instance = this;
+
+			try {
+				xuSiegeClass = Class.forName("com.rwtema.extrautils.EventHandlerSiege");
+				xuSiegeParticipants = (List<String>) xuSiegeClass.getField("SiegeParticipants").get(null);
+
+				xuDivisionSigil = (Item) Class.forName("com.rwtema.extrautils.ExtraUtils").getField("divisionSigil").get(null);
+			} catch (Exception e) {
+				e.printStackTrace();
+
+				isLoaded = false;
+			}
+		}
+
+		public boolean startSiege(EntityPlayer player) {
+			if (player.worldObj.provider.dimensionId != 1)
+				return false;
+
+			try {
+				boolean hasSigil = (boolean) xuSiegeClass.getMethod("hasSigil", EntityPlayer.class).invoke(null, player);
+
+				if (!hasSigil)
+					return false;
+
+				xuSiegeClass.getMethod("beginSiege", World.class).invoke(null, player.worldObj);
+			} catch (Exception e) {
+				e.printStackTrace();
+
+				ChatHelper.sendChatMessage(player, "An error has occured :(");
+				isLoaded = false;
+
+				return false;
+			}
+
+			return true;
+		}
+
+		public boolean isSiegeActive() {
+			return !xuSiegeParticipants.isEmpty();
+		}
+	}*/
+
 	public static boolean overwrite = true;
 
 	public static void register() {
@@ -32,6 +98,10 @@ public class BlockBeaconTierII extends BlockBeacon {
 		RegistryHelper.overwriteBlock("minecraft:beacon", PlayerProxies.Blocks.betterBeacon);
 
 		GameRegistry.registerTileEntity(TileEntityBeaconTierII.class, PlayerProxies.Blocks.betterBeacon.getUnlocalizedName());
+
+		/*if (Loader.isModLoaded("ExtraUtilities")) {
+			ExUHandler.instance = new ExUHandler();
+		}*/
 	}
 
 	public static void registerCraft() {
@@ -97,6 +167,11 @@ public class BlockBeaconTierII extends BlockBeacon {
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int i4, float v, float v2, float v3) {
 		if (world.isRemote)
 			return true;
+
+	/*	if (ExUHandler.instance.isLoaded() && player.getHeldItem().getItem() != null && player.getHeldItem().getItem().equals(ExUHandler.instance.xuDivisionSigil)) {
+			if (ExUHandler.instance.startSiege(player))
+				return true;
+		}*/
 
 		TileEntityBeaconTierII te = (TileEntityBeaconTierII) world.getTileEntity(x, y, z);
 
