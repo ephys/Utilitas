@@ -94,14 +94,9 @@ public class BlockBeaconTierII extends BlockBeacon {
 		PlayerProxies.Blocks.betterBeacon = new BlockBeaconTierII();
 		PlayerProxies.Blocks.betterBeacon.setBlockName("beacon").setCreativeTab(PlayerProxies.creativeTab).setBlockTextureName("beacon").setLightLevel(1F);
 
-		//GameRegistry.registerBlock(PlayerProxies.Blocks.betterBeacon, PlayerProxies.Blocks.betterBeacon.getUnlocalizedName());
 		RegistryHelper.overwriteBlock("minecraft:beacon", PlayerProxies.Blocks.betterBeacon);
 
 		GameRegistry.registerTileEntity(TileEntityBeaconTierII.class, PlayerProxies.Blocks.betterBeacon.getUnlocalizedName());
-
-		/*if (Loader.isModLoaded("ExtraUtilities")) {
-			ExUHandler.instance = new ExUHandler();
-		}*/
 	}
 
 	public static void registerCraft() {

@@ -81,7 +81,8 @@ public class ItemDragonScale extends Item {
 	}
 
 	public static boolean enabled() {
-		return ItemDragonHoe.enabled || ItemDragonPickaxe.enabled;
+		return true;
+		// return ItemDragonHoe.enabled || ItemDragonPickaxe.enabled;
 	}
 
 	@Override
