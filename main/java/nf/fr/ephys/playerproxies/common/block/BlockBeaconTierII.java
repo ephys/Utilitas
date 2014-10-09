@@ -12,8 +12,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.structure.MapGenStructure;
-import net.minecraft.world.gen.structure.StructureStart;
 import nf.fr.ephys.cookiecore.helpers.InventoryHelper;
 import nf.fr.ephys.cookiecore.helpers.RegistryHelper;
 import nf.fr.ephys.playerproxies.client.renderer.BlockBeaconTierIIRenderer;
@@ -49,7 +47,7 @@ public class BlockBeaconTierII extends BlockBeacon {
 				'o', new ItemStack(Blocks.obsidian),
 				's', new ItemStack(Items.nether_star)
 		);
-		MapGenStructure
+
 		// level 1 beacon
 		BeaconEffectsRegistry.addEffect(new ItemStack[]{ new ItemStack(Items.sugar), new ItemStack(Items.redstone) }, Potion.moveSpeed.getId(), 1, -1);
 		BeaconEffectsRegistry.addEffect(new ItemStack[]{ new ItemStack(Items.sugar), new ItemStack(Items.diamond_pickaxe), new ItemStack(Items.golden_apple) }, Potion.digSpeed.getId(), 1, -1);
