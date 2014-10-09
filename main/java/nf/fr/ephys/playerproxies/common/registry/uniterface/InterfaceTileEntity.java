@@ -89,6 +89,8 @@ public class  InterfaceTileEntity extends UniversalInterface {
 
 	@Override
 	public void onTick(int tick) {
+		if (isRemote()) return;
+
 		if (blockEntity == null) {
 			if (tileLocation == null || tileLocation.length != 3) {
 				this.getTileEntity().unlink();

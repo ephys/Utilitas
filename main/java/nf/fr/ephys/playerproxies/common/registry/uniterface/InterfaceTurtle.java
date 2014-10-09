@@ -65,6 +65,8 @@ public class InterfaceTurtle extends UniversalInterface {
 
 	@Override
 	public void onTick(int tick) {
+		if (isRemote()) return;
+
 		if (turtleAccess == null) {
 			World world = MinecraftServer.getServer().worldServerForDimension(tileWorld);
 			TileEntity turtle = world.getTileEntity(tileLocation[0], tileLocation[1], tileLocation[2]);

@@ -68,6 +68,8 @@ public class InterfaceItemframe extends UniversalInterface {
 
 	@Override
 	public void onTick(int tick) {
+		if (isRemote()) return;
+
 		if (itemFrame == null) {
 			if (uuid != null) {
 				itemFrame = (EntityItemFrame) EntityHelper.getEntityByUUID(uuid);

@@ -74,7 +74,7 @@ public class InterfaceJukebox extends UniversalInterface {
 
 	@Override
 	public void onTick(int tick) {
-		if (getTileEntity().getWorldObj().isRemote) return;
+		if (isRemote()) return;
 
 		if (jukeboxProxy.jukebox == null) {
 			if (tileLocation == null || tileLocation.length != 3) {

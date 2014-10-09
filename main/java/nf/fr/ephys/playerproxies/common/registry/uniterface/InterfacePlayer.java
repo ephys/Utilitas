@@ -107,7 +107,7 @@ public class InterfacePlayer extends UniversalInterface {
 
 	@Override
 	public void onTick(int tick) {
-		if (getTileEntity().getWorldObj().isRemote) return;
+		if (isRemote()) return;
 
 		if ((userEntity == null || userEntity.isDead) && tick % 40 == 0) {
 			searchPlayer();

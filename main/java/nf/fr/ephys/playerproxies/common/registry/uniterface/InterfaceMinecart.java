@@ -61,6 +61,8 @@ public class InterfaceMinecart extends UniversalInterface {
 
 	@Override
 	public void onTick(int tick) {
+		if (isRemote()) return;
+
 		if (minecart == null && uuid != null) {
 			minecart = (EntityMinecartContainer) EntityHelper.getEntityByUUID(uuid);
 		}

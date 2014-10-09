@@ -9,7 +9,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 import nf.fr.ephys.playerproxies.common.tileentity.TileEntityInterface;
 
 public abstract class UniversalInterface {
-	private TileEntityInterface tileEntity;
+	private final TileEntityInterface tileEntity;
 
 	public UniversalInterface(TileEntityInterface tileEntity) {
 		this.tileEntity = tileEntity;
@@ -64,4 +64,8 @@ public abstract class UniversalInterface {
 	 * @return the dimention id of the object, 0 if the object is null
 	 */
 	public abstract int getDim();
+
+	public boolean isRemote() {
+		return tileEntity.getWorldObj().isRemote;
+	}
 }
