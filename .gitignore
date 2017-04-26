@@ -3,3 +3,4 @@
 /eclipse
 /run
 *.log
+/classes
