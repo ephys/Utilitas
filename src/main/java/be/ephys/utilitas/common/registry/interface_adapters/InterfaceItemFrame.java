@@ -1,13 +1,17 @@
 package be.ephys.utilitas.common.registry.interface_adapters;
 
 import be.ephys.utilitas.common.tileentity.TileEntityInterface;
+import be.ephys.utilitas.common.util.EntityHelper;
+import be.ephys.utilitas.common.util.NBTHelper;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -16,9 +20,13 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class InterfaceItemFrame extends UniversalInterfaceAdapter {
+
     private ItemFrameProxy proxy = new ItemFrameProxy();
     private EntityItemFrame itemFrame;
     private UUID uuid;
+
+    private float[] relativeX = new float[]{-0.5F, 0.0625F, -0.5F, -1.0625F};
+    private float[] relativeZ = new float[]{-1.0625F, -0.5F, 0.0625F, -0.5F};
 
     public InterfaceItemFrame(TileEntityInterface tileEntity) {
         super(tileEntity);
@@ -32,12 +40,12 @@ public class InterfaceItemFrame extends UniversalInterfaceAdapter {
 
     @Override
     public boolean setLink(Object link, EntityPlayer linker) {
-        if (link instanceof EntityItemFrame) {
-            this.itemFrame = (EntityItemFrame) link;
-            return true;
+        if (!(link instanceof EntityItemFrame)) {
+            return false;
         }
 
-        return false;
+        this.itemFrame = (EntityItemFrame) link;
+        return true;
     }
 
     @Override
@@ -51,17 +59,16 @@ public class InterfaceItemFrame extends UniversalInterfaceAdapter {
 
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
-        NBTHelper.setEntity(nbt, "itemframe", itemFrame);
+        NBTHelper.setEntityUuid(nbt, "target", itemFrame);
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
-        this.uuid = NBTHelper.getUUID(nbt, "itemframe", null);
+        this.uuid = NBTHelper.getUuid(nbt, "target", null);
     }
 
     @Override
-    public void onBlockUpdate() {
-    }
+    public void onBlockUpdate() {}
 
     @Override
     public void onTick(int tick) {
@@ -71,7 +78,7 @@ public class InterfaceItemFrame extends UniversalInterfaceAdapter {
 
         if (itemFrame == null) {
             if (uuid != null) {
-                itemFrame = (EntityItemFrame) EntityHelper.getEntityByUUID(uuid);
+                itemFrame = (EntityItemFrame) EntityHelper.getEntityByUuid(uuid);
 
                 uuid = null;
             } else {
@@ -90,20 +97,12 @@ public class InterfaceItemFrame extends UniversalInterfaceAdapter {
     }
 
     @Override
-    public IFluidHandler getFluidHandler() {
-        return null;
-    }
-
-    private float[] relativeX = new float[]{-0.5F, 0.0625F, -0.5F, -1.0625F};
-    private float[] relativeZ = new float[]{-1.0625F, -0.5F, 0.0625F, -0.5F};
-
-    @Override
-    public boolean isNextTo(int xCoord, int yCoord, int zCoord) {
+    public boolean isNextTo(BlockPos pos) {
         if (itemFrame == null) {
             return false;
         }
 
-        if (Math.abs(yCoord - itemFrame.posY) != 0.5F) {
+        if (Math.abs(pos.getY() - itemFrame.posY) > 1) {
             return false;
         }
 
@@ -113,13 +112,23 @@ public class InterfaceItemFrame extends UniversalInterfaceAdapter {
             return false;
         }
 
-        return xCoord - itemFrame.posX == relativeX[facingDirection.getHorizontalIndex()]
-                && zCoord - itemFrame.posZ == relativeZ[facingDirection.getHorizontalIndex()];
+        return pos.getX() - itemFrame.posX == relativeX[facingDirection.getHorizontalIndex()]
+            && pos.getZ() - itemFrame.posZ == relativeZ[facingDirection.getHorizontalIndex()];
     }
 
     @Override
     public int getDimension() {
-        return itemFrame == null ? 0 : itemFrame.worldObj.provider.dimensionId;
+        return itemFrame == null ? 0 : itemFrame.getEntityWorld().provider.getDimension();
+    }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+        return false;
+    }
+
+    @Override
+    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+        return null;
     }
 
     public class ItemFrameProxy implements IInventory {
@@ -164,7 +173,8 @@ public class InterfaceItemFrame extends UniversalInterfaceAdapter {
         }
 
         @Override
-        public void markDirty() {}
+        public void markDirty() {
+        }
 
         @Override
         public boolean isUseableByPlayer(EntityPlayer player) {
@@ -172,10 +182,12 @@ public class InterfaceItemFrame extends UniversalInterfaceAdapter {
         }
 
         @Override
-        public void openInventory(EntityPlayer player) {}
+        public void openInventory(EntityPlayer player) {
+        }
 
         @Override
-        public void closeInventory(EntityPlayer player) {}
+        public void closeInventory(EntityPlayer player) {
+        }
 
         @Override
         public boolean isItemValidForSlot(int slot, ItemStack stack) {
@@ -188,7 +200,8 @@ public class InterfaceItemFrame extends UniversalInterfaceAdapter {
         }
 
         @Override
-        public void setField(int id, int value) {}
+        public void setField(int id, int value) {
+        }
 
         @Override
         public int getFieldCount() {
@@ -196,7 +209,8 @@ public class InterfaceItemFrame extends UniversalInterfaceAdapter {
         }
 
         @Override
-        public void clear() {}
+        public void clear() {
+        }
 
         @Override
         public String getName() {

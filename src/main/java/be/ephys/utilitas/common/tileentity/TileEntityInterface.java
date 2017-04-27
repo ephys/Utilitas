@@ -1,21 +1,32 @@
 package be.ephys.utilitas.common.tileentity;
 
+import be.ephys.utilitas.common.Utilitas;
+import be.ephys.utilitas.common.item.IInterfaceUpgrade;
+import be.ephys.utilitas.common.item.ItemLinker;
+import be.ephys.utilitas.common.registry.UniversalInterfaceRegistry;
 import be.ephys.utilitas.common.registry.interface_adapters.InterfaceDummy;
 import be.ephys.utilitas.common.registry.interface_adapters.UniversalInterfaceAdapter;
+import be.ephys.utilitas.common.util.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityInterface extends TileEntity implements ISidedInventory, IFluidHandler {
+import javax.annotation.Nullable;
+
+public class TileEntityInterface extends TileEntity implements ISidedInventory, ITickable {
 
     private UniversalInterfaceAdapter activeAdapter = InterfaceDummy.INSTANCE;
     private ItemStack[] upgrades = new ItemStack[5];
@@ -42,45 +53,40 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
         return activeAdapter.getInventory();
     }
 
-    private IFluidHandler getFluidHandler() {
-        if (!isFluidHandler() || !isInRange())
-            return null;
-
-        return activeAdapter.getFluidHandler();
-    }
-
     public boolean isInRange() {
         if (activeAdapter == null) {
             return false;
         }
 
-        if (!worksCrossDim() && activeAdapter.getDimension() != worldObj.provider.dimensionId) {
+        if (!worksCrossDim() && activeAdapter.getDimension() != worldObj.provider.getDimension()) {
             return false;
         }
 
-        if (!isWireless() && !activeAdapter.isNextTo(xCoord, yCoord, zCoord)) {
+        if (!isWireless() && !activeAdapter.isNextTo(getPos())) {
             return false;
         }
 
         return true;
     }
 
+    @Nullable
     @Override
-    public Packet getDescriptionPacket() {
+    public SPacketUpdateTileEntity getUpdatePacket() {
         NBTTagCompound nbtTag = new NBTTagCompound();
         this.writeToNBT(nbtTag);
 
-        return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 1, nbtTag);
+        return new SPacketUpdateTileEntity(getPos(), 1, nbtTag);
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
-        readFromNBT(packet.func_148857_g());
+    @SideOnly(Side.CLIENT)
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+        readFromNBT(pkt.getNbtCompound());
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) {
-        super.writeToNBT(nbt);
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+        nbt = super.writeToNBT(nbt);
 
         nbt.setInteger("tick", tick);
 
@@ -101,10 +107,11 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
             NBTHelper.setClass(nbt, "handler", this.activeAdapter.getClass());
             this.activeAdapter.writeToNBT(nbt);
         }
+
+        return nbt;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
 
@@ -115,12 +122,14 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
         worksCrossDim = NBTHelper.getBoolean(nbt, "worksCrossDim", worksCrossDim);
 
         for (int i = 0; i < upgrades.length; i++) {
-            if (nbt.hasKey("upgrade_" + i))
+            if (nbt.hasKey("upgrade_" + i)) {
                 upgrades[i] = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("upgrade_" + i));
-            else
+            } else {
                 upgrades[i] = null;
+            }
         }
 
+        @SuppressWarnings("unchecked")
         Class<? extends UniversalInterfaceAdapter> clazz = (Class<? extends UniversalInterfaceAdapter>) NBTHelper.getClass(nbt, "handler");
 
         if (clazz != null && UniversalInterfaceRegistry.hasHandler(clazz)) {
@@ -145,22 +154,27 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
     public void unlink() {
         this.activeAdapter = null;
 
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        WorldHelper.markTileForUpdate(this);
     }
 
-    @Override
-    public void updateEntity() {
-        super.updateEntity();
 
-        if (this.activeAdapter != null)
-            this.activeAdapter.onTick(tick++);
+    @Override
+    public void update() {
+        if (this.activeAdapter == null) {
+            return;
+        }
+
+        this.activeAdapter.onTick(tick++);
     }
 
     public boolean addUpgrade(ItemStack heldItem, EntityPlayer player) {
-        if (heldItem == null || !(heldItem.getItem() instanceof IInterfaceUpgrade)) return false;
+        if (heldItem == null || !(heldItem.getItem() instanceof IInterfaceUpgrade)) {
+            return false;
+        }
 
         IInterfaceUpgrade upgrade = (IInterfaceUpgrade) heldItem.getItem();
 
+        // TODO replace with GUI
         int upgradeSlot = hasUpgrade(heldItem);
         if (upgradeSlot != -1) {
             ItemStack stack = upgrades[upgradeSlot];
@@ -181,12 +195,9 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
             upgrades[upgradeSlot] = stack;
 
             heldItem.stackSize--;
-
-            if (heldItem.stackSize <= 0)
-                player.setCurrentItemOrArmor(0, null);
         }
 
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        WorldHelper.markTileForUpdate(this);
 
         return true;
     }
@@ -216,46 +227,48 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
             return true;
         }
 
-        Object toLink;
-        if (player.getHeldItem() == null) {
-            if (EntityHelper.isFakePlayer(player))
-                return false;
+        Object toLink = getLinkableEntity(player);
+        UniversalInterfaceAdapter handler = UniversalInterfaceRegistry.getHandler(toLink, this, player);
 
-            toLink = player;
-        } else if (player.getHeldItem().getItem().equals(PlayerProxies.Items.linkDevice)) {
-            toLink = ItemLinker.getLinkedObject(player.getHeldItem(), worldObj);
-
-            if (toLink == null) {
-                ChatHelper.sendChatMessage(player, "Link wand not bound");
-
-                return false;
-            }
-
-            if (toLink instanceof TileEntityInterface) {
-                ChatHelper.sendChatMessage(player, "You're not a good person. You know that, right ?");
-
-                return false;
-            }
-
-            if (toLink instanceof EntityPlayer && EntityHelper.isFakePlayer((EntityPlayer) toLink))
-                return false;
-        } else {
+        if (handler == null) {
+            ChatHelper.sendChatMessage(player, "Could not bind the universal interface.");
             return false;
         }
 
-        UniversalInterfaceAdapter handler = UniversalInterfaceRegistry.getHandler(toLink, this, player);
+        this.activeAdapter = handler;
 
-        if (handler != null) {
-            this.activeAdapter = handler;
+        ITextComponent msg = new TextComponentString("Universal interface linked to").appendSibling(handler.getName());
+        player.addChatComponentMessage(msg);
 
-            ChatHelper.sendChatMessage(player, "Universal interface linked to " + handler.getName());
-
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-        } else {
-            ChatHelper.sendChatMessage(player, "Could not link the universal interface to this link wand");
-        }
+        WorldHelper.markTileForUpdate(this);
 
         return true;
+    }
+
+    private Object getLinkableEntity(EntityPlayer player) {
+        ItemStack mainItem = player.getHeldItem(EnumHand.MAIN_HAND);
+
+        if (mainItem == null) {
+            return player;
+        }
+
+        if (mainItem.getItem().equals(Utilitas.Items.linkDevice)) {
+            Object toLink = ItemLinker.getLinkedObject(mainItem, worldObj);
+
+            if (toLink == null) {
+                ChatHelper.sendChatMessage(player, "Link wand not bound");
+                return null;
+            }
+
+            if (toLink instanceof TileEntityInterface) {
+                ChatHelper.sendChatMessage(player, "Cannot link to another Universal Interface.");
+                return null;
+            }
+
+            return toLink;
+        }
+
+        return null;
     }
 
     // ================================================================================
@@ -265,7 +278,7 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
     public int getSizeInventory() {
         IInventory linkedInventory = this.getInventory();
         return (linkedInventory != null) ? linkedInventory.getSizeInventory()
-                : 0;
+            : 0;
     }
 
     @Override
@@ -288,8 +301,9 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
         return linkedInventory.decrStackSize(i, j);
     }
 
+    @Nullable
     @Override
-    public ItemStack getStackInSlotOnClosing(int i) {
+    public ItemStack removeStackFromSlot(int index) {
         return null;
     }
 
@@ -301,20 +315,9 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
     }
 
     @Override
-    public String getInventoryName() {
-        return null;
-    }
-
-    @Override
-    public boolean hasCustomInventoryName() {
-        return false;
-    }
-
-    @Override
     public int getInventoryStackLimit() {
         IInventory linkedInventory = this.getInventory();
-        return (linkedInventory != null) ? linkedInventory
-                .getInventoryStackLimit() : 0;
+        return (linkedInventory != null) ? linkedInventory.getInventoryStackLimit() : 0;
     }
 
     @Override
@@ -323,11 +326,11 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
     }
 
     @Override
-    public void openInventory() {
+    public void openInventory(EntityPlayer player) {
     }
 
     @Override
-    public void closeInventory() {
+    public void closeInventory(EntityPlayer player) {
     }
 
     @Override
@@ -337,79 +340,118 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
         return linkedInventory != null && linkedInventory.isItemValidForSlot(i, itemstack);
     }
 
+    @Override
+    public int getField(int id) {
+        return 0;
+    }
+
+    @Override
+    public void setField(int id, int value) {
+
+    }
+
+    @Override
+    public int getFieldCount() {
+        return 0;
+    }
+
+    @Override
+    public void clear() {
+    }
+
     // ================================================================================
     // ISidedInventory interface
     // ================================================================================
 
     @Override
-    public int[] getAccessibleSlotsFromSide(int var1) {
+    public int[] getSlotsForFace(EnumFacing side) {
         IInventory linkedInventory = this.getInventory();
 
-        return (linkedInventory instanceof ISidedInventory) ? ((ISidedInventory) linkedInventory).getAccessibleSlotsFromSide(var1) :
-                linkedInventory != null ? InventoryHelper.getUnSidedInventorySlots(linkedInventory) : new int[0];
+        if (linkedInventory == null) {
+            return new int[0];
+        }
+
+        if (linkedInventory instanceof ISidedInventory) {
+            return ((ISidedInventory) linkedInventory).getSlotsForFace(side);
+        }
+
+        return InventoryHelper.getUnSidedInventorySlots(linkedInventory);
     }
 
     @Override
-    public boolean canInsertItem(int i, ItemStack itemstack, int j) {
+    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
         IInventory linkedInventory = this.getInventory();
 
-        return (linkedInventory instanceof ISidedInventory) ? ((ISidedInventory) linkedInventory)
-                .canInsertItem(i, itemstack, j) : linkedInventory != null;
+        if (linkedInventory == null) {
+            return false;
+        }
+
+        if (linkedInventory instanceof ISidedInventory) {
+            return ((ISidedInventory) linkedInventory).canInsertItem(index, itemStackIn, direction);
+        }
+
+        return true;
     }
 
     @Override
-    public boolean canExtractItem(int i, ItemStack itemstack, int j) {
+    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
         IInventory linkedInventory = this.getInventory();
 
-        return (linkedInventory instanceof ISidedInventory) ? ((ISidedInventory) linkedInventory)
-                .canExtractItem(i, itemstack, j) : linkedInventory != null;
+        if (linkedInventory == null) {
+            return false;
+        }
+
+        if (linkedInventory instanceof ISidedInventory) {
+            return ((ISidedInventory) linkedInventory).canExtractItem(index, stack, direction);
+        }
+
+        return true;
+    }
+
+    @Override
+    public String getName() {
+        IInventory inv = this.getInventory();
+
+        if (inv == null) {
+            return null;
+        }
+
+        return inv.getName();
+    }
+
+    @Override
+    public boolean hasCustomName() {
+        IInventory inv = this.getInventory();
+
+        if (inv == null) {
+            return false;
+        }
+
+        return inv.hasCustomName();
     }
 
     // ================================================================================
-    // IFluidHandler interface
+    // ICapabilityProvider interface
     // ================================================================================
 
     @Override
-    public int fill(ForgeDirection forgeDirection, FluidStack fluidStack, boolean b) {
-        IFluidHandler fluidHandler = this.getFluidHandler();
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        return this.isInRange() && this.getAdapter().hasCapability(capability, facing);
 
-        return fluidHandler == null ? 0 : fluidHandler.fill(forgeDirection, fluidStack, b);
     }
 
     @Override
-    public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
-        IFluidHandler fluidHandler = this.getFluidHandler();
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if (!this.isInRange()) {
+            return null;
+        }
 
-        return fluidHandler == null ? null : fluidHandler.drain(from, resource, doDrain);
+        return this.getAdapter().getCapability(capability, facing);
     }
 
-    @Override
-    public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
-        IFluidHandler fluidHandler = this.getFluidHandler();
-
-        return fluidHandler == null ? null : fluidHandler.drain(from, maxDrain, doDrain);
-    }
-
-    @Override
-    public boolean canFill(ForgeDirection from, Fluid fluid) {
-        IFluidHandler fluidHandler = this.getFluidHandler();
-
-        return fluidHandler != null && fluidHandler.canFill(from, fluid);
-    }
-
-    @Override
-    public boolean canDrain(ForgeDirection from, Fluid fluid) {
-        IFluidHandler fluidHandler = this.getFluidHandler();
-
-        return fluidHandler != null && fluidHandler.canDrain(from, fluid);
-    }
-
-    @Override
-    public FluidTankInfo[] getTankInfo(ForgeDirection from) {
-        IFluidHandler fluidHandler = this.getFluidHandler();
-
-        return fluidHandler == null ? null : fluidHandler.getTankInfo(from);
-    }
+    // ================================================================================
+    // Upgrade Getter/Setters
+    // ================================================================================
 
     public void setIsFluidHandler(boolean b) {
         isFluidHandler = b;

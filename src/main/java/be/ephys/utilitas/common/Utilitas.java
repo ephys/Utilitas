@@ -1,6 +1,8 @@
 package be.ephys.utilitas.common;
 
+import be.ephys.utilitas.common.block.BlockFluidHopper;
 import be.ephys.utilitas.common.block.BlockShinyGlass;
+import be.ephys.utilitas.common.item.ItemLinker;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;

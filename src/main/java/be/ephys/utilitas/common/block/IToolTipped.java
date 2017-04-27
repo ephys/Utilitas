@@ -6,5 +6,6 @@ import net.minecraft.item.ItemStack;
 import java.util.List;
 
 public interface IToolTipped {
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> data, boolean debug);
+
+    void addInformation(ItemStack stack, EntityPlayer player, List<String> data, boolean debug);
 }

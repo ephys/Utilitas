@@ -8,13 +8,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
-public abstract class UniversalInterfaceAdapter {
+public abstract class UniversalInterfaceAdapter implements ICapabilityProvider {
 
 	private final TileEntityInterface tileEntity;
 
@@ -56,16 +57,10 @@ public abstract class UniversalInterfaceAdapter {
 
 	public abstract IInventory getInventory();
 
-	public abstract IFluidHandler getFluidHandler();
-
 	/**
-	 * @param xCoord the x coord of the first point
-	 * @param yCoord the y coord of the first point
-	 * @param zCoord the z coord of the first point
-	 *
 	 * @return the linked object is right next to the coords passed as a parameter
 	 */
-	public abstract boolean isNextTo(int xCoord, int yCoord, int zCoord);
+	public abstract boolean isNextTo(BlockPos pos);
 
 	/**
 	 * @return the dimention id of the object, 0 if the object is null

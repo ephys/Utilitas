@@ -1,574 +1,417 @@
-package nf.fr.ephys.playerproxies.common.tileentity;
+package be.ephys.utilitas.common.tileentity;
 
-import net.minecraft.block.Block;
+import be.ephys.utilitas.common.util.NBTHelper;
+import be.ephys.utilitas.common.util.WorldHelper;
 import net.minecraft.block.BlockHopper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.*;
-import nf.fr.ephys.cookiecore.helpers.BlockHelper;
-import nf.fr.ephys.cookiecore.helpers.FluidHelper;
-import nf.fr.ephys.cookiecore.helpers.NBTHelper;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.FluidTankProperties;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityFluidHopper extends TileEntity implements IFluidHandler, IInventory {
-	private FluidStack[] fluidStacks = new FluidStack[5];
-	private ItemStack[] bucketStacks = new ItemStack[fluidStacks.length + 1];
+import javax.annotation.Nullable;
 
-	public static final int MAX_STACK_SIZE = 2500;
-	public static final int RATE = 1000;
+public class TileEntityFluidHopper extends TileEntity implements ITickable {
 
-	private int cooldown = 0;
+    public static final int MAX_STACK_SIZE = 1000;
+    public static final int RATE = 1000; // mb/s
 
-	@Override
-	public void updateEntity() {
-		if (this.worldObj == null)
-			return;
+    private final HopperTank tank = new HopperTank();
 
-		if (this.worldObj.isRemote)
-			return;
+    private int cooldown = 0;
 
-		if (!BlockHopper.func_149917_c(this.getBlockMetadata()))
-			return;
+    @Override
+    public void update() {
+        if (this.worldObj == null) {
+            return;
+        }
 
-		if (cooldown != 0) {
-			cooldown--;
+        if (this.worldObj.isRemote) {
+            return;
+        }
 
-			return;
-		}
+        if (!BlockHopper.isEnabled(this.getBlockMetadata())) {
+            return;
+        }
 
-		cooldown = 20;
+        if (cooldown > 0) {
+            cooldown--;
+            return;
+        }
 
-		for (int i = 0; i < bucketStacks.length - 1; i++)
-			fillBucket(i);
+        cooldown = 20;
 
-		attemptDrain();
-		attemptFill();
-	}
+        attemptDrainTarget();
+        attemptFillTarget();
+    }
 
-	private boolean attemptFill() {
-		int orientation = BlockHopper.getDirectionFromMetadata(this.getBlockMetadata());
+    private boolean attemptFillTarget() {
+        // TODO if above block is air and an fluid handler entity is present, use that
 
-		int coords[] = BlockHelper.getAdjacentBlock(xCoord, yCoord, zCoord, orientation);
+        EnumFacing orientation = BlockHopper.getFacing(this.getBlockMetadata());
+        BlockPos targetPos = getPos().offset(orientation);
 
-		TileEntity te = worldObj.getTileEntity(coords[0], coords[1], coords[2]);
+        TileEntity te = worldObj.getTileEntity(targetPos);
+        if (te == null) {
+            return false;
+        }
 
-		if (te instanceof IFluidHandler) {
-			IFluidHandler target = (IFluidHandler) te;
+        EnumFacing targetSide = orientation.getOpposite();
+        if (!te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, targetSide)) {
+            return false;
+        }
 
-			for (int i = 0; i < fluidStacks.length; i++) {
-				FluidStack fluidStack = fluidStacks[i];
-				ForgeDirection direction = ForgeDirection.getOrientation(orientation);
+        IFluidHandler targetFluidHandler = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, targetSide);
 
-				if (fluidStack == null || !target.canFill(direction, fluidStack.getFluid()))
-					continue;
+        FluidStack[] fluidStacks = this.tank.fluidStacks;
+        for (int i = 0; i < fluidStacks.length; i++) {
+            FluidStack fluidStack = fluidStacks[i];
 
-				FluidStack clone = fluidStack.copy();
-				clone.amount = Math.min(RATE, clone.amount);
+            if (fluidStack == null) {
+                continue;
+            }
 
-				int filled = target.fill(direction, clone, true);
+            FluidStack clone = fluidStack.copy();
+            clone.amount = Math.min(RATE, clone.amount);
 
-				if (filled > 0) {
-					fluidStack.amount -= filled;
 
-					if (fluidStack.amount <= 0)
-						fluidStacks[i] = null;
+            int filled = targetFluidHandler.fill(clone, true);
 
-					sendUpdate();
+            if (filled == 0) {
+                continue;
+            }
 
-					return true;
-				}
-			}
-		}
+            fluidStack.amount -= filled;
+            if (fluidStack.amount <= 0) {
+                fluidStacks[i] = null;
+            }
 
-		return false;
-	}
+            sendUpdate();
 
-	private boolean attemptDrain() {
-		TileEntity te = worldObj.getTileEntity(xCoord, yCoord + 1, zCoord);
+            return true;
+        }
 
-		if (te instanceof IFluidHandler) {
-			IFluidHandler source = (IFluidHandler) te;
+        return false;
+    }
 
-			FluidStack drain = source.drain(ForgeDirection.DOWN, RATE, false);
+    private boolean attemptDrainTarget() {
+        // TODO if above block is air and an fluid handler entity is present, use that
 
-			if (drain == null)
-				return false;
+        TileEntity te = worldObj.getTileEntity(getPos().up());
 
-			int filled = this.fill(ForgeDirection.UP, drain, true);
+        // parent block is not a tile entity. Maybe it's a fluid block.
+        if (te == null) {
+            return attemptBlockSuckUp();
+        }
 
-			source.drain(ForgeDirection.DOWN, filled, true);
+        if (!te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN)) {
+            return false;
+        }
 
-			return true;
-		}
+        IFluidHandler source = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN);
 
-		return attemptBlockSuckUp();
-	}
+        FluidStack drain = source.drain(RATE, false);
 
-	private boolean attemptBlockSuckUp() {
-		FluidStack fluidStack = FluidHelper.getFluidFromWorld(worldObj, new int[] { xCoord, yCoord + 1, zCoord });
+        if (drain == null) {
+            return false;
+        }
 
-		if (fluidStack == null)
-			return false;
+        int filled = this.tank.fill(drain, true);
 
-		boolean isWater = fluidStack.getFluid() == FluidRegistry.WATER;
-		int metadata = worldObj.getBlockMetadata(xCoord, yCoord + 1, zCoord);
+        source.drain(filled, true);
 
-		if (isWater) {
-			FluidStack stack = new FluidStack(fluidStack, 1000 / (metadata + 1));
+        return true;
+    }
 
-			fill(ForgeDirection.UP, stack, true);
-		} else if (metadata == 0) {
-			int filled = fill(ForgeDirection.UP, fluidStack, false);
+    private boolean attemptBlockSuckUp() {
+        BlockPos abovePos = getPos().up();
+        FluidStack fluidStack = FluidHelper.getFluidFromWorld(worldObj, abovePos);
 
-			if (filled != 1000)
-				return false;
+        if (fluidStack == null) {
+            return false;
+        }
 
-			fill(ForgeDirection.UP, fluidStack, true);
+        if (fluidStack.getFluid() == FluidRegistry.WATER) {
+            this.tank.fill(fluidStack, true);
+            return true;
+        } else {
+            int filled = this.tank.fill(fluidStack, false);
 
-			worldObj.setBlockToAir(xCoord, yCoord + 1, zCoord);
-		}
+            if (filled != 1000) {
+                return false;
+            }
 
-		return true;
-	}
+            this.tank.fill(fluidStack, true);
+            worldObj.setBlockToAir(abovePos);
+        }
 
-	private boolean fillBucket(int slot) {
-		ItemStack input = bucketStacks[slot];
+        return true;
+    }
 
-		if (input == null)
-			return false;
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+        tank.readFluidsFromNBT(pkt.getNbtCompound());
+    }
 
-		if (input.getItem() instanceof IFluidContainerItem) {
-			IFluidContainerItem fluidContainer = (IFluidContainerItem) input.getItem();
-			ItemStack output = input.copy();
+    @Nullable
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket() {
+        NBTTagCompound nbt = new NBTTagCompound();
+        tank.writeFluidsToNBT(nbt, true);
 
-			FluidStack itemFluidContents = fluidContainer.drain(output, fluidContainer.getCapacity(output), false);
+        return new SPacketUpdateTileEntity(getPos(), 1, nbt);
+    }
 
-			if (itemFluidContents != null) {
-				// drain
-				if (fill(ForgeDirection.UNKNOWN, itemFluidContents, false) != itemFluidContents.amount)
-					return false;
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+        nbt = super.writeToNBT(nbt);
 
-				fluidContainer.drain(output, fluidContainer.getCapacity(output), true);
+        tank.writeFluidsToNBT(nbt, false);
 
-				if (!insertToOutput(output))
-					return false;
+        return nbt;
+    }
 
-				fill(ForgeDirection.UNKNOWN, itemFluidContents, true);
-			} else {
-				// fill
-				FluidStack localFluid = fluidStacks[slot];
+    @Override
+    public void readFromNBT(NBTTagCompound nbt) {
+        super.readFromNBT(nbt);
 
-				if (localFluid == null) return false;
+        tank.readFluidsFromNBT(nbt);
+    }
 
-				int filled = fluidContainer.fill(output, localFluid, true);
+    public void getFluidsFromStack(ItemStack stack) {
+        tank.readFluidsFromNBT(NBTHelper.getNBT(stack));
+    }
 
-				if (!insertToOutput(output))
-					return false;
+    public void setFluidsToStack(ItemStack stack) {
+        tank.writeFluidsToNBT(NBTHelper.getNBT(stack), false);
+    }
 
-				localFluid.amount -= filled;
+    public int getComparatorInput() {
+        return this.tank.getComparatorInput();
+    }
 
-				if (localFluid.amount <= 0)
-					fluidStacks[slot] = null;
-			}
-		} else if (FluidContainerRegistry.isFilledContainer(input)) {
-			// empty container
-			FluidStack outputFluid = FluidContainerRegistry.getFluidForFilledItem(input);
-			ItemStack outputStack = input.getItem().getContainerItem(input);
+    private void sendUpdate() {
+        markDirty();
 
-			int filled = fill(ForgeDirection.UNKNOWN, outputFluid, false);
+        WorldHelper.markTileForUpdate(this);
+    }
 
-			if (filled != outputFluid.amount)
-				return false;
+    @Override
+    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
+        return oldState != newSate;
+    }
 
-			if (outputStack != null && !insertToOutput(outputStack))
-				return false;
+    public void onBlockUpdate(BlockPos pos) {
+        attemptBlockSuckUp();
+    }
 
-			fill(ForgeDirection.UNKNOWN, outputFluid, true);
-		} else {
-			// drain container
-			FluidStack stack = fluidStacks[slot];
+    @Override
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
+    }
 
-			if (stack == null || stack.amount < FluidContainerRegistry.BUCKET_VOLUME)
-				return false;
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+            return (T) this.tank;
+        }
 
-			ItemStack output = FluidContainerRegistry.fillFluidContainer(stack, input);
+        return null;
+    }
 
-			if (output == null || !insertToOutput(output))
-				return false;
+    private class HopperTank implements IFluidHandler {
+        private FluidStack[] fluidStacks = new FluidStack[5];
 
-			stack.amount -= 1000;
+        @Override
+        public IFluidTankProperties[] getTankProperties() {
+            IFluidTankProperties[] tanks = new IFluidTankProperties[fluidStacks.length];
 
-			if (stack.amount <= 0)
-				fluidStacks[slot] = null;
-		}
+            for (int i = 0; i < fluidStacks.length; i++) {
+                if (fluidStacks[i] == null)
+                    continue;
 
-		decrStackSize(slot, 1);
+                tanks[i] = new FluidTankProperties(fluidStacks[i], MAX_STACK_SIZE);
+            }
 
-		return true;
-	}
+            return tanks;
+        }
 
-	private boolean insertToOutput(ItemStack output) {
-		ItemStack outputSlot = bucketStacks[bucketStacks.length - 1];
+        @Override
+        public int fill(FluidStack resource, boolean doFill) {
+            int slot = getSlotForFluid(resource);
 
-		if (outputSlot != null) {
-			if (!ItemStack.areItemStacksEqual(outputSlot, output))
-				return false;
+            if (slot == -1)
+                return 0;
 
-			if (outputSlot.stackSize + 1 >= outputSlot.getMaxStackSize())
-				return false;
+            int[] filledPerSlot = new int[fluidStacks.length];
+            int filledTotal = 0;
 
-			outputSlot.stackSize++;
-		} else {
-			bucketStacks[bucketStacks.length - 1] = output;
-		}
+            // start by the slot containing the fluid
+            int toFill = Math.min(fluidStacks[slot] == null ? MAX_STACK_SIZE : MAX_STACK_SIZE - fluidStacks[slot].amount, resource.amount);
+            filledPerSlot[slot] = toFill;
+            filledTotal += toFill;
 
-		return true;
-	}
+            // then check the other slots
+            for (int i = 0; i < fluidStacks.length && filledTotal < resource.amount; i++) {
+                if (i == slot) continue;
 
-	private void writeFluidsToNBT(NBTTagCompound nbt, boolean writeIfEmpty) {
-		NBTTagCompound fluidStackNBT = new NBTTagCompound();
+                int availableSpace;
+                if (fluidStacks[i] != null) {
+                    if (!fluidStacks[i].isFluidEqual(resource)) continue;
 
-		int nbSet = 0;
-		for (int i = 0; i < fluidStacks.length; i++) {
-			if (fluidStacks[i] != null) {
-				NBTTagCompound fluidNBT = new NBTTagCompound();
-				fluidStacks[i].writeToNBT(fluidNBT);
+                    availableSpace = MAX_STACK_SIZE - fluidStacks[i].amount;
+                } else {
+                    availableSpace = MAX_STACK_SIZE;
+                }
 
-				fluidStackNBT.setTag(Integer.toString(i), fluidNBT);
+                toFill = Math.min(resource.amount - filledTotal, availableSpace);
 
-				nbSet++;
-			}
-		}
+                filledPerSlot[i] = toFill;
+                filledTotal += toFill;
+            }
 
-		if (nbSet != 0 || writeIfEmpty) {
-			nbt.setTag("fluidStacks", fluidStackNBT);
-		}
-	}
+            if (doFill) {
+                for (int i = 0; i < fluidStacks.length; i++) {
+                    if (filledPerSlot[i] == 0) continue;
 
-	private void readFluidsFromNBT(NBTTagCompound nbt) {
-		if (nbt.hasKey("fluidStacks")) {
-			NBTTagCompound fluidStacksNBT = nbt.getCompoundTag("fluidStacks");
+                    if (fluidStacks[i] == null) {
+                        fluidStacks[i] = new FluidStack(resource.getFluid(), filledPerSlot[i], resource.tag);
+                    } else {
+                        fluidStacks[i].amount += filledPerSlot[i];
+                    }
+                }
 
-			for (int i = 0; i < fluidStacks.length; i++) {
-				if (fluidStacksNBT.hasKey(Integer.toString(i))) {
-					fluidStacks[i] = FluidStack.loadFluidStackFromNBT(fluidStacksNBT.getCompoundTag(Integer.toString(i)));
-				} else {
-					fluidStacks[i] = null;
-				}
-			}
-		}
-	}
+                sendUpdate();
+            }
 
-	private void writeInventoryToNBT(NBTTagCompound nbt) {
-		NBTTagCompound stacksNBT = new NBTTagCompound();
-		for (int i = 0; i < bucketStacks.length; i++) {
-			if (bucketStacks[i] == null)
-				continue;
+            return filledTotal;
+        }
 
-			NBTTagCompound stackNBT = new NBTTagCompound();
-			bucketStacks[i].writeToNBT(stackNBT);
+        @Nullable
+        @Override
+        public FluidStack drain(FluidStack resource, boolean doDrain) {
+            int slot = getSlotForFluid(resource);
 
-			stacksNBT.setTag(Integer.toString(i), stackNBT);
-		}
+            if (slot == -1 || fluidStacks[slot] == null)
+                return null;
 
-		nbt.setTag("inventory", stacksNBT);
-	}
+            return drain(slot, resource.amount, doDrain);
+        }
 
-	private void readInventoryFromNBT(NBTTagCompound nbt) {
-		if (nbt.hasKey("inventory")) {
-			NBTTagCompound stacksNBT = nbt.getCompoundTag("inventory");
+        @Nullable
+        @Override
+        public FluidStack drain(int maxDrain, boolean doDrain) {
+            int slot = getFirstFilledSlot();
 
-			for (int i = 0; i < bucketStacks.length; i++) {
-				if (stacksNBT.hasKey(Integer.toString(i))) {
-					bucketStacks[i] = ItemStack.loadItemStackFromNBT(stacksNBT.getCompoundTag(Integer.toString(i)));
-				} else {
-					bucketStacks[i] = null;
-				}
-			}
-		}
-	}
+            if (slot == -1) {
+                return null;
+            }
 
-	public void getFluidsFromStack(ItemStack stack) {
-		readFluidsFromNBT(NBTHelper.getNBT(stack));
-	}
+            return drain(slot, maxDrain, doDrain);
+        }
 
-	public void setFluidsToStack(ItemStack stack) {
-		writeFluidsToNBT(NBTHelper.getNBT(stack), false);
-	}
+        private FluidStack drain(int slot, int amount, boolean doDrain) {
+            FluidStack stack = fluidStacks[slot];
 
-	@Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
-		readFluidsFromNBT(pkt.func_148857_g());
-		readInventoryFromNBT(pkt.func_148857_g());
-	}
+            int drained = Math.min(Math.min(amount, RATE), stack.amount);
 
-	@Override
-	public Packet getDescriptionPacket() {
-		NBTTagCompound nbt = new NBTTagCompound();
-		this.writeFluidsToNBT(nbt, true);
-		this.writeInventoryToNBT(nbt);
+            if (doDrain) {
+                stack.amount -= drained;
 
-		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, nbt);
-	}
+                if (stack.amount <= 0)
+                    fluidStacks[slot] = null;
 
-	@Override
-	public void writeToNBT(NBTTagCompound nbt) {
-		super.writeToNBT(nbt);
+                sendUpdate();
+            }
 
-		writeFluidsToNBT(nbt, false);
-		writeInventoryToNBT(nbt);
-	}
+            return new FluidStack(stack.getFluid(), drained, stack.tag);
+        }
 
-	@Override
-	public void readFromNBT(NBTTagCompound nbt) {
-		super.readFromNBT(nbt);
+        public int getComparatorInput() {
+            int totalFilled = 0;
 
-		readFluidsFromNBT(nbt);
-		readInventoryFromNBT(nbt);
-	}
+            for (FluidStack fluidStack : this.fluidStacks) {
+                totalFilled += fluidStack.amount;
+            }
 
-	public int getComparatorInput() {
-		return 0;
-	}
+            return (int) Math.ceil(((double) totalFilled) / (MAX_STACK_SIZE * this.fluidStacks.length));
+        }
 
-	private int getSlotForFluid(FluidStack fluid) {
-		int firstEmptySlot = -1;
+        private int getFirstFilledSlot() {
+            for (int i = 0; i < fluidStacks.length; i++) {
+                if (fluidStacks[i] != null)
+                    return i;
+            }
 
-		for (int i = fluidStacks.length - 1; i >= 0; i--) {
-			if (fluidStacks[i] == null) {
-				firstEmptySlot = i;
-			} else {
-				if (fluidStacks[i].amount < MAX_STACK_SIZE && fluidStacks[i].isFluidEqual(fluid)) {
-					return i;
-				}
-			}
-		}
+            return -1;
+        }
 
-		return firstEmptySlot;
-	}
+        private int getSlotForFluid(FluidStack fluid) {
+            int firstEmptySlot = -1;
 
-	private int getFirstFilledSlot() {
-		for (int i = 0; i < fluidStacks.length; i++) {
-			if (fluidStacks[i] != null)
-				return i;
-		}
+            for (int i = fluidStacks.length - 1; i >= 0; i--) {
+                if (fluidStacks[i] == null) {
+                    firstEmptySlot = i;
+                } else {
+                    if (fluidStacks[i].amount < MAX_STACK_SIZE && fluidStacks[i].isFluidEqual(fluid)) {
+                        return i;
+                    }
+                }
+            }
 
-		return -1;
-	}
+            return firstEmptySlot;
+        }
 
-	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
-		int slot = getSlotForFluid(resource);
+        private void writeFluidsToNBT(NBTTagCompound nbt, boolean writeIfEmpty) {
+            NBTTagCompound fluidStackNBT = new NBTTagCompound();
 
-		if (slot == -1)
-			return 0;
+            int nbSet = 0;
+            for (int i = 0; i < fluidStacks.length; i++) {
+                if (fluidStacks[i] != null) {
+                    NBTTagCompound fluidNBT = new NBTTagCompound();
+                    fluidStacks[i].writeToNBT(fluidNBT);
 
-		int[] filledPerSlot = new int[fluidStacks.length];
-		int filledTotal = 0;
+                    fluidStackNBT.setTag(Integer.toString(i), fluidNBT);
 
-		// start by the slot containing the fluid
-		int toFill = Math.min(fluidStacks[slot] == null ? MAX_STACK_SIZE : MAX_STACK_SIZE - fluidStacks[slot].amount, resource.amount);
-		filledPerSlot[slot] = toFill;
-		filledTotal += toFill;
+                    nbSet++;
+                }
+            }
 
-		// then check the other slots
-		for (int i = 0; i < fluidStacks.length && filledTotal < resource.amount; i++) {
-			if (i == slot) continue;
+            if (nbSet != 0 || writeIfEmpty) {
+                nbt.setTag("fluidStacks", fluidStackNBT);
+            }
+        }
 
-			int availableSpace;
-			if (fluidStacks[i] != null) {
-				if (!fluidStacks[i].isFluidEqual(resource)) continue;
+        private void readFluidsFromNBT(NBTTagCompound nbt) {
+            if (!nbt.hasKey("fluidStacks")) {
+                return;
+            }
 
-				availableSpace = MAX_STACK_SIZE - fluidStacks[i].amount;
-			} else {
-				availableSpace = MAX_STACK_SIZE;
-			}
+            NBTTagCompound fluidStacksNBT = nbt.getCompoundTag("fluidStacks");
 
-			toFill = Math.min(resource.amount - filledTotal, availableSpace);
-
-			filledPerSlot[i] = toFill;
-			filledTotal += toFill;
-		}
-
-		if (doFill) {
-			for (int i = 0; i < fluidStacks.length; i++) {
-				if (filledPerSlot[i] == 0) continue;
-
-				if (fluidStacks[i] == null)
-					fluidStacks[i] = new FluidStack(resource.getFluid().getID(), filledPerSlot[i], resource.tag);
-				else
-					fluidStacks[i].amount += filledPerSlot[i];
-			}
-
-			sendUpdate();
-		}
-
-		return filledTotal;
-	}
-
-	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
-		int slot = getSlotForFluid(resource);
-
-		if (slot == -1 || fluidStacks[slot] == null)
-			return null;
-
-		return drain(slot, resource.amount, doDrain);
-	}
-
-	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
-		int slot = getFirstFilledSlot();
-
-		if (slot == -1)
-			return null;
-
-		return drain(slot, maxDrain, doDrain);
-	}
-
-	private FluidStack drain(int slot, int amount, boolean doDrain) {
-		FluidStack stack = fluidStacks[slot];
-
-		int drained = Math.min(Math.min(amount, RATE), stack.amount);
-
-		if (doDrain) {
-			stack.amount -= drained;
-
-			if (stack.amount <= 0)
-				fluidStacks[slot] = null;
-
-			sendUpdate();
-		}
-
-		return new FluidStack(stack.getFluid().getID(), drained, stack.tag);
-	}
-
-	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid) {
-		return true;
-	}
-
-	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid) {
-		return true;
-	}
-
-	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from) {
-		FluidTankInfo[] tanks = new FluidTankInfo[fluidStacks.length];
-
-		for (int i = 0; i < fluidStacks.length; i++) {
-			if (fluidStacks[i] == null)
-				continue;
-
-			tanks[i] = new FluidTankInfo(fluidStacks[i], MAX_STACK_SIZE);
-		}
-
-		return tanks;
-	}
-
-	private void sendUpdate() {
-		markDirty();
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-	}
-
-	@Override
-	public boolean shouldRefresh(Block oldBlock, Block newBlock, int oldMeta, int newMeta, World world, int x, int y, int z) {
-		return oldBlock != newBlock;
-	}
-
-	public void onBlockUpdate(int tileX, int tileY, int tileZ) {
-		attemptBlockSuckUp();
-	}
-
-	@Override
-	public int getSizeInventory() {
-		return bucketStacks.length;
-	}
-
-	@Override
-	public ItemStack getStackInSlot(int slot) {
-		return bucketStacks[slot];
-	}
-
-	@Override
-	public ItemStack decrStackSize(int slot, int nbItems) {
-		ItemStack stack = bucketStacks[slot];
-
-		if (stack == null)
-			return null;
-
-		nbItems = Math.min(nbItems, stack.stackSize);
-
-		ItemStack clone = stack.copy();
-		clone.stackSize = nbItems;
-
-		bucketStacks[slot].stackSize -= nbItems;
-		if (bucketStacks[slot].stackSize <= 0)
-			bucketStacks[slot] = null;
-
-		sendUpdate();
-
-		return clone;
-	}
-
-	@Override
-	public ItemStack getStackInSlotOnClosing(int slot) {
-		ItemStack stack = getStackInSlot(slot);
-
-		if (stack != null) {
-			setInventorySlotContents(slot, null);
-		}
-
-		return stack;
-	}
-
-	@Override
-	public void setInventorySlotContents(int slot, ItemStack stack) {
-		if (stack != null && stack.stackSize > getInventoryStackLimit())
-			stack.stackSize = getInventoryStackLimit();
-
-		bucketStacks[slot] = stack;
-
-		if (slot < bucketStacks.length - 1)
-			fillBucket(slot);
-	}
-
-	@Override
-	public String getInventoryName() {
-		return null;
-	}
-
-	@Override
-	public boolean hasCustomInventoryName() {
-		return false;
-	}
-
-	@Override
-	public int getInventoryStackLimit() {
-		return 64;
-	}
-
-	@Override
-	public boolean isUseableByPlayer(EntityPlayer player) {
-		return true;
-	}
-
-	@Override
-	public void openInventory() {}
-
-	@Override
-	public void closeInventory() {}
-
-	@Override
-	public boolean isItemValidForSlot(int slot, ItemStack stack) {
-		return slot < bucketStacks.length - 1 && (stack == null || FluidContainerRegistry.isContainer(stack) || stack.getItem() instanceof IFluidContainerItem);
-	}
+            for (int i = 0; i < fluidStacks.length; i++) {
+                if (fluidStacksNBT.hasKey(Integer.toString(i))) {
+                    fluidStacks[i] = FluidStack.loadFluidStackFromNBT(fluidStacksNBT.getCompoundTag(Integer.toString(i)));
+                } else {
+                    fluidStacks[i] = null;
+                }
+            }
+        }
+    }
 }

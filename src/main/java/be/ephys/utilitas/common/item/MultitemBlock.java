@@ -1,22 +1,23 @@
-package nf.fr.ephys.playerproxies.common.item;
+package be.ephys.utilitas.common.item;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
 public class MultitemBlock extends ItemBlockTooltipped {
-	public MultitemBlock(Block block) {
-		super(block);
 
-		setHasSubtypes(true);
-	}
+    public MultitemBlock(Block block) {
+        super(block);
 
-	@Override
-	public int getMetadata(int damageValue) {
-		return damageValue;
-	}
+        setHasSubtypes(true);
+    }
 
-	@Override
-	public String getUnlocalizedName(ItemStack itemstack) {
-		return super.getUnlocalizedName() + "." + itemstack.getItemDamage();
-	}
+    @Override
+    public int getMetadata(int damageValue) {
+        return damageValue;
+    }
+
+    @Override
+    public String getUnlocalizedName(ItemStack itemstack) {
+        return super.getUnlocalizedName() + "." + itemstack.getItemDamage();
+    }
 }

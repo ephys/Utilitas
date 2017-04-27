@@ -1,4 +1,4 @@
-package nf.fr.ephys.playerproxies.common.item;
+package be.ephys.utilitas.common.item;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameRegistry;

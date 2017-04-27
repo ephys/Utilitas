@@ -1,28 +1,32 @@
-package nf.fr.ephys.playerproxies.common.item;
+package be.ephys.utilitas.common.item;
 
+import be.ephys.utilitas.common.block.IToolTipped;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import nf.fr.ephys.playerproxies.common.block.IToolTipped;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
 public class ItemBlockTooltipped extends ItemBlock {
-	public final boolean IS_TOOLTIPPED;
 
-	public ItemBlockTooltipped(Block block) {
-		super(block);
+    public final boolean isTooltipped;
 
-		IS_TOOLTIPPED = block instanceof IToolTipped;
-	}
+    public ItemBlockTooltipped(Block block) {
+        super(block);
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public void addInformation(ItemStack stack, EntityPlayer player, List data, boolean debug) {
-		if (IS_TOOLTIPPED)
-			((IToolTipped) field_150939_a).addInformation(stack, player, data, debug);
+        isTooltipped = block instanceof IToolTipped;
+    }
 
-		super.addInformation(stack, player, data, debug);
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> data, boolean debug) {
+        if (isTooltipped) {
+            block.addInformation(stack, player, data, debug);
+        }
+
+        super.addInformation(stack, player, data, debug);
+    }
 }

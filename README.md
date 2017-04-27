@@ -22,6 +22,14 @@ If officially supports the following:
 Support for more can be added by other mods through IMC.  
 Support for Cauldrons (as IFluidHandlers), flower pots, and Armor Stands is planned.
 
+### Fluid Hopper
+
+A hopper, for fluids. It
+
+- Drains fluid blocks placed above it
+- Drains tanks placed above it (entities & blocks)
+- Fills tanks it points to (entities & blocks. Time to make a minecart tank!)
+
 ### Proximity Sensor
 
 Emit a redstone signal when an entity (filtrable) is withing a set radius of the block.
@@ -48,6 +56,11 @@ Regularly feeds you with the food stack placed to the right of the feeder.
 Place an item in it and it will emulate a player inventory and tick the item.
 
 You could use it to repair TiC tools overnight, or hatch your Pokemon GO eggs.
+
+## Planned Features
+
+- Fluid Tank Minecart
+- Fluid Hopper Minecart
 
 ## Modpacks
 

@@ -2,26 +2,25 @@ package be.ephys.utilitas.common.registry.interface_adapters;
 
 import be.ephys.utilitas.common.registry.PlayerInventoryRegistry;
 import be.ephys.utilitas.common.tileentity.TileEntityInterface;
-import be.ephys.utilitas.common.util.ChatHelper;
-import be.ephys.utilitas.common.util.NBTHelper;
-import be.ephys.utilitas.common.util.RenderHelper;
-import be.ephys.utilitas.common.util.WorldHelper;
+import be.ephys.utilitas.common.util.*;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class InterfacePlayer extends UniversalInterfaceAdapter {
@@ -67,8 +66,13 @@ public class InterfacePlayer extends UniversalInterfaceAdapter {
 
         EntityPlayer player = ((EntityPlayer) link);
 
+        if (EntityHelper.isFakePlayer(player)) {
+            ChatHelper.sendChatMessage(player, "You cannot link to fake players.");
+            return false;
+        }
+
         if (!player.getGameProfile().getId().equals(linker.getGameProfile().getId())) {
-            ChatHelper.sendChatMessage(player, "You cannot link to another another player's inventory");
+            ChatHelper.sendChatMessage(player, "You cannot link to another another player's inventory.");
             return false;
         }
 
@@ -132,7 +136,7 @@ public class InterfacePlayer extends UniversalInterfaceAdapter {
     @SuppressWarnings({"MethodCallSideOnly", "VariableUseSideOnly"})
     private void searchPlayer() {
         if (!this.isRemote()) {
-            userEntity = EntityHelper.getPlayerByUUID(userUuid);
+            userEntity = EntityHelper.getPlayerByUuid(userUuid);
 
             if (userEntity == null) {
                 userEntity = PlayerInventoryRegistry.getFakePlayer(userUuid);
@@ -151,18 +155,22 @@ public class InterfacePlayer extends UniversalInterfaceAdapter {
     }
 
     @Override
-    public IFluidHandler getFluidHandler() {
-        return null;
-    }
-
-    @Override
-    public boolean isNextTo(int xCoord, int yCoord, int zCoord) {
+    public boolean isNextTo(BlockPos pos) {
         return isEnderChest;
     }
 
     @Override
     public int getDimension() {
-        return userEntity == null ? 0 : isEnderChest ? userEntity.worldObj.provider.dimensionId + 1 : userEntity.worldObj.provider.dimensionId;
+        if (isEnderChest) {
+            // ender chests require a cross-dim upgrade unless they are in the end.
+            return 1;
+        }
+
+        if (userEntity == null) {
+            return 0;
+        }
+
+        return userEntity.getEntityWorld().provider.getDimension();
     }
 
     @Override
@@ -172,5 +180,15 @@ public class InterfacePlayer extends UniversalInterfaceAdapter {
 
     @Override
     public void validate() {
+    }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+        return false;
+    }
+
+    @Override
+    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+        return null;
     }
 }

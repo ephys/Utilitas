@@ -3,7 +3,13 @@ package be.ephys.utilitas.common.registry.interface_adapters;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+
+import javax.annotation.Nullable;
 
 public class InterfaceDummy extends UniversalInterfaceAdapter {
     public static final InterfaceDummy INSTANCE = new InterfaceDummy();
@@ -21,7 +27,7 @@ public class InterfaceDummy extends UniversalInterfaceAdapter {
     }
 
     @Override
-    public String getName() {
+    public ITextComponent getName() {
         return null;
     }
 
@@ -35,14 +41,10 @@ public class InterfaceDummy extends UniversalInterfaceAdapter {
     public void readFromNBT(NBTTagCompound nbt) {}
 
     @Override
-    public void onBlockUpdate() {
-
-    }
+    public void onBlockUpdate() {}
 
     @Override
-    public void onTick(int tick) {
-
-    }
+    public void onTick(int tick) {}
 
     @Override
     public IInventory getInventory() {
@@ -50,12 +52,7 @@ public class InterfaceDummy extends UniversalInterfaceAdapter {
     }
 
     @Override
-    public IFluidHandler getFluidHandler() {
-        return null;
-    }
-
-    @Override
-    public boolean isNextTo(int xCoord, int yCoord, int zCoord) {
+    public boolean isNextTo(BlockPos pos) {
         return false;
     }
 
@@ -67,5 +64,15 @@ public class InterfaceDummy extends UniversalInterfaceAdapter {
     @Override
     protected boolean isRemote() {
         throw new RuntimeException("should not be called");
+    }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+        return false;
+    }
+
+    @Override
+    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+        return null;
     }
 }

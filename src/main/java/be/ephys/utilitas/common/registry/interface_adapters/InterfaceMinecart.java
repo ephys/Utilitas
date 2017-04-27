@@ -7,12 +7,16 @@ import net.minecraft.entity.item.EntityMinecartContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class InterfaceMinecart extends UniversalInterfaceAdapter {
@@ -80,12 +84,7 @@ public class InterfaceMinecart extends UniversalInterfaceAdapter {
 	}
 
 	@Override
-	public IFluidHandler getFluidHandler() {
-		return null;
-	}
-
-	@Override
-	public boolean isNextTo(int xCoord, int yCoord, int zCoord) {
+	public boolean isNextTo(BlockPos pos) {
 		return false;
 	}
 
@@ -99,4 +98,14 @@ public class InterfaceMinecart extends UniversalInterfaceAdapter {
 
 	@Override
 	public void validate() {}
+
+	@Override
+	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+		return false;
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+		return null;
+	}
 }

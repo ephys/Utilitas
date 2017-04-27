@@ -13,10 +13,12 @@ import net.minecraft.item.ItemRecord;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -116,21 +118,23 @@ public class InterfaceJukebox extends UniversalInterfaceAdapter {
     }
 
     @Override
-    public IFluidHandler getFluidHandler() {
-        return null;
-    }
-
-    @Override
-    public boolean isNextTo(int xCoord, int yCoord, int zCoord) {
-        return jukeboxProxy.jukebox != null &&
-                Math.abs(xCoord - jukeboxProxy.jukebox.xCoord)
-                        + Math.abs(yCoord - jukeboxProxy.jukebox.yCoord)
-                        + Math.abs(zCoord - jukeboxProxy.jukebox.zCoord) == 1;
+    public boolean isNextTo(BlockPos interfacePos) {
+        return jukeboxProxy.jukebox != null && WorldHelper.areSideBySide(interfacePos, jukeboxProxy.jukebox.getPos());
     }
 
     @Override
     public int getDimension() {
         return jukeboxProxy.jukebox == null ? 0 : jukeboxProxy.jukebox.getWorld().provider.getDimension();
+    }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+        return false;
+    }
+
+    @Override
+    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+        return null;
     }
 
     public static class JukeBoxProxy implements IInventory {
@@ -146,7 +150,7 @@ public class InterfaceJukebox extends UniversalInterfaceAdapter {
         public ItemStack getStackInSlot(int slot) {
             if (slot != 0) return null;
 
-            return jukebox.func_145856_a();
+            return jukebox.getRecord();
         }
 
         @Override

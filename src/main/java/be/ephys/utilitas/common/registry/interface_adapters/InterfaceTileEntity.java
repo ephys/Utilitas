@@ -7,14 +7,19 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
+
 public class InterfaceTileEntity extends UniversalInterfaceAdapter {
+
     private TileEntity blockEntity = null;
 
     private BlockPos tilePos = null;
@@ -54,8 +59,7 @@ public class InterfaceTileEntity extends UniversalInterfaceAdapter {
     }
 
     @Override
-    public void onBlockUpdate() {
-    }
+    public void onBlockUpdate() {}
 
     @Override
     public IInventory getInventory() {
@@ -63,16 +67,8 @@ public class InterfaceTileEntity extends UniversalInterfaceAdapter {
     }
 
     @Override
-    public IFluidHandler getFluidHandler() {
-        return blockEntity instanceof IFluidHandler ? (IFluidHandler) blockEntity : null;
-    }
-
-    @Override
-    public boolean isNextTo(int xCoord, int yCoord, int zCoord) {
-        return blockEntity != null
-                && Math.abs(xCoord - tilePos.getX())
-                + Math.abs(yCoord - tilePos.getY())
-                + Math.abs(zCoord - tilePos.getZ()) == 1;
+    public boolean isNextTo(BlockPos pos) {
+        return blockEntity != null && WorldHelper.areSideBySide(pos, blockEntity.getPos());
     }
 
     @Override
@@ -107,6 +103,19 @@ public class InterfaceTileEntity extends UniversalInterfaceAdapter {
     }
 
     @Override
-    public void validate() {
+    public void validate() {}
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+        return blockEntity != null && blockEntity.hasCapability(capability, facing);
+    }
+
+    @Override
+    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+        if (blockEntity == null) {
+            return null;
+        }
+
+        return blockEntity.getCapability(capability, facing);
     }
 }
