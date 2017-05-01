@@ -46,8 +46,6 @@ public abstract class UniversalInterfaceAdapter implements ICapabilityProvider {
 
     public abstract ITextComponent getName();
 
-    public abstract void validate();
-
     public abstract void writeToNBT(NBTTagCompound nbt);
 
     public abstract void readFromNBT(NBTTagCompound nbt);
@@ -74,14 +72,15 @@ public abstract class UniversalInterfaceAdapter implements ICapabilityProvider {
 
     @SideOnly(Side.CLIENT)
     protected static void defaultRenderInventory(int tickCount) {
-        GL11.glRotatef(tickCount, 0.0F, 1.0F, 0.0F);
-        GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
-
-        renderBlock(Blocks.CHEST);
+        renderBlock(Blocks.CHEST, tickCount);
     }
 
     @SideOnly(Side.CLIENT)
-    protected static void renderBlock(Block block) {
+    protected static void renderBlock(Block block, int tickCount) {
+        GL11.glRotatef(tickCount, 0.0F, 1.0F, 0.0F);
+        GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
+        GL11.glTranslated(-0.5, -0.5, 0.5);
+
         Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         Minecraft.getMinecraft().getBlockRendererDispatcher().renderBlockBrightness(block.getDefaultState(), 1.0F);
     }

@@ -33,10 +33,6 @@ public class InterfaceDummy extends UniversalInterfaceAdapter {
     }
 
     @Override
-    public void validate() {
-    }
-
-    @Override
     public void writeToNBT(NBTTagCompound nbt) {
     }
 

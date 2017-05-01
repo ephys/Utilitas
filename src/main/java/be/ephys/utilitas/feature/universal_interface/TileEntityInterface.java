@@ -148,12 +148,6 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
         }
     }
 
-    @Override
-    public void validate() {
-        super.validate();
-        this.activeAdapter.validate();
-    }
-
     public void unlink() {
         this.activeAdapter = InterfaceDummy.INSTANCE;
 

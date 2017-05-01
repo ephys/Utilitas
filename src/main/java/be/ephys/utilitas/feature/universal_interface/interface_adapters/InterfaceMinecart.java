@@ -31,10 +31,7 @@ public class InterfaceMinecart extends UniversalInterfaceAdapter {
     @Override
     @SideOnly(Side.CLIENT)
     public void renderInventory(int tickCount, double x, double y, double z, float tickTime) {
-        GL11.glRotatef(tickCount, 0.0F, 1.0F, 0.0F);
-        GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
-
-        renderBlock(minecart.getDisplayTile().getBlock());
+        renderBlock(minecart.getDisplayTile().getBlock(), tickCount);
     }
 
     @Override
@@ -95,10 +92,6 @@ public class InterfaceMinecart extends UniversalInterfaceAdapter {
 
     @Override
     public void onBlockUpdate() {
-    }
-
-    @Override
-    public void validate() {
     }
 
     @Override

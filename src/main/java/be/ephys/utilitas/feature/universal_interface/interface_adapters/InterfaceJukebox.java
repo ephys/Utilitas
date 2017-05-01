@@ -41,10 +41,7 @@ public class InterfaceJukebox extends UniversalInterfaceAdapter {
     @Override
     @SideOnly(Side.CLIENT)
     public void renderInventory(int tickCount, double x, double y, double z, float tickTime) {
-        GL11.glRotatef(tickCount, 0.0F, 1.0F, 0.0F);
-        GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
-
-        renderBlock(Blocks.JUKEBOX);
+        renderBlock(Blocks.JUKEBOX, tickCount);
     }
 
     @Override
@@ -61,10 +58,6 @@ public class InterfaceJukebox extends UniversalInterfaceAdapter {
     @Override
     public ITextComponent getName() {
         return new TextComponentString(ChatHelper.getDisplayName(Blocks.JUKEBOX));
-    }
-
-    @Override
-    public void validate() {
     }
 
     @Override

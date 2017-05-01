@@ -13,8 +13,10 @@ public class TesrInterface extends TileEntitySpecialRenderer<TileEntityInterface
         super.renderTileEntityAt(tile, x, y, z, partialTicks, destroyStage);
 
         GL11.glPushMatrix();
-        GL11.glTranslatef((float) x + 0.5F, (float) y, (float) z + 0.5F);
-        GL11.glTranslatef(0.0F, 0.5F, 0.0F);
+//        GL11.glTranslatef((float) x + 0.5F, (float) y, (float) z + 0.5F);
+//        GL11.glTranslatef((float) x, (float) y, (float) z);
+        GL11.glTranslated(x, y, z);
+        GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 
         final float scale = 0.4375F;
         GL11.glScalef(scale, scale, scale);

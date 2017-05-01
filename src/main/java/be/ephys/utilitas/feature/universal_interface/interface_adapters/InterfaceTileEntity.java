@@ -12,7 +12,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -35,7 +34,7 @@ public class InterfaceTileEntity extends UniversalInterfaceAdapter {
 
     @Override
     public boolean setLink(Object link, EntityPlayer linker) {
-        if (link instanceof TileEntity && (link instanceof IInventory || link instanceof IFluidHandler)) {
+        if (link instanceof TileEntity) {
             this.blockEntity = (TileEntity) link;
             tilePos = new ItemLinker.WorldPos(this.blockEntity.getWorld(), this.blockEntity.getPos());
             return true;
@@ -96,10 +95,6 @@ public class InterfaceTileEntity extends UniversalInterfaceAdapter {
     @Override
     public ITextComponent getName() {
         return blockEntity.getDisplayName();
-    }
-
-    @Override
-    public void validate() {
     }
 
     @Override
