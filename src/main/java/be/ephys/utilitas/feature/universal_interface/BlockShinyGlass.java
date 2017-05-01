@@ -138,6 +138,11 @@ public class BlockShinyGlass extends BlockBreakable implements ITileEntityProvid
     }
 
     @Override
+    public boolean hasTileEntity() {
+        return true;
+    }
+
+    @Override
     public TileEntity createNewTileEntity(World world, int metadata) {
         if (metadata == METADATA_INTERFACE) {
             return new TileEntityInterface();

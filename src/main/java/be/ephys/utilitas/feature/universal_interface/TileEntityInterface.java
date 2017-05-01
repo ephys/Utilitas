@@ -18,6 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityHopper;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.text.ITextComponent;
@@ -266,7 +267,6 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
             return 0;
         }
 
-        System.out.println(linkedInventory.getSizeInventory());
         return linkedInventory.getSizeInventory();
     }
 

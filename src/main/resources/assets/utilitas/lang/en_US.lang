@@ -45,3 +45,5 @@ side.north=North
 side.south=South
 side.west=West
 side.east=East
+
+entity.ItemFrame.name=Item Frame

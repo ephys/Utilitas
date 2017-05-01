@@ -25,8 +25,8 @@ public class InterfaceItemFrame extends UniversalInterfaceAdapter {
     private EntityItemFrame itemFrame;
     private UUID uuid;
 
-    private float[] relativeX = new float[]{-0.5F, 0.0625F, -0.5F, -1.0625F};
-    private float[] relativeZ = new float[]{-1.0625F, -0.5F, 0.0625F, -0.5F};
+    private float[] relativeX = new float[]{-0.5F, 0.03125F, -0.5F, -1.03125F};
+    private float[] relativeZ = new float[]{-1.03125F, -0.5F, 0.03125F, -0.5F};
 
     public InterfaceItemFrame(TileEntityInterface tileEntity) {
         super(tileEntity);
@@ -99,7 +99,7 @@ public class InterfaceItemFrame extends UniversalInterfaceAdapter {
             return false;
         }
 
-        if (Math.abs(pos.getY() - itemFrame.posY) > 1) {
+        if (Math.abs(pos.getY() - itemFrame.posY) > 0.5) {
             return false;
         }
 
@@ -108,6 +108,8 @@ public class InterfaceItemFrame extends UniversalInterfaceAdapter {
         if (facingDirection == null) {
             return false;
         }
+
+        System.out.println(pos.getX() - itemFrame.posX);
 
         return pos.getX() - itemFrame.posX == relativeX[facingDirection.getHorizontalIndex()]
             && pos.getZ() - itemFrame.posZ == relativeZ[facingDirection.getHorizontalIndex()];
