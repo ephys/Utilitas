@@ -11,26 +11,21 @@ import java.util.Set;
 import java.util.TreeMap;
 
 public class UniversalInterfaceRegistry {
-    private static TreeMap<Class<?>, Class<? extends UniversalInterfaceAdapter>> adapterMap = new TreeMap<>(
-        new Comparator<Class<?>>() {
-            @Override
-            public int compare(Class<?> o1, Class<?> o2) {
-                if (!o1.isInterface() && o2.isInterface()) // place interfaces first
-                    return 1;
+    private static TreeMap<Class<?>, Class<? extends UniversalInterfaceAdapter>> adapterMap = new TreeMap<>((o1, o2) -> {
+        if (!o1.isInterface() && o2.isInterface()) // place interfaces first
+            return 1;
 
-                if (o1.isAssignableFrom(o2)) // o1 is superclass
-                    return 1;
+        if (o1.isAssignableFrom(o2)) // o1 is superclass
+            return 1;
 
-                return -1;
-            }
-        }
-    );
+        return -1;
+    });
 
     public static boolean hasHandler(Class<? extends UniversalInterfaceAdapter> clazz) {
         return adapterMap.containsValue(clazz);
     }
 
-    public static UniversalInterfaceAdapter getHandler(Object obj, TileEntityInterface te, EntityPlayer linker) {
+    public static <T> UniversalInterfaceAdapter<T> getHandler(T obj, TileEntityInterface te, EntityPlayer linker) {
         Set<Entry<Class<?>, Class<? extends UniversalInterfaceAdapter>>> set = adapterMap.entrySet();
 
         for (Entry<Class<?>, Class<? extends UniversalInterfaceAdapter>> entry : set) {
@@ -40,7 +35,7 @@ public class UniversalInterfaceRegistry {
                 Constructor construct;
                 try {
                     construct = clazz.getConstructor(TileEntityInterface.class);
-                    UniversalInterfaceAdapter handler = (UniversalInterfaceAdapter) construct.newInstance(te);
+                    UniversalInterfaceAdapter<T> handler = (UniversalInterfaceAdapter<T>) construct.newInstance(te);
 
                     if (handler.setLink(obj, linker)) {
                         return handler;
@@ -54,7 +49,7 @@ public class UniversalInterfaceRegistry {
         return null;
     }
 
-    public static void addInterface(Class<? extends UniversalInterfaceAdapter> clazzInterface, Class<?> clazzTarget) {
+    public static <T> void addInterface(Class<? extends UniversalInterfaceAdapter<T>> clazzInterface, Class<T> clazzTarget) {
         if (adapterMap.containsKey(clazzTarget)) {
             Utilitas.getLogger().error(clazzTarget + " already has a class handler. Ignoring " + clazzInterface);
             return;

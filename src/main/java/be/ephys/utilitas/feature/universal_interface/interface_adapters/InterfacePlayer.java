@@ -27,7 +27,7 @@ import org.lwjgl.opengl.GL11;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class InterfacePlayer extends UniversalInterfaceAdapter {
+public class InterfacePlayer extends UniversalInterfaceAdapter<EntityPlayer> {
 
     private boolean isEnderChest = false;
     private GameProfile gameProfile = null;
@@ -67,25 +67,20 @@ public class InterfacePlayer extends UniversalInterfaceAdapter {
     }
 
     @Override
-    public boolean setLink(Object link, EntityPlayer linker) {
-        if (!(link instanceof EntityPlayer)) {
+    public boolean setLink(EntityPlayer link, EntityPlayer linker) {
+
+        if (EntityHelper.isFakePlayer(link)) {
+            ChatHelper.sendChatMessage(link, "You cannot link to fake players.");
             return false;
         }
 
-        EntityPlayer player = ((EntityPlayer) link);
-
-        if (EntityHelper.isFakePlayer(player)) {
-            ChatHelper.sendChatMessage(player, "You cannot link to fake players.");
+        if (!link.getGameProfile().getId().equals(linker.getGameProfile().getId())) {
+            ChatHelper.sendChatMessage(link, "You cannot link to another another player's inventory.");
             return false;
         }
 
-        if (!player.getGameProfile().getId().equals(linker.getGameProfile().getId())) {
-            ChatHelper.sendChatMessage(player, "You cannot link to another another player's inventory.");
-            return false;
-        }
-
-        this.userEntity = player;
-        this.gameProfile = player.getGameProfile();
+        this.userEntity = link;
+        this.gameProfile = link.getGameProfile();
 
         onBlockUpdate();
 
@@ -103,7 +98,9 @@ public class InterfacePlayer extends UniversalInterfaceAdapter {
         this.gameProfile = NBTUtil.readGameProfileFromNBT(nbt.getCompoundTag("profile"));
         isEnderChest = NBTHelper.getBoolean(nbt, "is_ender_chest", false);
 
-        searchPlayer();
+        if (this.getInterface().hasWorldObj()) {
+            searchPlayer();
+        }
     }
 
     @Override
@@ -129,9 +126,6 @@ public class InterfacePlayer extends UniversalInterfaceAdapter {
 
     @Override
     public void onTick(int tick) {
-        if (isRemote()) {
-            return;
-        }
 
         if ((userEntity == null || userEntity.isDead) && tick % 40 == 0) {
             searchPlayer();

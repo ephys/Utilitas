@@ -178,15 +178,12 @@ public class NBTHelper {
             return def;
         }
 
-        Class<?> clazz;
         try {
-            clazz = Class.forName(className);
+            return Class.forName(className);
         } catch (ClassNotFoundException e) {
-            clazz = null;
             e.printStackTrace();
+            return def;
         }
-
-        return clazz;
     }
 
 

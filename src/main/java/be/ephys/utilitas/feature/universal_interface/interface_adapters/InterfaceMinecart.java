@@ -4,8 +4,10 @@ import be.ephys.utilitas.api.registry.UniversalInterfaceAdapter;
 import be.ephys.utilitas.base.helpers.EntityHelper;
 import be.ephys.utilitas.base.helpers.NBTHelper;
 import be.ephys.utilitas.feature.universal_interface.TileEntityInterface;
+import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityMinecartContainer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -19,7 +21,7 @@ import org.lwjgl.opengl.GL11;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class InterfaceMinecart extends UniversalInterfaceAdapter {
+public class InterfaceMinecart extends UniversalInterfaceAdapter<EntityMinecartContainer> {
 
     private EntityMinecartContainer minecart;
     private UUID uuid;
@@ -31,18 +33,23 @@ public class InterfaceMinecart extends UniversalInterfaceAdapter {
     @Override
     @SideOnly(Side.CLIENT)
     public void renderInventory(int tickCount, double x, double y, double z, float tickTime) {
-        renderBlock(minecart.getDisplayTile().getBlock(), tickCount);
+        Block displayTile;
+        if (minecart == null) {
+            displayTile = Blocks.CHEST;
+        } else {
+            displayTile = minecart.getDisplayTile().getBlock();
+            if (displayTile == Blocks.AIR) {
+                displayTile = Blocks.CHEST;
+            }
+        }
+
+        renderBlock(displayTile, tickCount);
     }
 
     @Override
-    public boolean setLink(Object link, EntityPlayer linker) {
-        if (link instanceof EntityMinecartContainer) {
-            minecart = (EntityMinecartContainer) link;
-
-            return true;
-        }
-
-        return false;
+    public boolean setLink(EntityMinecartContainer link, EntityPlayer linker) {
+        minecart = link;
+        return true;
     }
 
     @Override
@@ -62,16 +69,14 @@ public class InterfaceMinecart extends UniversalInterfaceAdapter {
 
     @Override
     public void onTick(int tick) {
-        if (isRemote()) {
-            return;
-        }
-
         if (minecart == null && uuid != null) {
             minecart = (EntityMinecartContainer) EntityHelper.getEntityByUuid(uuid);
         }
 
-        if (minecart == null || minecart.isDead) {
-            getInterface().unlink();
+        if (!isRemote()) {
+            if (minecart == null || minecart.isDead) {
+                getInterface().unlink();
+            }
         }
     }
 

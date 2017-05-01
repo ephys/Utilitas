@@ -2,6 +2,7 @@ package be.ephys.utilitas.api.registry;
 
 import be.ephys.utilitas.feature.universal_interface.TileEntityInterface;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,7 +16,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
-public abstract class UniversalInterfaceAdapter implements ICapabilityProvider {
+public abstract class UniversalInterfaceAdapter<T> implements ICapabilityProvider {
 
     private final TileEntityInterface tileEntity;
 
@@ -42,7 +43,7 @@ public abstract class UniversalInterfaceAdapter implements ICapabilityProvider {
      * @param linker The player who tried linking
      * @return success
      */
-    public abstract boolean setLink(Object link, EntityPlayer linker);
+    public abstract boolean setLink(T link, EntityPlayer linker);
 
     public abstract ITextComponent getName();
 
@@ -77,11 +78,16 @@ public abstract class UniversalInterfaceAdapter implements ICapabilityProvider {
 
     @SideOnly(Side.CLIENT)
     protected static void renderBlock(Block block, int tickCount) {
+        renderBlock(block.getDefaultState(), tickCount);
+    }
+
+    @SideOnly(Side.CLIENT)
+    protected static void renderBlock(IBlockState block, int tickCount) {
         GL11.glRotatef(tickCount, 0.0F, 1.0F, 0.0F);
         GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
         GL11.glTranslated(-0.5, -0.5, 0.5);
 
         Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-        Minecraft.getMinecraft().getBlockRendererDispatcher().renderBlockBrightness(block.getDefaultState(), 1.0F);
+        Minecraft.getMinecraft().getBlockRendererDispatcher().renderBlockBrightness(block, 1.0F);
     }
 }

@@ -22,7 +22,7 @@ import org.lwjgl.opengl.GL11;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class InterfaceMinecartFurnace extends UniversalInterfaceAdapter {
+public class InterfaceMinecartFurnace extends UniversalInterfaceAdapter<EntityMinecartFurnace> {
 
     private FurnaceProxy proxy = new FurnaceProxy();
     private EntityMinecartFurnace minecart;
@@ -39,12 +39,8 @@ public class InterfaceMinecartFurnace extends UniversalInterfaceAdapter {
     }
 
     @Override
-    public boolean setLink(Object link, EntityPlayer linker) {
-        if (!(link instanceof EntityMinecartFurnace)) {
-            return false;
-        }
-
-        minecart = (EntityMinecartFurnace) link;
+    public boolean setLink(EntityMinecartFurnace link, EntityPlayer linker) {
+        minecart = link;
         return true;
 
     }

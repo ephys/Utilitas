@@ -2,10 +2,11 @@ package be.ephys.utilitas.feature.universal_interface.interface_adapters;
 
 import be.ephys.utilitas.api.registry.UniversalInterfaceAdapter;
 import be.ephys.utilitas.base.helpers.ChatHelper;
-import be.ephys.utilitas.base.helpers.NBTHelper;
 import be.ephys.utilitas.base.helpers.WorldHelper;
+import be.ephys.utilitas.feature.link_wand.ItemLinker;
 import be.ephys.utilitas.feature.universal_interface.TileEntityInterface;
 import net.minecraft.block.BlockJukebox;
+import net.minecraft.block.BlockJukebox.TileEntityJukebox;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
@@ -22,15 +23,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 
-public class InterfaceJukebox extends UniversalInterfaceAdapter {
+public class InterfaceJukebox extends UniversalInterfaceAdapter<TileEntityJukebox> {
 
     private JukeBoxProxy jukeboxProxy;
-    private BlockPos tilePos;
-    private int tileDim;
+    private ItemLinker.WorldPos tilePos;
 
     public InterfaceJukebox(TileEntityInterface tileEntity) {
         super(tileEntity);
@@ -45,14 +44,11 @@ public class InterfaceJukebox extends UniversalInterfaceAdapter {
     }
 
     @Override
-    public boolean setLink(Object link, EntityPlayer linker) {
-        if (link instanceof BlockJukebox.TileEntityJukebox) {
-            jukeboxProxy.jukebox = (BlockJukebox.TileEntityJukebox) link;
+    public boolean setLink(TileEntityJukebox link, EntityPlayer linker) {
+        jukeboxProxy.jukebox = link;
+        tilePos = new ItemLinker.WorldPos(jukeboxProxy.jukebox.getWorld(), jukeboxProxy.jukebox.getPos());
 
-            return true;
-        }
-
-        return false;
+        return true;
     }
 
     @Override
@@ -62,14 +58,12 @@ public class InterfaceJukebox extends UniversalInterfaceAdapter {
 
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
-        NBTHelper.setBlockPos(nbt, "entity_pos", jukeboxProxy.jukebox.getPos());
-        nbt.setInteger("entity_dim", jukeboxProxy.jukebox.getWorld().provider.getDimension());
+        nbt.setTag("jukebox", tilePos.writeToNbt());
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
-        tilePos = NBTHelper.getBlockPos(nbt, "entity_pos", null);
-        tileDim = NBTHelper.getInt(nbt, "entity_dim", 0);
+        tilePos = ItemLinker.WorldPos.readFromNbt(nbt.getCompoundTag("jukebox"));
     }
 
     @Override
@@ -83,16 +77,15 @@ public class InterfaceJukebox extends UniversalInterfaceAdapter {
         }
 
         if (jukeboxProxy.jukebox == null) {
-            if (tilePos == null) {
+            if (tilePos == null || tilePos.pos == null || tilePos.world == null) {
                 this.getInterface().unlink();
                 return;
             }
 
-            World world = WorldHelper.getWorldForDim(tileDim);
-            TileEntity te = world.getTileEntity(tilePos);
+            TileEntity te = tilePos.world.getTileEntity(tilePos.pos);
 
-            if (te instanceof BlockJukebox.TileEntityJukebox) {
-                jukeboxProxy.jukebox = (BlockJukebox.TileEntityJukebox) te;
+            if (te instanceof TileEntityJukebox) {
+                jukeboxProxy.jukebox = (TileEntityJukebox) te;
             } else {
                 this.getInterface().unlink();
                 return;
@@ -131,7 +124,7 @@ public class InterfaceJukebox extends UniversalInterfaceAdapter {
     }
 
     public static class JukeBoxProxy implements IInventory {
-        private BlockJukebox.TileEntityJukebox jukebox;
+        private TileEntityJukebox jukebox;
         private long insertTime = Integer.MIN_VALUE;
 
         @Override
@@ -141,7 +134,9 @@ public class InterfaceJukebox extends UniversalInterfaceAdapter {
 
         @Override
         public ItemStack getStackInSlot(int slot) {
-            if (slot != 0) return null;
+            if (slot != 0) {
+                return null;
+            }
 
             return jukebox.getRecord();
         }
@@ -168,31 +163,42 @@ public class InterfaceJukebox extends UniversalInterfaceAdapter {
             }
 
             ItemStack previousStack = jukebox.getRecord();
-            setInventorySlotContents(0, null);
+            setInventorySlotContents(slot, null);
 
             return previousStack;
         }
 
         @Override
         public void setInventorySlotContents(int slot, ItemStack stack) {
+            if (slot != 0) {
+                return;
+            }
+
+            if (stack == null) {
+                jukebox.getWorld().playEvent(1010, jukebox.getPos(), 0);
+                jukebox.getWorld().playRecord(jukebox.getPos(), null);
+                jukebox.setRecord(null);
+                return;
+            }
+
             if (!isItemValidForSlot(slot, stack)) {
                 return;
-//                jukebox.setRecord(stack);
             }
 
             BlockPos pos = jukebox.getPos();
             World world = jukebox.getWorld();
 
             ((BlockJukebox) Blocks.JUKEBOX).insertRecord(world, pos, world.getBlockState(pos), stack);
-            jukebox.getWorld().playEvent(null, 1005, jukebox.getPos(), Item.getIdFromItem(stack.getItem()));
+
+            jukebox.getWorld().playRecord(jukebox.getPos(), ((ItemRecord) stack.getItem()).getSound());
+            jukebox.getWorld().playEvent(null, 1010, jukebox.getPos(), Item.getIdFromItem(stack.getItem()));
 
             insertTime = jukebox.getWorld().getTotalWorldTime();
         }
 
         @Override
         public boolean isItemValidForSlot(int slot, ItemStack stack) {
-            // TODO figure out a way to support more records
-            return slot == 0 && (stack.getItem() instanceof ItemRecord);
+            return stack != null && slot == 0 && (stack.getItem() instanceof ItemRecord);
         }
 
         @Override

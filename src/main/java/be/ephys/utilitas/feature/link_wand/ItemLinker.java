@@ -238,5 +238,10 @@ public class ItemLinker extends Item {
 
             return new WorldPos(world, pos);
         }
+
+        @Override
+        public String toString() {
+            return "BlockPos["+ world.provider.getDimensionType().getName() + " { " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + " }]";
+        }
     }
 }

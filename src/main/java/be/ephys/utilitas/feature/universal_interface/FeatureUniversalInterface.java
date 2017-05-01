@@ -162,6 +162,6 @@ public class FeatureUniversalInterface extends Feature {
         }
 
         // noinspection unchecked
-        UniversalInterfaceRegistry.addInterface((Class<? extends UniversalInterfaceAdapter>) handler, target);
+        UniversalInterfaceRegistry.addInterface((Class<? extends UniversalInterfaceAdapter<Object>>) handler, target);
     }
 }

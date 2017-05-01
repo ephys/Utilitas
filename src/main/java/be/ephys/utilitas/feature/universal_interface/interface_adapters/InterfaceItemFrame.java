@@ -19,7 +19,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class InterfaceItemFrame extends UniversalInterfaceAdapter {
+public class InterfaceItemFrame extends UniversalInterfaceAdapter<EntityItemFrame> {
 
     private ItemFrameProxy proxy = new ItemFrameProxy();
     private EntityItemFrame itemFrame;
@@ -39,12 +39,8 @@ public class InterfaceItemFrame extends UniversalInterfaceAdapter {
     }
 
     @Override
-    public boolean setLink(Object link, EntityPlayer linker) {
-        if (!(link instanceof EntityItemFrame)) {
-            return false;
-        }
-
-        this.itemFrame = (EntityItemFrame) link;
+    public boolean setLink(EntityItemFrame link, EntityPlayer linker) {
+        this.itemFrame = link;
         return true;
     }
 
@@ -108,8 +104,6 @@ public class InterfaceItemFrame extends UniversalInterfaceAdapter {
         if (facingDirection == null) {
             return false;
         }
-
-        System.out.println(pos.getX() - itemFrame.posX);
 
         return pos.getX() - itemFrame.posX == relativeX[facingDirection.getHorizontalIndex()]
             && pos.getZ() - itemFrame.posZ == relativeZ[facingDirection.getHorizontalIndex()];

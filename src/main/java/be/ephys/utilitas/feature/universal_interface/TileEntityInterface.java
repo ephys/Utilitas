@@ -18,20 +18,23 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityHopper;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import scala.tools.nsc.transform.patmat.Interface;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+/*
+ * Idea:
+ * - @Persist => write field in NBT during server writing
+ * - @Sync(initial, dirty) => send to client at the beginning / on marked for update
+ *                         => Only send changed values
+ */
 
 public class TileEntityInterface extends TileEntity implements ISidedInventory, ITickable, ILinkable {
 
@@ -77,10 +80,20 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
     @Nullable
     @Override
     public SPacketUpdateTileEntity getUpdatePacket() {
-        NBTTagCompound nbtTag = new NBTTagCompound();
-        this.writeToNBT(nbtTag);
+        return new SPacketUpdateTileEntity(getPos(), 1, this.getUpdateTag());
+    }
 
-        return new SPacketUpdateTileEntity(getPos(), 1, nbtTag);
+    @Override
+    // https://gist.github.com/williewillus/7945c4959b1142ece9828706b527c5a4
+    public NBTTagCompound getUpdateTag() {
+        NBTTagCompound tag = super.getUpdateTag();
+
+        return writeToNBT(tag);
+    }
+
+    @Override
+    public void handleUpdateTag(NBTTagCompound tag) {
+        super.handleUpdateTag(tag);
     }
 
     @Override
@@ -109,8 +122,10 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
         }
 
         if (this.activeAdapter != InterfaceDummy.INSTANCE) {
-            NBTHelper.setClass(nbt, "handler", this.activeAdapter.getClass());
-            this.activeAdapter.writeToNBT(nbt);
+            NBTHelper.setClass(nbt, "handler_class", this.activeAdapter.getClass());
+            NBTTagCompound handlerNbt = new NBTTagCompound();
+            this.activeAdapter.writeToNBT(handlerNbt);
+            nbt.setTag("handler", handlerNbt);
         }
 
         return nbt;
@@ -135,18 +150,18 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
         }
 
         @SuppressWarnings("unchecked")
-        Class<? extends UniversalInterfaceAdapter> clazz = (Class<? extends UniversalInterfaceAdapter>) NBTHelper.getClass(nbt, "handler");
+        Class<? extends UniversalInterfaceAdapter> clazz = (Class<? extends UniversalInterfaceAdapter>) NBTHelper.getClass(nbt, "handler_class");
 
         if (clazz != null && UniversalInterfaceRegistry.hasHandler(clazz)) {
             try {
                 this.activeAdapter = clazz.getConstructor(TileEntityInterface.class).newInstance(this);
-                this.activeAdapter.readFromNBT(nbt);
+                this.activeAdapter.readFromNBT(nbt.getCompoundTag("handler"));
             } catch (Exception e) {
                 e.printStackTrace();
-                this.unlink();
+                this.activeAdapter = InterfaceDummy.INSTANCE;
             }
         } else {
-            this.unlink();
+            this.activeAdapter = InterfaceDummy.INSTANCE;
         }
     }
 
