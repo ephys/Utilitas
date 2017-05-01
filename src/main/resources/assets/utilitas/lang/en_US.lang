@@ -1,0 +1,47 @@
+itemGroup.utilitas=Utilitas
+
+tile.PP_HardenedStone.name=Hardened Stone
+tile.PP_FluidDiffuser.name=Fluid Diffuser
+tile.PP_HomeShield.name=Shield
+tile.PP_ProximitySensor.name=Proximity Sensor
+tile.PP_FluidHopper.name=Fluid Hopper
+
+tile.utilitas:shiny_glass-0.name=Shiny Glass
+tile.utilitas:shiny_glass-1.name=Universal Interface
+
+item.utilitas:interface_upgrade-crossdim.name=Interface Upgrade: Cross-Dim
+item.utilitas:interface_upgrade-wireless.name=Interface Upgrade: Wireless
+item.utilitas:interface_upgrade-fluidhandler.name=Interface Upgrade: Fluid Handling
+item.utilitas:link_wand.name=Linking Wand
+item.utilitas:omnibucket.name=Omnibucket
+item.utilitas:omnibucket-filled.name=%S Omnibucket
+item.utilitas:fluid_diffuser.name=Handheld Fluid diffuser
+
+tooltip.utilitas:press_shift=Press <Shift> for details
+tooltip.utilitas:nothing=nothing
+tooltip.utilitas:bucket_contains=Contains: %s
+tooltip.utilitas:bucket_mode_fill=Fill Mode
+tooltip.utilitas:bucket_mode_drain=Drain Mode
+tooltip.utilitas:bucket_bound=Bound
+tooltip.utilitas:wand_bound=Bound to %s
+tooltip.utilitas:wand_unbound=Unbound
+tooltip.utilitas:wand_usage_1=Sneak & Use on something to bind it to the wand.
+tooltip.utilitas:wand_usage_2=Sneak & Use in the air to bind yourself to the wand.
+tooltip.utilitas:wand_usage_3=Use on a compatible block to link it to the bound entity.
+
+message.utilitas:bucket_bound=%s bound to %s (%s).
+message.utilitas:bucket_unbound=%s unbound.
+message.utilitas:empty=Empty.
+message.utilitas:wand_bound=%s bound to %s.
+message.utilitas:wand_unbound=Wand data cleared.
+message.utilitas:interface_bound=Universal interface linked to %s.
+message.utilitas:interface_unbound=Interface unlinked.
+message.utilitas:interface_binding_denied=Cannot link to another Universal Interface.
+message.utilitas:interface_binding_unsupported=Could not bind the universal interface. Unsupported Entity.
+
+side.down=Down
+side.up=Up
+side.north=North
+side.south=South
+side.west=West
+side.east=East

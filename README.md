@@ -47,20 +47,13 @@ Same as the fluid diffuser but using fluid tanks and potions present in the inve
 
 It will not use instant potions (like instant health) nor splash or lingering potions.
 
-### Autofeeder
-
-Regularly feeds you with the food stack placed to the right of the feeder.
-
-### Sylladex
-
-Place an item in it and it will emulate a player inventory and tick the item.
-
-You could use it to repair TiC tools overnight, or hatch your Pokemon GO eggs.
-
 ## Planned Features
 
 - Fluid Tank Minecart
 - Fluid Hopper Minecart
+- Auto-feeder
+- Enhanced Comparator
+- Wireless Comparator ?
 
 ## Modpacks
 
