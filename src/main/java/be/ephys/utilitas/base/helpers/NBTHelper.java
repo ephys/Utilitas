@@ -87,11 +87,11 @@ public class NBTHelper {
     }
 
     public static void setEntityUuid(ItemStack stack, String name, Entity entity) {
-        setUuid(getNBT(stack), name, entity.getUniqueID());
+        setUuid(getNBT(stack), name, entity.getPersistentID());
     }
 
     public static void setEntityUuid(NBTTagCompound nbt, String name, Entity entity) {
-        setUuid(nbt, name, entity.getUniqueID());
+        setUuid(nbt, name, entity.getPersistentID());
     }
 
     public static void setUuid(NBTTagCompound nbt, String name, UUID uuid) {
@@ -229,7 +229,7 @@ public class NBTHelper {
 
         NBTTagCompound uuidNBT = nbt.getCompoundTag(name);
 
-        return new UUID(uuidNBT.getLong("UUIDMost"), uuidNBT.getLong("UUIDLeast"));
+        return NBTUtil.getUUIDFromTag(uuidNBT);
     }
 
     public static void setBlockPos(ItemStack stack, String name, BlockPos pos) {
@@ -336,5 +336,9 @@ public class NBTHelper {
         }
 
         return FluidStack.loadFluidStackFromNBT(nbt.getCompoundTag(name));
+    }
+
+    public static void setBoolean(ItemStack stack, String name, boolean bool) {
+        getNBT(stack).setBoolean(name, bool);
     }
 }

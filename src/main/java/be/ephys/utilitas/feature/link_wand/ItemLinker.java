@@ -1,10 +1,7 @@
 package be.ephys.utilitas.feature.link_wand;
 
 import be.ephys.utilitas.api.ILinkable;
-import be.ephys.utilitas.base.helpers.ChatHelper;
-import be.ephys.utilitas.base.helpers.InputHelper;
-import be.ephys.utilitas.base.helpers.ItemHelper;
-import be.ephys.utilitas.base.helpers.NBTHelper;
+import be.ephys.utilitas.base.helpers.*;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -43,7 +40,7 @@ public class ItemLinker extends Item {
             list.add(TextFormatting.LIGHT_PURPLE.toString() + TextFormatting.ITALIC.toString() + I18n.format("tooltip.utilitas:press_shift"));
         }
 
-        ITextComponent bound = getLinkedObjectName(stack, player.getEntityWorld());
+        ITextComponent bound = getLinkedObjectName(stack);
 
         ITextComponent tooltip;
         if (bound == null) {
@@ -65,8 +62,6 @@ public class ItemLinker extends Item {
             return EnumActionResult.SUCCESS;
         }
 
-        System.out.println("use");
-
         TileEntity te = world.getTileEntity(pos);
         if (!(te instanceof ILinkable)) {
             return EnumActionResult.PASS;
@@ -77,7 +72,7 @@ public class ItemLinker extends Item {
         }
 
         ILinkable target = (ILinkable) te;
-        target.link(player, getLinkedObject(stack, world));
+        target.link(player, getLinkedObject(stack));
 
         return EnumActionResult.SUCCESS;
     }
@@ -125,31 +120,41 @@ public class ItemLinker extends Item {
         }
 
         if (target instanceof ILinkable) {
-            ((ILinkable) target).link(player, getLinkedObject(item, event.getWorld()));
+            ((ILinkable) target).link(player, getLinkedObject(item));
             event.setCanceled(true);
         }
     }
 
-    public static Object getLinkedObject(ItemStack item, World world) {
+    public static Object getLinkedObject(ItemStack item) {
         NBTTagCompound nbt = NBTHelper.getNBT(item);
 
+        int worldId = NBTHelper.getInt(item, "world", 0);
+        World world = WorldHelper.getWorldForDim(worldId);
+        if (world == null) {
+            world = WorldHelper.getWorldForDim(0);
+        }
+
         if (nbt.hasKey("entity")) {
-            return world.getEntityByID(nbt.getInteger("entity"));
+            return EntityHelper.getEntityByUuid(NBTHelper.getUuid(nbt, "entity", null));
         }
 
         if (nbt.hasKey("tile")) {
-            return NBTUtil.getPosFromTag(nbt.getCompoundTag("tile"));
+            BlockPos pos = NBTUtil.getPosFromTag(nbt.getCompoundTag("tile"));
+            return new WorldPos(pos, world);
         }
 
         return null;
     }
 
-    private static ITextComponent getLinkedObjectName(ItemStack item, World world) {
-        Object obj = getLinkedObject(item, world);
+    private static ITextComponent getLinkedObjectName(ItemStack item) {
+        Object obj = getLinkedObject(item);
 
-        if (obj instanceof BlockPos) {
-            BlockPos pos = (BlockPos) obj;
-            return new TextComponentString("{" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + "}");
+        if (obj instanceof WorldPos) {
+            WorldPos wp = (WorldPos) obj;
+            BlockPos pos = wp.pos;
+            World world = wp.world;
+
+            return new TextComponentString(world.getWorldInfo().getWorldName() + " {" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + "}");
         }
 
         if (obj instanceof Entity) {
@@ -162,15 +167,18 @@ public class ItemLinker extends Item {
     }
 
     public static void bindToWand(ItemStack stack, BlockPos pos, EntityPlayer player) {
+        NBTHelper.setInt(stack, "world", player.getEntityWorld().provider.getDimension());
         NBTHelper.setBlockPos(stack, "tile", pos);
+
         NBTHelper.getNBT(stack).removeTag("entity");
 
         printWandBoundMsg(stack, player);
     }
 
     public static void bindToWand(ItemStack stack, Entity entity, EntityPlayer player) {
-        NBTHelper.getNBT(stack).removeTag("tile");
+        NBTHelper.setInt(stack, "world", entity.getEntityWorld().provider.getDimension());
         NBTHelper.setEntityUuid(stack, "entity", entity);
+        NBTHelper.getNBT(stack).removeTag("tile");
 
         printWandBoundMsg(stack, player);
     }
@@ -180,6 +188,7 @@ public class ItemLinker extends Item {
 
         nbt.removeTag("entity");
         nbt.removeTag("tile");
+        nbt.removeTag("world");
 
         ChatHelper.sendChatMessage(player, new TextComponentTranslation("message.utilitas:wand_unbound"));
     }
@@ -190,12 +199,26 @@ public class ItemLinker extends Item {
             return;
         }
 
+        ITextComponent boundItem = getLinkedObjectName(stack);
+        boundItem.setStyle(new Style().setColor(TextFormatting.AQUA));
+
         ITextComponent msg = new TextComponentTranslation(
             "message.utilitas:wand_bound",
             stack.getDisplayName(),
-            getLinkedObjectName(stack, player.getEntityWorld())
+            boundItem
         );
 
         ChatHelper.sendChatMessage(player, msg);
+    }
+
+    public static final class WorldPos {
+
+        public final BlockPos pos;
+        public final World world;
+
+        public WorldPos(BlockPos pos, World world) {
+            this.pos = pos;
+            this.world = world;
+        }
     }
 }

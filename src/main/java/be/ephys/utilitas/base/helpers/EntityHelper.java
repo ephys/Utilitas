@@ -82,6 +82,10 @@ public class EntityHelper {
      * @return Entity         the entity
      */
     public static Entity getEntityByUuid(UUID entityUUID) {
+        if (entityUUID == null) {
+            return null;
+        }
+
         for (WorldServer world : WorldHelper.getServer().worldServers) {
             Entity entity = getEntityByUuidInWorld(entityUUID, world);
 

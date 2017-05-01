@@ -95,6 +95,11 @@ public class BlockShinyGlass extends BlockBreakable implements ITileEntityProvid
     }
 
     @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return this.getDefaultState().withProperty(TYPE, meta);
+    }
+
+    @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
 
         if (state.getValue(TYPE) != METADATA_INTERFACE) {
