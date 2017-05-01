@@ -154,7 +154,7 @@ public class ItemLinker extends Item {
             BlockPos pos = wp.pos;
             World world = wp.world;
 
-            return new TextComponentString(world.getWorldInfo().getWorldName() + " {" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + "}");
+            return new TextComponentString(world.provider.getDimensionType().getName() + " {" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + "}");
         }
 
         if (obj instanceof Entity) {
