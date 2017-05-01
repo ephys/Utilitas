@@ -2,16 +2,15 @@ package be.ephys.utilitas.feature.universal_interface.interface_adapters;
 
 import be.ephys.utilitas.api.registry.UniversalInterfaceAdapter;
 import be.ephys.utilitas.base.helpers.WorldHelper;
+import be.ephys.utilitas.feature.link_wand.ItemLinker;
 import be.ephys.utilitas.feature.universal_interface.TileEntityInterface;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -22,9 +21,7 @@ import javax.annotation.Nullable;
 public class InterfaceTileEntity extends UniversalInterfaceAdapter {
 
     private TileEntity blockEntity = null;
-
-    private BlockPos tilePos = null;
-    private int tileDim;
+    private ItemLinker.WorldPos tilePos = null;
 
     public InterfaceTileEntity(TileEntityInterface tileEntity) {
         super(tileEntity);
@@ -40,7 +37,7 @@ public class InterfaceTileEntity extends UniversalInterfaceAdapter {
     public boolean setLink(Object link, EntityPlayer linker) {
         if (link instanceof TileEntity && (link instanceof IInventory || link instanceof IFluidHandler)) {
             this.blockEntity = (TileEntity) link;
-
+            tilePos = new ItemLinker.WorldPos(this.blockEntity.getWorld(), this.blockEntity.getPos());
             return true;
         }
 
@@ -49,14 +46,12 @@ public class InterfaceTileEntity extends UniversalInterfaceAdapter {
 
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
-        nbt.setTag("entity_pos", NBTUtil.createPosTag(tilePos));
-        nbt.setInteger("entity_world", blockEntity.getWorld().provider.getDimension());
+        nbt.setTag("pos", this.tilePos.writeToNbt());
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
-        this.tilePos = NBTUtil.getPosFromTag(nbt.getCompoundTag("entity_pos"));
-        this.tileDim = nbt.getInteger("entity_world");
+        this.tilePos = ItemLinker.WorldPos.readFromNbt(nbt.getCompoundTag("pos"));
     }
 
     @Override
@@ -90,8 +85,7 @@ public class InterfaceTileEntity extends UniversalInterfaceAdapter {
                 return;
             }
 
-            World world = WorldHelper.getWorldForDim(tileDim);
-            this.blockEntity = world.getTileEntity(tilePos);
+            this.blockEntity = tilePos.world.getTileEntity(tilePos.pos);
         }
 
         if (blockEntity == null || this.blockEntity.isInvalid()) {

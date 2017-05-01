@@ -140,7 +140,7 @@ public class ItemLinker extends Item {
 
         if (nbt.hasKey("tile")) {
             BlockPos pos = NBTUtil.getPosFromTag(nbt.getCompoundTag("tile"));
-            return new WorldPos(pos, world);
+            return new WorldPos(world, pos);
         }
 
         return null;
@@ -213,12 +213,30 @@ public class ItemLinker extends Item {
 
     public static final class WorldPos {
 
-        public final BlockPos pos;
         public final World world;
+        public final BlockPos pos;
 
-        public WorldPos(BlockPos pos, World world) {
-            this.pos = pos;
+        public WorldPos(World world, BlockPos pos) {
             this.world = world;
+            this.pos = pos;
+        }
+
+        public NBTTagCompound writeToNbt() {
+            return this.writeToNbt(new NBTTagCompound());
+        }
+
+        public NBTTagCompound writeToNbt(NBTTagCompound nbt) {
+            NBTHelper.setBlockPos(nbt, "pos", pos);
+            nbt.setInteger("world", world.provider.getDimension());
+
+            return nbt;
+        }
+
+        public static WorldPos readFromNbt(NBTTagCompound nbt) {
+            BlockPos pos = NBTHelper.getBlockPos(nbt, "pos", null);
+            World world = WorldHelper.getWorldForDim(nbt.getInteger("world"));
+
+            return new WorldPos(world, pos);
         }
     }
 }

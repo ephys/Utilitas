@@ -8,6 +8,7 @@ import be.ephys.utilitas.base.helpers.ChatHelper;
 import be.ephys.utilitas.base.helpers.InventoryHelper;
 import be.ephys.utilitas.base.helpers.NBTHelper;
 import be.ephys.utilitas.base.helpers.WorldHelper;
+import be.ephys.utilitas.feature.link_wand.ItemLinker;
 import be.ephys.utilitas.feature.universal_interface.interface_adapters.InterfaceDummy;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -226,6 +227,15 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
             ChatHelper.sendChatMessage(player, new TextComponentTranslation("message.utilitas:interface_unbound"));
 
             return true;
+        }
+
+        if (linkedObject instanceof ItemLinker.WorldPos) {
+            ItemLinker.WorldPos worldPos = (ItemLinker.WorldPos) linkedObject;
+
+            TileEntity te = worldPos.world.getTileEntity(worldPos.pos);
+            if (te != null) {
+                linkedObject = te;
+            }
         }
 
         if (linkedObject instanceof TileEntityInterface) {
