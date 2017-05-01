@@ -56,7 +56,7 @@ public class ItemInterfaceUpgrade extends Item implements IInterfaceUpgrade {
     }
 
     @Override
-    public boolean onInsert(TileEntityInterface tile, EntityPlayer player, ItemStack stack) {
+    public boolean onInsert(TileEntityInterface tile, ItemStack stack) {
         switch (stack.getItemDamage()) {
             case CROSS_DIM:
                 tile.setWorksCrossDim(true);
@@ -75,7 +75,7 @@ public class ItemInterfaceUpgrade extends Item implements IInterfaceUpgrade {
     }
 
     @Override
-    public void onRemove(TileEntityInterface tile, EntityPlayer player, ItemStack stack) {
+    public void onRemove(TileEntityInterface tile, ItemStack stack) {
         switch (stack.getItemDamage()) {
             case CROSS_DIM:
                 tile.setWorksCrossDim(false);

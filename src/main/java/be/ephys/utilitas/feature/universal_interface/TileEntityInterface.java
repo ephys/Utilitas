@@ -142,9 +142,10 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
                 this.activeAdapter.readFromNBT(nbt);
             } catch (Exception e) {
                 e.printStackTrace();
+                this.unlink();
             }
         } else {
-            this.activeAdapter = InterfaceDummy.INSTANCE;
+            this.unlink();
         }
     }
 
@@ -173,7 +174,7 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
             ItemStack stack = upgrades[upgradeSlot];
             upgrades[upgradeSlot] = null;
 
-            upgrade.onRemove(this, player, stack);
+            upgrade.onRemove(this, stack);
 
             InventoryHelper.dropItem(stack, player);
         } else {
@@ -183,7 +184,9 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
                 return false;
             }
 
-            if (!upgrade.onInsert(this, player, heldItem)) return false;
+            if (!upgrade.onInsert(this, heldItem)) {
+                return false;
+            }
 
             ItemStack stack = heldItem.copy();
             stack.stackSize = 1;
@@ -258,16 +261,22 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
     @Override
     public int getSizeInventory() {
         IInventory linkedInventory = this.getInventory();
-        return (linkedInventory != null) ? linkedInventory.getSizeInventory()
-            : 0;
+
+        if (linkedInventory == null) {
+            return 0;
+        }
+
+        System.out.println(linkedInventory.getSizeInventory());
+        return linkedInventory.getSizeInventory();
     }
 
     @Override
     public ItemStack getStackInSlot(int i) {
         IInventory linkedInventory = this.getInventory();
 
-        if (linkedInventory == null)
+        if (linkedInventory == null) {
             return null;
+        }
 
         return linkedInventory.getStackInSlot(i);
     }
@@ -276,8 +285,9 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
     public ItemStack decrStackSize(int i, int j) {
         IInventory linkedInventory = this.getInventory();
 
-        if (linkedInventory == null)
+        if (linkedInventory == null) {
             return null;
+        }
 
         return linkedInventory.decrStackSize(i, j);
     }
@@ -285,34 +295,45 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
     @Nullable
     @Override
     public ItemStack removeStackFromSlot(int index) {
+        IInventory linkedInventory = this.getInventory();
+
+        if (linkedInventory != null) {
+            return linkedInventory.removeStackFromSlot(index);
+        }
+
         return null;
     }
 
     @Override
     public void setInventorySlotContents(int i, ItemStack itemstack) {
         IInventory linkedInventory = this.getInventory();
-        if (linkedInventory != null)
+
+        if (linkedInventory != null) {
             linkedInventory.setInventorySlotContents(i, itemstack);
+        }
     }
 
     @Override
     public int getInventoryStackLimit() {
         IInventory linkedInventory = this.getInventory();
-        return (linkedInventory != null) ? linkedInventory.getInventoryStackLimit() : 0;
+
+        if (linkedInventory == null) {
+            return 0;
+        }
+
+        return linkedInventory.getInventoryStackLimit();
     }
 
     @Override
     public boolean isUseableByPlayer(EntityPlayer entityplayer) {
-        return false;
+        return true;
     }
 
     @Override
-    public void openInventory(EntityPlayer player) {
-    }
+    public void openInventory(EntityPlayer player) {}
 
     @Override
-    public void closeInventory(EntityPlayer player) {
-    }
+    public void closeInventory(EntityPlayer player) {}
 
     @Override
     public boolean isItemValidForSlot(int i, ItemStack itemstack) {
@@ -327,9 +348,7 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
     }
 
     @Override
-    public void setField(int id, int value) {
-
-    }
+    public void setField(int id, int value) {}
 
     @Override
     public int getFieldCount() {
