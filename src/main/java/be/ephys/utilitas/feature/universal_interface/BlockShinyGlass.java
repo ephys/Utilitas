@@ -3,7 +3,6 @@ package be.ephys.utilitas.feature.universal_interface;
 import be.ephys.utilitas.api.IInterfaceUpgrade;
 import be.ephys.utilitas.base.helpers.InventoryHelper;
 import be.ephys.utilitas.base.helpers.ItemHelper;
-import be.ephys.utilitas.feature.link_wand.FeatureLinkWand;
 import net.minecraft.block.BlockBreakable;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.SoundType;

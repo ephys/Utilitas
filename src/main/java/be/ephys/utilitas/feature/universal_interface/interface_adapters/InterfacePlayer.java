@@ -6,15 +6,12 @@ import be.ephys.utilitas.feature.universal_interface.PlayerInventoryRegistry;
 import be.ephys.utilitas.feature.universal_interface.TileEntityInterface;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.block.Block;
-import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
@@ -25,7 +22,6 @@ import net.minecraftforge.oredict.OreDictionary;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 public class InterfacePlayer extends UniversalInterfaceAdapter<EntityPlayer> {
 

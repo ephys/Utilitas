@@ -1,7 +1,6 @@
 package be.ephys.utilitas.api;
 
 import be.ephys.utilitas.feature.universal_interface.TileEntityInterface;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 public interface IInterfaceUpgrade {

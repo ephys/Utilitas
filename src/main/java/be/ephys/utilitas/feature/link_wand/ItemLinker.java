@@ -210,38 +210,4 @@ public class ItemLinker extends Item {
 
         ChatHelper.sendChatMessage(player, msg);
     }
-
-    public static final class WorldPos {
-
-        public final World world;
-        public final BlockPos pos;
-
-        public WorldPos(World world, BlockPos pos) {
-            this.world = world;
-            this.pos = pos;
-        }
-
-        public NBTTagCompound writeToNbt() {
-            return this.writeToNbt(new NBTTagCompound());
-        }
-
-        public NBTTagCompound writeToNbt(NBTTagCompound nbt) {
-            NBTHelper.setBlockPos(nbt, "pos", pos);
-            nbt.setInteger("world", world.provider.getDimension());
-
-            return nbt;
-        }
-
-        public static WorldPos readFromNbt(NBTTagCompound nbt) {
-            BlockPos pos = NBTHelper.getBlockPos(nbt, "pos", null);
-            World world = WorldHelper.getWorldForDim(nbt.getInteger("world"));
-
-            return new WorldPos(world, pos);
-        }
-
-        @Override
-        public String toString() {
-            return "BlockPos["+ world.provider.getDimensionType().getName() + " { " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + " }]";
-        }
-    }
 }

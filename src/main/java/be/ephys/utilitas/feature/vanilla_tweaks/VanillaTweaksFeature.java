@@ -28,9 +28,14 @@ public class VanillaTweaksFeature extends Feature {
     @Config(description = "Ender pearls deal no damage when used.")
     private boolean disableEnderPearlDamage = true;
 
+    @Config(description = "Set the glass bottle as the container of potion items.")
+    private boolean fixPotionContainer = true;
+
     @Override
     public void postInitClient(FMLPostInitializationEvent event) {
-        Items.POTIONITEM.setContainerItem(Items.GLASS_BOTTLE);
+        if (fixPotionContainer) {
+            Items.POTIONITEM.setContainerItem(Items.GLASS_BOTTLE);
+        }
 
         if (addToCreativeTabs) {
             softSetCreativeTab(Blocks.DRAGON_EGG, CreativeTabs.DECORATIONS);

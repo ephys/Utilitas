@@ -3,7 +3,7 @@ package be.ephys.utilitas.feature.universal_interface.interface_adapters;
 import be.ephys.utilitas.api.registry.UniversalInterfaceAdapter;
 import be.ephys.utilitas.base.helpers.ChatHelper;
 import be.ephys.utilitas.base.helpers.WorldHelper;
-import be.ephys.utilitas.feature.link_wand.ItemLinker;
+import be.ephys.utilitas.base.helpers.WorldPos;
 import be.ephys.utilitas.feature.universal_interface.TileEntityInterface;
 import net.minecraft.block.BlockJukebox;
 import net.minecraft.block.BlockJukebox.TileEntityJukebox;
@@ -29,7 +29,7 @@ import javax.annotation.Nullable;
 public class InterfaceJukebox extends UniversalInterfaceAdapter<TileEntityJukebox> {
 
     private JukeBoxProxy jukeboxProxy;
-    private ItemLinker.WorldPos tilePos;
+    private WorldPos tilePos;
 
     public InterfaceJukebox(TileEntityInterface tileEntity) {
         super(tileEntity);
@@ -46,7 +46,7 @@ public class InterfaceJukebox extends UniversalInterfaceAdapter<TileEntityJukebo
     @Override
     public boolean setLink(TileEntityJukebox link, EntityPlayer linker) {
         jukeboxProxy.jukebox = link;
-        tilePos = new ItemLinker.WorldPos(jukeboxProxy.jukebox.getWorld(), jukeboxProxy.jukebox.getPos());
+        tilePos = new WorldPos(jukeboxProxy.jukebox.getWorld(), jukeboxProxy.jukebox.getPos());
 
         return true;
     }
@@ -63,7 +63,7 @@ public class InterfaceJukebox extends UniversalInterfaceAdapter<TileEntityJukebo
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
-        tilePos = ItemLinker.WorldPos.readFromNbt(nbt.getCompoundTag("jukebox"));
+        tilePos = WorldPos.readFromNbt(nbt.getCompoundTag("jukebox"));
     }
 
     @Override

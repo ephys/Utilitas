@@ -5,7 +5,6 @@ import be.ephys.utilitas.feature.universal_interface.TileEntityInterface;
 import net.minecraft.entity.player.EntityPlayer;
 
 import java.lang.reflect.Constructor;
-import java.util.Comparator;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;

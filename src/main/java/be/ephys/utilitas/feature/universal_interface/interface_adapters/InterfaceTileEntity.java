@@ -2,7 +2,7 @@ package be.ephys.utilitas.feature.universal_interface.interface_adapters;
 
 import be.ephys.utilitas.api.registry.UniversalInterfaceAdapter;
 import be.ephys.utilitas.base.helpers.WorldHelper;
-import be.ephys.utilitas.feature.link_wand.ItemLinker;
+import be.ephys.utilitas.base.helpers.WorldPos;
 import be.ephys.utilitas.feature.universal_interface.TileEntityInterface;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 public class InterfaceTileEntity extends UniversalInterfaceAdapter<TileEntity> {
 
     private TileEntity blockEntity = null;
-    private ItemLinker.WorldPos tilePos = null;
+    private WorldPos tilePos = null;
 
     public InterfaceTileEntity(TileEntityInterface tileEntity) {
         super(tileEntity);
@@ -46,7 +46,7 @@ public class InterfaceTileEntity extends UniversalInterfaceAdapter<TileEntity> {
     @Override
     public boolean setLink(TileEntity link, EntityPlayer linker) {
         this.blockEntity = link;
-        tilePos = new ItemLinker.WorldPos(this.blockEntity.getWorld(), this.blockEntity.getPos());
+        tilePos = new WorldPos(this.blockEntity.getWorld(), this.blockEntity.getPos());
         return true;
     }
 
@@ -57,7 +57,7 @@ public class InterfaceTileEntity extends UniversalInterfaceAdapter<TileEntity> {
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
-        this.tilePos = ItemLinker.WorldPos.readFromNbt(nbt.getCompoundTag("pos"));
+        this.tilePos = WorldPos.readFromNbt(nbt.getCompoundTag("pos"));
 
         System.out.println(tilePos);
     }

@@ -38,6 +38,11 @@ message.utilitas:interface_bound=Universal interface linked to %s.
 message.utilitas:interface_unbound=Interface unlinked.
 message.utilitas:interface_binding_denied=Cannot link to another Universal Interface.
 message.utilitas:interface_binding_unsupported=Could not bind the universal interface. Unsupported Entity.
+message.utilitas:sensor_binding_unsupported=Could not set the entity filter: not an entity.
+message.utilitas:sensor_binding_cleared=Filter cleared
+message.utilitas:sensor_binding_set_user=Filter set to user %s
+message.utilitas:sensor_binding_set_generic=Filter set to %s
+message.utilitas:sensor_radius=Detection radius: %s * %s * %s
 
 side.down=Down
 side.up=Up

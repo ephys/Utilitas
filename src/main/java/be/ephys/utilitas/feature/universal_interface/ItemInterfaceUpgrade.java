@@ -3,7 +3,6 @@ package be.ephys.utilitas.feature.universal_interface;
 import be.ephys.utilitas.api.IInterfaceUpgrade;
 import be.ephys.utilitas.base.helpers.ItemHelper;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -48,8 +47,7 @@ public class ItemInterfaceUpgrade extends Item implements IInterfaceUpgrade {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public void getSubItems(Item item, CreativeTabs tab, List itemList) {
+    public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> itemList) {
         itemList.add(new ItemStack(item, 1, CROSS_DIM));
         itemList.add(new ItemStack(item, 1, WIRELESS));
         itemList.add(new ItemStack(item, 1, FLUID_HANDLER));

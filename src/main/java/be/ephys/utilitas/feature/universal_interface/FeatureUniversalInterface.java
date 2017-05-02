@@ -4,12 +4,12 @@ import be.ephys.utilitas.Utilitas;
 import be.ephys.utilitas.api.registry.UniversalInterfaceAdapter;
 import be.ephys.utilitas.api.registry.UniversalInterfaceRegistry;
 import be.ephys.utilitas.base.feature.Feature;
+import be.ephys.utilitas.base.feature.FeatureInstance;
 import be.ephys.utilitas.base.feature.FeatureMeta;
 import be.ephys.utilitas.base.item.MultiItemBlock;
 import be.ephys.utilitas.feature.link_wand.FeatureLinkWand;
 import be.ephys.utilitas.feature.universal_interface.interface_adapters.*;
 import net.minecraft.block.BlockJukebox;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.item.EntityMinecartContainer;
@@ -36,8 +36,11 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 )
 public class FeatureUniversalInterface extends Feature {
 
-    public static final BlockShinyGlass SHINY_GLASS = new BlockShinyGlass();
-    public static final ItemInterfaceUpgrade UPGRADE = new ItemInterfaceUpgrade();
+    @FeatureInstance
+    public static FeatureUniversalInterface INSTANCE;
+
+    public final BlockShinyGlass SHINY_GLASS = new BlockShinyGlass();
+    public final ItemInterfaceUpgrade UPGRADE = new ItemInterfaceUpgrade();
 
     private ItemBlock shinyGlassItemBlock;
 

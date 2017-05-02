@@ -4,11 +4,7 @@ import be.ephys.utilitas.api.IInterfaceUpgrade;
 import be.ephys.utilitas.api.ILinkable;
 import be.ephys.utilitas.api.registry.UniversalInterfaceAdapter;
 import be.ephys.utilitas.api.registry.UniversalInterfaceRegistry;
-import be.ephys.utilitas.base.helpers.ChatHelper;
-import be.ephys.utilitas.base.helpers.InventoryHelper;
-import be.ephys.utilitas.base.helpers.NBTHelper;
-import be.ephys.utilitas.base.helpers.WorldHelper;
-import be.ephys.utilitas.feature.link_wand.ItemLinker;
+import be.ephys.utilitas.base.helpers.*;
 import be.ephys.utilitas.feature.universal_interface.interface_adapters.InterfaceDummy;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -242,8 +238,8 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
             return true;
         }
 
-        if (linkedObject instanceof ItemLinker.WorldPos) {
-            ItemLinker.WorldPos worldPos = (ItemLinker.WorldPos) linkedObject;
+        if (linkedObject instanceof WorldPos) {
+            WorldPos worldPos = (WorldPos) linkedObject;
 
             TileEntity te = worldPos.world.getTileEntity(worldPos.pos);
             if (te != null) {

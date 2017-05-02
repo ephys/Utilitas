@@ -2,6 +2,7 @@ package be.ephys.utilitas.feature.link_wand;
 
 import be.ephys.utilitas.Utilitas;
 import be.ephys.utilitas.base.feature.Feature;
+import be.ephys.utilitas.base.feature.FeatureInstance;
 import be.ephys.utilitas.base.feature.FeatureMeta;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.init.Items;
@@ -18,7 +19,10 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 )
 public class FeatureLinkWand extends Feature {
 
-    public static final ItemLinker LINK_WAND = new ItemLinker();
+    @FeatureInstance
+    public static FeatureLinkWand INSTANCE;
+
+    public final ItemLinker LINK_WAND = new ItemLinker();
 
     @Override
     public void preInit(FMLPreInitializationEvent event) {
