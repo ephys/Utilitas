@@ -32,7 +32,10 @@ A hopper, for fluids. It
 
 ### Proximity Sensor
 
-Emit a redstone signal when an entity (filtrable) is withing a set radius of the block.
+Emit a redstone signal equal to the amount of entities withing the detection radius of the block.
+
+You can filter what kind of entities will be detected using the link wand.  
+The radius can be changed by right clicking (+) and sneak right clicking (-) the block.
 
 ### Fluid Diffuser
 
