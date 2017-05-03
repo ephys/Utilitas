@@ -37,6 +37,8 @@ Emit a redstone signal equal to the amount of entities withing the detection rad
 You can filter what kind of entities will be detected using the link wand.  
 The radius can be changed by right clicking (+) and sneak right clicking (-) the block.
 
+![Proximity Sensor](screenshots/proximity_sensor.png)
+
 ### Fluid Diffuser
 
 Applies the effects of fluids to nearby players.
