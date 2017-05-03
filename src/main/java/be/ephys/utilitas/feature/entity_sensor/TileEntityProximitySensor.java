@@ -6,9 +6,9 @@ import be.ephys.utilitas.base.helpers.NBTHelper;
 import be.ephys.utilitas.base.helpers.WorldHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityComparator;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -150,7 +150,13 @@ public class TileEntityProximitySensor extends TileEntity implements ILinkable, 
         }
 
         if (entityCount != currentEntityCount) {
+            // wasActive != isActive
+            if (entityCount != 0 ^ currentEntityCount != 0) {
+                worldObj.setBlockState(pos, worldObj.getBlockState(pos).withProperty(BlockProximitySensor.POWERED, entityCount != 0), 3);
+            }
+
             currentEntityCount = entityCount;
+
             this.worldObj.notifyNeighborsOfStateChange(getPos(), this.getBlockType());
         }
     }

@@ -4,11 +4,19 @@ import be.ephys.utilitas.base.feature.Feature;
 import be.ephys.utilitas.base.feature.FeatureInstance;
 import be.ephys.utilitas.base.feature.FeatureMeta;
 import be.ephys.utilitas.feature.link_wand.FeatureLinkWand;
+import be.ephys.utilitas.feature.universal_interface.ItemInterfaceUpgrade;
+import be.ephys.utilitas.feature.universal_interface.TesrInterface;
+import be.ephys.utilitas.feature.universal_interface.TileEntityInterface;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -35,6 +43,13 @@ public class FeatureProximitySensor extends Feature {
         GameRegistry.register(proximitySensorItemBlock);
 
         GameRegistry.registerTileEntity(TileEntityProximitySensor.class, "proximity_sensor");
+    }
+
+    @Override
+    public void preInitClient(FMLPreInitializationEvent event) {
+        ModelLoader.setCustomModelResourceLocation(proximitySensorItemBlock, 0, new ModelResourceLocation(proximitySensor.getRegistryName(), "inventory"));
+
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityInterface.class, new TesrInterface());
     }
 
     @Override

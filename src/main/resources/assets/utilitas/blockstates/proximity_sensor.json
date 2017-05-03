@@ -1,0 +1,31 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model" : "minecraft:cube_bottom_top",
+    "textures": {
+      "top": "utilitas:blocks/hardened_stone",
+      "bottom": "utilitas:blocks/hardened_stone",
+      "side": "utilitas:blocks/proximity_sensor"
+    }
+  },
+  "variants": {
+    "normal": {
+      "model": "minecraft:cube_bottom_top"
+    },
+    "inventory": {
+      "model": "minecraft:cube_bottom_top"
+    },
+    "powered=true": {
+      "model": "minecraft:cube_bottom_top",
+      "textures": {
+        "side": "utilitas:blocks/proximity_sensor_active"
+      }
+    },
+    "powered=false": {
+      "model": "minecraft:cube_bottom_top",
+      "textures": {
+        "side": "utilitas:blocks/proximity_sensor"
+      }
+    }
+  }
+}

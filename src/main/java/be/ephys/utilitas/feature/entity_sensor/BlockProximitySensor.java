@@ -3,11 +3,15 @@ package be.ephys.utilitas.feature.entity_sensor;
 import be.ephys.utilitas.Utilitas;
 import be.ephys.utilitas.base.helpers.ItemHelper;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.block.BlockRedstoneComparator;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -18,15 +22,37 @@ import javax.annotation.Nullable;
 
 public class BlockProximitySensor extends BlockContainer {
 
+    public static final IProperty<Boolean> POWERED = BlockRedstoneComparator.POWERED;
+
     public BlockProximitySensor(Material material) {
         super(material);
 
         ItemHelper.name(this, "proximity_sensor");
 
-        this
-            .setHardness(2F)
+        this.setDefaultState(this.blockState.getBaseState().withProperty(POWERED, false));
+
+        this.setHardness(2F)
             .setResistance(500.0F)
             .setCreativeTab(Utilitas.CREATIVE_TAB);
+    }
+
+    @Override
+    public EnumBlockRenderType getRenderType(IBlockState state) {
+        return EnumBlockRenderType.MODEL;
+    }
+
+    @Override
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer(this, POWERED);
+    }
+
+    public int getMetaFromState(IBlockState state) {
+        return state.getValue(POWERED) ? 1 : 0;
+    }
+
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return this.getDefaultState().withProperty(POWERED, meta == 1);
     }
 
     @Override
