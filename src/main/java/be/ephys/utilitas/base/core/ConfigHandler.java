@@ -6,8 +6,10 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.util.EnumSet;
 
 public class ConfigHandler {
     private final Configuration config;
@@ -37,6 +39,11 @@ public class ConfigHandler {
     public <T> T get(String category, String optionName, String description, boolean requiresRestart, Class<T> valueType, Object defaultValue) {
 
         Property property = getPropertyByType(category, optionName, defaultValue, valueType);
+
+        if (isEnum(valueType)) {
+            description += "\nPossible values (must match exactly): " + StringUtils.join(getEnums(valueType), " ");
+        }
+
         property.setComment(description);
         property.setRequiresMcRestart(requiresRestart);
 
@@ -70,6 +77,10 @@ public class ConfigHandler {
             return config.get(category, key, (String) defaultValue);
         }
 
+        if (isEnum(valueType)) {
+            return config.get(category, key, ((Enum) defaultValue).name());
+        }
+
         throw new IllegalArgumentException("Unsupported type " + valueType.getCanonicalName());
     }
 
@@ -92,6 +103,22 @@ public class ConfigHandler {
             return property.getString();
         }
 
+        if (isEnum(valueType)) {
+            return getEnum(valueType, property.getString());
+        }
+
         throw new IllegalArgumentException("Unsupported type " + valueType.getCanonicalName());
+    }
+
+    public static boolean isEnum(Class<?> aClass) {
+        return Enum.class.isAssignableFrom(aClass);
+    }
+
+    private static EnumSet getEnums(Class aClass) {
+        return EnumSet.allOf(aClass);
+    }
+
+    private static Enum getEnum(Class aClass, String enumName) {
+        return Enum.valueOf(aClass, enumName);
     }
 }
