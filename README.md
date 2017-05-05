@@ -39,6 +39,12 @@ The radius can be changed by right clicking (+) and sneak right clicking (-) the
 
 ![Proximity Sensor](screenshots/proximity_sensor.png)
 
+### Reconditioner
+
+The mending enchantment, as a machine.
+
+Craft it, place a mending book and your damaged item in it, add some XP and energy (or mana), and voilà! They are good as new.
+
 ### Fluid Diffuser
 
 Applies the effects of fluids to nearby players.

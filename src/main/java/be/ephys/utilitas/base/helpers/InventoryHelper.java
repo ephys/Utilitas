@@ -1,18 +1,23 @@
 package be.ephys.utilitas.base.helpers;
 
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class InventoryHelper {
 
-    private static final Random RANDOM = new Random();
+    public static final Random RANDOM = new Random();
 
     public static int[] getUnSidedInventorySlots(IInventory inventory) {
         int[] slots = new int[inventory.getSizeInventory()];
@@ -80,6 +85,71 @@ public class InventoryHelper {
 
     public static void dropItem(ItemStack itemstack, EntityPlayer player) {
         dropItem(itemstack, player.getEntityWorld(), player.posX, player.posY, player.posZ);
+    }
+
+    public static NBTTagList toNbt(IInventory inventory) {
+        return toNbt(inventory, new NBTTagList());
+    }
+
+    public static NBTTagList toNbt(IInventory inventory, NBTTagList tag) {
+
+        for (int i = 0; i < inventory.getSizeInventory(); i++) {
+
+            ItemStack item = inventory.getStackInSlot(i);
+
+            if (item == null) {
+                continue;
+            }
+
+            NBTTagCompound itemNbt = item.writeToNBT(new NBTTagCompound());
+
+            itemNbt.setInteger("inv_slot", i);
+
+            tag.appendTag(itemNbt);
+        }
+
+        return tag;
+    }
+
+    public static void fromNbt(IInventory inventory, NBTTagList tag) {
+
+        int usedSlots[] = new int[tag.tagCount()];
+
+        for (int i = 0; i < tag.tagCount(); i++) {
+            NBTTagCompound itemTag = tag.getCompoundTagAt(i);
+            ItemStack item = ItemStack.loadItemStackFromNBT(itemTag);
+            int slot = itemTag.getInteger("inv_slot");
+
+            inventory.setInventorySlotContents(slot, item);
+            usedSlots[i] = slot;
+        }
+
+        Arrays.sort(usedSlots);
+
+        for (int i = 0; i < inventory.getSizeInventory(); i++) {
+            if (Arrays.binarySearch(usedSlots, i) < 0) {
+                inventory.setInventorySlotContents(i, null);
+            }
+        }
+    }
+
+    public static int getBookEnchantmentLevel(Enchantment enchantment, ItemStack stack) {
+        if (stack.getItem() != Items.ENCHANTED_BOOK) {
+            throw new IllegalArgumentException("Expected enchanted book itemstack");
+        }
+
+        int enchantmentId = Enchantment.REGISTRY.getIDForObject(enchantment);
+
+        NBTTagList enchantments = Items.ENCHANTED_BOOK.getEnchantments(stack);
+
+        for (int i = 0; i < enchantments.tagCount(); ++i) {
+            int id = enchantments.getCompoundTagAt(i).getShort("id");
+            if (id == enchantmentId) {
+                return enchantments.getCompoundTagAt(i).getShort("lvl");
+            }
+        }
+
+        return 0;
     }
 
 //    public static IInventory getInventoryAt(World world, double x, double y, double z) {

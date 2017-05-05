@@ -1,0 +1,14 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model" : "utilitas:reconditioner"
+  },
+  "variants": {
+    "normal": {
+      "model": "utilitas:reconditioner"
+    },
+    "inventory": {
+      "model": "utilitas:reconditioner"
+    }
+  }
+}

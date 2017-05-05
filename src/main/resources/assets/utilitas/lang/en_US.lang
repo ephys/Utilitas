@@ -9,6 +9,7 @@ tile.PP_FluidHopper.name=Fluid Hopper
 tile.utilitas:shiny_glass-0.name=Shiny Glass
 tile.utilitas:shiny_glass-1.name=Universal Interface
 tile.utilitas:proximity_sensor.name=Proximity Sensor
+tile.utilitas:reconditioner.name=Reconditioner
 
 item.utilitas:interface_upgrade-crossdim.name=Interface Upgrade: Cross-Dim
 item.utilitas:interface_upgrade-wireless.name=Interface Upgrade: Wireless
