@@ -42,7 +42,7 @@ public class FeatureProximitySensor extends Feature {
         proximitySensorItemBlock.setRegistryName(proximitySensor.getRegistryName());
         GameRegistry.register(proximitySensorItemBlock);
 
-        GameRegistry.registerTileEntity(TileEntityProximitySensor.class, "proximity_sensor");
+        GameRegistry.registerTileEntity(TileEntityProximitySensor.class, proximitySensor.getRegistryName().toString());
     }
 
     @Override

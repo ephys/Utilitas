@@ -51,7 +51,7 @@ public class FeatureFluidHopper extends Feature {
         GameRegistry.register(FLUID_HOPPER);
         FLUID_HOPPER.setCreativeTab(Utilitas.CREATIVE_TAB);
 
-        GameRegistry.registerTileEntity(TileEntityFluidHopper.class, "fluid_hopper");
+        GameRegistry.registerTileEntity(TileEntityFluidHopper.class, FLUID_HOPPER.getRegistryName().toString());
     }
 
     @Override

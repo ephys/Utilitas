@@ -56,7 +56,7 @@ public class FeatureUniversalInterface extends Feature {
         shinyGlassItemBlock.setRegistryName(SHINY_GLASS.getRegistryName());
         GameRegistry.register(shinyGlassItemBlock);
 
-        Utilitas.registerTile(TileEntityInterface.class, "universal_interface");
+        Utilitas.registerTile(TileEntityInterface.class, shinyGlassItemBlock.getRegistryName().toString());
     }
 
     @Override
