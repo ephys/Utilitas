@@ -39,7 +39,7 @@ public class BlockShinyGlass extends BlockBreakable implements ITileEntityProvid
     public static final IProperty<Integer> TYPE = PropertyInteger.create("type", METADATA_GLASS, METADATA_INTERFACE);
 
     protected BlockShinyGlass() {
-        super(Material.GLASS, true);
+        super(Material.GLASS, false);
 
         this.isBlockContainer = true;
 
