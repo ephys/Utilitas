@@ -124,6 +124,10 @@ public class TileEntityProximitySensor extends BaseTileEntity implements ILinkab
 
     @Override
     public void update() {
+        if (worldObj.isRemote) {
+            return;
+        }
+
         if (this.worldObj.getTotalWorldTime() % 10 != 0) {
             return;
         }
