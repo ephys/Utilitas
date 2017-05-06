@@ -30,7 +30,7 @@ public class InterfaceTileEntity extends UniversalInterfaceAdapter<TileEntity> {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void renderInventory(int tickCount, double par1, double par3, double par5, float par7) {
+    public void renderInventory(long tickCount, double par1, double par3, double par5, float par7) {
         if (blockEntity != null) {
             IBlockState state = blockEntity.getWorld().getBlockState(blockEntity.getPos());
 
@@ -82,7 +82,7 @@ public class InterfaceTileEntity extends UniversalInterfaceAdapter<TileEntity> {
     }
 
     @Override
-    public void onTick(int tick) {
+    public void onTick(long tick) {
 
         if (blockEntity == null) {
             if (tilePos == null) {

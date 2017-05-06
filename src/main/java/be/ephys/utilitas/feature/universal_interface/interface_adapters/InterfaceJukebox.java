@@ -39,7 +39,7 @@ public class InterfaceJukebox extends UniversalInterfaceAdapter<TileEntityJukebo
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void renderInventory(int tickCount, double x, double y, double z, float tickTime) {
+    public void renderInventory(long tickCount, double x, double y, double z, float tickTime) {
         renderBlock(Blocks.JUKEBOX, tickCount);
     }
 
@@ -71,7 +71,7 @@ public class InterfaceJukebox extends UniversalInterfaceAdapter<TileEntityJukebo
     }
 
     @Override
-    public void onTick(int tick) {
+    public void onTick(long tick) {
         if (isRemote()) {
             return;
         }

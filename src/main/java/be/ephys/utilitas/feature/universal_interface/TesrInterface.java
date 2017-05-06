@@ -1,6 +1,8 @@
 package be.ephys.utilitas.feature.universal_interface;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
@@ -21,7 +23,9 @@ public class TesrInterface extends TileEntitySpecialRenderer<TileEntityInterface
         final float scale = 0.4375F;
         GL11.glScalef(scale, scale, scale);
 
-        tile.getAdapter().renderInventory(tile.tick, x, y, z, partialTicks);
+        long tick = FMLCommonHandler.instance().getMinecraftServerInstance().getTickCounter();
+
+        tile.getAdapter().renderInventory(tick, x, y, z, partialTicks);
         GL11.glPopMatrix();
     }
 }

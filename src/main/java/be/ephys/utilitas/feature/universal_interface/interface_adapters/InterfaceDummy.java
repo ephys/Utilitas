@@ -19,7 +19,7 @@ public class InterfaceDummy extends UniversalInterfaceAdapter {
     }
 
     @Override
-    public void renderInventory(int tickCount, double x, double y, double z, float tickTime) {
+    public void renderInventory(long tickCount, double x, double y, double z, float tickTime) {
     }
 
     @Override
@@ -45,7 +45,7 @@ public class InterfaceDummy extends UniversalInterfaceAdapter {
     }
 
     @Override
-    public void onTick(int tick) {
+    public void onTick(long tick) {
     }
 
     @Override

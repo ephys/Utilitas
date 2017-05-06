@@ -31,7 +31,7 @@ public class InterfaceMinecart extends UniversalInterfaceAdapter<EntityMinecartC
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void renderInventory(int tickCount, double x, double y, double z, float tickTime) {
+    public void renderInventory(long tickCount, double x, double y, double z, float tickTime) {
         Block displayTile;
         if (minecart == null) {
             displayTile = Blocks.CHEST;
@@ -67,7 +67,7 @@ public class InterfaceMinecart extends UniversalInterfaceAdapter<EntityMinecartC
     }
 
     @Override
-    public void onTick(int tick) {
+    public void onTick(long tick) {
         if (minecart == null && uuid != null) {
             minecart = (EntityMinecartContainer) EntityHelper.getEntityByUuid(uuid);
         }

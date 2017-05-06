@@ -34,7 +34,7 @@ public class InterfaceItemFrame extends UniversalInterfaceAdapter<EntityItemFram
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void renderInventory(int tickCount, double x, double y, double z, float tickTime) {
+    public void renderInventory(long tickCount, double x, double y, double z, float tickTime) {
         UniversalInterfaceAdapter.defaultRenderInventory(tickCount);
     }
 
@@ -64,7 +64,7 @@ public class InterfaceItemFrame extends UniversalInterfaceAdapter<EntityItemFram
     }
 
     @Override
-    public void onTick(int tick) {
+    public void onTick(long tick) {
         if (isRemote()) {
             return;
         }

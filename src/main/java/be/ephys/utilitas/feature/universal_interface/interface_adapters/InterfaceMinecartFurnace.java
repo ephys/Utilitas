@@ -33,7 +33,7 @@ public class InterfaceMinecartFurnace extends UniversalInterfaceAdapter<EntityMi
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void renderInventory(int tickCount, double x, double y, double z, float tickTime) {
+    public void renderInventory(long tickCount, double x, double y, double z, float tickTime) {
         renderBlock(Blocks.FURNACE, tickCount);
     }
 
@@ -60,7 +60,7 @@ public class InterfaceMinecartFurnace extends UniversalInterfaceAdapter<EntityMi
     }
 
     @Override
-    public void onTick(int tick) {
+    public void onTick(long tick) {
         if (isRemote()) {
             return;
         }

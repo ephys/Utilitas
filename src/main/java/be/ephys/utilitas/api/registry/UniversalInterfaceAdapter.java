@@ -34,7 +34,7 @@ public abstract class UniversalInterfaceAdapter<T> implements ICapabilityProvide
      * @param tickCount the amount of times this method has been called
      */
     @SideOnly(Side.CLIENT)
-    public abstract void renderInventory(int tickCount, double x, double y, double z, float tickTime);
+    public abstract void renderInventory(long tickCount, double x, double y, double z, float tickTime);
 
     /**
      * Link this handler with another object
@@ -53,7 +53,7 @@ public abstract class UniversalInterfaceAdapter<T> implements ICapabilityProvide
 
     public abstract void onBlockUpdate();
 
-    public abstract void onTick(int tick);
+    public abstract void onTick(long tick);
 
     public abstract IInventory getInventory();
 
@@ -72,17 +72,17 @@ public abstract class UniversalInterfaceAdapter<T> implements ICapabilityProvide
     }
 
     @SideOnly(Side.CLIENT)
-    protected static void defaultRenderInventory(int tickCount) {
+    protected static void defaultRenderInventory(long tickCount) {
         renderBlock(Blocks.CHEST, tickCount);
     }
 
     @SideOnly(Side.CLIENT)
-    protected static void renderBlock(Block block, int tickCount) {
+    protected static void renderBlock(Block block, long tickCount) {
         renderBlock(block.getDefaultState(), tickCount);
     }
 
     @SideOnly(Side.CLIENT)
-    protected static void renderBlock(IBlockState block, int tickCount) {
+    protected static void renderBlock(IBlockState block, long tickCount) {
         GL11.glRotatef(tickCount, 0.0F, 1.0F, 0.0F);
         GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
         GL11.glTranslated(-0.5, -0.5, 0.5);

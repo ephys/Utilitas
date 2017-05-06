@@ -38,7 +38,7 @@ public class InterfacePlayer extends UniversalInterfaceAdapter<EntityPlayer> {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void renderInventory(int tickCount, double x, double y, double z, float tickTime) {
+    public void renderInventory(long tickCount, double x, double y, double z, float tickTime) {
 
         if (isEnderChest) {
             renderBlock(Blocks.ENDER_CHEST, tickCount);
@@ -121,7 +121,7 @@ public class InterfacePlayer extends UniversalInterfaceAdapter<EntityPlayer> {
     }
 
     @Override
-    public void onTick(int tick) {
+    public void onTick(long tick) {
 
         if ((userEntity == null || userEntity.isDead) && tick % 40 == 0) {
             searchPlayer();

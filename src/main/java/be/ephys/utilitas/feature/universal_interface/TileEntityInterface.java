@@ -42,7 +42,6 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
     private boolean isWireless = false;
     private boolean worksCrossDim = false;
 
-    public int tick = 0;
 
     @Nonnull
     public UniversalInterfaceAdapter getAdapter() {
@@ -170,7 +169,9 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
 
     @Override
     public void update() {
-        this.activeAdapter.onTick(tick++);
+        long tick = FMLCommonHandler.instance().getMinecraftServerInstance().getTickCounter();
+
+        this.activeAdapter.onTick(tick);
     }
 
     public boolean addUpgrade(ItemStack heldItem, EntityPlayer player) {
