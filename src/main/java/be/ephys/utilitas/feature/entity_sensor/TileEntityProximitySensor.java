@@ -173,16 +173,15 @@ public class TileEntityProximitySensor extends BaseTileEntity implements ILinkab
         }
     }
 
-    }
-
     public int getMaxRadius() {
         return FeatureProximitySensor.INSTANCE.maxRadius;
     }
 
-    @Override
-
     public int getEntityCount() {
         return currentEntityCount;
+    }
+
+    @Override
     public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
         return oldState.getBlock() != newSate.getBlock();
     }
