@@ -1,5 +1,7 @@
 package be.ephys.utilitas.base.helpers;
 
+import be.ephys.utilitas.base.nbt_writer.NbtWriter;
+import be.ephys.utilitas.base.nbt_writer.NbtWriterRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -337,5 +339,30 @@ public class NBTHelper {
 
     public static void setBoolean(ItemStack stack, String name, boolean bool) {
         getNBT(stack).setBoolean(name, bool);
+    }
+
+    public static void genericWrite(NBTTagCompound tag, String fieldName, Object data) {
+
+        if (data == null) {
+            return;
+        }
+
+        NbtWriter writer = NbtWriterRegistry.getWriter(data.getClass());
+
+        if (writer == null) {
+            throw new RuntimeException("No NBT writer has been registered for class " + data.getClass().getCanonicalName());
+        }
+
+        writer.writeToNbt(tag, fieldName, data);
+    }
+
+    public static <T> T genericRead(NBTTagCompound tag, String fieldName, Class<T> dataClass) {
+        NbtWriter writer = NbtWriterRegistry.getWriter(dataClass);
+
+        if (writer == null) {
+            throw new RuntimeException("No NBT writer has been registered for class " + dataClass.getCanonicalName());
+        }
+
+        return (T) writer.readFromNbt(tag, fieldName);
     }
 }

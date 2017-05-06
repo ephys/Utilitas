@@ -18,17 +18,25 @@ import net.minecraft.util.text.TextComponentTranslation;
 import java.util.List;
 import java.util.UUID;
 
-public class TileEntityProximitySensor extends TileEntity implements ILinkable, ITickable {
+public class TileEntityProximitySensor extends BaseTileEntity implements ILinkable, ITickable {
 
+    @Persist(name = "rx")
     private int radiusX = 3;
+
+    @Persist(name = "xy")
     private int radiusY = 3;
-    private int radiusZ = 3;
 
     public static int MAX_RADIUS = 15;
+    @Persist(name = "rz")
+    private int radiusZ = 3;
 
+    @Persist(name = "entity_count")
     private int currentEntityCount = 0;
 
+    @Persist(name = "entity_filter")
     private Class<? extends Entity> entityFilter = Entity.class;
+
+    @Persist(name = "player_filter")
     private UUID playerFilter = null;
 
     @Override
@@ -161,42 +169,11 @@ public class TileEntityProximitySensor extends TileEntity implements ILinkable, 
         }
     }
 
-    @Override
-    public void readFromNBT(NBTTagCompound nbt) {
-        this.currentEntityCount = NBTHelper.getInt(nbt, "entity_count", this.currentEntityCount);
-        this.entityFilter = (Class<? extends Entity>) NBTHelper.getClass(nbt, "entity_filter", null);
-        this.playerFilter = NBTHelper.getUuid(nbt, "player_filter", null);
+    }
 
-        if (nbt.hasKey("size")) {
-            int[] size = nbt.getIntArray("size");
-            this.radiusX = size[0];
-            this.radiusY = size[1];
-            this.radiusZ = size[2];
-        }
-
-        super.readFromNBT(nbt);
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-        nbt.setInteger("entity_count", currentEntityCount);
-        nbt.setIntArray("size", new int[]{radiusX, radiusY, radiusZ});
-
-        if (playerFilter != null) {
-            NBTHelper.setUuid(nbt, "player_filter", playerFilter);
-        }
-
-        if (entityFilter != null) {
-            NBTHelper.setClass(nbt, "entity_filter", entityFilter);
-        }
-
-        return super.writeToNBT(nbt);
-    }
-
-    @Override
-    public NBTTagCompound getUpdateTag() {
-        return this.writeToNBT(new NBTTagCompound());
-    }
 
     public int getEntityCount() {
         return currentEntityCount;
