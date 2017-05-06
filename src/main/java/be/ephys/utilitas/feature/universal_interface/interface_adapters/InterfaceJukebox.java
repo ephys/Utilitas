@@ -57,8 +57,9 @@ public class InterfaceJukebox extends UniversalInterfaceAdapter<TileEntityJukebo
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) {
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         nbt.setTag("jukebox", tilePos.writeToNbt());
+        return nbt;
     }
 
     @Override

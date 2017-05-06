@@ -5,6 +5,9 @@ import be.ephys.utilitas.api.ILinkable;
 import be.ephys.utilitas.api.registry.UniversalInterfaceAdapter;
 import be.ephys.utilitas.api.registry.UniversalInterfaceRegistry;
 import be.ephys.utilitas.base.helpers.*;
+import be.ephys.utilitas.base.syncable.Persist;
+import be.ephys.utilitas.base.syncable.Sync;
+import be.ephys.utilitas.base.tile_entity.BaseTileEntity;
 import be.ephys.utilitas.feature.universal_interface.interface_adapters.InterfaceDummy;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -19,29 +22,31 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-/*
- * Idea:
- * - @Persist => write field in NBT during server writing
- * - @Sync(initial, dirty) => send to client at the beginning / on marked for update
- *                         => Only send changed values
- */
-
-public class TileEntityInterface extends TileEntity implements ISidedInventory, ITickable, ILinkable {
+public class TileEntityInterface extends BaseTileEntity implements ISidedInventory, ITickable, ILinkable {
 
     @Nonnull
+    @Sync
+    @Persist(name = "adapter", serializer = AdapterSerializer.class)
     private UniversalInterfaceAdapter activeAdapter = InterfaceDummy.INSTANCE;
+
+    @Persist(name = "upgrades")
     protected ItemStack[] upgrades = new ItemStack[5];
 
+    @Persist(name = "is_fluid_handler")
     private boolean isFluidHandler = false;
-    private boolean isWireless = false;
-    private boolean worksCrossDim = false;
 
+    @Persist(name = "is_wireless")
+    private boolean isWireless = false;
+
+    @Persist(name = "is_cross_dim")
+    private boolean worksCrossDim = false;
 
     @Nonnull
     public UniversalInterfaceAdapter getAdapter() {
@@ -72,100 +77,11 @@ public class TileEntityInterface extends TileEntity implements ISidedInventory, 
         return true;
     }
 
-    @Nullable
-    @Override
-    public SPacketUpdateTileEntity getUpdatePacket() {
-        return new SPacketUpdateTileEntity(getPos(), 1, this.getUpdateTag());
-    }
-
-    @Override
-    // https://gist.github.com/williewillus/7945c4959b1142ece9828706b527c5a4
-    public NBTTagCompound getUpdateTag() {
-        NBTTagCompound tag = super.getUpdateTag();
-
-        return writeToNBT(tag);
-    }
-
-    @Override
-    public void handleUpdateTag(NBTTagCompound tag) {
-        super.handleUpdateTag(tag);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-        readFromNBT(pkt.getNbtCompound());
-    }
-
-    @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-        nbt = super.writeToNBT(nbt);
-
-        nbt.setInteger("tick", tick);
-
-        nbt.setBoolean("isFluidHandler", isFluidHandler);
-        nbt.setBoolean("isWireless", isWireless);
-        nbt.setBoolean("worksCrossDim", worksCrossDim);
-
-        for (int i = 0; i < upgrades.length; i++) {
-            if (upgrades[i] == null) continue;
-
-            NBTTagCompound upgradeNBT = new NBTTagCompound();
-            upgrades[i].writeToNBT(upgradeNBT);
-
-            nbt.setTag("upgrade_" + i, upgradeNBT);
-        }
-
-        if (this.activeAdapter != InterfaceDummy.INSTANCE) {
-            NBTHelper.setClass(nbt, "handler_class", this.activeAdapter.getClass());
-            NBTTagCompound handlerNbt = new NBTTagCompound();
-            this.activeAdapter.writeToNBT(handlerNbt);
-            nbt.setTag("handler", handlerNbt);
-        }
-
-        return nbt;
-    }
-
-    @Override
-    public void readFromNBT(NBTTagCompound nbt) {
-        super.readFromNBT(nbt);
-
-        tick = NBTHelper.getInt(nbt, "tick", 0);
-
-        isFluidHandler = NBTHelper.getBoolean(nbt, "isFluidHandler", isFluidHandler);
-        isWireless = NBTHelper.getBoolean(nbt, "isWireless", isWireless);
-        worksCrossDim = NBTHelper.getBoolean(nbt, "worksCrossDim", worksCrossDim);
-
-        for (int i = 0; i < upgrades.length; i++) {
-            if (nbt.hasKey("upgrade_" + i)) {
-                upgrades[i] = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("upgrade_" + i));
-            } else {
-                upgrades[i] = null;
-            }
-        }
-
-        @SuppressWarnings("unchecked")
-        Class<? extends UniversalInterfaceAdapter> clazz = (Class<? extends UniversalInterfaceAdapter>) NBTHelper.getClass(nbt, "handler_class");
-
-        if (clazz != null && UniversalInterfaceRegistry.hasHandler(clazz)) {
-            try {
-                this.activeAdapter = clazz.getConstructor(TileEntityInterface.class).newInstance(this);
-                this.activeAdapter.readFromNBT(nbt.getCompoundTag("handler"));
-            } catch (Exception e) {
-                e.printStackTrace();
-                this.activeAdapter = InterfaceDummy.INSTANCE;
-            }
-        } else {
-            this.activeAdapter = InterfaceDummy.INSTANCE;
-        }
-    }
-
     public void unlink() {
         this.activeAdapter = InterfaceDummy.INSTANCE;
 
         WorldHelper.markTileForUpdate(this);
     }
-
 
     @Override
     public void update() {

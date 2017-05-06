@@ -1,5 +1,6 @@
 package be.ephys.utilitas.api.registry;
 
+import be.ephys.utilitas.base.nbt_writer.INbtSerializable;
 import be.ephys.utilitas.feature.universal_interface.TileEntityInterface;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -8,7 +9,6 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -16,7 +16,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
-public abstract class UniversalInterfaceAdapter<T> implements ICapabilityProvider {
+public abstract class UniversalInterfaceAdapter<T> implements ICapabilityProvider, INbtSerializable {
 
     private final TileEntityInterface tileEntity;
 
@@ -46,10 +46,6 @@ public abstract class UniversalInterfaceAdapter<T> implements ICapabilityProvide
     public abstract boolean setLink(T link, EntityPlayer linker);
 
     public abstract ITextComponent getName();
-
-    public abstract void writeToNBT(NBTTagCompound nbt);
-
-    public abstract void readFromNBT(NBTTagCompound nbt);
 
     public abstract void onBlockUpdate();
 

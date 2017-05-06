@@ -12,6 +12,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import javax.annotation.Nullable;
 
 public class InterfaceDummy extends UniversalInterfaceAdapter {
+
     public static final InterfaceDummy INSTANCE = new InterfaceDummy();
 
     private InterfaceDummy() {
@@ -30,14 +31,6 @@ public class InterfaceDummy extends UniversalInterfaceAdapter {
     @Override
     public ITextComponent getName() {
         return null;
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound nbt) {
-    }
-
-    @Override
-    public void readFromNBT(NBTTagCompound nbt) {
     }
 
     @Override
@@ -76,5 +69,15 @@ public class InterfaceDummy extends UniversalInterfaceAdapter {
     @Override
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
         return null;
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound tag) {
+        return tag;
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound tag) {
+
     }
 }

@@ -84,9 +84,11 @@ public class InterfacePlayer extends UniversalInterfaceAdapter<EntityPlayer> {
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) {
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         nbt.setTag("profile", NBTUtil.writeGameProfile(new NBTTagCompound(), this.gameProfile));
         nbt.setBoolean("is_ender_chest", isEnderChest);
+
+        return nbt;
     }
 
     @Override

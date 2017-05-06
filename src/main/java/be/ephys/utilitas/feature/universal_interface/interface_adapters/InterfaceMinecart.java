@@ -57,8 +57,9 @@ public class InterfaceMinecart extends UniversalInterfaceAdapter<EntityMinecartC
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) {
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         NBTHelper.setEntityUuid(nbt, "minecart", minecart);
+        return nbt;
     }
 
     @Override

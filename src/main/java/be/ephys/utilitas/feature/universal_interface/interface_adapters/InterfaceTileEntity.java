@@ -51,8 +51,9 @@ public class InterfaceTileEntity extends UniversalInterfaceAdapter<TileEntity> {
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) {
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         nbt.setTag("pos", this.tilePos.writeToNbt());
+        return nbt;
     }
 
     @Override

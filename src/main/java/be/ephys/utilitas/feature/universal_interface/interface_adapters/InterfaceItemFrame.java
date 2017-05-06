@@ -50,8 +50,9 @@ public class InterfaceItemFrame extends UniversalInterfaceAdapter<EntityItemFram
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) {
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         NBTHelper.setEntityUuid(nbt, "target", itemFrame);
+        return nbt;
     }
 
     @Override
