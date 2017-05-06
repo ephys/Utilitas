@@ -183,5 +183,7 @@ public class TileEntityProximitySensor extends BaseTileEntity implements ILinkab
 
     public int getEntityCount() {
         return currentEntityCount;
+    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
+        return oldState.getBlock() != newSate.getBlock();
     }
 }
