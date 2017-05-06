@@ -3,7 +3,6 @@ package be.ephys.utilitas.base.syncable;
 import be.ephys.utilitas.base.helpers.NBTHelper;
 import be.ephys.utilitas.base.nbt_writer.NbtWriter;
 import be.ephys.utilitas.base.nbt_writer.NbtWriterRegistry;
-import net.minecraft.block.SoundType;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.lang.reflect.Field;

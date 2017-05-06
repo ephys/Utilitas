@@ -2,7 +2,6 @@ package be.ephys.utilitas.feature.reconditioner;
 
 import be.ephys.utilitas.base.helpers.InventoryHelper;
 import be.ephys.utilitas.base.helpers.WorldHelper;
-import net.minecraft.block.BlockAnvil;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentMending;
 import net.minecraft.entity.item.EntityXPOrb;

@@ -1,7 +1,6 @@
 package be.ephys.utilitas.base.nbt_writer;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.Map;
 import java.util.UUID;

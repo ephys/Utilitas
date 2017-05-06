@@ -2,8 +2,8 @@ package be.ephys.utilitas.feature.entity_sensor;
 
 import be.ephys.utilitas.api.ILinkable;
 import be.ephys.utilitas.base.helpers.ChatHelper;
-import be.ephys.utilitas.base.tile_entity.BaseTileEntity;
 import be.ephys.utilitas.base.syncable.Persist;
+import be.ephys.utilitas.base.tile_entity.BaseTileEntity;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
