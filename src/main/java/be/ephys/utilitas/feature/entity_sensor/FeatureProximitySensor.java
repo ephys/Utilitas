@@ -1,5 +1,6 @@
 package be.ephys.utilitas.feature.entity_sensor;
 
+import be.ephys.utilitas.base.feature.Config;
 import be.ephys.utilitas.base.feature.Feature;
 import be.ephys.utilitas.base.feature.FeatureInstance;
 import be.ephys.utilitas.base.feature.FeatureMeta;
@@ -30,6 +31,9 @@ public class FeatureProximitySensor extends Feature {
 
     @FeatureInstance
     public static FeatureProximitySensor INSTANCE;
+
+    @Config(description = "The maximum detection radius of the entity sensor")
+    protected int maxRadius = 15;
 
     public final BlockProximitySensor proximitySensor = new BlockProximitySensor(Material.IRON);
 

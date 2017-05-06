@@ -2,18 +2,18 @@ package be.ephys.utilitas.feature.entity_sensor;
 
 import be.ephys.utilitas.api.ILinkable;
 import be.ephys.utilitas.base.helpers.ChatHelper;
-import be.ephys.utilitas.base.helpers.NBTHelper;
-import be.ephys.utilitas.base.helpers.WorldHelper;
+import be.ephys.utilitas.base.tile_entity.BaseTileEntity;
+import be.ephys.utilitas.base.syncable.Persist;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.World;
 
 import java.util.List;
 import java.util.UUID;
@@ -26,7 +26,6 @@ public class TileEntityProximitySensor extends BaseTileEntity implements ILinkab
     @Persist(name = "xy")
     private int radiusY = 3;
 
-    public static int MAX_RADIUS = 15;
     @Persist(name = "rz")
     private int radiusZ = 3;
 
@@ -100,21 +99,22 @@ public class TileEntityProximitySensor extends BaseTileEntity implements ILinkab
 
     public void updateRadius(EnumFacing side, EntityPlayer player) {
         int increase = player.isSneaking() ? -1 : 1;
+        int maxRadius = getMaxRadius();
 
         switch (side) {
             case UP:
             case DOWN:
-                radiusY = clamp(0, MAX_RADIUS, radiusY + increase);
+                radiusY = clamp(0, maxRadius, radiusY + increase);
                 break;
 
             case EAST:
             case WEST:
-                radiusX = clamp(0, MAX_RADIUS, radiusX + increase);
+                radiusX = clamp(0, maxRadius, radiusX + increase);
                 break;
 
             case NORTH:
             case SOUTH:
-                radiusZ = clamp(0, MAX_RADIUS, radiusZ + increase);
+                radiusZ = clamp(0, maxRadius, radiusZ + increase);
                 break;
         }
 
@@ -171,6 +171,8 @@ public class TileEntityProximitySensor extends BaseTileEntity implements ILinkab
 
     }
 
+    public int getMaxRadius() {
+        return FeatureProximitySensor.INSTANCE.maxRadius;
     }
 
     @Override
