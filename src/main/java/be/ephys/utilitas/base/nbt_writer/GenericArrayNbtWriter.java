@@ -5,14 +5,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.ParameterizedType;
 
 public class GenericArrayNbtWriter<T> implements NbtWriter<T[]> {
 
     private final NbtWriter<T> componentWriter;
+    private final Class<T> componentClass;
 
-    public GenericArrayNbtWriter(NbtWriter<T> writer) {
+    public GenericArrayNbtWriter(NbtWriter<T> writer, Class<T> componentClass) {
         this.componentWriter = writer;
+        this.componentClass = componentClass;
     }
 
     @Override
@@ -25,6 +26,10 @@ public class GenericArrayNbtWriter<T> implements NbtWriter<T[]> {
 
         for (int i = 0; i < data.length; i++) {
             T datum = data[i];
+
+            if (datum == null) {
+                continue;
+            }
 
             NBTBase componentNbt = componentWriter.toNbt(datum);
             if (!(componentNbt instanceof NBTTagCompound)) {
@@ -49,10 +54,7 @@ public class GenericArrayNbtWriter<T> implements NbtWriter<T[]> {
 
         int length = ((NBTTagList) nbt).getCompoundTagAt(0).getInteger("ganw__length");
 
-        Class<T> arrayGenericType = ((Class) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
-
-        @SuppressWarnings("unchecked")
-        final T[] array = (T[]) Array.newInstance(arrayGenericType, length);
+        final T[] array = (T[]) Array.newInstance(this.componentClass, length);
 
         int tagCount = ((NBTTagList) nbt).tagCount();
         for (int i = 1; i < tagCount; i++) {

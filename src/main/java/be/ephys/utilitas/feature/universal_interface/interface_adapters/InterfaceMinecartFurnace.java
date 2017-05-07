@@ -23,13 +23,9 @@ import java.util.UUID;
 
 public class InterfaceMinecartFurnace extends UniversalInterfaceAdapter<EntityMinecartFurnace> {
 
-    private FurnaceProxy proxy = new FurnaceProxy();
+    private final FurnaceProxy proxy = new FurnaceProxy();
     private EntityMinecartFurnace minecart;
     private UUID uuid;
-
-    public InterfaceMinecartFurnace(TileEntityInterface tileEntity) {
-        super(tileEntity);
-    }
 
     @Override
     @SideOnly(Side.CLIENT)

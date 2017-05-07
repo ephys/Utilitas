@@ -25,7 +25,11 @@ public class AdapterSerializer implements NbtWriter<UniversalInterfaceAdapter> {
 
         Class<? extends UniversalInterfaceAdapter> clazz = (Class<? extends UniversalInterfaceAdapter>) NBTHelper.getClass(adapterData, "class");
 
-        if (clazz == null || clazz == InterfaceDummy.class) {
+        if (clazz == null || !UniversalInterfaceAdapter.class.isAssignableFrom(clazz)) {
+            return InterfaceDummy.INSTANCE;
+        }
+
+        if (clazz == InterfaceDummy.class) {
             return InterfaceDummy.INSTANCE;
         }
 
@@ -34,7 +38,7 @@ public class AdapterSerializer implements NbtWriter<UniversalInterfaceAdapter> {
         }
 
         try {
-            UniversalInterfaceAdapter adapter = clazz.getConstructor(TileEntityInterface.class).newInstance(this);
+            UniversalInterfaceAdapter adapter = clazz.newInstance();
             adapter.readFromNBT(adapterData.getCompoundTag("instance"));
 
             return adapter;

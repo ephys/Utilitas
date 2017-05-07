@@ -24,10 +24,6 @@ public class InterfaceTileEntity extends UniversalInterfaceAdapter<TileEntity> {
     private TileEntity blockEntity = null;
     private WorldPos tilePos = null;
 
-    public InterfaceTileEntity(TileEntityInterface tileEntity) {
-        super(tileEntity);
-    }
-
     @Override
     @SideOnly(Side.CLIENT)
     public void renderInventory(long tickCount, double par1, double par3, double par5, float par7) {

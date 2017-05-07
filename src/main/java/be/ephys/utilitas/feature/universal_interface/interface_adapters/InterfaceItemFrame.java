@@ -28,10 +28,6 @@ public class InterfaceItemFrame extends UniversalInterfaceAdapter<EntityItemFram
     private float[] relativeX = new float[]{-0.5F, 0.03125F, -0.5F, -1.03125F};
     private float[] relativeZ = new float[]{-1.03125F, -0.5F, 0.03125F, -0.5F};
 
-    public InterfaceItemFrame(TileEntityInterface tileEntity) {
-        super(tileEntity);
-    }
-
     @Override
     @SideOnly(Side.CLIENT)
     public void renderInventory(long tickCount, double x, double y, double z, float tickTime) {

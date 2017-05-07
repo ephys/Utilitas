@@ -28,20 +28,26 @@ public class UniversalInterfaceRegistry {
         Set<Entry<Class<?>, Class<? extends UniversalInterfaceAdapter>>> set = adapterMap.entrySet();
 
         for (Entry<Class<?>, Class<? extends UniversalInterfaceAdapter>> entry : set) {
-            if (entry.getKey().isInstance(obj)) {
-                Class<? extends UniversalInterfaceAdapter> clazz = entry.getValue();
 
-                Constructor construct;
-                try {
-                    construct = clazz.getConstructor(TileEntityInterface.class);
-                    UniversalInterfaceAdapter<T> handler = (UniversalInterfaceAdapter<T>) construct.newInstance(te);
+            if (!entry.getKey().isInstance(obj)) {
+                continue;
+            }
 
-                    if (handler.setLink(obj, linker)) {
-                        return handler;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+            Class<? extends UniversalInterfaceAdapter> clazz = entry.getValue();
+
+            try {
+                UniversalInterfaceAdapter<T> handler = (UniversalInterfaceAdapter<T>) clazz.newInstance();
+
+                handler.setInterface(te);
+                if (!handler.setLink(obj, linker)) {
+                    continue;
                 }
+
+                handler.onLoad();
+
+                return handler;
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 

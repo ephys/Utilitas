@@ -256,10 +256,12 @@ public class TileEntityInterface extends BaseTileEntity implements ISidedInvento
     }
 
     @Override
-    public void openInventory(EntityPlayer player) {}
+    public void openInventory(EntityPlayer player) {
+    }
 
     @Override
-    public void closeInventory(EntityPlayer player) {}
+    public void closeInventory(EntityPlayer player) {
+    }
 
     @Override
     public boolean isItemValidForSlot(int i, ItemStack itemstack) {
@@ -274,7 +276,8 @@ public class TileEntityInterface extends BaseTileEntity implements ISidedInvento
     }
 
     @Override
-    public void setField(int id, int value) {}
+    public void setField(int id, int value) {
+    }
 
     @Override
     public int getFieldCount() {
@@ -385,6 +388,12 @@ public class TileEntityInterface extends BaseTileEntity implements ISidedInvento
         }
 
         return this.getAdapter().getCapability(capability, facing);
+    }
+
+    @Override
+    protected void postUpdate() {
+        this.activeAdapter.setInterface(this);
+        this.activeAdapter.onLoad();
     }
 
     // ================================================================================

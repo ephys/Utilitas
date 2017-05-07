@@ -1,6 +1,7 @@
 package be.ephys.utilitas.feature.universal_interface.interface_adapters;
 
 import be.ephys.utilitas.api.registry.UniversalInterfaceAdapter;
+import be.ephys.utilitas.feature.universal_interface.TileEntityInterface;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,12 +16,12 @@ public class InterfaceDummy extends UniversalInterfaceAdapter {
 
     public static final InterfaceDummy INSTANCE = new InterfaceDummy();
 
-    private InterfaceDummy() {
-        super(null);
+    @Override
+    public void renderInventory(long tickCount, double x, double y, double z, float tickTime) {
     }
 
     @Override
-    public void renderInventory(long tickCount, double x, double y, double z, float tickTime) {
+    public void setInterface(TileEntityInterface tileEntity) {
     }
 
     @Override
@@ -78,6 +79,5 @@ public class InterfaceDummy extends UniversalInterfaceAdapter {
 
     @Override
     public void readFromNBT(NBTTagCompound tag) {
-
     }
 }

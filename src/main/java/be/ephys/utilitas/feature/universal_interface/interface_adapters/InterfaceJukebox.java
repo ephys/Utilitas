@@ -28,14 +28,8 @@ import javax.annotation.Nullable;
 
 public class InterfaceJukebox extends UniversalInterfaceAdapter<TileEntityJukebox> {
 
-    private JukeBoxProxy jukeboxProxy;
+    private final JukeBoxProxy jukeboxProxy = new JukeBoxProxy();;
     private WorldPos tilePos;
-
-    public InterfaceJukebox(TileEntityInterface tileEntity) {
-        super(tileEntity);
-
-        jukeboxProxy = new JukeBoxProxy();
-    }
 
     @Override
     @SideOnly(Side.CLIENT)

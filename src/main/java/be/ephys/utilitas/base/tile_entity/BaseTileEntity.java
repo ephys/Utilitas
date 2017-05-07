@@ -25,6 +25,7 @@ public class BaseTileEntity extends TileEntity {
         super.readFromNBT(compound);
 
         this.persister.readFromNbt(this, compound);
+        postUpdate();
     }
 
     @Nullable
@@ -42,6 +43,7 @@ public class BaseTileEntity extends TileEntity {
         super.onDataPacket(net, pkt);
 
         this.persister.readFromUpdateTag(this, pkt.getNbtCompound());
+        postUpdate();
     }
 
     @Override
@@ -54,5 +56,8 @@ public class BaseTileEntity extends TileEntity {
     @Override
     public void handleUpdateTag(NBTTagCompound tag) {
         this.persister.readFromUpdateTag(this, tag);
+        postUpdate();
     }
+
+    protected void postUpdate() {}
 }

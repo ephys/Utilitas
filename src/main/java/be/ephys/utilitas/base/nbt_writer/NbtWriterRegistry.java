@@ -13,8 +13,8 @@ public class NbtWriterRegistry {
 
     static {
         registerWriter(String.class, new StringNbtWriter());
-
         registerWriter(Integer.class, new IntegerNbtWriter());
+        registerWriter(Boolean.class, new BooleanNbtWriter());
 
         registerWriter(ItemStack.class, new ItemStackNbtWriter());
         registerWriter(UUID.class, new UuidNbtWriter());
@@ -152,13 +152,13 @@ public class NbtWriterRegistry {
             return null;
         }
 
-        Class<?> arrayType = writable.getComponentType();
+        Class<?> arrayComponentClass = writable.getComponentType();
 
-        if (!writers.containsKey(arrayType)) {
+        if (!writers.containsKey(arrayComponentClass)) {
             return null;
         }
 
-        NbtWriter cache = new GenericArrayNbtWriter(writers.get(arrayType));
+        NbtWriter cache = new GenericArrayNbtWriter(writers.get(arrayComponentClass), arrayComponentClass);
         registerWriter(writable, cache);
 
         return cache;

@@ -25,10 +25,6 @@ public class InterfaceMinecart extends UniversalInterfaceAdapter<EntityMinecartC
     private EntityMinecartContainer minecart;
     private UUID uuid;
 
-    public InterfaceMinecart(TileEntityInterface tileEntity) {
-        super(tileEntity);
-    }
-
     @Override
     @SideOnly(Side.CLIENT)
     public void renderInventory(long tickCount, double x, double y, double z, float tickTime) {
@@ -48,6 +44,7 @@ public class InterfaceMinecart extends UniversalInterfaceAdapter<EntityMinecartC
     @Override
     public boolean setLink(EntityMinecartContainer link, EntityPlayer linker) {
         minecart = link;
+        uuid = minecart.getPersistentID();
         return true;
     }
 

@@ -32,10 +32,6 @@ public class InterfacePlayer extends UniversalInterfaceAdapter<EntityPlayer> {
     @SideOnly(Side.CLIENT)
     private RenderHelper.SkinData skin;
 
-    public InterfacePlayer(TileEntityInterface tileEntity) {
-        super(tileEntity);
-    }
-
     @Override
     @SideOnly(Side.CLIENT)
     public void renderInventory(long tickCount, double x, double y, double z, float tickTime) {
@@ -78,10 +74,10 @@ public class InterfacePlayer extends UniversalInterfaceAdapter<EntityPlayer> {
         this.userEntity = link;
         this.gameProfile = link.getGameProfile();
 
-        onBlockUpdate();
-
         return true;
     }
+
+
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
@@ -95,8 +91,18 @@ public class InterfacePlayer extends UniversalInterfaceAdapter<EntityPlayer> {
     public void readFromNBT(NBTTagCompound nbt) {
         this.gameProfile = NBTUtil.readGameProfileFromNBT(nbt.getCompoundTag("profile"));
         isEnderChest = NBTHelper.getBoolean(nbt, "is_ender_chest", false);
+    }
 
-        if (this.getInterface().hasWorldObj()) {
+    @Override
+    public void setInterface(TileEntityInterface tileEntity) {
+        super.setInterface(tileEntity);
+
+        onBlockUpdate();
+    }
+
+    @Override
+    public void onLoad() {
+        if (getInterface().hasWorldObj()) {
             searchPlayer();
         }
     }

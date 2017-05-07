@@ -18,14 +18,14 @@ import org.lwjgl.opengl.GL11;
 
 public abstract class UniversalInterfaceAdapter<T> implements ICapabilityProvider, INbtSerializable {
 
-    private final TileEntityInterface tileEntity;
-
-    public UniversalInterfaceAdapter(TileEntityInterface tileEntity) {
-        this.tileEntity = tileEntity;
-    }
+    private TileEntityInterface tileEntity;
 
     public TileEntityInterface getInterface() {
         return tileEntity;
+    }
+
+    public void setInterface(TileEntityInterface tileEntity) {
+        this.tileEntity = tileEntity;
     }
 
     /**
@@ -86,4 +86,6 @@ public abstract class UniversalInterfaceAdapter<T> implements ICapabilityProvide
         Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         Minecraft.getMinecraft().getBlockRendererDispatcher().renderBlockBrightness(block, 1.0F);
     }
+
+    public void onLoad() {}
 }
