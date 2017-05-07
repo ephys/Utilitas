@@ -19,6 +19,7 @@ item.utilitas:omnibucket.name=Omnibucket
 item.utilitas:omnibucket-filled.name=%S Omnibucket
 item.utilitas:fluid_diffuser.name=Handheld Fluid diffuser
 item.utilitas:slime_staff.name=Slime Staff
+item.utilitas:rainbow_slime_ball.name=Slimeball
 
 tooltip.utilitas:press_shift=Press <Shift> for details
 tooltip.utilitas:nothing=nothing
@@ -56,3 +57,6 @@ side.east=East
 
 entity.ItemFrame.name=Item Frame
 entity.MinecartFurnace.name=Minecart with Furnace
+
+entity.utilitas.rainbow_slime.name=Rainbow Slime
+entity.utilitas.slime_familiar.name=Slime Pet

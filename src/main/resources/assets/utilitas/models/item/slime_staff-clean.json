@@ -1,7 +1,6 @@
 {
   "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "utilitas:items/slime_staff",
-    "layer1": "utilitas:items/slime_staff-dot"
+    "layer0": "utilitas:items/slime_staff"
   }
 }

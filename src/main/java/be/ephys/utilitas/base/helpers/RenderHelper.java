@@ -15,6 +15,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.Map;
@@ -143,5 +144,62 @@ public class RenderHelper {
 
     public static int getRainbowColor(long percent, int speed, float saturation, float brightness) {
         return Color.HSBtoRGB((percent * speed) % 360 / 360F, saturation, brightness);
+    }
+
+    public static void glColorRgba(int color) {
+        byte r = RenderHelper.getRed(color);
+        byte g = RenderHelper.getGreen(color);
+        byte b = RenderHelper.getBlue(color);
+        byte a = RenderHelper.getAlpha(color);
+
+        GL11.glColor4d(r, g, b, a);
+    }
+
+    public static void glColorRgb(int color) {
+        byte r = RenderHelper.getRed(color);
+        byte g = RenderHelper.getGreen(color);
+        byte b = RenderHelper.getBlue(color);
+
+
+        GL11.glColor3ub(r, g, b);
+    }
+
+    /**
+     * Returns the red component in the range 0-255 in the default sRGB
+     * space.
+     *
+     * @return the red component.
+     */
+    public static byte getRed(int rgb) {
+        return (byte) ((rgb >> 16) & 0xFF);
+    }
+
+    /**
+     * Returns the green component in the range 0-255 in the default sRGB
+     * space.
+     *
+     * @return the green component.
+     */
+    public static byte getGreen(int rgb) {
+        return (byte) ((rgb >> 8) & 0xFF);
+    }
+
+    /**
+     * Returns the blue component in the range 0-255 in the default sRGB
+     * space.
+     *
+     * @return the blue component.
+     */
+    public static byte getBlue(int rgb) {
+        return (byte) ((rgb >> 0) & 0xFF);
+    }
+
+    /**
+     * Returns the alpha component in the range 0-255.
+     *
+     * @return the alpha component.
+     */
+    public static byte getAlpha(int rgb) {
+        return (byte) ((rgb >> 24) & 0xff);
     }
 }
