@@ -29,6 +29,7 @@ A hopper, for fluids. It
 - Drains fluid blocks placed above it
 - Drains tanks placed above it (entities & blocks)
 - Fills tanks it points to (entities & blocks. Time to make a minecart tank!)
+![Universal Interface](screenshots/universal_interface.png)
 
 ### Proximity Sensor
 
