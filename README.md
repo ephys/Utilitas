@@ -22,13 +22,6 @@ If officially supports the following:
 Support for more can be added by other mods through IMC.  
 Support for Cauldrons (as IFluidHandlers), flower pots, and Armor Stands is planned.
 
-### Fluid Hopper
-
-A hopper, for fluids. It
-
-- Drains fluid blocks placed above it
-- Drains tanks placed above it (entities & blocks)
-- Fills tanks it points to (entities & blocks. Time to make a minecart tank!)
 ![Universal Interface](screenshots/universal_interface.png)
 
 ### Proximity Sensor
@@ -46,6 +39,16 @@ The mending enchantment, as a machine.
 
 Craft it, place a mending book and your damaged item in it, add some XP and energy (or mana), and voilà! They are good as new.
 
+## Planned Features
+
+### Fluid Hopper
+
+A hopper, for fluids. It
+
+- Drains fluid blocks placed above it
+- Drains tanks placed above it (entities & blocks)
+- Fills tanks it points to (entities & blocks. Time to make a minecart tank!)
+
 ### Fluid Diffuser
 
 Applies the effects of fluids to nearby players.
@@ -59,7 +62,7 @@ Same as the fluid diffuser but using fluid tanks and potions present in the inve
 
 It will not use instant potions (like instant health) nor splash or lingering potions.
 
-## Planned Features
+### Other
 
 - Fluid Tank Minecart
 - Fluid Hopper Minecart
