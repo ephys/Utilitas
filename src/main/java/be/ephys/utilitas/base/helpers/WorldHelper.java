@@ -21,6 +21,10 @@ public final class WorldHelper {
     public static World getWorldForDim(int dimId) {
         MinecraftServer server = getServer();
 
+        if (server == null) {
+            return null;
+        }
+
         return server.worldServerForDimension(dimId);
     }
 

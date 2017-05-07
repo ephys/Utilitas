@@ -1,7 +1,11 @@
 package be.ephys.utilitas.feature.reconditioner;
 
+import be.ephys.utilitas.Utilitas;
+import be.ephys.utilitas.base.helpers.InventoryHelper;
 import be.ephys.utilitas.base.helpers.ItemHelper;
+import be.ephys.utilitas.feature.universal_interface.TileEntityInterface;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.block.BlockEnchantmentTable;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -28,6 +32,10 @@ public class BlockReconditioner extends BlockContainer {
         super(Material.ROCK, MapColor.RED);
 
         this.setLightOpacity(0);
+
+        this.setHardness(5F)
+            .setResistance(2000.0F)
+            .setCreativeTab(Utilitas.CREATIVE_TAB);
 
         ItemHelper.name(this, "reconditioner");
     }
@@ -90,5 +98,19 @@ public class BlockReconditioner extends BlockContainer {
         }
 
         return true;
+    }
+
+    @Override
+    public void breakBlock(World world, BlockPos pos, IBlockState state) {
+        TileEntityReconditioner te = (TileEntityReconditioner) world.getTileEntity(pos);
+
+        super.breakBlock(world, pos, state);
+
+        if (te == null) {
+            return;
+        }
+
+        net.minecraft.inventory.InventoryHelper.dropInventoryItems(world, pos, te);
+        dropXpOnBlockBreak(world, pos, te.getField(TileEntityReconditioner.FIELD_XP));
     }
 }

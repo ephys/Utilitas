@@ -19,7 +19,8 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 
 @FeatureMeta(
     name = "Fluid Hopper",
-    description = "A hopper, for fluids!"
+    description = "A hopper, for fluids!",
+    defaultEnabled = false
 )
 public class FeatureFluidHopper extends Feature {
 

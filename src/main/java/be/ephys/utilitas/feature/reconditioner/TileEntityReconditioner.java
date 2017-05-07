@@ -31,7 +31,6 @@ import java.util.List;
 // TODO render the item with particles flowing into it as it repairs (item should not turn nor have particles if the device is inactive)
 // TODO drop xp when broken
 // TODO drop inventory
-// TODO set block resistance
 // TODO mana/energy support
 public class TileEntityReconditioner extends TileEntity implements ITickable, IInventory {
 

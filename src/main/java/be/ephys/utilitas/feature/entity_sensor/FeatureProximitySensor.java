@@ -5,6 +5,7 @@ import be.ephys.utilitas.base.feature.Feature;
 import be.ephys.utilitas.base.feature.FeatureInstance;
 import be.ephys.utilitas.base.feature.FeatureMeta;
 import be.ephys.utilitas.feature.link_wand.FeatureLinkWand;
+import be.ephys.utilitas.feature.material.FeatureMaterial;
 import be.ephys.utilitas.feature.universal_interface.TesrInterface;
 import be.ephys.utilitas.feature.universal_interface.TileEntityInterface;
 import net.minecraft.block.material.Material;
@@ -12,6 +13,7 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemSaddle;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -22,7 +24,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 @FeatureMeta(
     name = "Proximity Sensor",
     description = "Emits a redstone signal when a given entity is nearby",
-    dependencies = FeatureLinkWand.class
+    dependencies = {FeatureLinkWand.class, FeatureMaterial.class}
 )
 public class FeatureProximitySensor extends Feature {
 
@@ -57,9 +59,12 @@ public class FeatureProximitySensor extends Feature {
     public void registerCrafts(FMLInitializationEvent event) {
         GameRegistry.addRecipe(
             new ItemStack(proximitySensor),
-            "hhh", "hlh", "hrh",
-            'h', new ItemStack(Blocks.STONE),
-            'l', new ItemStack(Items.END_CRYSTAL),
+            "sss",
+            "cec",
+            "srs",
+            'c', new ItemStack(Items.COMPARATOR),
+            's', new ItemStack(FeatureMaterial.INSTANCE.hardenedStone),
+            'e', new ItemStack(Items.EGG),
             'r', new ItemStack(Items.REDSTONE)
         );
     }

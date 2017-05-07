@@ -11,6 +11,8 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
@@ -33,7 +35,9 @@ public class TesrReconditioner extends TileEntitySpecialRenderer<TileEntityRecon
         int maxXp = TileEntityReconditioner.MAX_XP_STORAGE;
         float xpPercent = ((float) xp) / maxXp;
 
-        if (Minecraft.getMinecraft().objectMouseOver.getBlockPos().equals(tile.getPos())) {
+        BlockPos blockPos = Minecraft.getMinecraft().objectMouseOver.getBlockPos();
+
+        if (blockPos != null && blockPos.equals(tile.getPos())) {
             drawBar(x + 0.5, y + 1.75, z + 0.5, xpPercent, "XP", XP_COLOR);
 
             // TODO energy

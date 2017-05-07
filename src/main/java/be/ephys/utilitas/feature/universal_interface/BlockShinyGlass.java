@@ -153,13 +153,14 @@ public class BlockShinyGlass extends BlockBreakable implements ITileEntityProvid
 
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state) {
-        super.breakBlock(world, pos, state);
-
         if (state.getValue(TYPE) != METADATA_INTERFACE) {
+            super.breakBlock(world, pos, state);
             return;
         }
 
         TileEntityInterface te = (TileEntityInterface) world.getTileEntity(pos);
+
+        super.breakBlock(world, pos, state);
 
         if (te == null || te.upgrades == null) {
             return;
