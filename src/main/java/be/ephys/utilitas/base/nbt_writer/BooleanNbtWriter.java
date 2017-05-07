@@ -2,7 +2,6 @@ package be.ephys.utilitas.base.nbt_writer;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagByte;
-import net.minecraft.nbt.NBTTagInt;
 
 public class BooleanNbtWriter implements NbtWriter<Boolean> {
 

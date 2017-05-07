@@ -12,9 +12,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.awt.*;
 import java.util.Map;
 import java.util.UUID;
 
@@ -131,5 +133,15 @@ public class RenderHelper {
                 this.skinType = SkinType.from(DefaultPlayerSkin.getSkinType(uuid));
             }
         }
+    }
+
+    public static int getRainbowColor(int speed, float saturation, float brightness) {
+        long tick = FMLCommonHandler.instance().getMinecraftServerInstance().getTickCounter();
+
+        return getRainbowColor(tick, speed, saturation, brightness);
+    }
+
+    public static int getRainbowColor(long percent, int speed, float saturation, float brightness) {
+        return Color.HSBtoRGB((percent * speed) % 360 / 360F, saturation, brightness);
     }
 }

@@ -29,6 +29,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
+// TODO capability blacklist
+
 @FeatureMeta(
     name = "Universal Interface",
     description = "A remote interface with support for too much",

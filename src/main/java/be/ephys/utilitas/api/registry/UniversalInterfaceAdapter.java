@@ -47,7 +47,7 @@ public abstract class UniversalInterfaceAdapter<T> implements ICapabilityProvide
 
     public abstract ITextComponent getName();
 
-    public abstract void onBlockUpdate();
+    public void onBlockUpdate() {};
 
     public abstract void onTick(long tick);
 

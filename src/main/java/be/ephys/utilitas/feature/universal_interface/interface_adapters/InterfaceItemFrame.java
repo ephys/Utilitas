@@ -3,7 +3,6 @@ package be.ephys.utilitas.feature.universal_interface.interface_adapters;
 import be.ephys.utilitas.api.registry.UniversalInterfaceAdapter;
 import be.ephys.utilitas.base.helpers.EntityHelper;
 import be.ephys.utilitas.base.helpers.NBTHelper;
-import be.ephys.utilitas.feature.universal_interface.TileEntityInterface;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -37,6 +36,7 @@ public class InterfaceItemFrame extends UniversalInterfaceAdapter<EntityItemFram
     @Override
     public boolean setLink(EntityItemFrame link, EntityPlayer linker) {
         this.itemFrame = link;
+        this.uuid = link.getPersistentID();
         return true;
     }
 
@@ -47,7 +47,7 @@ public class InterfaceItemFrame extends UniversalInterfaceAdapter<EntityItemFram
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-        NBTHelper.setEntityUuid(nbt, "target", itemFrame);
+        NBTHelper.setUuid(nbt, "target", uuid);
         return nbt;
     }
 
@@ -57,7 +57,10 @@ public class InterfaceItemFrame extends UniversalInterfaceAdapter<EntityItemFram
     }
 
     @Override
-    public void onBlockUpdate() {
+    public void onLoad() {
+        if (uuid == null) {
+            this.getInterface().unlink();
+        }
     }
 
     @Override
@@ -67,16 +70,10 @@ public class InterfaceItemFrame extends UniversalInterfaceAdapter<EntityItemFram
         }
 
         if (itemFrame == null) {
-            if (uuid != null) {
-                itemFrame = (EntityItemFrame) EntityHelper.getEntityByUuid(uuid);
-
-                uuid = null;
-            } else {
-                getInterface().unlink();
-            }
+            itemFrame = (EntityItemFrame) EntityHelper.getEntityByUuid(uuid);
         }
 
-        if (itemFrame != null && itemFrame.isDead) {
+        if (itemFrame == null || itemFrame.isDead) {
             getInterface().unlink();
         }
     }

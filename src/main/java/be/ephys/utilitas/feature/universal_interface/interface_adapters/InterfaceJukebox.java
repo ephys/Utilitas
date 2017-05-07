@@ -4,7 +4,6 @@ import be.ephys.utilitas.api.registry.UniversalInterfaceAdapter;
 import be.ephys.utilitas.base.helpers.ChatHelper;
 import be.ephys.utilitas.base.helpers.WorldHelper;
 import be.ephys.utilitas.base.helpers.WorldPos;
-import be.ephys.utilitas.feature.universal_interface.TileEntityInterface;
 import net.minecraft.block.BlockJukebox;
 import net.minecraft.block.BlockJukebox.TileEntityJukebox;
 import net.minecraft.entity.player.EntityPlayer;
@@ -62,7 +61,10 @@ public class InterfaceJukebox extends UniversalInterfaceAdapter<TileEntityJukebo
     }
 
     @Override
-    public void onBlockUpdate() {
+    public void onLoad() {
+        if (tilePos == null || tilePos.pos == null || tilePos.world == null) {
+            getInterface().unlink();
+        }
     }
 
     @Override
@@ -72,19 +74,14 @@ public class InterfaceJukebox extends UniversalInterfaceAdapter<TileEntityJukebo
         }
 
         if (jukeboxProxy.jukebox == null) {
-            if (tilePos == null || tilePos.pos == null || tilePos.world == null) {
-                this.getInterface().unlink();
-                return;
-            }
-
             TileEntity te = tilePos.world.getTileEntity(tilePos.pos);
 
-            if (te instanceof TileEntityJukebox) {
-                jukeboxProxy.jukebox = (TileEntityJukebox) te;
-            } else {
+            if (!(te instanceof TileEntityJukebox)) {
                 this.getInterface().unlink();
                 return;
             }
+
+            jukeboxProxy.jukebox = (TileEntityJukebox) te;
         }
 
         if (jukeboxProxy.jukebox.isInvalid()) {

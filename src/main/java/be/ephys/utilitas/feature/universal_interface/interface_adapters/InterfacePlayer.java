@@ -94,16 +94,11 @@ public class InterfacePlayer extends UniversalInterfaceAdapter<EntityPlayer> {
     }
 
     @Override
-    public void setInterface(TileEntityInterface tileEntity) {
-        super.setInterface(tileEntity);
-
-        onBlockUpdate();
-    }
-
-    @Override
     public void onLoad() {
         if (getInterface().hasWorldObj()) {
             searchPlayer();
+
+            onBlockUpdate();
         }
     }
 
@@ -111,8 +106,12 @@ public class InterfacePlayer extends UniversalInterfaceAdapter<EntityPlayer> {
     public void onBlockUpdate() {
         TileEntityInterface interfaceEntity = this.getInterface();
 
+        if (!interfaceEntity.hasWorldObj()) {
+            return;
+        }
+
         BlockPos pos = interfaceEntity.getPos();
-        if (pos.getY() >= 255) {
+        if (pos == null || pos.getY() >= 255) {
             return;
         }
 

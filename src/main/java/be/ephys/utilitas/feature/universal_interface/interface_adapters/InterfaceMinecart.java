@@ -3,7 +3,6 @@ package be.ephys.utilitas.feature.universal_interface.interface_adapters;
 import be.ephys.utilitas.api.registry.UniversalInterfaceAdapter;
 import be.ephys.utilitas.base.helpers.EntityHelper;
 import be.ephys.utilitas.base.helpers.NBTHelper;
-import be.ephys.utilitas.feature.universal_interface.TileEntityInterface;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityMinecartContainer;
 import net.minecraft.entity.player.EntityPlayer;
@@ -55,13 +54,20 @@ public class InterfaceMinecart extends UniversalInterfaceAdapter<EntityMinecartC
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-        NBTHelper.setEntityUuid(nbt, "minecart", minecart);
+        NBTHelper.setUuid(nbt, "minecart", uuid);
         return nbt;
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         uuid = NBTHelper.getUuid(nbt, "minecart", null);
+    }
+
+    @Override
+    public void onLoad() {
+        if (uuid == null) {
+            getInterface().unlink();
+        }
     }
 
     @Override

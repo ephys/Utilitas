@@ -3,7 +3,6 @@ package be.ephys.utilitas.feature.universal_interface.interface_adapters;
 import be.ephys.utilitas.api.registry.UniversalInterfaceAdapter;
 import be.ephys.utilitas.base.helpers.WorldHelper;
 import be.ephys.utilitas.base.helpers.WorldPos;
-import be.ephys.utilitas.feature.universal_interface.TileEntityInterface;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;

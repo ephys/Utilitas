@@ -3,7 +3,6 @@ package be.ephys.utilitas.feature.universal_interface.interface_adapters;
 import be.ephys.utilitas.api.registry.UniversalInterfaceAdapter;
 import be.ephys.utilitas.base.helpers.EntityHelper;
 import be.ephys.utilitas.base.helpers.NBTHelper;
-import be.ephys.utilitas.feature.universal_interface.TileEntityInterface;
 import net.minecraft.entity.item.EntityMinecartFurnace;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -36,8 +35,9 @@ public class InterfaceMinecartFurnace extends UniversalInterfaceAdapter<EntityMi
     @Override
     public boolean setLink(EntityMinecartFurnace link, EntityPlayer linker) {
         minecart = link;
-        return true;
+        uuid = link.getPersistentID();
 
+        return true;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class InterfaceMinecartFurnace extends UniversalInterfaceAdapter<EntityMi
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-        NBTHelper.setEntityUuid(nbt, "minecart", minecart);
+        NBTHelper.setUuid(nbt, "minecart", uuid);
         return nbt;
     }
 
@@ -57,12 +57,19 @@ public class InterfaceMinecartFurnace extends UniversalInterfaceAdapter<EntityMi
     }
 
     @Override
+    public void onLoad() {
+        if (uuid == null) {
+            this.getInterface().unlink();
+        }
+    }
+
+    @Override
     public void onTick(long tick) {
         if (isRemote()) {
             return;
         }
 
-        if (minecart == null && uuid != null) {
+        if (minecart == null) {
             minecart = (EntityMinecartFurnace) EntityHelper.getEntityByUuid(uuid);
         }
 
