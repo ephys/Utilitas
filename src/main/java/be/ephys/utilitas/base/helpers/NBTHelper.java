@@ -287,6 +287,10 @@ public class NBTHelper {
             return def;
         }
 
+        if (!stack.hasTagCompound()) {
+            return def;
+        }
+
         return getInt(getNBT(stack), name, def);
     }
 

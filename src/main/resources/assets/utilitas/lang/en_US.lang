@@ -18,6 +18,7 @@ item.utilitas:link_wand.name=Linking Wand
 item.utilitas:omnibucket.name=Omnibucket
 item.utilitas:omnibucket-filled.name=%S Omnibucket
 item.utilitas:fluid_diffuser.name=Handheld Fluid diffuser
+item.utilitas:slime_staff.name=Slime Staff
 
 tooltip.utilitas:press_shift=Press <Shift> for details
 tooltip.utilitas:nothing=nothing

@@ -39,6 +39,28 @@ The mending enchantment, as a machine.
 
 Craft it, place a mending book and your damaged item in it, add some XP and energy (or mana), and voilà! They are good as new.
 
+### Slime Staff
+
+[Video](https://www.youtube.com/watch?v=9mY3nxlV1b4)
+
+Right click on a slime to catch it in your slime staff.
+
+Each slime type has its own specificity.
+
+- Regular slimes will pick up and give you nearby dropped items.
+- Ender slimes will do the same but like teleporting around.
+- Magma slimes like to attack anything that moves.
+
+Slime familiars follow their owner around, although you can place them on slimepads to
+make them stay near it.
+
+Slimes that pick up items can be placed on inventories (like a chest), 
+they will try to put the items in them.
+
+### Rainbow Slimes
+
+They're like regular slimes, but pretty! They spawn when slimes spawn in the rain.
+
 ## Planned Features
 
 ### Fluid Hopper
@@ -68,7 +90,6 @@ It will not use instant potions (like instant health) nor splash or lingering po
 - Fluid Hopper Minecart
 - Auto-feeder
 - Enhanced Comparator
-- Wireless Comparator ?
 
 ## Modpacks
 
